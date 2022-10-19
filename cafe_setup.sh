@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+# user input
+fsys=$1
 
 display_help()
 {
@@ -10,7 +12,7 @@ display_help()
     echo "links (or dir.) for the CaFe experiment raw data and output based on which "
     echo "machine (ifarm, cdaq, local) the user is at."
     echo ""
-    echo "Syntax: ./cafe_setup.sh [ -f ]"
+    echo "Syntax: ./cafe_setup.sh "
     echo ""
     echo "options:"
     echo ""
@@ -36,9 +38,9 @@ display_help()
     echo "      See https://hallcweb.jlab.org/wiki/index.php/CaFe_Disk_Space " 
     echo "      for detailed information on each of these filesystems."  
     echo "        "
-    echo "examples: ./cafe_setup.sh -f volatile"
-    echo "          ./cafe_setup.sh -f work" 
-    echo "          ./cafe_setup.sh -f group"   
+    echo "examples: ./cafe_setup.sh volatile"
+    echo "          ./cafe_setup.sh work" 
+    echo "          ./cafe_setup.sh group"   
     echo "-------------------------------------------------------"    
 }
 
@@ -115,22 +117,6 @@ cdaq_flg=0
 
 
 
-# define the optional arguments
-while getopts ":h:f:" option; do
-    case $option in
-	h) # display Help
-            Help	    
-	    exit;;       	
-	f) # Enter a filesystem name (only appplies for ifarm)
-            fsys=$OPTARG;;
-	\?) # Invalid option
-            echo "Error: Invalid option"
-	    Help
-            exit;;
-    esac
-done
-
-
 if echo $HOSTNAME | grep -q "ifarm"; then
     ifarm_flg=1
 elif echo $HOSTNAME | grep -q "cdaq"; then
@@ -163,7 +149,9 @@ if [[ ifarm_flg -eq 1 ]]; then
     
     # setup the symbolic links to hcana
     set_hcana_link      
-   
+
+    # set raw data links
+    set_raw_link
     
     if [[ $fsys == "volatile" ]]; then	     
 	echo ""
@@ -247,6 +235,7 @@ if [[ ifarm_flg -eq 1 ]]; then
 
 	echo ""
 
+    fi
 fi
 
 
@@ -308,20 +297,20 @@ fi
 
 # assume user is local if NOT on cdaq or ifarm
 if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
-
+    
     # source cafe_online_replay (usually shell script on local machine)
     source setup.sh
     
     # This function checks if necessary dir. exists, else it creates them 
     dir_arr=("raw" "ROOTfiles" "REPORT_OUTPUT" "HISTOGRAMS" "CAFE_OUTPUT", "CACHE_LINKS")
-    	
+    
     echo "Checking if necessary directories or symlinks exist in local machine: " ${USER}"@"${HOSTNAME}". . ."
-
+    
     # setup the symbolic links to hcana
     set_hcana_link
-
     
-    for i in "${dir_arr[@]}"	     
+    
+    for i in "${dir_arr[@]}"
     do     
 	if [[ -L "$i" && -d "$i" ]]; then
 	    cmd="ls -l $i"
@@ -339,3 +328,5 @@ if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
 	fi    
     done
 fi
+
+
