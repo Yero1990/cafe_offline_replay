@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # user input
 fsys=$1
 
@@ -96,7 +95,7 @@ set_hcana_link()
 # set link to cache cafe raw data
 set_raw_link()
 {
-    mkdir CACHE_LINKS
+    mkdir CACHE_LINKS/
     cd CACHE_LINKS/
 
     unlink CACHE_LINKS/cache_cafe
