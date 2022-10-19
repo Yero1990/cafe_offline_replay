@@ -95,6 +95,7 @@ set_hcana_link()
     fi    
 }
 
+
 # set link to cache cafe raw data
 set_raw_link()
 {
@@ -113,6 +114,8 @@ set_raw_link()
     
 }
 
+set_hcana_link
+set_raw_link
 
 # initialize machine flags to 0
 # (depending on where this script gets called, it will turn ON one of these)
@@ -151,8 +154,6 @@ if [[ ifarm_flg -eq 1 ]]; then
     echo ""
     
     
-    set_hcana_link
-    set_raw_link
     
     if [[ $fsys == "volatile" ]]; then	     
 	echo ""
@@ -252,9 +253,7 @@ if [[ cdaq_flg -eq 1 ]]; then
     # source cafe_online_replay
     source setup.csh
     
-    # setup the symbolic links to hcana
-    set_hcana_link
-    
+     
     base_dir_cdaq="/net/cdaq/cdaql1data/cdaq/hallc-online-cafe2022"
 
     echo "Creating symlink to ${coda_raw}"
@@ -305,11 +304,7 @@ if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
     # This function checks if necessary dir. exists, else it creates them 
     dir_arr=("raw" "ROOTfiles" "REPORT_OUTPUT" "HISTOGRAMS" "CAFE_OUTPUT" "CACHE_LINKS")
     
-    echo "Checking if necessary directories or symlinks exist in local machine: " ${USER}"@"${HOSTNAME}". . ."
-    
-    # setup the symbolic links to hcana
-    set_hcana_link
-    
+    echo "Checking if necessary directories or symlinks exist in local machine: " ${USER}"@"${HOSTNAME}". . ." 
     
     for i in "${dir_arr[@]}"
     do     
