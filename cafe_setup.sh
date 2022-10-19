@@ -71,6 +71,8 @@ cache_raw_dir_pionlt="/cache/hallc/c-pionlt/raw"
 # cafe online analysis output would have been written here
 cache_analysis_out="/cache/hallc/c-cafe-2022/analysis/"
 
+# set current dir path as HCREPLAY
+export HCREPLAY="$PWD"
 
 set_hcana_link()
 {
@@ -80,8 +82,9 @@ set_hcana_link()
 	echo "Please make sure to do: source setup.sh(csh) in hcana first. " 
 	echo "Trying to source environment:"
 	echo "source ../hcana/setup.csh "
-	source ../hcana/setup.csh
-	cd
+	cd ../hcana/
+	source setup.csh
+	cd $HCREPLAY
     else
 	echo ""
 	echo "Creating hcana symbolic link now  . . ."
@@ -95,16 +98,18 @@ set_hcana_link()
 # set link to cache cafe raw data
 set_raw_link()
 {
-    mkdir CACHE_LINKS/
-    cd CACHE_LINKS/
+    mkdir $HCREPLAY"/CACHE_LINKS"
+    cd $HCREPLAY"/CACHE_LINKS"
 
-    unlink CACHE_LINKS/cache_cafe
+    unlink cache_cafe
     echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
     ln -sf $cache_raw_dir_cafe cache_cafe
 	
-    unlink CACHE_LINKS/cache_pionlt
+    unlink cache_pionlt
     echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
     ln -sf $cache_raw_dir_pionlt cache_pionlt
+
+    cd $HCREPLAY
     
 }
 
@@ -140,16 +145,13 @@ fi
 # =================================
 if [[ ifarm_flg -eq 1 ]]; then
 
-  
-    source setup.csh    
+    
     echo ""
     echo "Checking if necessary directories or symlinks exist in remote machine: " ${USER}"@"${HOSTNAME}". . ."
     echo ""
     
-    # setup the symbolic links to hcana
-    set_hcana_link      
-
-    # set raw data links
+    
+    set_hcana_link
     set_raw_link
     
     if [[ $fsys == "volatile" ]]; then	     
@@ -301,7 +303,7 @@ if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
     source setup.sh
     
     # This function checks if necessary dir. exists, else it creates them 
-    dir_arr=("raw" "ROOTfiles" "REPORT_OUTPUT" "HISTOGRAMS" "CAFE_OUTPUT", "CACHE_LINKS")
+    dir_arr=("raw" "ROOTfiles" "REPORT_OUTPUT" "HISTOGRAMS" "CAFE_OUTPUT" "CACHE_LINKS")
     
     echo "Checking if necessary directories or symlinks exist in local machine: " ${USER}"@"${HOSTNAME}". . ."
     
