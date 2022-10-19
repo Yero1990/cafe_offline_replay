@@ -1,5 +1,5 @@
-# CaFe Online Replay
-This repository, `cafe_online_replay`, is a version of the official `hallc_replay` repository with additions specific to the CaFe experiment. This online version has replay scripts for data online monitoring of the data, as well as specialized shell scripts for analysis of special runs such as target_boiling, H(e,e'p) elastics, production, detector calibrations, etc. 
+# CaFe Offline Replay
+This repository, `cafe_offline_replay`, is a version of the official `hallc_replay` repository with additions specific to the CaFe experiment. This offline version has replay scripts for data offline monitoring of the data, as well as specialized shell scripts for analysis of special runs such as target_boiling, H(e,e'p) elastics, production, detector calibrations, etc. 
 
 Please refer to the following useful link:
 [https://hallcweb.jlab.org/wiki/index.php/CaFe\_Experiment](https://hallcweb.jlab.org/wiki/index.php/CaFe_Experiment)
@@ -21,7 +21,6 @@ $ ssh -Y ifarm
 ```
 
 `step 2:` Go to the relevant work directory and setup the relevant Hall C Analyzer repository. 
-##### (ignore the `git clone` command if using this repo as a submodule of `CaFe-Online`)
 
 ```sh
 # Create symbolic link to the CaFe work directory. 
@@ -49,16 +48,17 @@ $ source setup.csh
  
 # the command below will compile the analyzer and generate an executable, hcana
 # scons is a compiler and -j specifies the number N of machine (try -j4) cores so it compiles faster
+# (only have to compile once right after cloning hcana, or every time hcana is updated)
 $ scons -jN 
 ```
 
 `step 3:` Go up one directory (cd .. ),  and clone and setup the Hall C replay repository <br>
-##### (ignore the `git clone` command if using this repo as a submodule of `CaFe-Online`)
+
 ```sh
-# Clone and properly setup the Hall C data analysis replay 
+# Clone and properly setup the Hall C data analysis replay from my repository
 # Alternatively, you can fork a copy of the repository remotely and the clone it directly 
 # from your github account.
-$ git clone https://github.com/Yero1990/cafe_online_replay 
+$ git clone https://github.com/Yero1990/cafe_offline_replay 
 $ cd cafe_online_replay 
 
 # execute this script to create the necessary sybmolic links required by the replay script 

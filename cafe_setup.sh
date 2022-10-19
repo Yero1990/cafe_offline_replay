@@ -1,46 +1,75 @@
 #!/bin/bash
 
-echo "================================================="
-echo "For help on usage, type: ./cafe_setup.sh -help"
-echo "================================================="
-Help()
+
+
+display_help()
 {
     # Display Help
     echo "-------------------------------------------------------"
     echo "This shell script automatically sets up the necessary symbolic" 
-    echo "links (or dir.) for the CaFe experiment based on which "
+    echo "links (or dir.) for the CaFe experiment raw data and output based on which "
     echo "machine (ifarm, cdaq, local) the user is at."
     echo ""
-    echo "Syntax: ./cafe_setup.sh [ -h | -f ]"
+    echo "Syntax: ./cafe_setup.sh [ -f ]"
     echo ""
     echo "options:"
-    echo "-help    Print this help display"
     echo ""
     echo "For users on IFARM ONLY: "
     echo "-f    ONLY use this option if you are running this shell script on ifarm. "
     echo "      This option selects filesystem in in which to read/write data " 
     echo "      from the CaFe experiment. "
     echo ""
-    echo "      The optional arguments are: test, volatile, work, group"
+    echo "      The optional arguments are: volatile, work, group"
     echo ""
-    echo "      test: "
-    echo "           this option will set up pre-determined raw/ ROOTfiles/ and REPORT_OUTPUT/ symbolic links" 
-    echo "           for testing the CaFe replay and analysis scripts using existing data."
+    echo "      volatile (/volatile/hallc/c-cafe-2022/  4 TB high quota; 2 TB guarantee): "
+    echo "              Files are NOT backed-up. Use for all large file output from analysis or simulation jobs. "
+    echo "              When guarantee threshold is exceeded it is possible to have files auto-cleaned up (removed). "
     echo ""
-    echo "      volatile, work, group: "
-    echo "            these options will set symbolic links to the corresponding filesystem "
-    echo "            you would want to set these options depending on which stage of the analysis you are in "
-    echo "            for example, use volatile if you are in the beginning stages of off-line analysis"
+    echo "      work (/work/hallc/c-cafe-2022/  1 TB  quota): "
+    echo "             Files are NOT backed up. Good place for analysis software, database files, etc.  "
+    echo "             These files should be in GitHub or have similar backups."
+    echo ""
+    echo "      group (/group/c-cafe-2022/  100 GB  quota): "
+    echo "             Backed up regularly. Best place for analysis/replay scripts; software that is "
+    echo "             being actively developed, etc. (But, still use GitHub!)"
     echo ""
     echo "      See https://hallcweb.jlab.org/wiki/index.php/CaFe_Disk_Space " 
     echo "      for detailed information on each of these filesystems."  
     echo "        "
-    echo "examples: ./cafe_setup.sh -f test"
-    echo "          ./cafe_setup.sh -f volatile"
+    echo "examples: ./cafe_setup.sh -f volatile"
     echo "          ./cafe_setup.sh -f work" 
     echo "          ./cafe_setup.sh -f group"   
     echo "-------------------------------------------------------"    
 }
+
+if [ "$#" -eq 0 ]; then
+    display_help
+    exit 1
+fi
+
+#--- most recent online raw data is stored here (and then copied to tape shortly after)---
+coda_raw="/net/cdaq/cdaql1data/coda/data/raw"
+coda_raw_copiedtotape="/net/cdaq/cdaql1data/coda/data/raw.copiedtotape"
+
+
+
+# where CaFe raw data output to be replayed will be stored (.dat files)
+# but these are NOT directly accessible, one would have to look for them in cache.
+# tape_raw_dir="/mss/hallc/c-cafe-2022/raw"
+tape_raw_dir="/mss/hallc/c-pionlt/raw"
+
+# tape volume for analysis output (simulation or replay output you want to keep long-term)
+tape_analysis_out="/mss/hallc/c-cafe-2022/analysis" 
+
+
+#--- define cache allocations (ONLY for raw and analyzed online data storage) ---
+# cafe Sep data
+cache_raw_dir_cafe="/cache/hallc/c-cafe-2022/raw/"
+# cafe Aug data (optics, heep elastics, was written in pion lt raw dir)
+cache_raw_dir_pionlt="/cache/hallc/c-pionlt/raw"
+# cafe online analysis output would have been written here
+cache_analysis_out="/cache/hallc/c-cafe-2022/analysis/"
+
 
 set_hcana_link()
 {
@@ -48,15 +77,34 @@ set_hcana_link()
 	echo ""
 	echo "Environment variable: $HCANALYZER does NOT exist. "
 	echo "Please make sure to do: source setup.sh(csh) in hcana first. " 
-	echo ""
+	echo "Trying to source environment:"
+	echo "source ../hcana/setup.csh "
+	source ../hcana/setup.csh
+	cd
     else
 	echo ""
 	echo "Creating hcana symbolic link now  . . ."
 	ln -sf $HCANALYZER"/hcana"
-	ln -sf $HCANALYZER"/libHallC.so"
-	ln -sf $HCANALYZER"/libHallC.so.0.90.0"
+	#ln -sf $HCANALYZER"/libHallC.so"
+	#ln -sf $HCANALYZER"/libHallC.so.0.90.0"
 	echo ""
     fi    
+}
+
+# set link to cache cafe raw data
+set_raw_link()
+{
+    mkdir CACHE_LINKS
+    cd CACHE_LINKS/
+
+    unlink CACHE_LINKS/cache_cafe
+    echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
+    ln -sf $cache_raw_dir_cafe cache_cafe
+	
+    unlink CACHE_LINKS/cache_pionlt
+    echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
+    ln -sf $cache_raw_dir_pionlt cache_pionlt
+    
 }
 
 
@@ -99,59 +147,16 @@ fi
 #fi
 
 
-#--- most recent raw data (irrespective of exp.)----
-coda_raw="/net/cdaq/cdaql1data/coda/data/raw"
-coda_raw_copiedtotape="/net/cdaq/cdaql1data/coda/data/raw.copiedtotape"
-
-#--- define tape allocations ---
-# make sure to point to the pionLT 2022 tape dir
-# when we run the 1st part of cafe (heep and optics checks)
-# since this 1st part will be taken during pionLT running.
-
-
-# where CaFe raw data output to be replayed will be stored (.dat files(
-# but these are NOT directly accessible, one would have to look for them in cache.
-# tape_raw_dir="/mss/hallc/c-cafe-2022/raw"
-tape_raw_dir="/mss/hallc/c-pionlt/raw"
-
-
-
-# tape volume for analysis output (simulation or replay output you want to keep long-term)
-tape_analysis_out="/mss/hallc/c-cafe-2022/analysis" 
-
-#--- define cache allocations ---
-# cafe
-cache_raw_dir_cafe="/cache/hallc/c-cafe-2022/raw/"
-cache_raw_dir_pionlt="/cache/hallc/c-pionlt/raw"
-
-# only for testing purposes (test raw data is here)
-volatile_raw_dir_test="/volatile/hallc/c-cafe-2022/test_raw"
-
-cache_analysis_out="/cache/hallc/c-cafe-2022/analysis/"
 
 #=================================
 # ifarm
-# (off-line experiment analysis
-# or testing the replay scripts)
+# (off-line experiment analysis)
 #
 # =================================
 if [[ ifarm_flg -eq 1 ]]; then
 
-    # source cafe_online_replay
-    source setup.csh
-    
-    if [[ -z $fsys ]]; then
-	echo ""
-	echo " No optional argumnets provided "
-	echo ""
-	echo "----------------------------------------------------------------------"
-	echo " For help using additional options, please run: ./cafe_setup.sh -help "
-	echo "----------------------------------------------------------------------"
-	echo "Exiting NOW . . . "
-	echo ""
-	exit 1
-    fi
-    
+  
+    source setup.csh    
     echo ""
     echo "Checking if necessary directories or symlinks exist in remote machine: " ${USER}"@"${HOSTNAME}". . ."
     echo ""
@@ -167,14 +172,6 @@ if [[ ifarm_flg -eq 1 ]]; then
 
 	echo "Creating dir $base_dir_voli$USER . . ."
 	mkdir $base_dir_voli$USER
-	
-	unlink CACHE_LINKS/cache_cafe
-	echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
-	ln -sf $cache_raw_dir_cafe cache_cafe
-	
-	unlink CACHE_LINKS/cache_pionlt
-	echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
-	ln -sf $cache_raw_dir_pionlt cache_pionlt
 
 	unlink REPORT_OUTPUT
 	echo "Creating dir and symlink to $base_dir_voli$USER/REPORT_OUTPUT . . ."
@@ -203,18 +200,6 @@ if [[ ifarm_flg -eq 1 ]]; then
 	echo "Creating dir $base_dir_work$USER . . ."
 	mkdir $base_dir_work$USER
 
-	unlink raw
-	echo "Creating symlink to $coda_raw"
-	ln -sf $coda_raw
-	
-	unlink CACHE_LINKS/cache_cafe
-	echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
-	ln -sf $cache_raw_dir_cafe cache_cafe
-	
-	unlink CACHE_LINKS/cache_pionlt
-	echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
-	ln -sf $cache_raw_dir_pionlt cache_pionlt
-
 	unlink REPORT_OUTPUT
 	echo "Creating dir and symlink to $base_dir_work$USER/REPORT_OUTPUT . . ."
 	mkdir $base_dir_work$USER"/REPORT_OUTPUT"
@@ -241,18 +226,6 @@ if [[ ifarm_flg -eq 1 ]]; then
 	echo "Creating dir $base_dir_group$USER . . ."
 	mkdir $base_dir_group$USER
 
-	unlink raw
-	echo "Creating symlink to $coda_raw"
-	ln -sf $coda_raw
-
-	unlink CACHE_LINKS/cache_cafe
-	echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
-	ln -sf $cache_raw_dir_cafe cache_cafe
-	
-	unlink CACHE_LINKS/cache_pionlt
-	echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
-	ln -sf $cache_raw_dir_pionlt cache_pionlt
-
 	unlink REPORT_OUTPUT
 	echo "Creating dir and symlink to $base_dir_group$USER/REPORT_OUTPUT . . ."
 	mkdir $base_dir_group$USER"/REPORT_OUTPUT"
@@ -273,32 +246,7 @@ if [[ ifarm_flg -eq 1 ]]; then
 
 
 	echo ""
-    elif [[ $fsys == "test" ]]; then
-	echo ""
-	echo 'Setting up test symlinks on ifarm for testing cafe replay scripts . . .'
-	base_dir="/lustre19/expphy/volatile/hallc/c-cafe-2022/"
-	raw_dir=$base_dir'test_raw'  # this is read-only for users (since dir/ was created by cyero to put raw test files)
 
-	base_dir_user="${base_dir}test_output_${USER}/"
-	ROOTfiles_dir=${base_dir_user}"ROOTfiles"
-	REPORT_OUTPUT_dir=$base_dir_user"REPORT_OUTPUT"
-	CAFE_OUTPUT_dir=$base_dir_user"CAFE_OUTPUT"
-
-	mkdir $base_dir_user
-	mkdir $ROOTfiles_dir
-	mkdir $REPORT_OUTPUT_dir
-	mkdir $CAFE_OUTPUT_dir
-	mkdir -p "CAFE_OUTPUT/ROOT"
-	mkdir -p "CAFE_OUTPUT/REPORT"
-	mkdir -p "CAFE_OUTPUT/PDF" 
-
-	unlink raw
-	ln -sf $volatile_raw_dir_test raw 	
-	ln -sf $ROOTfiles_dir
-	ln -sf $REPORT_OUTPUT_dir
-	ln -sf $CAFE_OUTPUT_dir  
-	echo ""
-    fi
 fi
 
 
