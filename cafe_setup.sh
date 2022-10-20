@@ -16,10 +16,6 @@ display_help()
     echo "options:"
     echo ""
     echo "For users on IFARM ONLY: "
-    echo "-f    ONLY use this option if you are running this shell script on ifarm. "
-    echo "      This option selects filesystem in in which to read/write data " 
-    echo "      from the CaFe experiment. "
-    echo ""
     echo "      The optional arguments are: volatile, work, group"
     echo ""
     echo "      volatile (/volatile/hallc/c-cafe-2022/  4 TB high quota; 2 TB guarantee): "
@@ -39,7 +35,10 @@ display_help()
     echo "        "
     echo "examples: ./cafe_setup.sh volatile"
     echo "          ./cafe_setup.sh work" 
-    echo "          ./cafe_setup.sh group"   
+    echo "          ./cafe_setup.sh group"
+    echo ""
+    echo "For LOCAL users: "
+    echo "./cafe_setup.sh local"
     echo "-------------------------------------------------------"    
 }
 
@@ -74,20 +73,58 @@ cache_analysis_out="/cache/hallc/c-cafe-2022/analysis/"
 # set current dir path as HCREPLAY
 export HCREPLAY="$PWD"
 
+bourne_shell_flg=0  # sh, bash, zsh, ksh
+shell_flg=0 #c-shell (csh), t-shell(tcsh) 
+
+#determine user shell
+if echo $SHELL | grep -q "/sh"; then
+    echo "SHELL: $SHELL"
+    bourne_shell_flg=1
+elif echo $SHELL | grep -q "/bash"; then
+    echo "SHELL: $SHELL"
+    bourne_shell_flg=1
+elif echo $SHELL | grep -q "/zsh"; then
+    echo "SHELL: $SHELL"
+    bourne_shell_flg=1
+elif echo $SHELL | grep -q "/ksh"; then
+    echo "SHELL: $SHELL"
+    bourne_shell_flg=1
+elif echo $SHELL | grep -q "/csh"; then
+    echo "SHELL: $SHELL"
+    shell_flg=1
+elif echo $SHELL | grep -q "/tcsh"; then
+    echo "SHELL: $SHELL"
+    shell_flg=1
+fi
+
+echo "bourne_shell_flg: $bourne_shell_flg"
+echo "shell_flg: $shell_flg"
+
+
 set_hcana_link()
 {
     if [[ -z $HCANALYZER ]]; then	
 	echo ""
 	echo "Environment variable: $HCANALYZER does NOT exist. "
-	echo "Please make sure to do: source setup.sh(csh) in hcana first. " 
+	echo "Will try to source setup.sh(csh) in hcana first. " 
 	echo "Trying to source environment:"
-	echo "source ../hcana/setup.csh "
+	echo "cd ../hcana"
 	cd ../hcana/
-	source setup.csh
-	cd $HCREPLAY
+	if [[ shell_flg -eq 1 ]]; then
+	    echo "source setup.csh "
+	    source setup.csh
+	elif [[ bourne_shell_flg -eq 1 ]]; then
+	    echo "source setup.sh "
+	    source setup.sh
+	    echo "cd $HCREPLAY"
+	    cd $HCREPLAY
+	fi
     else
 	echo ""
+	cd $HCREPLAY
+	unlink hcana
 	echo "Creating hcana symbolic link now  . . ."
+	echo "ln -sf $HCANALYZER/hcana"
 	ln -sf $HCANALYZER"/hcana"
 	#ln -sf $HCANALYZER"/libHallC.so"
 	#ln -sf $HCANALYZER"/libHallC.so.0.90.0"
@@ -99,9 +136,12 @@ set_hcana_link()
 # set link to cache cafe raw data
 set_raw_link()
 {
+    echo ""
+    echo "Setting Up symlinks to raw (.dat) files . . ."
+    
     mkdir $HCREPLAY"/CACHE_LINKS"
     cd $HCREPLAY"/CACHE_LINKS"
-
+    
     unlink cache_cafe
     echo "Creating symlink to /cache/hallc/c-cafe-2022/raw/"
     ln -sf $cache_raw_dir_cafe cache_cafe
@@ -110,7 +150,10 @@ set_raw_link()
     echo "Creating symlink to /cache/hallc/c-pionlt/raw/"
     ln -sf $cache_raw_dir_pionlt cache_pionlt
 
+    echo "cd $HCREPLAY"
     cd $HCREPLAY
+
+    echo ""
     
 }
 
@@ -122,8 +165,7 @@ set_raw_link
 ifarm_flg=0
 cdaq_flg=0
 
-
-
+# determine user hostname
 if echo $HOSTNAME | grep -q "ifarm"; then
     ifarm_flg=1
 elif echo $HOSTNAME | grep -q "cdaq"; then
@@ -131,6 +173,10 @@ elif echo $HOSTNAME | grep -q "cdaq"; then
 fi
 
 
+
+
+
+    
 #if [[ ifarm_flg==0 &&  cdaq_flg==0 ]]; then
 #    echo "***************************************"
 #    echo " Did not recognize remote machine. "
@@ -248,8 +294,10 @@ fi
 
 if [[ cdaq_flg -eq 1 ]]; then
 
+    echo ""
     echo "Checking if necessary directories or symlinks exist in remote machine: " ${USER}"@"${HOSTNAME}". . ."
-
+    echo ""
+    
     # source cafe_online_replay
     source setup.csh
     
@@ -296,15 +344,17 @@ fi
 #=============================
 
 # assume user is local if NOT on cdaq or ifarm
-if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
+if [[ ifarm_flg==0 && cdaq_flg==0 && $fsys=="local" ]]; then
     
     # source cafe_online_replay (usually shell script on local machine)
     source setup.sh
     
     # This function checks if necessary dir. exists, else it creates them 
     dir_arr=("raw" "ROOTfiles" "REPORT_OUTPUT" "HISTOGRAMS" "CAFE_OUTPUT" "CACHE_LINKS")
-    
+
+    echo ""
     echo "Checking if necessary directories or symlinks exist in local machine: " ${USER}"@"${HOSTNAME}". . ." 
+    echo ""
     
     for i in "${dir_arr[@]}"
     do     
@@ -315,8 +365,10 @@ if [[ ifarm_flg==0 && cdaq_flg==0 ]]; then
 	elif [[ -d "$i" ]]; then
 	    echo "/$i directory exists"	
 	else
-	    echo "$i symlink is broken or /$i dir does not exist. Creating $i directory now . . ."
-	    
+	    echo "$i symlink is broken or /$i dir does not exist. Unlinking + Creating $i directory now . . ."
+
+	    echo "unlink $i"
+	    unlink $i
 	    cmd="mkdir $i"
 	    echo $cmd
 	    eval $cmd
