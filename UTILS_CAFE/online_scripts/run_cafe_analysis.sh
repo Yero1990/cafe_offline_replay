@@ -84,7 +84,7 @@ combine_runs=0
 # hcana script
 if [ "${kin_type}" = "bcm_calib" ]; then
     replay_script="SCRIPTS/COIN/PRODUCTION/replay_cafe_scalers.C"
-    #bcm_thrs =-1      # don't apply any bcm cut 
+    bcm_thrs=-1      # don't apply any bcm cut 
 else
     replay_script="SCRIPTS/COIN/PRODUCTION/replay_cafe.C" 
 fi

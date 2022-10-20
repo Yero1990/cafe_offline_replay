@@ -461,6 +461,8 @@ hpartmass = 0.93827231
 ppartmass = 0.000511
 
 # B11 MF Kinematics                                                                         
+# 16987, 16988 fadc mode10 (but I think it still should be counted as valid MF runs)
+# why was 16990 marked as junk? (i will replay it anyways just to check)
 16985 - 16991                                                                             
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 11.009306
@@ -473,7 +475,11 @@ ppartmass = 0.000511
 
 #SRC KINEMATICS
 
-# Ca40 SRC Kinematics                                                                         
+# Ca40 SRC Kinematics
+# 16992 is fadc mode 10 (I still counted it as good run, ~296 SRC counts)
+# 16995 is fadc no_thrs run (will not be counted as a good run)
+# 16992, 16993 16994 runs had a MF trigger hardcware config
+# good Ca40 SRC runs (with the updated trigger start at 17008)
 16992 - 17004
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 39.962590863
@@ -497,6 +503,7 @@ ppartmass = 0.000511
 
 # Ca40 SRC Kinematics                                                                         
 17008 - 17035
+# why was 17026 marked as junk? (will replay and check it anyways)
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 39.962590863
 htheta_lab = -66.40                                                                      
@@ -507,6 +514,8 @@ hpartmass = 0.93827231
 ppartmass = 0.000511
 
 # Ca48 SRC Kinematics                                                                         
+# run 17042 was fadc mode10, but beam was terrible (~ 2min run), so marked as junk
+# run 17050 was ended shodrt due to DC gas supply pressure drop, but will count it as good run (and look at tracking efficiency vs. run later on)
 17036 - 17057
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 47.95252276
@@ -517,7 +526,11 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                       
 ppartmass = 0.000511
 
-# Fe54 SRC Kinematics                                                                         
+# Fe54 SRC Kinematics
+# run 17058 was fadc mode10, but will count is as good run (unless proven otherwise later on)
+# 17065 was Al hole check
+# run 17066 said it had bad beam, and singles pre-scales were set to 0, which means
+# event number was very high ( 10,484636 ) but will still count it as good (unless proven otherwise, maybe due to lower live time, etc.)
 17058 - 17075
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 53.9396147
@@ -528,7 +541,9 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                       
 ppartmass = 0.000511
 
-# C12 SRC Kinematics                                                                         
+# C12 SRC Kinematics
+# run 17077 was marked as junk due to beam cavity problems (low stats, ~13,000 counts -> few src counts), but will count it anyways unless proven otherwise
+# run 17078 is fadc mode10, but will count it as good run (unless proven otherwise)
 17076 - 17089
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 12.0107
@@ -541,6 +556,8 @@ ppartmass = 0.000511
 
 
 #B10 SRC Kinematics
+# run 17090 (fadc mode 10) shows up as c12 in online run summary, but it is really b10 target (replayed must have been done at incorrect kin. setting)
+# but this run was isolated (then moved spec. to MF and then back to SRC, so will consider it a junk run), the next runs 17091 was also marked as junk
 17090 - 17092
 gpbeam = 10.549355                                                                           
 gtargmass_amu = 10.0129370
@@ -551,11 +568,11 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                       
 ppartmass = 0.000511
 
-# Ca48 MF Kinematics (2nd round)                                                              
+# Ca48 MF Kinematics (2nd round)                                                        
 17093 - 17096                                                                         
 gpbeam = 10.549355                                      
 gtargmass_amu = 47.95252276                                                                             
-htheta_lab = -48.30                                                                                         
+htheta_lab = -48.30                                                                                        
 ptheta_lab = 8.3                                                                                               
 hpcentral = 1.820                                                                                   
 ppcentral = 8.55                                                          
@@ -584,7 +601,7 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                  
 ppartmass = 0.000511
 
-# Beryllium MF Kinematics (2nd round)                                                              
+# Beryllium 9 MF Kinematics (2nd round)                                                              
 17099 - 17100                                                                       
 gpbeam = 10.549355                                      
 gtargmass_amu = 9.012182                                                                            
@@ -617,7 +634,10 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                  
 ppartmass = 0.000511
 
-# Be SRC Kinematics                                                              
+# Be SRC Kinematics
+# run 17103,17104, 17105 junk, as they were trying to get HMS NMR precise
+# run 17109 was marked as junk (due to bad beam), but will count anyways (unless proven otherwise)
+# run 17111 was fadc mode 10 but will count it as good run (unless proven otherwise)
 17103 - 17111                                                                         
 gpbeam = 10.549355                                      
 gtargmass_amu = 9.012182
@@ -639,7 +659,8 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                  
 ppartmass = 0.000511
 
-# B4C11 SRC Kinematics                                                              
+# B4C11 SRC Kinematics
+# run 17117 is fadc mode 10 (and it will be counted as good run)
 17116 - 17123                                                                         
 gpbeam = 10.549355                                      
 gtargmass_amu = 11.009306
@@ -672,7 +693,8 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                  
 ppartmass = 0.000511
 
-# D2 SRC Kinematics                                                              
+# D2 SRC Kinematics
+# run 17133 was junk
 17133 - 17134                                                                         
 gpbeam = 10.549355                                      
 gtargmass_amu = 2.014101
@@ -684,7 +706,9 @@ hpartmass = 0.93827231
 ppartmass = 0.000511
 
 # Fe54 SRC Kinematics                                                              
-17135 - 999999                                                                         
+17135 - 999999
+# run 17137 marked as junk due to no beam (but I will count it as a good run, as it has 14868 counts, which may be a few src events anyways)
+# run 17139 is junk as DAQ crashed
 gpbeam = 10.549355                                      
 gtargmass_amu = 53.9396147
 htheta_lab = -66.40                                                                                        
