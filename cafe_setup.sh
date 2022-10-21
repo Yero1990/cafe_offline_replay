@@ -42,6 +42,17 @@ display_help()
     echo "-------------------------------------------------------"    
 }
 
+# set environment var within this code (I don't yet know how to export variables using bash)
+# the export command seems not to work
+
+# these assume that this script is on cafe_offline_replay
+# and that hcana dir is one directory back
+HCREPLAY="$PWD"
+HCANALYZER=$PWD"/../hcana"
+
+echo "HCREPLAY -> $HCREPLAY"
+echo "HCANALYZER -> $HCANALYZER" 
+
 if [ "$#" -eq 0 ]; then
     display_help
     exit 1
@@ -69,9 +80,6 @@ cache_raw_dir_cafe="/cache/hallc/c-cafe-2022/raw/"
 cache_raw_dir_pionlt="/cache/hallc/c-pionlt/raw"
 # cafe online analysis output would have been written here
 cache_analysis_out="/cache/hallc/c-cafe-2022/analysis/"
-
-# set current dir path as HCREPLAY
-export HCREPLAY="$PWD"
 
 bourne_shell_flg=0  # sh, bash, zsh, ksh
 shell_flg=0 #c-shell (csh), t-shell(tcsh) 
@@ -116,9 +124,9 @@ set_hcana_link()
 	elif [[ bourne_shell_flg -eq 1 ]]; then
 	    echo "source setup.sh "
 	    source setup.sh
-	    echo "cd $HCREPLAY"
-	    cd $HCREPLAY
 	fi
+	echo "cd $HCREPLAY"                                                                                                                        
+        cd $HCREPLAY
     else
 	echo ""
 	cd $HCREPLAY
