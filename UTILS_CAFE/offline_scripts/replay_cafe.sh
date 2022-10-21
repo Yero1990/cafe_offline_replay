@@ -16,7 +16,7 @@
 #        or calibration (i.e., "hod_calib", "dc_calib", "cal_calib", "scalers",
 #        "reftime", "timewin")
 
-# What typw of input is {ana_type} ?
+# What type of input is {ana_type} ?
 # Answer: {ana_type} is an input based on the suffix of a symbolic link made to this shell script.
 # For examlpe, if a symbolic link is made:  ln -sf UTILS_CAFE/offline_scripts/replay_cafe.sh replay_cafe_suffix.sh
 # then the {ana_type} becomes "suffix".  This way, there exists ONLY this shell script, from which different

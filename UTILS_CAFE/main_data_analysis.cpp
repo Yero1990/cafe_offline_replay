@@ -30,11 +30,14 @@ void main_data_analysis(int     run           = 3243,   int evtNum           = -
   */
 
   //----initialize baseAnalyzer (base class)----
-  baseAnalyzer ba(run, evtNum, daq_mode.Data(), e_arm.Data(), analyze_data, analysis_cut.Data(), analysis_type.Data(), hel_flag, bcm_type.Data(), bcm_thrs, trig_single.Data(), trig_coin.Data(), combine_runs);
-
+  baseAnalyzer ba(run, evtNum, daq_mode.Data(), e_arm.Data(), analyze_data, analysis_cut.Data(),
+		  analysis_type.Data(), hel_flag, bcm_type.Data(), bcm_thrs, trig_single.Data(),
+		  trig_coin.Data(), combine_runs);
+  
   if(analysis_cut=="bcm_calib"){
     ba.run_cafe_scalers();
   }
+
   else{
     ba.run_data_analysis();
   }
