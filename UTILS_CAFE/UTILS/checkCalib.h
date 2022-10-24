@@ -204,9 +204,13 @@ Double_t hcal_ytrack;                        Double_t pcal_ytrack;
   
 //Define Mean/Sigma to be used for residuals
 Double_t mean[dc_PLANES];
+Double_t mean_err[dc_PLANES];
+
 Double_t sigma[dc_PLANES];
+Double_t sigma_err[dc_PLANES];
+
 Double_t x[dc_PLANES];
-      
+Double_t x_err[dc_PLANES];
 
 
 //HMS Detector Leaf Names                                                                                          

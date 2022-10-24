@@ -169,7 +169,8 @@ void checkCalib(string spec, TString filename="", int run=0)
   for (Int_t npl = 0; npl < dc_PLANES; npl++ )
     {
       x[npl] = npl+1;  //set x-axis for use with TGraph
-      
+      x_err[npl] = 0; // set x-axis error (none)
+
       //Initialize DC Histograms
       
       //HMS DC
@@ -801,20 +802,43 @@ void checkCalib(string spec, TString filename="", int run=0)
 	  H_pdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
 	  H_pdcDist[npl]->Draw();
 	  
+	 
+
+	  // determine gaussian fit limits for residuals
+	  binmax = H_pdcRes[npl]->GetMaximumBin(); 	  
+	  double stdev  = H_pdcRes[npl]->GetStdDev(); 
+	  double amplitude = H_pdcRes[npl]->GetBinContent(binmax);
+	  double center = H_pdcRes[npl]->GetBinCenter(binmax);
+	  double xmin_fit = center - (stdev);
+	  double xmax_fit = center + (stdev); 
+	  
+	  cout << std::setprecision(3) << "xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
+
 	  //Get Mean/Sigma for residuals and conver to microns
-	  mean[npl] =  H_pdcRes[npl]->GetMean()*1e4; 
-	  sigma[npl] =  H_pdcRes[npl]->GetStdDev()*1e4;
+	  //mean[npl] =  H_pdcRes[npl]->GetMean()*1e4; 
+	  //sigma[npl] =  H_pdcRes[npl]->GetStdDev()*1e4;
+	  
+	  //change to pad of canvas
 	  pdcResCanv->cd(npl+1);
 
 	  // define fit fucntion
-	  TF1 *gaus_fit = new TF1("gaus_fit","gaus", -H_pdcRes[npl]->GetStdDev()/2.,  H_pdcRes[npl]->GetStdDev()/2.);
-	  gaus_fit->SetParameters(H_pdcRes[npl].GetMaximum(), H_pdcRes[npl].GetMean(), H_pdcRes[npl].GetRMS() );
+	  TF1 *gaus_fit = new TF1("gaus_fit","gaus", xmin_fit, xmax_fit);
+	  gaus_fit->SetParameters(amplitude, center, stdev );
 	  
 	  // Fit gaussian to the residuals
 	  H_pdcRes[npl]->Fit("gaus_fit", "R");	  
 	  H_pdcRes[npl]->Draw();
 
 	  
+          //Get Mean/Sigma for residuals and conver to microns                                                                                                                                       
+          mean[npl]      = gaus_fit->GetParameter(1)*1e4;                                                                                                                                                           
+          mean_err[npl]  = gaus_fit->GetParError(1)*1e4; 
+	  sigma[npl]     = gaus_fit->GetParameter(2)*1e4; 
+	  sigma_err[npl] = gaus_fit->GetParError(2)*1e4; 
+
+	  //cout << "fit[um]: mean, err = " <<  mean[npl] << ", "<<  mean_err[npl] << endl; 
+	  //cout << "fit[um]: sigma, err = " <<  sigma[npl] << ", "<<  sigma_err[npl] << endl; 
+
 	  //2D and Profile Histograms
 	  pdcResCanv2D->cd(npl+1);
 	  H_pres_vs_wire[npl]->Draw("COLZ");
@@ -834,34 +858,34 @@ void checkCalib(string spec, TString filename="", int run=0)
       
       
       
-  TGraph *pgr_mean = new TGraph(12, x, mean);
-  
-  //Change to SupPad 2 to plot mean
-  pdcResGraphCanv->cd(1);
-  //dcResGraphCanv->SetGrid();
-  pgr_mean->SetMarkerStyle(22);
-  pgr_mean->SetMarkerColor(kBlue);
-  pgr_mean->SetMarkerSize(2);
-  pgr_mean->GetYaxis()->SetRangeUser(-250, 250);
-  
-  //Set Axis Titles
-  pgr_mean->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
-  pgr_mean->GetXaxis()->CenterTitle();
-  pgr_mean->GetYaxis()->SetTitle("SHMS DC Residual Mean (#mum)");
-  pgr_mean->GetYaxis()->CenterTitle();
-  pgr_mean->SetTitle("SHMS DC Plane Residuals Mean");
-  
-  pgr_mean->Draw("AP");
-  
-  
-  //Change to SubPad 1 to plot sigma
-  pdcResGraphCanv->cd(2);
-  TGraph *pgr_residual = new TGraph(12, x, sigma);
-  //dcResGraphCanv->SetGrid();
-  pgr_residual->SetMarkerStyle(22);
-  pgr_residual->SetMarkerColor(kRed);
-  pgr_residual->SetMarkerSize(2);
-  pgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
+      TGraph *pgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
+      
+      //Change to SupPad 2 to plot mean
+      pdcResGraphCanv->cd(1);
+      //dcResGraphCanv->SetGrid();
+      pgr_mean->SetMarkerStyle(22);
+      pgr_mean->SetMarkerColor(kBlue);
+      pgr_mean->SetMarkerSize(2);
+      pgr_mean->GetYaxis()->SetRangeUser(-250, 250);
+      
+      //Set Axis Titles
+      pgr_mean->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
+      pgr_mean->GetXaxis()->CenterTitle();
+      pgr_mean->GetYaxis()->SetTitle("SHMS DC Residual Mean (#mum)");
+      pgr_mean->GetYaxis()->CenterTitle();
+      pgr_mean->SetTitle("SHMS DC Plane Residuals Mean");
+      
+      pgr_mean->Draw("AP");
+      
+      
+      //Change to SubPad 1 to plot sigma
+      pdcResGraphCanv->cd(2);
+      TGraph *pgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
+      //dcResGraphCanv->SetGrid();
+      pgr_residual->SetMarkerStyle(22);
+      pgr_residual->SetMarkerColor(kRed);
+      pgr_residual->SetMarkerSize(2);
+      pgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
   
   //Set Axis Titles
   pgr_residual->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
