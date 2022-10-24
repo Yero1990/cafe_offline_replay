@@ -1,5 +1,5 @@
 ;Utilize per wire tzero offsets, 1 means true
-h_using_tzero_per_wire = 0
+h_using_tzero_per_wire = 1
 
 
 ; fall 2022 open TDC window limits for each plane.

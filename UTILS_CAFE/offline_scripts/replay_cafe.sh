@@ -98,7 +98,7 @@ if [ "${ana_type}" = "prod" ]; then
 	
 	# check if event number is specified
 	if [ -z $evt ]; then
-	    $evt=-1
+	    evt=-1
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
 	
