@@ -804,9 +804,16 @@ void checkCalib(string spec, TString filename="", int run=0)
 	  //Get Mean/Sigma for residuals and conver to microns
 	  mean[npl] =  H_pdcRes[npl]->GetMean()*1e4; 
 	  sigma[npl] =  H_pdcRes[npl]->GetStdDev()*1e4;
-	  
 	  pdcResCanv->cd(npl+1);
+
+	  // define fit fucntion
+	  TF1 *gaus_fit = new TF1("gaus_fit","gaus", -H_pdcRes[npl]->GetStdDev()/2.,  H_pdcRes[npl]->GetStdDev()/2.);
+	  gaus_fit->SetParameters(H_pdcRes[npl].GetMaximum(), H_pdcRes[npl].GetMean(), H_pdcRes[npl].GetRMS() );
+	  
+	  // Fit gaussian to the residuals
+	  H_pdcRes[npl]->Fit("gaus_fit", "R");	  
 	  H_pdcRes[npl]->Draw();
+
 	  
 	  //2D and Profile Histograms
 	  pdcResCanv2D->cd(npl+1);
