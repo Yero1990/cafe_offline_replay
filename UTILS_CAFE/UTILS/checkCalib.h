@@ -304,10 +304,17 @@ TCanvas *pTRG_Canv;
 
 
 
-//Mean and Sigma. Variables to determine TimeWindow Cut Region
-Int_t binmax;
-//Double_t mean; 
-Double_t sig;
+// variable for setting fit limits
+int binmax;
+double upperlim;
+
+double stdev;
+double amplitude;
+double center;
+double xmin_fit; 
+double xmax_fit;
+
+TF1 * gaus_fit = 0;
   
 //=========================================
 //Define TLines TO DRAW AROUND CUT REGION
