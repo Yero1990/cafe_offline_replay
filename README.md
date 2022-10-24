@@ -79,6 +79,27 @@ $ ./hcana SCRIPTS/COIN/PRODUCTION/replay_cafe.C
 # the script will ask you to enter a specific run number, event number and analysis type to use (please choose 'prod' for production)
 # as this will replay data with all the encessary tree leaf variables you need for lower (i.e., calibration, etc.) and upper-level analysis.
 ```
+
+`HINT:` After setting up `cafe_offline_replay` and `hcana` for the 1st time, setup the following alias to facilitate this process afterwards:
+
+```sh
+# change to user to-level directory on ifarm
+cd ~/
+
+# open the c-shell hidden script file
+emacs -nw .cshrc
+
+# within this file, add the following alias:
+alias        gocafe  'cd /work/hallc/c-cafe-2022/$USER/hcana; source setup.csh; cd /work/hallc/c-cafe-2022/$USER/cafe_offline_replay; source setup.csh
+
+# close the file, and source it
+source .cshrc
+
+# then the user will be able to type 'gocafe' at the start of each terminal session 
+# which will take the user automatically to the cafe analysis replay, and properly setup the ENV variables:
+gocafe
+```
+
  
 # How-To Guide for Active Contributors
 This guide is intended for users who would like to actively contribute to the development of this repository. <br>
