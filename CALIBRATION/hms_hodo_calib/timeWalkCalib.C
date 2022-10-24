@@ -378,7 +378,7 @@ using namespace std;
   gStyle->SetOptStat(0);
 
   // Read the ROOT file containing the time-walk histos
-  histoFile = new TFile("timeWalkHistos.root", "READ");
+  histoFile = new TFile(Form("timeWalkHistos_%i.root", run), "READ");
   // Obtain the top level directory
   dataDir = dynamic_cast <TDirectory*> (histoFile->FindObjectAny("hodoUncalib"));
   // Create the parameter canvases

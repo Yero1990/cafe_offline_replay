@@ -1,3 +1,4 @@
+block T.coin.pEDTM* 
 block P.dc.*
 block P.cal.etot*
 block P.cal.etracknorm
@@ -6,6 +7,7 @@ block P.ngcer.npe*
 block P.hod.beta*
 block P.hod.start*
 
+block T.coin.hEDTM*  
 block H.dc.*
 block H.cal.etot*
 block H.cal.etracknorm

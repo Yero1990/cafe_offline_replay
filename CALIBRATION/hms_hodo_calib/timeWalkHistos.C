@@ -218,7 +218,7 @@ void timeWalkHistos(TString inputname,Int_t runNum, string SPEC_flg) {    //SPEC
   // replayFile = new TFile(Form("ROOTfiles/hms_replay_production_all_%d_-1.root", runNum), "READ");
   // replayFile = new TFile(Form("ROOTfiles/hms_coin_replay_production_%d_-1.root", runNum), "READ");
 
-  outFile    = new TFile("timeWalkHistos.root", "RECREATE");
+   outFile    = new TFile(Form("timeWalkHistos_%i.root", runNum), "RECREATE");
   // Obtain the tree
   rawDataTree = dynamic_cast <TTree*> (replayFile->Get("T"));
   // Acquire the trigger apparatus data
@@ -290,9 +290,9 @@ void timeWalkHistos(TString inputname,Int_t runNum, string SPEC_flg) {    //SPEC
   // Loop over the events and fill histograms
   nentries = rawDataTree->GetEntries();
 
-  if(nentries>1e6){
-    nentries = 1e6;
-  }
+  // if(nentries>1e6){
+  //  nentries = 1e6;
+  //}
 
   cout << "\n******************************************"    << endl;
   cout << nentries << " Events Will Be Processed"           << endl;
@@ -305,7 +305,9 @@ void timeWalkHistos(TString inputname,Int_t runNum, string SPEC_flg) {    //SPEC
     cerNpeSumCut = (cerNpeSum < cerNpeSumCutVal);
     //  calEtotCut =1;
     //cerNpeSumCut =1;
-    //if (calEtotCut || cerNpeSumCut) continue;
+   
+    // select (e- or positrons)
+    if (calEtotCut || cerNpeSumCut) continue;
     // Fill trigger apparatus histos
     h1_refAdcPulseTimeRaw->Fill(refAdcPulseTimeRaw*adcChanToTime);
     h1_refAdcPulseAmp->Fill(refAdcPulseAmp);

@@ -65,8 +65,8 @@ if [ "${ana_type}" = "prod" ]; then
 	echo ""
 	echo "run: run number"
 	echo ""
-	echo "evt: event number defaults to -1 (all events), "
-	echo "unless explicitly specified as 3rd argument"
+	echo "evt: event number; defaults to -1 (all events)"
+	echo "      if no argument is given"
 	echo ""
 	echo "example 1: ./replay_cafe_${ana_type}.sh 3288 100000"
 	echo ""
@@ -90,16 +90,15 @@ if [ "${ana_type}" = "prod" ]; then
 
 
     run=$1
-
+    evt=$2 
 
     # check if 1st argument is an integer (i.e., run number, else attempt to read from runlist)
-    if [ $1 -eq $1 ]; then
+    if [ $run -eq $run ]; then
 	
-	evt=$2
 	
 	# check if event number is specified
 	if [ -z $evt ]; then
-	    evt=-1
+	    $evt=-1
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
 	
@@ -134,7 +133,7 @@ if [ "${ana_type}" = "prod" ]; then
 	evt=$3
 	# check if event number is specified
 	if [ -z $evt ]; then
-	    evt=-1
+	    $evt=-1
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
 	
@@ -169,12 +168,12 @@ if [ "${ana_type}" = "prod" ]; then
 	    
 	done
     fi
-
+    
 
 else
-
-     # {ana_type} for calibration may be one of these:  ("hodcalib", "dccalib", "calcalib", "scalers", "reftime", "timewin")
-     # Display help output if no argumenr specified
+    
+    # {ana_type} for calibration may be one of these:  ("hodcalib", "dccalib", "calcalib", "scalers", "reftime", "timewin")
+    # Display help output if no argumenr specified
     if [  $# -eq 0 ]; then
 	echo "" 
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
@@ -207,10 +206,6 @@ else
 	run=$1
 	# user input (event number)
 	evt=$2
-
-	
-	# hcana command
-	run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${ana_type}\\\")\""
 	
 	# check if event number is specified
 	if [ -z $evt ]; then
@@ -218,6 +213,9 @@ else
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
 	
+	# hcana command                                                                       
+        run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${ana_type}\\\")\""   
+
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
 	echo "" 

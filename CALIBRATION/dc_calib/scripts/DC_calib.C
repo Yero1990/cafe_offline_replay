@@ -380,7 +380,8 @@ void DC_calib::GetDCLeafs()
     {
       cal_etot_leaf = "P.cal.etot";
       cer_npe_leaf = "P.ngcer.npeSum";  
-    
+      edtm_tdctime_leaf = "T.coin.pEDTM_tdcTime";
+
       //Check Branch Status 
       status_cal = tree->GetBranchStatus(cal_etot_leaf);  //returns a boolean
       status_cer = tree->GetBranchStatus(cer_npe_leaf);  //return a boolean
@@ -410,6 +411,7 @@ void DC_calib::GetDCLeafs()
 	{
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
+	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime); 
 	}
 	
     }
@@ -418,7 +420,7 @@ void DC_calib::GetDCLeafs()
     {
       cal_etot_leaf = "H.cal.etot";
       cer_npe_leaf = "H.cer.npeSum";  
-     
+      edtm_tdctime_leaf = "T.coin.hEDTM_tdcTime"; // this assumes daq in coin mode (will need to generalize to singles mode as well) 
 
       //Check Branch Status with Boolean
       status_cal = tree->GetBranchStatus(cal_etot_leaf);
@@ -447,8 +449,9 @@ void DC_calib::GetDCLeafs()
 	{
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
+	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime);
 	}
- 
+      
       
     }
 
@@ -915,11 +918,14 @@ void DC_calib::EventLoop(string option="")
       
       //------READ USER 'pid' input to determine particle type to calibrate----------
       
+      no_edtm_cut = edtm_tdctime==0;
+      
       //NO PID Cut,
       if(pid=="pid_kFALSE")
 	{
 	  cal_elec = 1;
 	  cer_elec = 1;         
+	
 	}
       
       //PID Cut, Set Bool_t to actual leaf value, and see if it passes cut
@@ -927,7 +933,7 @@ void DC_calib::EventLoop(string option="")
 	{
 	  cal_elec = cal_etot>0.1;  //normalize energy > 0.1 (bkg cleanup)
 	  cer_elec = cer_npe>1.0;     //number of photoelec. > 1 (electrons)
-	  
+	 
 	}
       
       else 
@@ -972,7 +978,7 @@ void DC_calib::EventLoop(string option="")
       
 
       //***good event definition***: cal_energy > 100 MeV, cer_npeSum > 1.0
-      good_event = cal_elec && cer_elec; //&& cnts_ch1>4 && cnts_ch2>4;
+      good_event = cal_elec && cer_elec && no_edtm_cut; //&& cnts_ch1>4 && cnts_ch2>4;
       
    
 	  // cout << "passed cut: " << i << endl;
@@ -1847,7 +1853,7 @@ void DC_calib::WriteToFile(Int_t debug = 0)
 	//itxtfile_name =  "./"+spec+"_DC_"+mode.c_str()+"Log_"+ std::to_string(run_NUM) +"/"+"t_zero_values_"+plane_names[ip]+".dat";
 	itxtfile_name =  Form("./%s_DC_%s_Log_%d/t_zero_values_%s.dat", spec.Data(), mode.c_str(), run_NUM, plane_names[ip].Data());
 	cout << "itxtfile_name ------> " << itxtfile_name.Data() << endl;
-	graph = new TGraphErrors(itxtfile_name, "%lg %lg %lg");
+	graph = new TGraphErrors(itxtfile_name.Data(), "%lg %lg %lg");
 	graph->SetName("graph");
 	
 	graph_title = "DC "+plane_names[ip]+": t0 vs. Wire";
