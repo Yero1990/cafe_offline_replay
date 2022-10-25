@@ -1046,7 +1046,12 @@ void checkCalib(string spec, TString filename="", int run=0)
   //Write Histograms to ROOT file
       if (spec.compare("all")==0 || spec.compare("shms")==0){
 	poutROOT->Write();
+	poutROOT->WriteTObject(hgr_mean);
+	poutROOT->WriteTObject(hgr_residual);
+	poutROOT->WriteTObject(pgr_mean);
+	poutROOT->WriteTObject(pgr_residual);   
 	poutROOT->Close();
+	
       }
       else{
 	outROOT->Write();
