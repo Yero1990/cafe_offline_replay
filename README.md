@@ -69,15 +69,10 @@ $ ./cafe_setup.sh
 
 ```sh
 # Execute a replay script (reads a raw data file and generates an output ROOTfile and REPORT_FILE)
-# Follow the command-line requests to enter run number, number of events as well as 
-# an additional option, depending on the analysis you want to carry out. The last option, 
-# I added specially for CaFe, to faciliate our analysis. To test it, put the following info when 
-# asked:  RunNumber: 3288,  EvtNum: 50000, analysis type: test,  and this will use the specific parameters 
-# at the time that run was taken to generate a ROOTfile, which will be placed under ROOTfiles/test directory.
-$ ./hcana SCRIPTS/COIN/PRODUCTION/replay_cafe.C  
+# Follow the command-line requests.
+$ ./replay_cafe_prod.sh 
 
-# the script will ask you to enter a specific run number, event number and analysis type to use (please choose 'prod' for production)
-# as this will replay data with all the encessary tree leaf variables you need for lower (i.e., calibration, etc.) and upper-level analysis.
+# the script will replay a raw .dat file and convert it to .root file
 ```
 
 `HINT:` After setting up `cafe_offline_replay` and `hcana` for the 1st time, setup the following alias to facilitate this process afterwards:
