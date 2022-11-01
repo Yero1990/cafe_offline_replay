@@ -128,6 +128,8 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
 
   //Initialize Some Histograms
   //===HMS====
+  H_hbeta_peak = new TH1F("H_hbeta_peak", "HMS Hodoscope Beta (no tracking)", hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);
+  
   H_hhodBeta = new TH1F("hHod_Beta", "HMS Hodoscope Beta w/ Tracking", hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);
   H_hhodBetaNoTrk = new TH1F("hHod_Beta_noTracks", "HMS Hodoscope Beta w/out Tracking", hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);
   H_hcalEtrkNorm = new TH1F("hCal_eTrkNorm", "HMS Calorimeter Normalized Track Energy", hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);
@@ -136,6 +138,8 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   H_hcalEtrkNorm_vs_ytrk = new TH2F("hCal_eTrkNorm_v_ytrack", "HMS Norm. Trk E v. yTrack", hcalYtrk_nbins, hcalYtrk_xmin, hcalYtrk_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);
   H_hcerNpeSum = new TH1F("hCer_npeSum", "HMS Cherenkov Total P.E. Sum", hcer_nbins, hcer_xmin, hcer_xmax);
   //===SHMS===
+  H_pbeta_peak = new TH1F("H_pbeta_peak", "SHMS Hodoscope Beta (no tracking)", phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
+
   H_phodBeta = new TH1F("pHod_Beta", "SHMS Hodoscope Beta w/ Tracking", phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
   H_phodBetaNoTrk = new TH1F("pHod_Beta_noTracks", "SHMS Hodoscope Beta w/out Tracking", phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
   H_pcalEtrkNorm = new TH1F("pCal_eTrkNorm", "SHMS Calorimeter Normalized Track Energy", pcalEtrkNorm_nbins, pcalEtrkNorm_xmin, pcalEtrkNorm_xmax);
@@ -392,42 +396,69 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   //==============================
   
   Long64_t nentries = T->GetEntries();
+
+
+  //Loop over 50k sample entries (to get beta peak)
+  for(Long64_t i=0; i<50000; i++)
+    {
+      T->GetEntry(i);  
+      
+      // Get Hod Beta Peak to make pid cuts
+      H_hbeta_peak->Fill(hhod_beta_notrk);
+      H_pbeta_peak->Fill(phod_beta_notrk);
+	
+
+    }
+
+  // bin number corresponding to maximum bin content (this is assumed to be the main beta peak the user is interested in, may be e- or protons)
+  int hbinmax = H_hbeta_peak->GetMaximumBin();
+  int pbinmax = H_pbeta_peak->GetMaximumBin();
+  
+  // x-value corresponding to bin number with max content (i.e., peak)
+  double hbeta_central = H_hbeta_peak->GetXaxis()->GetBinCenter(hbinmax);
+  double pbeta_central = H_pbeta_peak->GetXaxis()->GetBinCenter(pbinmax);
+  
+  cout << "HMS Beta Peak: " <<  hbeta_central << endl;
+  cout << "SHMS Beta Peak: " <<  pbeta_central << endl;
+  
   
   //Loop over all entries
   for(Long64_t i=0; i<nentries; i++)
     {
       
       T->GetEntry(i);  
-
-
+      
       if(hms_pid=="protons"){
 
-	cout << "shms pid: protons " << endl;    
-	//beta_cut= hhod_beta_notrk;
-
+	cout << "hms pid: protons " << endl;    
+	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
+	hms_pid_cut = beta_cut;
       }
-
+      
       else if(hms_pid=="electrons"){
 
 	cout << "hms pid: electrons " << endl;    
 	cal_elec = hcal_etot > 0.1;  
 	cer_elec = hcer_npesum>1.0;
-	hms_pid_cut = cal_elec && cer_elec;
+	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
+	hms_pid_cut = cal_elec && cer_elec && beta_cut;
       }
 
     
       if(shms_pid=="protons"){
            
 	cout << "shms pid: protons " << endl; 
-	//	beta_cut= phod_beta_notrk;
+       	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
+	shms_pid_cut = beta_cut;
 
       }
       else if (shms_pid=="electrons"){
 	
 	cout << "shms pid: electrons " << endl;
 	cal_elec = pcal_etot > 0.1;  
-	cer_elec = pngcer_npesum>1.0; 
-	shms_pid_cut = cal_elec && cer_elec;
+	cer_elec = pngcer_npesum>1.0;
+	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
+	shms_pid_cut = cal_elec && cer_elec && beta_cut;
       
       }
 

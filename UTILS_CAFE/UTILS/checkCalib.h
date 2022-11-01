@@ -139,6 +139,7 @@ TH2F *H_hcalEtrkNorm_vs_xtrk;		      	     TH2F *H_pcalEtrkNorm_vs_xtrk;
 TH2F *H_hcalEtrkNorm_vs_ytrk;		      	     TH2F *H_pcalEtrkNorm_vs_ytrk;		      
 					      	     					      
 //===HODOSCOPES===			      	     //===HODOSCOPES===			      
+TH1F *H_hbeta_peak;                                  TH1F *H_pbeta_peak;
 TH1F *H_hhodBeta;			      	     TH1F *H_phodBeta;			      
 TH1F *H_hhodBetaNoTrk;			      	     TH1F *H_phodBetaNoTrk;			      
 TH2F *H_hhodBeta_v_Xtrk[hod_PLANES];	      	     TH2F *H_phodBeta_v_Xtrk[hod_PLANES];	      
