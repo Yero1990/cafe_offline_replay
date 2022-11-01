@@ -42,7 +42,9 @@ class DC_calib
   void WriteTZeroParam();
   void WriteLookUpTable();
 
-
+  // Helper function
+  Double_t GetBetaPeak();
+  
  private:
 
   //Calibration mode

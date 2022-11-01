@@ -917,6 +917,9 @@ void DC_calib::EventLoop(string option="")
   //Initialize counter to count how many good events (5/6 hits / chamber)
   ngood_evts = 0;
 
+  // Call this method to get beta max value (peak) from 50k event sample
+  double beta_peak = GetBetaPeak();
+    
   //Loop over all entries
   for(Long64_t i=0; i<num_evts; i++)
     {
@@ -940,12 +943,14 @@ void DC_calib::EventLoop(string option="")
 	{
 	  cal_elec = cal_etot>0.1;  //normalize energy > 0.1 (bkg cleanup)
 	  cer_elec = cer_npe>1.0;     //number of photoelec. > 1 (electrons)
-	 
+	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.2;  // cut: beta +/- 0.2  (select clean e- sample)
+	   
 	}
       
       else if (pid=="pid_prot")
 	{
-	  hod_beta_cut = hod_beta_notrk;
+	  
+	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.1;  // cut - > beta +/- 0.1   
 	}
 
       else 
@@ -990,7 +995,7 @@ void DC_calib::EventLoop(string option="")
       
 
       //***good event definition***: cal_energy > 100 MeV, cer_npeSum > 1.0
-      good_event = cal_elec && cer_elec && no_edtm_cut; //&& cnts_ch1>4 && cnts_ch2>4;
+      good_event = cal_elec && cer_elec && no_edtm_cut && hod_beta_cut; //&& cnts_ch1>4 && cnts_ch2>4;
       
    
 	  // cout << "passed cut: " << i << endl;
@@ -1984,5 +1989,32 @@ void DC_calib::WriteToFile(Int_t debug = 0)
     } //END DEBUG   
   
 
-} //end WriteToFile() method
+}//end WriteToFile() method
   
+
+Double_t DC_calib::GetBetaPeak(){
+
+  cout << "Calling GetBetaPeak() . . . " <<  endl;
+  
+  // declare histogram to fill sample beta peak 
+  TH1F *beta_peak = new TH1F("beta_peak", "Beta Peak ", 100,0.1,1.5);
+  
+  for(int ientry=0; ientry<50000; ientry++)
+    {	  
+      tree->GetEntry(ientry);
+      // Fill sample histo to find peak
+      beta_peak->Fill(hod_beta_notrk);	  	  
+      cout << "SampleEventLoop: " << std::setprecision(2) << double(ientry) / 50000. * 100. << "  % " << std::flush << "\r";
+    }
+  
+  
+  // bin number corresponding to maximum bin content (this is assumed to be the main beta peak the user is interested in, may be e- or protons)
+  int binmax = beta_peak->GetMaximumBin();
+  
+  // x-value corresponding to bin number with max content (i.e., peak)
+  double beta_central = beta_peak->GetXaxis()->GetBinCenter(binmax);
+       
+  cout << "Beta Central Value: " << beta_central << endl;  
+  return beta_central;   
+  
+}
