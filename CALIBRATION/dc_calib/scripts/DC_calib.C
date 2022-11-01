@@ -431,7 +431,7 @@ void DC_calib::GetDCLeafs()
       status_cer = tree->GetBranchStatus(cer_npe_leaf); 
       status_hod = tree->GetBranchStatus(hod_beta_leaf); 
 
-      if ((!status_cal || !status_cer ) && (pid=="pid_elec"))
+      if ((!status_cal || !status_cer ) && (pid!="pid_kFALSE"))
 	{
 	  cout << "*************ATTENTION!**************" << endl;
 	  cout << "" << endl;
@@ -930,13 +930,12 @@ void DC_calib::EventLoop(string option="")
       
       no_edtm_cut = edtm_tdctime==0;
      
-      //NO PID Cut,
-      if(pid=="pid_kFALSE")
-	{
-	  cal_elec = 1;
-	  cer_elec = 1;         
-	  hod_beta_cut = 1;
-	}
+      
+      if(pid=="pid_kFALSE"){
+	cal_elec = 1;
+	cer_elec = 1;         
+	hod_beta_cut = 1;
+      }
       
       //PID Cut, Set Bool_t to actual leaf value, and see if it passes cut
       else if (pid=="pid_elec")
@@ -949,10 +948,15 @@ void DC_calib::EventLoop(string option="")
       
       else if (pid=="pid_prot")
 	{
-	  
-	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.1;  // cut - > beta +/- 0.1   
-	}
+	  cal_elec = 1; 
+	  cer_elec = 1; 
 
+	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.2;  // cut - > beta +/- 0.2  
+	  
+	  //cout << Form("Beta Cut: |%.3f - %.3f|< 0.2 ", beta_peak, hod_beta_notrk);		       		      	
+	  //cout << "hod_beta_cut: " << hod_beta_cut << endl;
+	}
+      
       else 
 	{
 	  cout << "Enter which particle to calibrate in main_calib.C: " << endl;
@@ -996,8 +1000,7 @@ void DC_calib::EventLoop(string option="")
 
       //***good event definition***: cal_energy > 100 MeV, cer_npeSum > 1.0
       good_event = cal_elec && cer_elec && no_edtm_cut && hod_beta_cut; //&& cnts_ch1>4 && cnts_ch2>4;
-      
-   
+       
 	  // cout << "passed cut: " << i << endl;
 	  for(Int_t ip=0; ip<NPLANES; ip++)
 	    {
@@ -1986,6 +1989,13 @@ void DC_calib::WriteToFile(Int_t debug = 0)
 
 	} //end "card mode"
       
+      
+      
+      //------write pid histos to a directory on FILE--------                                                                                                                                                
+      
+      main_dir = out_file->mkdir("pid_histos");                                                                                                                                                                              
+      main_dir->cd();                                                                                                                                                                                                                                                                                                                                                                                                                                                           // here need to write pid histos to file in the future                                                                                                                                                                                                                                               
+
     } //END DEBUG   
   
 
@@ -2013,8 +2023,8 @@ Double_t DC_calib::GetBetaPeak(){
   
   // x-value corresponding to bin number with max content (i.e., peak)
   double beta_central = beta_peak->GetXaxis()->GetBinCenter(binmax);
-       
-  cout << "Beta Central Value: " << beta_central << endl;  
+  cout  << " \n--------------------- " << endl;
+  cout << Form(" Beta Central Value = %.3f", beta_central) << endl;
   return beta_central;   
   
 }

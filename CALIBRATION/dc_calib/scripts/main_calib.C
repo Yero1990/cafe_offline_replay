@@ -16,10 +16,12 @@ int main_calib()
   clock_t cl;
   cl = clock();
   
+  //pid_prot -> applies cut on hodoscope beta (no track) 
+  
   //template arguments
   //DC_calib obj("spec", "path/to/rootfile.root", runNUM, eventNUm, "pid_flag", "calib_mode"); pid_flag: "pid_elec" or "pid_kFALSE", calib_mode: "wire" or "card"
                
-  DC_calib obj("HMS", "../../../ROOTfiles/dccalib/cafe_replay_dccalib_17134_-1.root", 17134, -1, "pid_kFALSE", "card");
+  DC_calib obj("HMS", "../../../ROOTfiles/dccalib/cafe_replay_dccalib_17134_-1_dcUnCalib.root", 17134, -1, "pid_prot", "card");
   //DC_calib obj("SHMS", "../../../ROOTfiles/dccalib/cafe_replay_dccalib_16968_-1.root", 16968, -1, "pid_elec", "card");
   
   obj.setup_Directory();

@@ -2,11 +2,13 @@
 #include <sys/stat.h>
 #include "checkCalib.h"
 
-void checkCalib(string spec, TString filename="", int run=0)
+void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="", TString shms_pid="")
 {
   
   //spec --> "hms" or "shms" or "all"
   //run ---> 3289  or if it is combined, then, 580MeV or 750MeV (for deuteron runs combined)
+  // hms_pid --> "protons" or "electrons"
+  // shms_pid ---> "protons" or "electrons
   
   //Prevent plot 
   gROOT->SetBatch(kTRUE);
@@ -376,6 +378,15 @@ void checkCalib(string spec, TString filename="", int run=0)
   Bool_t hnhit;
   Bool_t pnhit;
 
+
+  // pid cuts used in calibration (must also be applied accordingly here)
+  Bool_t beta_cut = 1;
+  Bool_t cal_elec = 1;
+  Bool_t cer_elec = 1;
+  
+  Bool_t hms_pid_cut = 1;
+  Bool_t shms_pid_cut = 1;
+
   //==============================
   //=====LOOP OVER ALL EVENTS=====
   //==============================
@@ -388,15 +399,53 @@ void checkCalib(string spec, TString filename="", int run=0)
       
       T->GetEntry(i);  
 
+
+      if(hms_pid=="protons"){
+
+	cout << "shms pid: protons " << endl;    
+	//beta_cut= hhod_beta_notrk;
+
+      }
+
+      else if(hms_pid=="electrons"){
+
+	cout << "hms pid: electrons " << endl;    
+	cal_elec = hcal_etot > 0.1;  
+	cer_elec = hcer_npesum>1.0;
+	hms_pid_cut = cal_elec && cer_elec;
+      }
+
+    
+      if(shms_pid=="protons"){
+           
+	cout << "shms pid: protons " << endl; 
+	//	beta_cut= phod_beta_notrk;
+
+      }
+      else if (shms_pid=="electrons"){
+	
+	cout << "shms pid: electrons " << endl;
+	cal_elec = pcal_etot > 0.1;  
+	cer_elec = pngcer_npesum>1.0; 
+	shms_pid_cut = cal_elec && cer_elec;
+      
+      }
+
+      
+
       //======HMS DRIFT CHAMBERS=====
       //Loop over all DC planes
       for (Int_t npl = 0; npl < dc_PLANES; npl++ )
 	{
 	  
+
 	  //Require single hit per plane
 	  hnhit = hdc_nhit[0]==1&&hdc_nhit[1]==1&&hdc_nhit[2]==1&&hdc_nhit[3]==1&&hdc_nhit[4]==1&&hdc_nhit[5]==1&& 
 	    hdc_nhit[6]==1&&hdc_nhit[7]==1&&hdc_nhit[8]==1&&hdc_nhit[9]==1&&hdc_nhit[10]==1&&hdc_nhit[11]==1;
 	  
+	 
+	  
+
 	  //Loop over hits
 	  for (Int_t j=0; j < hdc_ndata[npl]; j++)
 	    {
