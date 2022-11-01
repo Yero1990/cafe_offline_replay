@@ -1,0 +1,12 @@
+block g.*
+
+block P.react.*   
+block P.ngcer.npe*
+block P.hgcer.npe*
+block P.cal.e*
+block P.gtr.dp 
+block P.gtr.ph
+block P.gtr.th
+block P.gtr.x
+block P.gtr.y
+block P.dc.*_fp

@@ -381,13 +381,14 @@ void DC_calib::GetDCLeafs()
       cal_etot_leaf = "P.cal.etot";
       cer_npe_leaf = "P.ngcer.npeSum";  
       edtm_tdctime_leaf = "T.coin.pEDTM_tdcTime";
+      hod_beta_leaf = "P.hod.betanotrack";
 
       //Check Branch Status 
       status_cal = tree->GetBranchStatus(cal_etot_leaf);  //returns a boolean
       status_cer = tree->GetBranchStatus(cer_npe_leaf);  //return a boolean
-    
+      status_hod = tree->GetBranchStatus(hod_beta_leaf);
       
-      if ((!status_cal || !status_cer )&& (pid=="pid_elec"))
+      if ((!status_cal || !status_cer || !status_hod ) && (pid!="pid_kFALSE"))
 	{
 	  cout << "*************ATTENTION!**************" << endl;
 	  cout << "" << endl;
@@ -395,6 +396,7 @@ void DC_calib::GetDCLeafs()
 	  cout << " is *NOT* present in current ROOTfile. " << endl;
 	  cout << "1) " << cal_etot_leaf<< endl;
 	  cout << "2) " << cer_npe_leaf << endl;
+	  cout << "3) " << hod_beta_leaf << endl;
 	  cout << "" << endl;
 	  cout << "Please add them if you want to make " << endl;
 	  cout << "any cuts during calibration." << endl;
@@ -412,6 +414,7 @@ void DC_calib::GetDCLeafs()
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
 	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime); 
+	  tree->SetBranchAddress(hod_beta_leaf, &hod_beta_notrk);  
 	}
 	
     }
@@ -421,10 +424,12 @@ void DC_calib::GetDCLeafs()
       cal_etot_leaf = "H.cal.etot";
       cer_npe_leaf = "H.cer.npeSum";  
       edtm_tdctime_leaf = "T.coin.hEDTM_tdcTime"; // this assumes daq in coin mode (will need to generalize to singles mode as well) 
+      hod_beta_leaf = "H.hod.betanotrack";      
 
       //Check Branch Status with Boolean
       status_cal = tree->GetBranchStatus(cal_etot_leaf);
       status_cer = tree->GetBranchStatus(cer_npe_leaf); 
+      status_hod = tree->GetBranchStatus(hod_beta_leaf); 
 
       if ((!status_cal || !status_cer ) && (pid=="pid_elec"))
 	{
@@ -434,6 +439,7 @@ void DC_calib::GetDCLeafs()
 	  cout << " is *NOT* present in current ROOTfile. " << endl;
 	  cout << "1) " << cal_etot_leaf<< endl;
 	  cout << "2) " << cer_npe_leaf << endl;
+	  cout << "3) " << hod_beta_leaf << endl;
 	  cout << "" << endl;
 	  cout << "Please add them if you want to make " << endl;
 	  cout << "any cuts during calibration." << endl;
@@ -450,6 +456,7 @@ void DC_calib::GetDCLeafs()
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
 	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime);
+	  tree->SetBranchAddress(hod_beta_leaf, &hod_beta_notrk);
 	}
       
       
@@ -919,13 +926,13 @@ void DC_calib::EventLoop(string option="")
       //------READ USER 'pid' input to determine particle type to calibrate----------
       
       no_edtm_cut = edtm_tdctime==0;
-      
+     
       //NO PID Cut,
       if(pid=="pid_kFALSE")
 	{
 	  cal_elec = 1;
 	  cer_elec = 1;         
-	
+	  hod_beta_cut = 1;
 	}
       
       //PID Cut, Set Bool_t to actual leaf value, and see if it passes cut
@@ -936,6 +943,11 @@ void DC_calib::EventLoop(string option="")
 	 
 	}
       
+      else if (pid=="pid_prot")
+	{
+	  hod_beta_cut = hod_beta_notrk;
+	}
+
       else 
 	{
 	  cout << "Enter which particle to calibrate in main_calib.C: " << endl;

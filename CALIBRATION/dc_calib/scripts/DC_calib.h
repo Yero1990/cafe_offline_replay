@@ -72,19 +72,23 @@ class DC_calib
   TString cal_etot_leaf;   
   TString cer_npe_leaf;
   TString edtm_tdctime_leaf;
- 
+  TString hod_beta_leaf;
+
   Double_t cal_etot;   //calorimeter normalized energy
   Double_t cer_npe;       //cerenkon photoelectron Sum
   Double_t edtm_tdctime;
+  Double_t hod_beta_notrk;
+   
   //Boolean for checking if TBranch exists
   Bool_t status_cal;
   Bool_t status_cer;
-  
+  Bool_t status_hod;
 
   //Boolean for PID cuts
   Bool_t no_edtm_cut;    // edtm tdc time cut
   Bool_t cal_elec;     //calorimeter normalized energy cut
   Bool_t cer_elec;     //cerenkov cut
+  Bool_t hod_beta_cut; // cut on beta (mainly for selecting either electrons or protons for calibration)
   Bool_t good_event;    //single hit / event / plane o clean background
  
   Int_t cnts_ch1;

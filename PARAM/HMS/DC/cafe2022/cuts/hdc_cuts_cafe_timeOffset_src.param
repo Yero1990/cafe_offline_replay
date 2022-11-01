@@ -20,6 +20,10 @@ hdc_fix_propcorr = 1 ; do propagation along wire each time hit appeears
                      ; in a space point
 
 ; Zero time correction for each plane in ns that is added to TDC time.
-; for src, apply a slight offset in time (~ +5 ns for top row, +3 ns for bottom row)
+
+; these time offsets were determined based on improvement in HMS DC residuals using Ca40 SRC  run 17032
+; will need to replay other SRC runs to check for consistency, will also need to do dc calibration using LD2 @ SRC and compare
+; how good are the residuals, and select the best method
+; for src, apply a slight offset in time (~ +3 ns for top row, +1 ns for bottom row)
 hdc_plane_time_zero = 1345.+3,1345.+3,1345.+1,1345.+1,1345.+3,1345.+3,
 		      1345.+1,1345.+1,1345.+1,1345.+1,1345.+1,1345.+1
