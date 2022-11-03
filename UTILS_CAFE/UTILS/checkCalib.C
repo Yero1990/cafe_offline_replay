@@ -7,8 +7,8 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   
   //spec --> "hms" or "shms" or "all"
   //run ---> 3289  or if it is combined, then, 580MeV or 750MeV (for deuteron runs combined)
-  // hms_pid --> "protons" or "electrons"
-  // shms_pid ---> "protons" or "electrons
+  // hms_pid --> "p" or "e"
+  // shms_pid ---> "p" or "e"
   
   //Prevent plot 
   gROOT->SetBatch(kTRUE);
@@ -428,16 +428,18 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
       
       T->GetEntry(i);  
       
-      if(hms_pid=="protons"){
+      if(hms_pid=="p"){
 
-	cout << "hms pid: protons " << endl;    
+	//cout << "hms pid: protons " << endl;    
 	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
 	hms_pid_cut = beta_cut;
+	//cout << "beta_cut = " << beta_cut << endl;
+	//cout << Form("(beta_central-beta)=(%.3f, %.3f)", hbeta_central, hhod_beta_notrk) << endl;
       }
       
-      else if(hms_pid=="electrons"){
+      else if(hms_pid=="e"){
 
-	cout << "hms pid: electrons " << endl;    
+	//cout << "hms pid: electrons " << endl;    
 	cal_elec = hcal_etot > 0.1;  
 	cer_elec = hcer_npesum>1.0;
 	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
@@ -445,16 +447,16 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
       }
 
     
-      if(shms_pid=="protons"){
+      if(shms_pid=="p"){
            
-	cout << "shms pid: protons " << endl; 
+	//cout << "shms pid: protons " << endl; 
        	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
 	shms_pid_cut = beta_cut;
 
       }
-      else if (shms_pid=="electrons"){
+      else if (shms_pid=="e"){
 	
-	cout << "shms pid: electrons " << endl;
+	//cout << "shms pid: electrons " << endl;
 	cal_elec = pcal_etot > 0.1;  
 	cer_elec = pngcer_npesum>1.0;
 	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
@@ -483,7 +485,7 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
 
 	
 
-	      if(hnhit){
+	      if(hms_pid_cut&&hnhit){
 	      //Fill Histograms
 	      H_hdcTime[npl]->Fill(hdc_time[npl][j]);
 	      H_hdcDist[npl]->Fill(hdc_dist[npl][j]);
@@ -537,7 +539,7 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
 	  for (Int_t j=0; j < pdc_ndata[npl]; j++)
 	    {
 	      
-	      if(pnhit){
+	      if(shms_pid_cut&&pnhit){
 		//Fill Histograms
 		H_pdcTime[npl]->Fill(pdc_time[npl][j]);
 		H_pdcDist[npl]->Fill(pdc_dist[npl][j]);
@@ -614,30 +616,30 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
       //  detec = "dc";
       //===HMS Drift Chambers===
       
-      hdcTimeCanv = new TCanvas("hDC Times", "HMS DC TIMES",  1500, 500);
+      hdcTimeCanv = new TCanvas("hDC Times", "HMS DC TIMES",  2500, 1500);
       hdcTimeCanv->Divide(6,2);
       
-      hdcDistCanv = new TCanvas("hDC Dist", "HMS DC Distance",  1500, 500);
+      hdcDistCanv = new TCanvas("hDC Dist", "HMS DC Distance",  2500, 1500);
       hdcDistCanv->Divide(6,2);
       
-      hdcResCanv = new TCanvas("hDC Residuals", "HMS DC Residuals",  1500, 500);
+      hdcResCanv = new TCanvas("hDC Residuals", "HMS DC Residuals",  2500, 1500);
       hdcResCanv->Divide(6,2);
       
       hdcResGraphCanv = new TCanvas("hDC Residuals Graph", "HMS DC Residuals Graph",  1500, 500);
       hdcResGraphCanv->Divide(2,1);
       
       //2d histos 
-      hdcResCanv2D = new TCanvas("hDC Residuals vs. Wire", "HMS DC Residuals vs. Wire",  1500, 500);
+      hdcResCanv2D = new TCanvas("hDC Residuals vs. Wire", "HMS DC Residuals vs. Wire",  2500, 1500);
       hdcResCanv2D->Divide(6,2);
       
-      hdcTimeCanv2D = new TCanvas("hDC Time vs. Wire", "HMS DC Time vs. Wire",  1500, 500);
+      hdcTimeCanv2D = new TCanvas("hDC Time vs. Wire", "HMS DC Time vs. Wire",  2500, 1500);
       hdcTimeCanv2D->Divide(6,2);
       
-      hdcDistCanv2D = new TCanvas("hDC Dist vs. Wire", "HMS DC Dist vs. Wire",  1500, 500);
+      hdcDistCanv2D = new TCanvas("hDC Dist vs. Wire", "HMS DC Dist vs. Wire",  2500, 1500);
       hdcDistCanv2D->Divide(6,2);
       
       //Profile Histograms
-      hdcResCanvProf = new TCanvas("hDC Residuals vs. Wire: Profile", "HMS DC Residuals vs. Wire, Profile",  1500, 500);
+      hdcResCanvProf = new TCanvas("hDC Residuals vs. Wire: Profile", "HMS DC Residuals vs. Wire, Profile",  2500, 1500);
       hdcResCanvProf->Divide(6,2);
       
       //Loop over DC planes
@@ -910,8 +912,8 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
 	  stdev  = H_pdcRes[npl]->GetStdDev(); 
 	  amplitude = H_pdcRes[npl]->GetBinContent(binmax);
 	  center = H_pdcRes[npl]->GetBinCenter(binmax);
-	  xmin_fit = center - (stdev);
-	  xmax_fit = center + (stdev); 
+	  xmin_fit = center - (1.5*stdev);
+	  xmax_fit = center + (1.5*stdev); 
 	  
 	  cout << std::setprecision(3) << "SHMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
 	  

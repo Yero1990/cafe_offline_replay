@@ -942,7 +942,7 @@ void DC_calib::EventLoop(string option="")
 	{
 	  cal_elec = cal_etot>0.1;  //normalize energy > 0.1 (bkg cleanup)
 	  cer_elec = cer_npe>1.0;     //number of photoelec. > 1 (electrons)
-	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.2;  // cut: beta +/- 0.2  (select clean e- sample)
+	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.3;  // cut: beta +/- 0.3  (select clean e- sample)
 	   
 	}
       
