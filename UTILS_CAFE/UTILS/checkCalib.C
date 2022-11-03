@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include "checkCalib.h"
 
-void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="", TString shms_pid="")
+void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms_pid="")
 {
   
   //spec --> "hms" or "shms" or "all"
@@ -15,16 +15,9 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   
 
   //Create a directory where to store the plots and output root file
-  if (spec.compare("all")==0 ){
-    mkdir(Form("./hms_Calib_%d", run), S_IRWXU);
-    mkdir(Form("./shms_Calib_%d", run), S_IRWXU);
+  mkdir(Form("./hms_Calib_%d", run), S_IRWXU);
+  mkdir(Form("./shms_Calib_%d", run), S_IRWXU);
 	
-  }
-
-  else{
-  mkdir(Form("./%s_Calib_%d", spec.c_str(), run), S_IRWXU);
-  }
-  
   //=============================
   //INITIALIZE HISTOGRAM BINNING
   //=============================
@@ -98,14 +91,11 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   TFile *houtROOT;
   TFile *poutROOT;
   TFile *outROOT;
+
   //Create output root file where histograms will be stored
-  if (spec.compare("all")==0 ){
-    houtROOT = new TFile(Form("./hms_Calib_%d/hms_Calib_histos%d.root", run, run), "recreate");
-    poutROOT = new TFile(Form("./shms_Calib_%d/shms_Calib_histos%d.root", run, run), "recreate");
-  }
-  else{
-    outROOT = new TFile(Form("./%s_Calib_%d/%s_Calib_histos%d.root", spec.c_str(), run, spec.c_str(), run), "recreate");
-  }
+  houtROOT = new TFile(Form("./hms_Calib_%d/hms_Calib_histos%d.root", run, run), "recreate");
+  poutROOT = new TFile(Form("./shms_Calib_%d/shms_Calib_histos%d.root", run, run), "recreate");
+ 
 
   //===========================
   //===Set Branch Address======
@@ -608,383 +598,354 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   //===== DRAW CANVAS ======
   //========================
   
-  //if(spec.compare("hms")==0 || spec.compare("all")==0)
-  //{
-      spec = "hms";
-      //  if(detec.compare("dc")==0 || detec.compare("all")==0)
-      //{
-      //  detec = "dc";
-      //===HMS Drift Chambers===
+  //===HMS Drift Chambers===
+  
+  hdcTimeCanv = new TCanvas("hDC Times", "HMS DC TIMES",  2500, 1000);
+  hdcTimeCanv->Divide(6,2);
+  
+  hdcDistCanv = new TCanvas("hDC Dist", "HMS DC Distance",  2500, 1000);
+  hdcDistCanv->Divide(6,2);
+  
+  hdcResCanv = new TCanvas("hDC Residuals", "HMS DC Residuals",  2500, 1000);
+  hdcResCanv->SetLeftMargin(0.25);
+  hdcResCanv->Divide(6,2);
+  
+  hdcResGraphCanv = new TCanvas("hDC Residuals Graph", "HMS DC Residuals Graph",  2500, 1000);
+  hdcResGraphCanv->Divide(2,1);
+  
+  //2d histos 
+  hdcResCanv2D = new TCanvas("hDC Residuals vs. Wire", "HMS DC Residuals vs. Wire",  2500, 1000);
+  hdcResCanv2D->Divide(6,2);
+  
+  hdcTimeCanv2D = new TCanvas("hDC Time vs. Wire", "HMS DC Time vs. Wire",  2500, 1000);
+  hdcTimeCanv2D->Divide(6,2);
+  
+  hdcDistCanv2D = new TCanvas("hDC Dist vs. Wire", "HMS DC Dist vs. Wire",  2500, 1000);
+  hdcDistCanv2D->Divide(6,2);
+  
+  //Profile Histograms
+  hdcResCanvProf = new TCanvas("hDC Residuals vs. Wire: Profile", "HMS DC Residuals vs. Wire, Profile",  2500, 1000);
+  hdcResCanvProf->Divide(6,2);
       
-      hdcTimeCanv = new TCanvas("hDC Times", "HMS DC TIMES",  2500, 1500);
-      hdcTimeCanv->Divide(6,2);
+  //Loop over DC planes
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
       
-      hdcDistCanv = new TCanvas("hDC Dist", "HMS DC Distance",  2500, 1500);
-      hdcDistCanv->Divide(6,2);
+      hdcTimeCanv->cd(npl+1);
+      gPad->SetLogy();
+      H_hdcTime[npl]->Draw();
       
-      hdcResCanv = new TCanvas("hDC Residuals", "HMS DC Residuals",  2500, 1500);
-      hdcResCanv->Divide(6,2);
+      hdcDistCanv->cd(npl+1);
+      binmax = H_hdcDist[npl]->GetMaximumBin();
+      upperlim =  H_hdcDist[npl]->GetBinContent(binmax) + 500.;
+      H_hdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
+      H_hdcDist[npl]->Draw();
       
-      hdcResGraphCanv = new TCanvas("hDC Residuals Graph", "HMS DC Residuals Graph",  1500, 500);
-      hdcResGraphCanv->Divide(2,1);
       
-      //2d histos 
-      hdcResCanv2D = new TCanvas("hDC Residuals vs. Wire", "HMS DC Residuals vs. Wire",  2500, 1500);
-      hdcResCanv2D->Divide(6,2);
+      // determine gaussian fit limits for residuals
+      binmax = H_hdcRes[npl]->GetMaximumBin(); 	  
+      stdev  = H_hdcRes[npl]->GetStdDev(); 
+      amplitude = H_hdcRes[npl]->GetBinContent(binmax);
+      center = H_hdcRes[npl]->GetBinCenter(binmax);
+      xmin_fit = center - (stdev);
+      xmax_fit = center + (stdev); 
       
-      hdcTimeCanv2D = new TCanvas("hDC Time vs. Wire", "HMS DC Time vs. Wire",  2500, 1500);
-      hdcTimeCanv2D->Divide(6,2);
+      cout << std::setprecision(3) << "HMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
       
-      hdcDistCanv2D = new TCanvas("hDC Dist vs. Wire", "HMS DC Dist vs. Wire",  2500, 1500);
-      hdcDistCanv2D->Divide(6,2);
       
-      //Profile Histograms
-      hdcResCanvProf = new TCanvas("hDC Residuals vs. Wire: Profile", "HMS DC Residuals vs. Wire, Profile",  2500, 1500);
-      hdcResCanvProf->Divide(6,2);
+      //change to pad of canvas
+      hdcResCanv->cd(npl+1);
       
-      //Loop over DC planes
-      for (Int_t npl = 0; npl < dc_PLANES; npl++ )
-	{
-	  
-	  hdcTimeCanv->cd(npl+1);
-	  gPad->SetLogy();
-	  H_hdcTime[npl]->Draw();
-	  
-	  hdcDistCanv->cd(npl+1);
-	  binmax = H_hdcDist[npl]->GetMaximumBin();
-	  upperlim =  H_hdcDist[npl]->GetBinContent(binmax) + 500.;
-	  H_hdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
-	  H_hdcDist[npl]->Draw();
-	  
-	 
-	  // determine gaussian fit limits for residuals
-	  binmax = H_hdcRes[npl]->GetMaximumBin(); 	  
-	  stdev  = H_hdcRes[npl]->GetStdDev(); 
-	  amplitude = H_hdcRes[npl]->GetBinContent(binmax);
-	  center = H_hdcRes[npl]->GetBinCenter(binmax);
-	  xmin_fit = center - (stdev);
-	  xmax_fit = center + (stdev); 
-	  
-	  cout << std::setprecision(3) << "HMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
-	  
+      // define fit fucntion
+      gaus_fit = new TF1("gaus_fit","gaus", xmin_fit, xmax_fit);
+      gaus_fit->SetParameters(amplitude, center, stdev );
+      
+      // Fit gaussian to the residuals
+      H_hdcRes[npl]->Fit("gaus_fit", "R");	  
+      H_hdcRes[npl]->Draw();
+      
+      //Get Mean/Sigma for residuals and conver to microns                                                                                                                                       
+      mean[npl]      = gaus_fit->GetParameter(1)*1e4;                                                                                                                       
+      mean_err[npl]  = gaus_fit->GetParError(1)*1e4; 
+      sigma[npl]     = gaus_fit->GetParameter(2)*1e4; 
+      sigma_err[npl] = gaus_fit->GetParError(2)*1e4;
+      
+      //2D and Profile Histograms
+      hdcResCanv2D->cd(npl+1);
+      H_hres_vs_wire[npl]->Draw("COLZ");
+      
+      hdcTimeCanv2D->cd(npl+1);
+      H_htime_vs_wire[npl]->Draw("COLZ");
+      
+      hdcDistCanv2D->cd(npl+1);
+      H_hdist_vs_wire[npl]->Draw("COLZ");
+      
+      
+      hdcResCanvProf->cd(npl+1);
+      hdcResProf[npl] = H_hres_vs_wire[npl]->ProfileX(Form("HMS Profile of Residuals, Plane %s", hdc_pl_names[npl].c_str()), 0., hnwires[npl]);
+      hdcResProf[npl]->Draw();
+      
+    } //END LOOP OVER DC PLANES
+  
+  
+  
+  TGraph *hgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
+  
+  //Change to SupPad 2 to plot mean
+  hdcResGraphCanv->cd(1);
+  //dcResGraphCanv->SetGrid();
+  hgr_mean->SetMarkerStyle(22);
+  hgr_mean->SetMarkerColor(kBlue);
+  hgr_mean->SetMarkerSize(2);
+  hgr_mean->GetYaxis()->SetRangeUser(-250, 250);
+  
+  //Set Axis Titles
+  hgr_mean->GetXaxis()->SetTitle("HMS DC Planes Residuals");
+  hgr_mean->GetXaxis()->CenterTitle();
+  hgr_mean->GetYaxis()->SetTitle("HMS DC Residual Mean (#mum)");
+  hgr_mean->GetYaxis()->CenterTitle();
+  hgr_mean->SetTitle("HMS DC Plane Residuals Mean");
+  
+  hgr_mean->Draw("AP");
+  
+  
+  //Change to SubPad 1 to plot sigma
+  hdcResGraphCanv->cd(2);
+  TGraph *hgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
+  //dcResGraphCanv->SetGrid();
+  hgr_residual->SetMarkerStyle(22);
+  hgr_residual->SetMarkerColor(kRed);
+  hgr_residual->SetMarkerSize(2);
+  hgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
+  
+  //Set Axis Titles
+  hgr_residual->GetXaxis()->SetTitle("HMS DC Planes Residuals");
+  hgr_residual->GetXaxis()->CenterTitle();
+  hgr_residual->GetYaxis()->SetTitle("HMS DC Residual #sigma (#mum)");
+  hgr_residual->GetYaxis()->CenterTitle();
+  hgr_residual->SetTitle("HMS DC Plane Residuals Sigma");
+  hgr_residual->Draw("AP");
+  hdcResGraphCanv->Update();
+  
+  hdcTimeCanv->SaveAs(Form("./hms_Calib_%d/hDC_Times.pdf", run));
+  hdcDistCanv->SaveAs(Form("./hms_Calib_%d/hDC_Dist.pdf", run));
+  hdcResCanv->SaveAs(Form("./hms_Calib_%d/hDC_Res.pdf", run));
+  
+  hdcResCanv2D->SaveAs(Form("./hms_Calib_%d/hDC_Res2D.pdf", run));
+  hdcTimeCanv2D->SaveAs(Form("./hms_Calib_%d/hDC_Time2D.pdf", run));
+  hdcDistCanv2D->SaveAs(Form("./hms_Calib_%d/hDC_Dist2D.pdf", run));
+  
+  
+  hdcResCanvProf->SaveAs(Form("./hms_Calib_%d/hDC_ResProfile.pdf", run));
+  hdcResGraphCanv->SaveAs(Form("./hms_Calib_%d/hDC_ResPlot.pdf", run));
+  
+  //====CALORIMETERS====
+  hcalCanv = new TCanvas("HMS Calorimeter Canv" , "HMS Calorimeter Plots", 1500, 500);
+  hcalCanv->Divide(3,2);
+  
+  hcalCanv->cd(1);
+  H_hcalEtrkNorm->Draw();
+  hcalCanv->Update();
+  
+  hcalCanv->cd(2);
+  H_hcalEtot->Draw();
+  
+  hcalCanv->cd(3);
+  H_hcalEtrkNorm_vs_xtrk->Draw("COLZ");
+  
+  hcalCanv->cd(4);
+  H_hcalEtrkNorm_vs_ytrk->Draw("COLZ");
+  
+  
+  hcalCanv->SaveAs(Form("./hms_Calib_%d/hCal_CalibPlots.pdf", run));
 
-	  //change to pad of canvas
-	  hdcResCanv->cd(npl+1);
+  
+  //======HODOSCOPOES=====
+  hhodCanv = new TCanvas("HMS Hodoscope Beta Canv" , "HMS Hodoscope Beta Plots", 1500, 500);
+  hhodCanv->Divide(2,1);
+  hhodCanv->cd(1);
+  H_hhodBetaNoTrk->Draw();
+  hhodCanv->cd(2);
+  H_hhodBeta->Draw();    
+  
+  
+  hhodCanv2D = new TCanvas("HMS Hodoscope 2D Beta Canvas" , "2D HMS Hodoscope Beta Plots", 1500, 500);
+  hhodCanv2D->Divide(4,2);
+  
+  hhodProfCanv = new TCanvas("Hodoscope Beta Profile Canvas", "Hodoscope Beta ProfileX", 1500, 500);
+  hhodProfCanv->Divide(4,2);
+  
+  
+  //Loop over Hodo planes
+  for (Int_t npl = 0; npl < hod_PLANES; npl++ )
+    {
+      
+      hhodCanv2D->cd(npl + 1);
+      H_hhodBeta_v_Xtrk[npl]->Draw("COLZ");
+      
+      hhodCanv2D->cd(npl + 5);
+      H_hhodBeta_v_Ytrk[npl]->Draw("COLZ");
+      
+      //X-Profile of 2D Histos beta vs xtrk (or ytrk)
+      hhod_xProfX[npl] = new TProfile();
+      hhod_yProfX[npl] = new TProfile();
+      
+      hhodProfCanv->cd(npl + 1);
+      hhod_xProfX[npl] = H_hhodBeta_v_Xtrk[npl]->ProfileX(Form("h%s_betaXtrk_ProfileX", hod_pl_names[npl].c_str()), 0, 200);
+      hhod_xProfX[npl]->Draw();
+      hhodProfCanv->cd(npl + 5);
+      hhod_yProfX[npl] = H_hhodBeta_v_Ytrk[npl]->ProfileX(Form("h%s_betaYtrk_ProfileX", hod_pl_names[npl].c_str()), 0, 200);
+      hhod_yProfX[npl]->Draw();
+      
+    } // END LOOP OVER HODO PLANES
+  
+  hhodCanv->SaveAs(Form("./hms_Calib_%d/hHodBetaPlots.pdf", run));
+  hhodCanv2D->SaveAs(Form("./hms_Calib_%d/hHodBeta2DPlots.pdf", run));
+  hhodProfCanv->SaveAs(Form("./hms_Calib_%d/hHodBetaProfilePlots.pdf", run));
 
-	  // define fit fucntion
-	  gaus_fit = new TF1("gaus_fit","gaus", xmin_fit, xmax_fit);
-	  gaus_fit->SetParameters(amplitude, center, stdev );
-	  
-	  // Fit gaussian to the residuals
-	  H_hdcRes[npl]->Fit("gaus_fit", "R");	  
-	  H_hdcRes[npl]->Draw();
+  
+  //====CHERENKOV====
+  hcerCanv = new TCanvas("HMS Cherenkov", "HMS Cherenkov Calib. Plots", 1500, 500);
+  hcerCanv->Divide(3,1);
+  hcerCanv->cd(1);
+  H_hcerNpe[0]->Draw();
+  hcerCanv->cd(2);
+  H_hcerNpe[1]->Draw();
+  hcerCanv->cd(3);
+  H_hcerNpeSum->Draw();
+  
+  hcerCanv->SaveAs(Form("./hms_Calib_%d/hCer.pdf", run));
+      
+  //Write Histograms to ROOT file
+  houtROOT->Write();
+  houtROOT->WriteTObject(hgr_mean);
+  houtROOT->WriteTObject(hgr_residual);
+  houtROOT->Close();
 
-	  //Get Mean/Sigma for residuals and conver to microns                                                                                                                                       
-          mean[npl]      = gaus_fit->GetParameter(1)*1e4;                                                                                                                                                           
-          mean_err[npl]  = gaus_fit->GetParError(1)*1e4; 
-	  sigma[npl]     = gaus_fit->GetParameter(2)*1e4; 
-	  sigma_err[npl] = gaus_fit->GetParError(2)*1e4;
-	  
-	  //2D and Profile Histograms
-	  hdcResCanv2D->cd(npl+1);
-	  H_hres_vs_wire[npl]->Draw("COLZ");
-	  
-	  hdcTimeCanv2D->cd(npl+1);
-	  H_htime_vs_wire[npl]->Draw("COLZ");
-	  
-	  hdcDistCanv2D->cd(npl+1);
-	  H_hdist_vs_wire[npl]->Draw("COLZ");
-	  
-	  
-	  hdcResCanvProf->cd(npl+1);
-	  hdcResProf[npl] = H_hres_vs_wire[npl]->ProfileX(Form("HMS Profile of Residuals, Plane %s", hdc_pl_names[npl].c_str()), 0., hnwires[npl]);
-	  hdcResProf[npl]->Draw();
-	  
-	} //END LOOP OVER DC PLANES
-      
-      
-      
-      TGraph *hgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
-      
-      //Change to SupPad 2 to plot mean
-      hdcResGraphCanv->cd(1);
-      //dcResGraphCanv->SetGrid();
-      hgr_mean->SetMarkerStyle(22);
-      hgr_mean->SetMarkerColor(kBlue);
-      hgr_mean->SetMarkerSize(2);
-      hgr_mean->GetYaxis()->SetRangeUser(-250, 250);
-      
-      //Set Axis Titles
-      hgr_mean->GetXaxis()->SetTitle("HMS DC Planes Residuals");
-      hgr_mean->GetXaxis()->CenterTitle();
-      hgr_mean->GetYaxis()->SetTitle("HMS DC Residual Mean (#mum)");
-      hgr_mean->GetYaxis()->CenterTitle();
-      hgr_mean->SetTitle("HMS DC Plane Residuals Mean");
-      
-      hgr_mean->Draw("AP");
-      
-      
-      //Change to SubPad 1 to plot sigma
-      hdcResGraphCanv->cd(2);
-      TGraph *hgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
-      //dcResGraphCanv->SetGrid();
-      hgr_residual->SetMarkerStyle(22);
-      hgr_residual->SetMarkerColor(kRed);
-      hgr_residual->SetMarkerSize(2);
-      hgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
-      
-      //Set Axis Titles
-      hgr_residual->GetXaxis()->SetTitle("HMS DC Planes Residuals");
-      hgr_residual->GetXaxis()->CenterTitle();
-      hgr_residual->GetYaxis()->SetTitle("HMS DC Residual #sigma (#mum)");
-      hgr_residual->GetYaxis()->CenterTitle();
-      hgr_residual->SetTitle("HMS DC Plane Residuals Sigma");
-      hgr_residual->Draw("AP");
-      hdcResGraphCanv->Update();
-      
-      hdcTimeCanv->SaveAs(Form("./%s_Calib_%d/hDC_Times.pdf", spec.c_str(), run));
-      hdcDistCanv->SaveAs(Form("./%s_Calib_%d/hDC_Dist.pdf", spec.c_str(), run));
-      hdcResCanv->SaveAs(Form("./%s_Calib_%d/hDC_Res.pdf", spec.c_str(), run));
-      
-      hdcResCanv2D->SaveAs(Form("./%s_Calib_%d/hDC_Res2D.pdf", spec.c_str(), run));
-      hdcTimeCanv2D->SaveAs(Form("./%s_Calib_%d/hDC_Time2D.pdf", spec.c_str(), run));
-      hdcDistCanv2D->SaveAs(Form("./%s_Calib_%d/hDC_Dist2D.pdf", spec.c_str(), run));
-      
-      
-      hdcResCanvProf->SaveAs(Form("./%s_Calib_%d/hDC_ResProfile.pdf", spec.c_str(), run));
-      hdcResGraphCanv->SaveAs(Form("./%s_Calib_%d/hDC_ResPlot.pdf", spec.c_str(), run));
-      //}
-      
-      //  if(detec.compare("cal")==0 || detec.compare("all")==0)
-      //	{
-      //	  detec = "cal";
-      //====CALORIMETERS====
-      hcalCanv = new TCanvas("HMS Calorimeter Canv" , "HMS Calorimeter Plots", 1500, 500);
-      hcalCanv->Divide(3,2);
-      
-      hcalCanv->cd(1);
-      H_hcalEtrkNorm->Draw();
-      hcalCanv->Update();
-      
-      hcalCanv->cd(2);
-      H_hcalEtot->Draw();
-      
-      hcalCanv->cd(3);
-      H_hcalEtrkNorm_vs_xtrk->Draw("COLZ");
-      
-      hcalCanv->cd(4);
-      H_hcalEtrkNorm_vs_ytrk->Draw("COLZ");
-      
-      
-      hcalCanv->SaveAs(Form("./%s_Calib_%d/hCal_CalibPlots.pdf", spec.c_str(), run));
-      //	}					
-      //  if(detec.compare("hod")==0 || detec.compare("all")==0)
-      //	{
-      //	  detec = "hod";
-      //======HODOSCOPOES=====
-      hhodCanv = new TCanvas("HMS Hodoscope Beta Canv" , "HMS Hodoscope Beta Plots", 1500, 500);
-      hhodCanv->Divide(2,1);
-      hhodCanv->cd(1);
-      H_hhodBetaNoTrk->Draw();
-      hhodCanv->cd(2);
-      H_hhodBeta->Draw();    
-      
-      
-      hhodCanv2D = new TCanvas("HMS Hodoscope 2D Beta Canvas" , "2D HMS Hodoscope Beta Plots", 1500, 500);
-      hhodCanv2D->Divide(4,2);
-      
-      hhodProfCanv = new TCanvas("Hodoscope Beta Profile Canvas", "Hodoscope Beta ProfileX", 1500, 500);
-      hhodProfCanv->Divide(4,2);
-      
-      
-      //Loop over Hodo planes
-      for (Int_t npl = 0; npl < hod_PLANES; npl++ )
-	{
-	  
-	  hhodCanv2D->cd(npl + 1);
-	  H_hhodBeta_v_Xtrk[npl]->Draw("COLZ");
-	  
-	  hhodCanv2D->cd(npl + 5);
-	  H_hhodBeta_v_Ytrk[npl]->Draw("COLZ");
-	  
-	  //X-Profile of 2D Histos beta vs xtrk (or ytrk)
-	  hhod_xProfX[npl] = new TProfile();
-	  hhod_yProfX[npl] = new TProfile();
-	  
-	  hhodProfCanv->cd(npl + 1);
-	  hhod_xProfX[npl] = H_hhodBeta_v_Xtrk[npl]->ProfileX(Form("h%s_betaXtrk_ProfileX", hod_pl_names[npl].c_str()), 0, 200);
-	  hhod_xProfX[npl]->Draw();
-	  hhodProfCanv->cd(npl + 5);
-	  hhod_yProfX[npl] = H_hhodBeta_v_Ytrk[npl]->ProfileX(Form("h%s_betaYtrk_ProfileX", hod_pl_names[npl].c_str()), 0, 200);
-	  hhod_yProfX[npl]->Draw();
-	  
-	} // END LOOP OVER HODO PLANES
-      
-      hhodCanv->SaveAs(Form("./%s_Calib_%d/hHodBetaPlots.pdf", spec.c_str(), run));
-      hhodCanv2D->SaveAs(Form("./%s_Calib_%d/hHodBeta2DPlots.pdf", spec.c_str(), run));
-      hhodProfCanv->SaveAs(Form("./%s_Calib_%d/hHodBetaProfilePlots.pdf", spec.c_str(), run));
-      //	}
-      
-      //  if(detec.compare("cer")==0 || detec.compare("all")==0)
-      //	{
-      //	  detec = "cer";
-      //====CHERENKOV====
-      hcerCanv = new TCanvas("HMS Cherenkov", "HMS Cherenkov Calib. Plots", 1500, 500);
-      hcerCanv->Divide(3,1);
-      hcerCanv->cd(1);
-      H_hcerNpe[0]->Draw();
-      hcerCanv->cd(2);
-      H_hcerNpe[1]->Draw();
-      hcerCanv->cd(3);
-      H_hcerNpeSum->Draw();
-      
-      hcerCanv->SaveAs(Form("./%s_Calib_%d/hCer.pdf", spec.c_str(), run));
-      //	}
-      
-      //Write Histograms to ROOT file
-      if (spec.compare("all")==0 || spec.compare("hms")==0  ){
-	
-	houtROOT->Write();
-	houtROOT->Close();
-	
-      }
-      else{
-	outROOT->Write();
-	outROOT->Close();
-      }
-      
-      //}
-      
-      //if(spec.compare("shms")==0 || spec.compare("all")==0)
-      //{
-      
-      spec = "shms";
-      
-      //if(detec.compare("dc")==0 || detec.compare("all")==0)
-      //{
-      //  detec = "dc";
-      //===SHMS Drift Chambers===
-      
-      pdcTimeCanv = new TCanvas("pDC Times", "SHMS DC TIMES",  1500, 500);
-      pdcTimeCanv->Divide(6,2);
-      
-      pdcDistCanv = new TCanvas("pDC Dist", "SHMS DC Distance",  1500, 500);
-      pdcDistCanv->Divide(6,2);
-      
-      pdcResCanv = new TCanvas("pDC Residuals", "SHMS DC Residuals",  1500, 500);
-      pdcResCanv->Divide(6,2);
-      
-      pdcResGraphCanv = new TCanvas("pDC Residuals Graph", "SHMS DC Residuals Graph",  1500, 500);
-      pdcResGraphCanv->Divide(2,1);
-      
-      //2d histos 
-      pdcResCanv2D = new TCanvas("pDC Residuals vs. Wire", "SHMS DC Residuals vs. Wire",  1500, 500);
-      pdcResCanv2D->Divide(6,2);
-      
-      pdcTimeCanv2D = new TCanvas("pDC Time vs. Wire", "SHMS DC Time vs. Wire",  1500, 500);
-      pdcTimeCanv2D->Divide(6,2);
-      
-      pdcDistCanv2D = new TCanvas("pDC Dist vs. Wire", "SHMS DC Dist vs. Wire",  1500, 500);
-      pdcDistCanv2D->Divide(6,2);
-      
-      //Profile Histograms
-      pdcResCanvProf = new TCanvas("pDC Residuals vs. Wire: Profile", "SHMS DC Residuals vs. Wire, Profile",  1500, 500);
-      pdcResCanvProf->Divide(6,2);
-      
-      //Loop over DC planes
-      for (Int_t npl = 0; npl < dc_PLANES; npl++ )
-	{
-      
-	  pdcTimeCanv->cd(npl+1);
-	  gPad->SetLogy();
-	  H_pdcTime[npl]->Draw();
-	  
-	  pdcDistCanv->cd(npl+1);
-	  binmax = H_pdcDist[npl]->GetMaximumBin();
-	  upperlim =  H_pdcDist[npl]->GetBinContent(binmax) + 500.;
-	  H_pdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
-	  H_pdcDist[npl]->Draw();
-	  
-	 
 
-	  // determine gaussian fit limits for residuals
-	  binmax = H_pdcRes[npl]->GetMaximumBin(); 	  
-	  stdev  = H_pdcRes[npl]->GetStdDev(); 
-	  amplitude = H_pdcRes[npl]->GetBinContent(binmax);
-	  center = H_pdcRes[npl]->GetBinCenter(binmax);
-	  xmin_fit = center - (1.5*stdev);
-	  xmax_fit = center + (1.5*stdev); 
-	  
-	  cout << std::setprecision(3) << "SHMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
-	  
-	  //change to pad of canvas
-	  pdcResCanv->cd(npl+1);
-
-	  // define fit fucntion
-	  gaus_fit = new TF1("gaus_fit","gaus", xmin_fit, xmax_fit);
-	  gaus_fit->SetParameters(amplitude, center, stdev );
-	  
-	  // Fit gaussian to the residuals
-	  H_pdcRes[npl]->Fit("gaus_fit", "R");	  
-	  H_pdcRes[npl]->Draw();
-
-	  
-          //Get Mean/Sigma for residuals and conver to microns                                                                                                                                       
-          mean[npl]      = gaus_fit->GetParameter(1)*1e4;                                                                                                                                                           
-          mean_err[npl]  = gaus_fit->GetParError(1)*1e4; 
-	  sigma[npl]     = gaus_fit->GetParameter(2)*1e4; 
-	  sigma_err[npl] = gaus_fit->GetParError(2)*1e4; 
-
-	  //cout << "fit[um]: mean, err = " <<  mean[npl] << ", "<<  mean_err[npl] << endl; 
-	  //cout << "fit[um]: sigma, err = " <<  sigma[npl] << ", "<<  sigma_err[npl] << endl; 
-
-	  //2D and Profile Histograms
-	  pdcResCanv2D->cd(npl+1);
-	  H_pres_vs_wire[npl]->Draw("COLZ");
-	  
-	  pdcTimeCanv2D->cd(npl+1);
-	  H_ptime_vs_wire[npl]->Draw("COLZ");
-	  
-	  pdcDistCanv2D->cd(npl+1);
-	  H_pdist_vs_wire[npl]->Draw("COLZ");
+  
+  //===SHMS Drift Chambers===
+  
+  pdcTimeCanv = new TCanvas("pDC Times", "SHMS DC TIMES",  1500, 500);
+  pdcTimeCanv->Divide(6,2);
+  
+  pdcDistCanv = new TCanvas("pDC Dist", "SHMS DC Distance",  1500, 500);
+  pdcDistCanv->Divide(6,2);
+  
+  pdcResCanv = new TCanvas("pDC Residuals", "SHMS DC Residuals",  1500, 500);
+  pdcResCanv->Divide(6,2);
+  
+  pdcResGraphCanv = new TCanvas("pDC Residuals Graph", "SHMS DC Residuals Graph",  1500, 500);
+  pdcResGraphCanv->Divide(2,1);
+  
+  //2d histos 
+  pdcResCanv2D = new TCanvas("pDC Residuals vs. Wire", "SHMS DC Residuals vs. Wire",  1500, 500);
+  pdcResCanv2D->Divide(6,2);
+  
+  pdcTimeCanv2D = new TCanvas("pDC Time vs. Wire", "SHMS DC Time vs. Wire",  1500, 500);
+  pdcTimeCanv2D->Divide(6,2);
+  
+  pdcDistCanv2D = new TCanvas("pDC Dist vs. Wire", "SHMS DC Dist vs. Wire",  1500, 500);
+  pdcDistCanv2D->Divide(6,2);
+  
+  //Profile Histograms
+  pdcResCanvProf = new TCanvas("pDC Residuals vs. Wire: Profile", "SHMS DC Residuals vs. Wire, Profile",  1500, 500);
+  pdcResCanvProf->Divide(6,2);
+  
+  //Loop over DC planes
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
       
-	  
-	  pdcResCanvProf->cd(npl+1);
-	  pdcResProf[npl] = H_pres_vs_wire[npl]->ProfileX(Form("SHMS Profile of Residuals, Plane %s", pdc_pl_names[npl].c_str()), 0., pnwires[npl]);
-	  pdcResProf[npl]->Draw();
-	  
-	} //END LOOP OVER DC PLANES
+      pdcTimeCanv->cd(npl+1);
+      gPad->SetLogy();
+      H_pdcTime[npl]->Draw();
+      
+      pdcDistCanv->cd(npl+1);
+      binmax = H_pdcDist[npl]->GetMaximumBin();
+      upperlim =  H_pdcDist[npl]->GetBinContent(binmax) + 500.;
+      H_pdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
+      H_pdcDist[npl]->Draw();
       
       
       
-      TGraph *pgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
+      // determine gaussian fit limits for residuals
+      binmax = H_pdcRes[npl]->GetMaximumBin(); 	  
+      stdev  = H_pdcRes[npl]->GetStdDev(); 
+      amplitude = H_pdcRes[npl]->GetBinContent(binmax);
+      center = H_pdcRes[npl]->GetBinCenter(binmax);
+      xmin_fit = center - (1.5*stdev);
+      xmax_fit = center + (1.5*stdev); 
       
-      //Change to SupPad 2 to plot mean
-      pdcResGraphCanv->cd(1);
-      //dcResGraphCanv->SetGrid();
-      pgr_mean->SetMarkerStyle(22);
-      pgr_mean->SetMarkerColor(kBlue);
-      pgr_mean->SetMarkerSize(2);
-      pgr_mean->GetYaxis()->SetRangeUser(-250, 250);
+      cout << std::setprecision(3) << "SHMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
       
-      //Set Axis Titles
-      pgr_mean->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
-      pgr_mean->GetXaxis()->CenterTitle();
-      pgr_mean->GetYaxis()->SetTitle("SHMS DC Residual Mean (#mum)");
-      pgr_mean->GetYaxis()->CenterTitle();
-      pgr_mean->SetTitle("SHMS DC Plane Residuals Mean");
+      //change to pad of canvas
+      pdcResCanv->cd(npl+1);
       
-      pgr_mean->Draw("AP");
+      // define fit fucntion
+      gaus_fit = new TF1("gaus_fit","gaus", xmin_fit, xmax_fit);
+      gaus_fit->SetParameters(amplitude, center, stdev );
+      
+      // Fit gaussian to the residuals
+      H_pdcRes[npl]->Fit("gaus_fit", "R");	  
+      H_pdcRes[npl]->Draw();
       
       
-      //Change to SubPad 1 to plot sigma
-      pdcResGraphCanv->cd(2);
-      TGraph *pgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
-      //dcResGraphCanv->SetGrid();
-      pgr_residual->SetMarkerStyle(22);
-      pgr_residual->SetMarkerColor(kRed);
-      pgr_residual->SetMarkerSize(2);
-      pgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
+      //Get Mean/Sigma for residuals and conver to microns                                                                                                                                       
+      mean[npl]      = gaus_fit->GetParameter(1)*1e4;            
+      mean_err[npl]  = gaus_fit->GetParError(1)*1e4; 
+      sigma[npl]     = gaus_fit->GetParameter(2)*1e4; 
+      sigma_err[npl] = gaus_fit->GetParError(2)*1e4; 
+      
+      //cout << "fit[um]: mean, err = " <<  mean[npl] << ", "<<  mean_err[npl] << endl; 
+      //cout << "fit[um]: sigma, err = " <<  sigma[npl] << ", "<<  sigma_err[npl] << endl; 
+      
+      //2D and Profile Histograms
+      pdcResCanv2D->cd(npl+1);
+      H_pres_vs_wire[npl]->Draw("COLZ");
+      
+      pdcTimeCanv2D->cd(npl+1);
+      H_ptime_vs_wire[npl]->Draw("COLZ");
+      
+      pdcDistCanv2D->cd(npl+1);
+      H_pdist_vs_wire[npl]->Draw("COLZ");
+      
+      
+      pdcResCanvProf->cd(npl+1);
+      pdcResProf[npl] = H_pres_vs_wire[npl]->ProfileX(Form("SHMS Profile of Residuals, Plane %s", pdc_pl_names[npl].c_str()), 0., pnwires[npl]);
+      pdcResProf[npl]->Draw();
+      
+    } //END LOOP OVER DC PLANES
+  
+  
+  
+  TGraph *pgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
+  
+  //Change to SupPad 2 to plot mean
+  pdcResGraphCanv->cd(1);
+  //dcResGraphCanv->SetGrid();
+  pgr_mean->SetMarkerStyle(22);
+  pgr_mean->SetMarkerColor(kBlue);
+  pgr_mean->SetMarkerSize(2);
+  pgr_mean->GetYaxis()->SetRangeUser(-250, 250);
+  
+  //Set Axis Titles
+  pgr_mean->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
+  pgr_mean->GetXaxis()->CenterTitle();
+  pgr_mean->GetYaxis()->SetTitle("SHMS DC Residual Mean (#mum)");
+  pgr_mean->GetYaxis()->CenterTitle();
+  pgr_mean->SetTitle("SHMS DC Plane Residuals Mean");
+  
+  pgr_mean->Draw("AP");
+  
+  
+  //Change to SubPad 1 to plot sigma
+  pdcResGraphCanv->cd(2);
+  TGraph *pgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
+  //dcResGraphCanv->SetGrid();
+  pgr_residual->SetMarkerStyle(22);
+  pgr_residual->SetMarkerColor(kRed);
+  pgr_residual->SetMarkerSize(2);
+  pgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
   
   //Set Axis Titles
   pgr_residual->GetXaxis()->SetTitle("SHMS DC Planes Residuals");
@@ -994,23 +955,20 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   pgr_residual->SetTitle("SHMS DC Plane Residuals Sigma");
   pgr_residual->Draw("AP");
   pdcResGraphCanv->Update();
+  
+  pdcTimeCanv->SaveAs(Form("./shms_Calib_%d/pDC_Times.pdf",  run));
+  pdcDistCanv->SaveAs(Form("./shms_Calib_%d/pDC_Dist.pdf",  run));
+  pdcResCanv->SaveAs(Form("./shms_Calib_%d/pDC_Res.pdf",  run));
+  
+  pdcResCanv2D->SaveAs(Form("./shms_Calib_%d/pDC_Res2D.pdf",  run));
+  pdcTimeCanv2D->SaveAs(Form("./shms_Calib_%d/pDC_Time2D.pdf",  run));
+  pdcDistCanv2D->SaveAs(Form("./shms_Calib_%d/pDC_Dist2D.pdf",  run));
+  
+  
+  pdcResCanvProf->SaveAs(Form("./shms_Calib_%d/pDC_ResProfile.pdf",  run));
+  pdcResGraphCanv->SaveAs(Form("./shms_Calib_%d/pDC_ResPlot.pdf",  run));
 
-  pdcTimeCanv->SaveAs(Form("./%s_Calib_%d/pDC_Times.pdf", spec.c_str(), run));
-  pdcDistCanv->SaveAs(Form("./%s_Calib_%d/pDC_Dist.pdf", spec.c_str(), run));
-  pdcResCanv->SaveAs(Form("./%s_Calib_%d/pDC_Res.pdf", spec.c_str(), run));
   
-  pdcResCanv2D->SaveAs(Form("./%s_Calib_%d/pDC_Res2D.pdf", spec.c_str(), run));
-  pdcTimeCanv2D->SaveAs(Form("./%s_Calib_%d/pDC_Time2D.pdf", spec.c_str(), run));
-  pdcDistCanv2D->SaveAs(Form("./%s_Calib_%d/pDC_Dist2D.pdf", spec.c_str(), run));
-  
-  
-  pdcResCanvProf->SaveAs(Form("./%s_Calib_%d/pDC_ResProfile.pdf", spec.c_str(), run));
-  pdcResGraphCanv->SaveAs(Form("./%s_Calib_%d/pDC_ResPlot.pdf", spec.c_str(), run));
-  //}
-
-  //  if(detec.compare("cal")==0 || detec.compare("all")==0)
-  //	{
-  //	  detec = "cal";
   //====CALORIMETERS====
   pcalCanv = new TCanvas("SHMS Calorimeter Canv" , "SHMS Calorimeter Plots", 1500, 500);
   pcalCanv->Divide(3,2);
@@ -1029,13 +987,9 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   H_pcalEtrkNorm_vs_ytrk->Draw("COLZ");
   
 
-  pcalCanv->SaveAs(Form("./%s_Calib_%d/pCal_CalibPlots.pdf", spec.c_str(), run));
-  //	}
-   
+  pcalCanv->SaveAs(Form("./shms_Calib_%d/pCal_CalibPlots.pdf",  run));
 
-  //  if(detec.compare("hod")==0 || detec.compare("all")==0)					
-  //	{
-  //	  detec = "hod";
+  
   //======HODOSCOPOES=====
   phodCanv = new TCanvas("SHMS Hodoscope Beta Canv" , "SHMS Hodoscope Beta Plots", 1500, 500);
   phodCanv->Divide(2,1);
@@ -1075,14 +1029,11 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
       
     } // END LOOP OVER HODO PLANES
     
-  phodCanv->SaveAs(Form("./%s_Calib_%d/pHodBetaPlots.pdf", spec.c_str(), run));
-  phodCanv2D->SaveAs(Form("./%s_Calib_%d/pHodBeta2DPlots.pdf", spec.c_str(), run));
-  phodProfCanv->SaveAs(Form("./%s_Calib_%d/pHodBetaProfilePlots.pdf", spec.c_str(), run));
-  //	}
+  phodCanv->SaveAs(Form("./shms_Calib_%d/pHodBetaPlots.pdf",  run));
+  phodCanv2D->SaveAs(Form("./shms_Calib_%d/pHodBeta2DPlots.pdf",  run));
+  phodProfCanv->SaveAs(Form("./shms_Calib_%d/pHodBetaProfilePlots.pdf",  run));
 
-  //  if(detec.compare("cer")==0 || detec.compare("all")==0)
-  //	{
-  //	  detec = "cer";
+  
   //====CHERENKOVS====
   phgcerCanv = new TCanvas("SHMS HGCER", "SHMS HGCER Calib. Plots", 1500, 1500);
   pngcerCanv = new TCanvas("SHMS NGCER", "SHMS NGCER Calib. Plots", 1500, 1500);
@@ -1119,28 +1070,19 @@ void checkCalib(string spec, TString filename="", int run=0, TString hms_pid="",
   pngcerSumCanv->cd();
   H_pngcerNpeSum->Draw();
   
-  phgcerCanv->SaveAs(Form("./%s_Calib_%d/pHGCER_PMTs.pdf", spec.c_str(), run));
-  pngcerCanv->SaveAs(Form("./%s_Calib_%d/pNGCER_PMTs.pdf", spec.c_str(), run));
+  phgcerCanv->SaveAs(Form("./shms_Calib_%d/pHGCER_PMTs.pdf",  run));
+  pngcerCanv->SaveAs(Form("./shms_Calib_%d/pNGCER_PMTs.pdf",  run));
 
-  phgcerSumCanv->SaveAs(Form("./%s_Calib_%d/pHGCER_SUM.pdf", spec.c_str(), run));
-  pngcerSumCanv->SaveAs(Form("./%s_Calib_%d/pNGCER_SUM.pdf", spec.c_str(), run));
-  //	}
+  phgcerSumCanv->SaveAs(Form("./shms_Calib_%d/pHGCER_SUM.pdf",  run));
+  pngcerSumCanv->SaveAs(Form("./shms_Calib_%d/pNGCER_SUM.pdf",  run));
+
+
   //Write Histograms to ROOT file
-      if (spec.compare("all")==0 || spec.compare("shms")==0){
-	poutROOT->Write();
-	poutROOT->WriteTObject(hgr_mean);
-	poutROOT->WriteTObject(hgr_residual);
-	poutROOT->WriteTObject(pgr_mean);
-	poutROOT->WriteTObject(pgr_residual);   
-	poutROOT->Close();
+  poutROOT->Write();
+  poutROOT->WriteTObject(pgr_mean);
+  poutROOT->WriteTObject(pgr_residual);   
+  poutROOT->Close();
 	
-      }
-      else{
-	outROOT->Write();
-	outROOT->Close();
-      }
-
-      //}
 
 
 }
