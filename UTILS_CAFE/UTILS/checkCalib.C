@@ -637,7 +637,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       
       hdcDistCanv->cd(npl+1);
       binmax = H_hdcDist[npl]->GetMaximumBin();
-      upperlim =  H_hdcDist[npl]->GetBinContent(binmax) + 500.;
+      upperlim =  H_hdcDist[npl]->GetBinContent(binmax) + 200.;
       H_hdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
       H_hdcDist[npl]->Draw();
       
@@ -862,10 +862,9 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       
       pdcDistCanv->cd(npl+1);
       binmax = H_pdcDist[npl]->GetMaximumBin();
-      upperlim =  H_pdcDist[npl]->GetBinContent(binmax) + 500.;
+      upperlim =  H_pdcDist[npl]->GetBinContent(binmax) + 200.;
       H_pdcDist[npl]->GetYaxis()->SetRangeUser(0., upperlim);
       H_pdcDist[npl]->Draw();
-      
       
       
       // determine gaussian fit limits for residuals
