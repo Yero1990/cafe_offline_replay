@@ -93,7 +93,7 @@ void fitHodoCalib(TString filename,Int_t runNUM,Bool_t cosmic_flag=kFALSE)
   Double_t betanotrack_hi_cut = 1.5;
  
  if (cosmic_flag) betanotrack_low_cut = -1.2;
-  if (cosmic_flag) betanotrack_hi_cut = -.7;
+ if (cosmic_flag) betanotrack_hi_cut = -.7;
 
 
   //---Variables---

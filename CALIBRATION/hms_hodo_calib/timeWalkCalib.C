@@ -366,7 +366,7 @@ void timeWalkCalib(int run) {
 using namespace std;
 
 //prevent root from displaying graphs while executing
-//gROOT->SetBatch(1);
+gROOT->SetBatch(1);
 
   // ROOT settings
   gStyle->SetTitleFontSize(fontSize);

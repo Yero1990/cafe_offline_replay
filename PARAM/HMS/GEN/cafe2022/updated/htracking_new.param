@@ -6,8 +6,8 @@ hUseNewFindSpacePoints=1
 
 ;remove hit with the largest residual (-1 is off), 
 ; I don't quite understand how to determine this value
-; but if abs(largest residual) > p(h)TrackLargeResidCut, then remove hit
-hTrackLargeResidCut=1
+; but if abs(largest residual) > p(h)TrackLargeResidCut, then remove hit (ie., 0.075 means if its >750 um, remove it)
+hTrackLargeResidCut=0.08
 
 ; Maximum number of hits allowed in chambers for pattern recognition to proceed (one for each chamber)
 hmax_pr_hits = 35, 35
@@ -58,9 +58,9 @@ hstub_max_xpdiff = .05
 ; hsel_dedx1max           maximum dedx to chose best track in scin 1
   hsel_dedx1max = 1000000.
 ; hsel_betamin            minimum track beta to chose best track 
-  hsel_betamin  = -100000
+  hsel_betamin  = 0.1
 ; hsel_betamax            maximum track beta to chose best track 
-  hsel_betamax  = 100000.
+  hsel_betamax  = 1.5
 ; hsel_etmin              minimum track et to chose best track 
   hsel_etmin = 0.05
 ; hsel_etmax              maximum track et to chose best track 

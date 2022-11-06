@@ -647,8 +647,8 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       stdev  = H_hdcRes[npl]->GetStdDev(); 
       amplitude = H_hdcRes[npl]->GetBinContent(binmax);
       center = H_hdcRes[npl]->GetBinCenter(binmax);
-      xmin_fit = center - (stdev);
-      xmax_fit = center + (stdev); 
+      xmin_fit = center - (2*stdev);
+      xmax_fit = center + (2*stdev); 
       
       cout << std::setprecision(3) << "HMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
       

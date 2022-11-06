@@ -1,0 +1,24 @@
+16962 ;heep
+
+; light MF nuclei
+16975 ;LD2 MF
+16977 ;C12 MF
+16983 ;Be9 MF 
+16984 ;B10 MF 
+16986 ;B11 MF 
+; heavy MF nuclei
+16980 ;Ca40 MF
+17096 ;Ca48 MF  
+16982 ;Fe54 MF
+
+; heavy SRC nuclei
+17032 ;Ca40 SRC
+17056 ;Ca48 SRC
+17144 ;Fe54 SRC
+
+; light SRC nuclei
+17085 ;C12 SRC
+17106 ;Be9 SRC
+17114 ;B10 SRC
+17120 ;B11 SRC
+17134 ;LD2 SRC

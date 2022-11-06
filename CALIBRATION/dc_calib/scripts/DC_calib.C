@@ -1006,7 +1006,7 @@ void DC_calib::EventLoop(string option="")
 	    {
 	      // cout << "PLANE: " << ip << endl;
 
-   	  if (good_event&&ndata_time[ip]==1)
+	      if (good_event && ndata_time[ip]==1)
         	{
 		
 	      
