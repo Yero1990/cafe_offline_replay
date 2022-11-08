@@ -7,7 +7,7 @@ hUseNewFindSpacePoints=1
 ;remove hit with the largest residual (-1 is off), 
 ; I don't quite understand how to determine this value
 ; but if abs(largest residual) > p(h)TrackLargeResidCut, then remove hit (ie., 0.075 means if its >750 um, remove it)
-hTrackLargeResidCut=0.08
+hTrackLargeResidCut=0.5
 
 ; Maximum number of hits allowed in chambers for pattern recognition to proceed (one for each chamber)
 hmax_pr_hits = 35, 35

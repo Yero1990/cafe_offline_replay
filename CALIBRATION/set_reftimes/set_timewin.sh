@@ -17,7 +17,7 @@ fi
 
 daq_mode="coin"
 set_refTimes=0
-debug=0
+debug=1
   
 # Which analysis file type are we doing? 
 ana_type="timewin"

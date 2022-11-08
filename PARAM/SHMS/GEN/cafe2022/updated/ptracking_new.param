@@ -7,7 +7,7 @@ pUseNewLinkStubs=1
 
 pUseNewFindSpacePoints=1 
 
-pTrackLargeResidCut=0.08
+pTrackLargeResidCut=0.15
 
 ; Tracking parameters
   pmax_pr_hits = 35, 35

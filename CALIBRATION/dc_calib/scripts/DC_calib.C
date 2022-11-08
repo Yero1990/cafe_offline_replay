@@ -380,7 +380,7 @@ void DC_calib::GetDCLeafs()
     {
       cal_etot_leaf = "P.cal.etot";
       cer_npe_leaf = "P.ngcer.npeSum";  
-      edtm_tdctime_leaf = "T.coin.pEDTM_tdcTime";
+      //edtm_tdctime_leaf = "T.coin.pEDTM_tdcTime";
       hod_beta_leaf = "P.hod.betanotrack";
 
       //Check Branch Status 
@@ -413,7 +413,7 @@ void DC_calib::GetDCLeafs()
 	{
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
-	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime); 
+	  //tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime); 
 	  tree->SetBranchAddress(hod_beta_leaf, &hod_beta_notrk);  
 	}
 	
@@ -423,7 +423,7 @@ void DC_calib::GetDCLeafs()
     {
       cal_etot_leaf = "H.cal.etot";
       cer_npe_leaf = "H.cer.npeSum";  
-      edtm_tdctime_leaf = "T.coin.hEDTM_tdcTime"; // this assumes daq in coin mode (will need to generalize to singles mode as well) 
+      //edtm_tdctime_leaf = "T.coin.hEDTM_tdcTime"; // this assumes daq in coin mode (will need to generalize to singles mode as well) 
       hod_beta_leaf = "H.hod.betanotrack";      
 
       //Check Branch Status with Boolean
@@ -455,7 +455,7 @@ void DC_calib::GetDCLeafs()
 	{
 	  tree->SetBranchAddress(cal_etot_leaf, &cal_etot);
 	  tree->SetBranchAddress(cer_npe_leaf, &cer_npe);   
-	  tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime);
+	  //tree->SetBranchAddress(edtm_tdctime_leaf, &edtm_tdctime);
 	  tree->SetBranchAddress(hod_beta_leaf, &hod_beta_notrk);
 	}
       
@@ -928,7 +928,7 @@ void DC_calib::EventLoop(string option="")
       
       //------READ USER 'pid' input to determine particle type to calibrate----------
       
-      no_edtm_cut = edtm_tdctime==0;
+      //no_edtm_cut = edtm_tdctime==0;
      
       
       if(pid=="pid_kFALSE"){
@@ -942,7 +942,7 @@ void DC_calib::EventLoop(string option="")
 	{
 	  cal_elec = cal_etot>0.1;  //normalize energy > 0.1 (bkg cleanup)
 	  cer_elec = cer_npe>1.0;     //number of photoelec. > 1 (electrons)
-	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.3;  // cut: beta +/- 0.3  (select clean e- sample)
+	  hod_beta_cut = abs(beta_peak - hod_beta_notrk) < 0.2;  // cut: beta +/- 0.2  (select clean e- sample)
 	   
 	}
       
@@ -999,7 +999,7 @@ void DC_calib::EventLoop(string option="")
       
 
       //***good event definition***: cal_energy > 100 MeV, cer_npeSum > 1.0
-      good_event = cal_elec && cer_elec && no_edtm_cut && hod_beta_cut; //&& cnts_ch1>4 && cnts_ch2>4;
+      good_event = cal_elec && cer_elec; // && hod_beta_cut; //&& cnts_ch1>4 && cnts_ch2>4;
        
 	  // cout << "passed cut: " << i << endl;
 	  for(Int_t ip=0; ip<NPLANES; ip++)

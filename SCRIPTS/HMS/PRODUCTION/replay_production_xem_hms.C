@@ -1,4 +1,4 @@
-void replay_production_all_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
+void replay_production_xem_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
 
   // Get RunNumber and MaxEvent if not provided.
   if(RunNumber == 0) {
@@ -22,6 +22,7 @@ void replay_production_all_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
   pathList.push_back("./raw");
   pathList.push_back("./raw/../raw.copiedtotape");
   pathList.push_back("./cache");
+  pathList.push_back("./CACHE_LINKS/cache_xem");
 
   const char* ROOTFileNamePattern = "ROOTfiles/hms_replay_production_all_%d_%d.root";
 
@@ -33,7 +34,7 @@ void replay_production_all_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
   gHcParms->Load(gHcParms->GetString("g_ctp_parm_filename"));
   gHcParms->Load(gHcParms->GetString("g_ctp_kinematics_filename"), RunNumber);
   // Load params for HMS trigger configuration
-  gHcParms->Load("PARAM/TRIG/thms.param");
+  gHcParms->Load("PARAM/TRIG/archive/spring18/thms.param");
   // Load fadc debug parameters
   gHcParms->Load("PARAM/HMS/GEN/h_fadc_debug.param");
 
@@ -156,15 +157,18 @@ void replay_production_all_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
   // Define output ROOT file
   analyzer->SetOutFile(ROOTFileName.Data());
   // Define output DEF-file 
-  analyzer->SetOdefFile("DEF-files/HMS/PRODUCTION/hstackana_production_all.def");
+  //analyzer->SetOdefFile("DEF-files/xem_hms_hod.def");
+  //analyzer->SetOdefFile("DEF-files/xem_hms_dc.def");
+  analyzer->SetOdefFile("DEF-files/xem_hms_cal.def");
+
   // Define cuts file
-  analyzer->SetCutFile("DEF-files/HMS/PRODUCTION/CUTS/hstackana_production_cuts.def");    // optional
+  analyzer->SetCutFile("DEF-files/CUTS/archive/spring18/hstackana_production_cuts.def");    // optional
   // File to record cuts accounting information for cuts
-  analyzer->SetSummaryFile(Form("REPORT_OUTPUT/HMS/PRODUCTION/summary_all_production_%d_%d.report", RunNumber, MaxEvent));    // optional
+  //analyzer->SetSummaryFile(Form("REPORT_OUTPUT/HMS/PRODUCTION/summary_all_production_%d_%d.report", RunNumber, MaxEvent));    // optional
   // Start the actual analysis.
   analyzer->Process(run);
   // Create report file from template.
-  analyzer->PrintReport("TEMPLATES/HMS/PRODUCTION/hstackana_production.template",
-			Form("REPORT_OUTPUT/HMS/PRODUCTION/replay_hms_all_production_%d_%d.report", RunNumber, MaxEvent));
+  //analyzer->PrintReport("TEMPLATES/HMS/PRODUCTION/hstackana_production.template",
+  //			Form("REPORT_OUTPUT/HMS/PRODUCTION/replay_hms_all_production_%d_%d.report", RunNumber, MaxEvent));
 
 }

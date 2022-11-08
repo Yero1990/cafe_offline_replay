@@ -370,8 +370,8 @@ void timeWalkHistos(TString inputname, Int_t runNum, string SPEC_flg) {  //SPEC_
   nentries = rawDataTree->GetEntries();
   
   // if total entries exceed 1 million, just do calibration with 1 million
-  //if(nentries>1e6){
-  //  nentries = 1000000;
+  //if(nentries>1e5){
+  //  nentries = 10000;
   //}
   cout << "\n******************************************"    << endl;
   cout << nentries << " Events Will Be Processed"           << endl;
