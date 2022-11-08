@@ -1,0 +1,16 @@
+# Def-files with leaf variables relevant for setting reference times
+# ---------------------------------------
+
+block T.shms.pT1_tdcTimeRaw
+block T.shms.pT1_tdcMultiplicity
+block T.shms.pT2_tdcTimeRaw
+block T.shms.pT2_tdcMultiplicity
+
+block T.shms.pFADC_TREF_*_adcPulseTimeRaw
+block T.shms.pFADC_TREF_*_adcMultiplicity
+
+block T.shms.pDCREF*_tdcTimeRaw
+block T.shms.pDCREF*_tdcMultiplicity
+
+
+
