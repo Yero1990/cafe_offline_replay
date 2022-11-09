@@ -31,8 +31,8 @@ hcal_d_cor =  1.66,  1.66
 hcal_layer_names = "1pr 2ta 3ta 4ta"
 
 # The following were defined in REPLAY.PARAM
-;h_recon_coeff_filename =    'DATFILES/hms_recon_coeff.dat'  ;hms optics matrix
-;h_recon_coeff_filename =    'DATFILES/hms_recon_coeff_opt2018.dat'  ;hms optics matrix
+;h_recon_coeff_filename =    "DATFILES/hms_recon_coeff.dat"  ;hms optics matrix
+;h_recon_coeff_filename =    "DATFILES/hms_recon_coeff_opt2018.dat"  ;hms optics matrix
 
 # HMS defocused
-h_recon_coeff_filename = 'DATFILES/hms_q2_p20_rec.dat' 
+h_recon_coeff_filename = "DATFILES/hms_q2_p20_rec.dat"

@@ -27,6 +27,8 @@
 ana_type=${0##*_}
 ana_type=${ana_type%%.sh}     
 
+HCREPLAY="/work/hallc/c-cafe-2022/$USER/cafe_offline_replay"
+echo "HCREPLAY=${HCREPLAY}"
 
 # change to top-level directory
 echo ""

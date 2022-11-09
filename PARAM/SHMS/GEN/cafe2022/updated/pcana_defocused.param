@@ -21,4 +21,5 @@ SHMS_CentralPathLen = 18.1*100   ; 18.1 m (or 1810 cm)
 ;p_recon_coeff_filename = "DATFILES/hsv_fit_global.dat"
 
 ; SHMS defocused tune 
-p_recon_coeff_filename = "shms-2017-26cm-monte_quads_p18_q2_120_rec.dat"
+;p_recon_coeff_filename = "DATFILES/shms-2017-26cm-monte_quads_p18_q2_120_rec.dat"
+p_recon_coeff_filename = "DATFILES/shms-2011-26cm-monte_q2_p20_rec.dat"
