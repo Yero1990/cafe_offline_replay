@@ -175,7 +175,7 @@ ppcentral = 5.530
 hpartmass =  0.000511
 ppartmass =  0.000511
 
-#de-focused tun
+#pionlt de-focused run
 14907
 gpbeam = 10.549355
 gtargmass_amu = 2.014101
@@ -186,7 +186,7 @@ ppcentral = 5.530
 hpartmass =  0.000511
 ppartmass =  0.000511
 
-# 14967 is defocused
+# 14967 is defocused (used for cafe calorimeter calibration)
 14965 - 14967
 gpbeam = 10.549355
 gtargmass_amu =  2.014101

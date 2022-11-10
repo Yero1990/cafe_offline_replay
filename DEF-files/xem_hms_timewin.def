@@ -1,0 +1,31 @@
+# Def-files with leaf variables relevant for setting detector time window cuts
+
+block T.hms.hTRIG*_tdcTimeRaw
+block T.hms.hEDTM_tdcTimeRaw
+
+block T.hms.hT1_tdcTimeRaw 
+block T.hms.hT1_tdcMultiplicity 
+
+block T.hms.hDCREF*_tdcTimeRaw
+block T.hms.hDCREF*_tdcMultiplicity
+
+block T.hms.hFADC_TREF_ROC1_adcPulseTimeRaw  
+block T.hms.hFADC_TREF_ROC1_adcMultiplicity
+
+block T.hms.hT*_tdcTimeRaw 
+block T.hms.hT*_tdcMultiplicity
+
+# ---------------------------------------
+
+
+block H.cer.goodAdcTdcDiffTime
+block H.cer.goodAdcMult
+
+block H.dc.*.rawtdc
+
+block H.hod.*.*TdcTimeUnCorr
+block H.hod.*.*AdcTdcDiffTime
+block H.hod.*.*AdcMult
+
+block H.cal.*.*AdcTdcDiffTime
+block H.cal.*.*AdcMult

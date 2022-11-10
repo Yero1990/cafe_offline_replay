@@ -369,9 +369,9 @@ void timeWalkHistos(TString inputname, Int_t runNum, string SPEC_flg) {  //SPEC_
     // Loop over the events and fill histograms
   nentries = rawDataTree->GetEntries();
   
-  // if total entries exceed 1 million, just do calibration with 1 million
-  //if(nentries>1e5){
-  //  nentries = 10000;
+  //if total entries exceed 1 million, just do calibration with 1 million
+  //if(nentries>499000){
+  //  nentries = 180000;
   //}
   cout << "\n******************************************"    << endl;
   cout << nentries << " Events Will Be Processed"           << endl;
@@ -398,6 +398,9 @@ void timeWalkHistos(TString inputname, Int_t runNum, string SPEC_flg) {  //SPEC_
     //if (!(good_two_ended_hits_1x && good_two_ended_hits_1y && good_two_ended_hits_2x && good_two_ended_hits_2y)) continue; //C.Y. Added 2-ended hit requirement
     
     if (!(good_hits && good_two_ended_hits_1x && good_two_ended_hits_1y && good_two_ended_hits_2x && good_two_ended_hits_2y)) continue; //C.Y. Added 2-ended hit requirement         
+    
+    //exception for run 14967, weird
+    if(ievent==182560) continue;
 
     //cout << "evt = " << ievent << endl;
     //cout << "phod_1xnhits = " << phod_1xnhits << endl;
@@ -526,6 +529,14 @@ void timeWalkHistos(TString inputname, Int_t runNum, string SPEC_flg) {  //SPEC_
 			if (adcAndTdcHitCut || adcTdcTimeDiffCut) continue;
 			h2_adcPulseAmpCuts[iplane][iside]->Fill(tdcPaddleNum, adcPulseAmp);
 			h2_adcTdcTimeDiff[iplane][iside]->Fill(tdcPaddleNum, adcTdcTimeDiff);
+			
+			//if(ievent>180000){
+			//  cout << "ievt = " << ievent << endl;
+			//	  cout << "iplane, iside -- >" <<iplane << ", " << iside << endl;
+			//  cout << "adcPulseAmp = " << adcPulseAmp << endl;
+			//  cout << "adcPulseTime = " << adcPulseTime << endl; 
+			//}
+			
 			h2_adcTimeWalk[iplane][iside][tdcPaddleNum-1]->Fill(adcPulseAmp, adcPulseTime);
 			h2_tdcTimeWalk[iplane][iside][tdcPaddleNum-1]->Fill(adcPulseAmp, tdcTime);
 			h2_adcTdcTimeDiffWalk[iplane][iside][tdcPaddleNum-1]->Fill(adcPulseAmp, adcTdcTimeDiff);

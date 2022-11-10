@@ -5,9 +5,8 @@
 void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms_pid="")
 {
   
-  //spec --> "hms" or "shms" or "all"
-  //run ---> 3289  or if it is combined, then, 580MeV or 750MeV (for deuteron runs combined)
-  // hms_pid --> "p" or "e"
+  // run ---> run number
+  // hms_pid --> "p" (for protons) or "e" (for electrons)
   // shms_pid ---> "p" or "e"
   
   //Prevent plot 
@@ -23,6 +22,18 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //=============================
 
   //HMS			                     //SHMS			     
+  hxfp_nbins = 100,                          pxfp_nbins = 100;   
+  hxfp_xmin = -50,                           pxfp_xmin = -50;
+  hxfp_xmax = 50,                            pxfp_xmax = 50; 
+
+  hyfp_nbins = 100,                          pyfp_nbins = 100;
+  hyfp_xmin = -50,                           pyfp_xmin = -50;                                                                                               
+  hyfp_xmax = 50,                            pyfp_xmax = 50;  
+
+  hdelta_nbins = 100,                        pdelta_nbins = 100;              
+  hdelta_xmin = -10,                         pdelta_xmin = -10;                                                                                                 
+  hdelta_xmax = 10,                          pdelta_xmax = 22;        
+
   hcalEtrkNorm_nbins = 100,         	     pcalEtrkNorm_nbins = 100  ;
   hcalEtrkNorm_xmin = 0.001, 		     pcalEtrkNorm_xmin = 0.001 ;
   hcalEtrkNorm_xmax = 2.0,   		     pcalEtrkNorm_xmax = 2.0;   
@@ -101,6 +112,11 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //===Set Branch Address======
   //===========================
 
+  // focal plane in [cm]
+  nhxfp = "H.dc.x_fp";                          npxfp = "P.dc.x_fp"; 
+  nhyfp = "H.dc.y_fp";                          npyfp = "P.dc.y_fp";  
+  nhdelta = "H.gtr.dp";                        npdelta = "P.gtr.dp";    
+
   nhdc_res = "H.dc.residualExclPlane";	       npdc_res = "P.dc.residualExclPlane";	     
   nhhod_beta = "H.hod.beta";		       nphod_beta = "P.hod.beta";		     
   nhhod_beta_notrk = "H.hod.betanotrack";      nphod_beta_notrk = "P.hod.betanotrack";    
@@ -127,6 +143,16 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   H_hcalEtrkNorm_vs_xtrk = new TH2F("hCal_eTrkNorm_v_xtrack", "HMS Norm. Trk E v. xTrack", hcalXtrk_nbins, hcalXtrk_xmin, hcalXtrk_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);
   H_hcalEtrkNorm_vs_ytrk = new TH2F("hCal_eTrkNorm_v_ytrack", "HMS Norm. Trk E v. yTrack", hcalYtrk_nbins, hcalYtrk_xmin, hcalYtrk_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);
   H_hcerNpeSum = new TH1F("hCer_npeSum", "HMS Cherenkov Total P.E. Sum", hcer_nbins, hcer_xmin, hcer_xmax);
+
+  H_hcalEtrkNorm_vs_xfp = new TH2F("hCal_eTrkNorm_v_xfp", "HMS Edep/Ptrk vs X_{fp}", hxfp_nbins, hxfp_xmin, hxfp_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);
+  H_hcalEtrkNorm_vs_yfp = new TH2F("hCal_eTrkNorm_v_yfp", "HMS Edep/Ptrk vs Y_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);  
+  H_hcalEtrkNorm_vs_delta = new TH2F("hCal_eTrkNorm_v_delta", "HMS Edep/Ptrk vs #delta", hdelta_nbins, hdelta_xmin, hdelta_xmax, hcalEtrkNorm_nbins, hcalEtrkNorm_xmin, hcalEtrkNorm_xmax);  
+
+  H_hhodBeta_vs_xfp = new TH2F("hhodBeta_vs_xfp", "HMS Beta (w/Trk) vs X_{fp}", hxfp_nbins, hxfp_xmin, hxfp_xmax, hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);                   
+  H_hhodBeta_vs_yfp = new TH2F("hhodBeta_vs_yfp", "HMS Beta (w/Trk) vs Y_{fp}", hyfp_nbins, hyfp_xmin, hyfp_xmax, hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);                           
+  H_hhodBeta_vs_delta = new TH2F("hhodBeta_vs_delta", "HMS Beta (w/Trk) vs #delta", hdelta_nbins, hdelta_xmin, hdelta_xmax, hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);                           
+  
+
   //===SHMS===
   H_pbeta_peak = new TH1F("H_pbeta_peak", "SHMS Hodoscope Beta (no tracking)", phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
 
@@ -139,9 +165,21 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   H_phgcerNpeSum = new TH1F("phgCer_npeSum", "SHMS HGCER Total P.E. Sum", phgcer_nbins, phgcer_xmin, phgcer_xmax);
   H_pngcerNpeSum = new TH1F("pngCer_npeSum", "SHMS NGCER Total P.E. Sum", pngcer_nbins, pngcer_xmin, pngcer_xmax);
 
+  H_pcalEtrkNorm_vs_xfp = new TH2F("pCal_eTrkNorm_v_xfp", "SHMS Edep/Ptrk vs X_{fp}", pxfp_nbins, pxfp_xmin, pxfp_xmax, pcalEtrkNorm_nbins, pcalEtrkNorm_xmin, pcalEtrkNorm_xmax);                
+  H_pcalEtrkNorm_vs_yfp = new TH2F("pCal_eTrkNorm_v_yfp", "SHMS Edep/Ptrk vs Y_{fp}", pyfp_nbins, pyfp_xmin, pyfp_xmax, pcalEtrkNorm_nbins, pcalEtrkNorm_xmin, pcalEtrkNorm_xmax);                                            
+  H_pcalEtrkNorm_vs_delta = new TH2F("pCal_eTrkNorm_v_delta", "SHMS Edep/Ptrk vs #delta", pdelta_nbins, pdelta_xmin, pdelta_xmax, pcalEtrkNorm_nbins, pcalEtrkNorm_xmin, pcalEtrkNorm_xmax);                             
+                                                                                                                                                                                                                           
+  H_phodBeta_vs_xfp = new TH2F("phodBeta_vs_xfp", "SHMS Beta (w/Trk) vs X_{fp}", pxfp_nbins, pxfp_xmin, pxfp_xmax, phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);                                                               
+  H_phodBeta_vs_yfp = new TH2F("phodBeta_vs_yfp", "SHMS Beta (w/Trk) vs Y_{fp}", pyfp_nbins, pyfp_xmin, pyfp_xmax, phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);                                                                
+  H_phodBeta_vs_delta = new TH2F("phodBeta_vs_delta", "SHMS Beta (w/Trk) vs #delta", pdelta_nbins, pdelta_xmin, pdelta_xmax, phodBeta_nbins, phodBeta_xmin, phodBeta_xmax); 
+
 
   //Set Branch Address for Hodo, Calo, and Cherenkov
   //HMS
+  T->SetBranchAddress(nhxfp, &hxfp);  
+  T->SetBranchAddress(nhyfp, &hyfp);
+  T->SetBranchAddress(nhdelta, &hdelta);
+
   T->SetBranchAddress(nhhod_beta, &hhod_beta);
   T->SetBranchAddress(nhhod_beta_notrk, &hhod_beta_notrk);
   T->SetBranchAddress(nhcer_npesum, &hcer_npesum);
@@ -149,7 +187,12 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   T->SetBranchAddress(nhcal_etrknorm, &hcal_etrknorm);
   T->SetBranchAddress(nhcal_xtrack, &hcal_xtrack);
   T->SetBranchAddress(nhcal_ytrack, &hcal_ytrack);
+  
   //SHMS
+  T->SetBranchAddress(npxfp, &pxfp);                                                                                                                                                                          
+  T->SetBranchAddress(npyfp, &pyfp);                                                                                                                                                                                         
+  T->SetBranchAddress(npdelta, &pdelta);
+
   T->SetBranchAddress(nphod_beta, &phod_beta);
   T->SetBranchAddress(nphod_beta_notrk, &phod_beta_notrk);
   T->SetBranchAddress(nphgcer_npesum, &phgcer_npesum);
@@ -465,45 +508,50 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 	  //Require single hit per plane
 	  hnhit = hdc_nhit[0]==1&&hdc_nhit[1]==1&&hdc_nhit[2]==1&&hdc_nhit[3]==1&&hdc_nhit[4]==1&&hdc_nhit[5]==1&& 
 	    hdc_nhit[6]==1&&hdc_nhit[7]==1&&hdc_nhit[8]==1&&hdc_nhit[9]==1&&hdc_nhit[10]==1&&hdc_nhit[11]==1;
-	  
 	 
-	  
 
 	  //Loop over hits
 	  for (Int_t j=0; j < hdc_ndata[npl]; j++)
 	    {
-
-	
-
-	      if(hms_pid_cut&&hnhit){
-	      //Fill Histograms
-	      H_hdcTime[npl]->Fill(hdc_time[npl][j]);
-	      H_hdcDist[npl]->Fill(hdc_dist[npl][j]);
 	      
-	      //Fill 2D Histos
-	      H_hres_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_res[npl]);
-	      H_htime_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_time[npl][j]);
-	      H_hdist_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_dist[npl][j]);
-	      	     
-	      //Fill Residual
-	      H_hdcRes[npl]->Fill(hdc_res[npl]);
+	      if(hms_pid_cut&&hnhit){
+		//Fill Histograms
+		H_hdcTime[npl]->Fill(hdc_time[npl][j]);
+		H_hdcDist[npl]->Fill(hdc_dist[npl][j]);
+		
+		//Fill 2D Histos
+		H_hres_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_res[npl]);
+		H_htime_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_time[npl][j]);
+		H_hdist_vs_wire[npl]->Fill(hdc_wire[npl][j], hdc_dist[npl][j]);
+		
+		//Fill Residual
+		H_hdcRes[npl]->Fill(hdc_res[npl]);
 	      } // end single hit requirement
-	    
+	      
 	    } //end loop over hits
 	  
 	} //end DC Plane loop
-
-    
+      
+      
       //====HMS CALORIMETER=====
       H_hcalEtrkNorm->Fill(hcal_etrknorm);
       H_hcalEtot->Fill(hcal_etot); 
       H_hcalEtrkNorm_vs_xtrk->Fill(hcal_xtrack, hcal_etrknorm);
       H_hcalEtrkNorm_vs_ytrk->Fill(hcal_ytrack, hcal_etrknorm);
-	
+      
+      H_hcalEtrkNorm_vs_xfp->Fill(hxfp,     hcal_etrknorm);
+      H_hcalEtrkNorm_vs_yfp->Fill(hyfp,     hcal_etrknorm);
+      H_hcalEtrkNorm_vs_delta->Fill(hdelta, hcal_etrknorm);
+      
+      
+
       //====HMS HODOSCOPES=====
       H_hhodBeta->Fill(hhod_beta);
       H_hhodBetaNoTrk->Fill(hhod_beta_notrk);
-
+      
+      H_hhodBeta_vs_xfp->Fill(hxfp,     hhod_beta);
+      H_hhodBeta_vs_yfp->Fill(hyfp,     hhod_beta);
+      H_hhodBeta_vs_delta->Fill(hdelta, hhod_beta);
 
       //Loop over all HODO planes
       for (Int_t npl = 0; npl < hod_PLANES; npl++ )
@@ -553,10 +601,18 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_pcalEtrkNorm_vs_xtrk->Fill(pcal_xtrack, pcal_etrknorm);
       H_pcalEtrkNorm_vs_ytrk->Fill(pcal_ytrack, pcal_etrknorm);
       
+      H_pcalEtrkNorm_vs_xfp->Fill(pxfp,     pcal_etrknorm);                                                                                                                                                                                       
+      H_pcalEtrkNorm_vs_yfp->Fill(pyfp,     pcal_etrknorm);                                                                                                                                                                                               
+      H_pcalEtrkNorm_vs_delta->Fill(pdelta, pcal_etrknorm);
+
+
       //====SHMS HODOSCOPES=====
       H_phodBeta->Fill(phod_beta);
       H_phodBetaNoTrk->Fill(phod_beta_notrk);
       
+      H_phodBeta_vs_xfp->Fill(pxfp,     phod_beta);                                                                                                                                                                                           
+      H_phodBeta_vs_yfp->Fill(pyfp,     phod_beta);                                                                                                                                                                                                      
+      H_phodBeta_vs_delta->Fill(pdelta, phod_beta);   
 
       //Loop over all HODO planes
       for (Int_t npl = 0; npl < hod_PLANES; npl++ )
@@ -647,8 +703,8 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       stdev  = H_hdcRes[npl]->GetStdDev(); 
       amplitude = H_hdcRes[npl]->GetBinContent(binmax);
       center = H_hdcRes[npl]->GetBinCenter(binmax);
-      xmin_fit = center - (2*stdev);
-      xmax_fit = center + (2*stdev); 
+      xmin_fit = center - (1.5*stdev);
+      xmax_fit = center + (1.5*stdev); 
       
       cout << std::setprecision(3) << "HMS DC xmin_fit, xmax_fit = " << xmin_fit << ", " << xmax_fit << endl;
       

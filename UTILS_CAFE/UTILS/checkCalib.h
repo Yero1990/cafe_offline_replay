@@ -40,6 +40,7 @@ static const string nsign[SIDES] = {"+", "-"};
 static const Int_t hmaxPMT[hod_PLANES] = {16, 10, 16, 10};
 static const Int_t pmaxPMT[hod_PLANES] = {13, 13, 14, 21};
 
+
 //=====================================================
 
 
@@ -49,6 +50,16 @@ static const Int_t pmaxPMT[hod_PLANES] = {13, 13, 14, 21};
 //=============================================
 
 //Set Histogram Binning
+
+// HMS Focal Plane
+Double_t hxfp_nbins,   hxfp_xmin, hxfp_xmax;
+Double_t hyfp_nbins,   hyfp_xmin, hyfp_xmax;   
+Double_t hdelta_nbins, hdelta_xmin, hdelta_xmax;   
+
+// sHMS Focal Plane 
+Double_t pxfp_nbins,   pxfp_xmin,   pxfp_xmax; 
+Double_t pyfp_nbins,   pyfp_xmin,   pyfp_xmax;  
+Double_t pdelta_nbins, pdelta_xmin, pdelta_xmax;   
 
 //HMS DC
 Double_t hdcTime_nbins, hdcTime_xmin, hdcTime_xmax;
@@ -137,6 +148,11 @@ TH1F *H_hcalEtrkNorm;			      	     TH1F *H_pcalEtrkNorm;
 TH1F *H_hcalEtot;			      	     TH1F *H_pcalEtot;			      
 TH2F *H_hcalEtrkNorm_vs_xtrk;		      	     TH2F *H_pcalEtrkNorm_vs_xtrk;		      
 TH2F *H_hcalEtrkNorm_vs_ytrk;		      	     TH2F *H_pcalEtrkNorm_vs_ytrk;		      
+
+TH2F *H_hcalEtrkNorm_vs_xfp;                         TH2F *H_pcalEtrkNorm_vs_xfp;
+TH2F *H_hcalEtrkNorm_vs_yfp;                         TH2F *H_pcalEtrkNorm_vs_yfp;
+TH2F *H_hcalEtrkNorm_vs_delta;                       TH2F *H_pcalEtrkNorm_vs_delta;
+
 					      	     					      
 //===HODOSCOPES===			      	     //===HODOSCOPES===			      
 TH1F *H_hbeta_peak;                                  TH1F *H_pbeta_peak;
@@ -144,6 +160,11 @@ TH1F *H_hhodBeta;			      	     TH1F *H_phodBeta;
 TH1F *H_hhodBetaNoTrk;			      	     TH1F *H_phodBetaNoTrk;			      
 TH2F *H_hhodBeta_v_Xtrk[hod_PLANES];	      	     TH2F *H_phodBeta_v_Xtrk[hod_PLANES];	      
 TH2F *H_hhodBeta_v_Ytrk[hod_PLANES];	      	     TH2F *H_phodBeta_v_Ytrk[hod_PLANES];	      
+
+TH2F *H_hhodBeta_vs_xfp;                              TH2F *H_phodBeta_vs_xfp; 
+TH2F *H_hhodBeta_vs_yfp;                              TH2F *H_phodBeta_vs_yfp; 
+TH2F *H_hhodBeta_vs_delta;                            TH2F *H_phodBeta_vs_delta;
+
 					      	     					      
 //Profile Histos of beta vs. xtrk (or ytrk)   	     //Profile Histos of beta vs. xtrk (or ytrk)   
 TProfile *hhod_xProfX[hod_PLANES];	      	     TProfile *phod_xProfX[hod_PLANES];	      
@@ -180,6 +201,10 @@ TString nhcal_etrknorm; 		       	  TString npcal_etrknorm;
 TString nhcal_xtrack;	     		       	  TString npcal_xtrack;	     		       
 TString nhcal_ytrack;                          	  TString npcal_ytrack;                          
 
+TString nhxfp;       TString npxfp;
+TString nhyfp;       TString npyfp;
+TString nhdelta;     TString npdelta; 
+
 
 //--Variables
 Double_t hdc_wire[dc_PLANES][1000];	     Double_t pdc_wire[dc_PLANES][1000];	   
@@ -202,6 +227,9 @@ Double_t hcal_etrknorm;			     Double_t pcal_etrknorm;
 Double_t hcal_xtrack;			     Double_t pcal_xtrack;			   
 Double_t hcal_ytrack;                        Double_t pcal_ytrack;                      
 
+Double_t hxfp;      Double_t pxfp;
+Double_t hyfp;      Double_t pyfp;  
+Double_t hdelta;    Double_t pdelta;  
   
 //Define Mean/Sigma to be used for residuals
 Double_t mean[dc_PLANES];

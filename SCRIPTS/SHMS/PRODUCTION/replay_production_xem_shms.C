@@ -159,11 +159,11 @@ void replay_production_xem_shms (Int_t RunNumber = 0, Int_t MaxEvent = 0) {
   // Define output ROOT file
   analyzer->SetOutFile(ROOTFileName.Data());
   // Define DEF-file
-  //analyzer->SetOdefFile("DEF-files/xem_shms_hod.def");
+  analyzer->SetOdefFile("DEF-files/xem_shms_hod.def");
   //analyzer->SetOdefFile("DEF-files/xem_shms_dc.def");  
-  analyzer->SetOdefFile("DEF-files/xem_shms_cal.def");  
+  //analyzer->SetOdefFile("DEF-files/xem_shms_cal.def");  
   // analyzer->SetOdefFile("DEF-files/xem_shms_reftime.def");
-  // analyzer->SetOdefFile("DEF-files/xem_shms_timewin.def"); 
+  //analyzer->SetOdefFile("DEF-files/xem_shms_timewin.def"); 
   // Define cuts file
   analyzer->SetCutFile("DEF-files/CUTS/archive/spring18/pstackana_production_cuts.def");  // optional
   // File to record accounting information for cuts
