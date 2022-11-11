@@ -131,7 +131,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
     
 
 
-
+  houtROOT->cd();
   //Initialize Some Histograms
   //===HMS====
   H_hbeta_peak = new TH1F("H_hbeta_peak", "HMS Hodoscope Beta (no tracking)", hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);
@@ -153,6 +153,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   H_hhodBeta_vs_delta = new TH2F("hhodBeta_vs_delta", "HMS Beta (w/Trk) vs #delta", hdelta_nbins, hdelta_xmin, hdelta_xmax, hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);                           
   
 
+  poutROOT->cd();
   //===SHMS===
   H_pbeta_peak = new TH1F("H_pbeta_peak", "SHMS Hodoscope Beta (no tracking)", phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
 
@@ -175,6 +176,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 
 
   //Set Branch Address for Hodo, Calo, and Cherenkov
+  
   //HMS
   T->SetBranchAddress(nhxfp, &hxfp);  
   T->SetBranchAddress(nhyfp, &hyfp);
@@ -188,6 +190,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   T->SetBranchAddress(nhcal_xtrack, &hcal_xtrack);
   T->SetBranchAddress(nhcal_ytrack, &hcal_ytrack);
   
+ 
   //SHMS
   T->SetBranchAddress(npxfp, &pxfp);                                                                                                                                                                          
   T->SetBranchAddress(npyfp, &pyfp);                                                                                                                                                                                         
@@ -210,6 +213,8 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       x[npl] = npl+1;  //set x-axis for use with TGraph
       x_err[npl] = 0; // set x-axis error (none)
 
+
+      houtROOT->cd();    
       //Initialize DC Histograms
       
       //HMS DC
@@ -231,6 +236,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_hdcRes[npl]->GetYaxis()->SetTitle("Counts");
       H_hdcRes[npl]->GetYaxis()->CenterTitle();
       
+      poutROOT->cd();    
       //SHMS DC
       H_pdcDist[npl] = new TH1F(Form("pDC_%s_DriftDist", pdc_pl_names[npl].c_str()), Form("SHMS DC Drift Distance, Plane %s", pdc_pl_names[npl].c_str()), pdcDist_nbins, pdcDist_xmin, pdcDist_xmax);
       H_pdcDist[npl]->GetXaxis()->SetTitle("Drift Distance (cm) ");
@@ -250,7 +256,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_pdcRes[npl]->GetYaxis()->SetTitle("Counts");
       H_pdcRes[npl]->GetYaxis()->CenterTitle();
 
-
+      houtROOT->cd();    
       //2D Histos
       //HMS
       H_hres_vs_wire[npl] = new TH2F(Form("hRes_vs_Wire, %s", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals vs. Wire, Plane %s", hdc_pl_names[npl].c_str()), hnwires[npl], 0., hnwires[npl], hdcRes_nbins, hdcRes_xmin, hdcRes_xmax);
@@ -270,7 +276,8 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_hdist_vs_wire[npl]->GetXaxis()->CenterTitle();
       H_hdist_vs_wire[npl]->GetYaxis()->SetTitle("Drift Distance (cm)");
       H_hdist_vs_wire[npl]->GetYaxis()->CenterTitle();
-    
+      
+      poutROOT->cd();    
       //SHMS
       H_pres_vs_wire[npl] = new TH2F(Form("pRes_vs_Wire, %s", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals vs. Wire, Plane %s", pdc_pl_names[npl].c_str()), pnwires[npl], 0., pnwires[npl], pdcRes_nbins, pdcRes_xmin, pdcRes_xmax);
       H_pres_vs_wire[npl]->GetXaxis()->SetTitle("Wire Number ");
@@ -331,7 +338,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //Loop over HODO Planes
   for (Int_t npl = 0; npl < hod_PLANES; npl++ )
     {
-      
+      houtROOT->cd();    
       //Initialize HMS HODO Histograms
       H_hhodBeta_v_Xtrk[npl] = new TH2F(Form("hHod_%s_Beta_v_Xtrk", hod_pl_names[npl].c_str()), Form("HMS Hodo Beta vs. X-track, Plane %s", hod_pl_names[npl].c_str()), hhodXtrk_nbins, hhodXtrk_xmin, hhodXtrk_xmax,  hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax);
       H_hhodBeta_v_Xtrk[npl]->GetXaxis()->SetTitle("Hodoscope X-Track (cm)");
@@ -345,6 +352,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_hhodBeta_v_Ytrk[npl]->GetYaxis()->SetTitle("Hodoscope Beta");
       H_hhodBeta_v_Ytrk[npl]->GetYaxis()->CenterTitle();
       
+      poutROOT->cd();    
       //Initialize SHMS HODO Histograms
       H_phodBeta_v_Xtrk[npl] = new TH2F(Form("pHod_%s_Beta_v_Xtrk", hod_pl_names[npl].c_str()), Form("SHMS Hodo Beta vs. X-track, Plane %s", hod_pl_names[npl].c_str()), phodXtrk_nbins, phodXtrk_xmin, phodXtrk_xmax,  phodBeta_nbins, phodBeta_xmin, phodBeta_xmax);
       H_phodBeta_v_Xtrk[npl]->GetXaxis()->SetTitle("Hodoscope X-Track (cm)");
@@ -383,6 +391,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 	  //Loop over Cherenkov PMTs
 	  for (int ipmt = 0; ipmt < 4; ipmt++)
 	    {
+	      poutROOT->cd();    
 	      //Initialize HGC/NGC Histos
 	      H_phgcerNpe[ipmt] = new TH1F(Form("pHGCER_pmt%d", ipmt+1), Form("SHMS HGC PMT %d", ipmt+1), phgcer_nbins, phgcer_xmin, phgcer_xmax);
 	      H_pngcerNpe[ipmt] = new TH1F(Form("pNGCER_pmt%d", ipmt+1), Form("SHMS NGC PMT %d", ipmt+1), pngcer_nbins, pngcer_xmin, pngcer_xmax);
@@ -395,6 +404,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 	      //HMS Gas Cherenkov
 	      if(ipmt<2)
 		{
+		  houtROOT->cd();    
 		  H_hcerNpe[ipmt] = new TH1F(Form("hCER_pmt%d", ipmt+1), Form("HMS Cherenkov PMT %d", ipmt+1), hcer_nbins, hcer_xmin, hcer_xmax);
 
 		  //------Set Branch Address-------
@@ -737,6 +747,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       H_hdist_vs_wire[npl]->Draw("COLZ");
       
       
+      houtROOT->cd(); 
       hdcResCanvProf->cd(npl+1);
       hdcResProf[npl] = H_hres_vs_wire[npl]->ProfileX(Form("HMS Profile of Residuals, Plane %s", hdc_pl_names[npl].c_str()), 0., hnwires[npl]);
       hdcResProf[npl]->Draw();
@@ -749,6 +760,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //Change to SupPad 2 to plot mean
   hdcResGraphCanv->cd(1);
   //dcResGraphCanv->SetGrid();
+  hgr_mean->SetTitle("HMS DC Residuals Mean");
   hgr_mean->SetMarkerStyle(22);
   hgr_mean->SetMarkerColor(kBlue);
   hgr_mean->SetMarkerSize(1);
@@ -768,6 +780,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   hdcResGraphCanv->cd(2);
   TGraph *hgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
   //dcResGraphCanv->SetGrid();
+  hgr_residual->SetTitle("HMS DC Residuals Sigma");
   hgr_residual->SetMarkerStyle(22);
   hgr_residual->SetMarkerColor(kRed);
   hgr_residual->SetMarkerSize(1);
@@ -841,6 +854,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       hhodCanv2D->cd(npl + 5);
       H_hhodBeta_v_Ytrk[npl]->Draw("COLZ");
       
+      houtROOT->cd();
       //X-Profile of 2D Histos beta vs xtrk (or ytrk)
       hhod_xProfX[npl] = new TProfile();
       hhod_yProfX[npl] = new TProfile();
@@ -878,6 +892,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   houtROOT->WriteTObject(hgr_residual);
   houtROOT->Close();
 
+  
   //===SHMS Drift Chambers===
   
   pdcTimeCanv = new TCanvas("pDC Times", "SHMS DC TIMES",  1500, 500);
@@ -962,7 +977,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       pdcDistCanv2D->cd(npl+1);
       H_pdist_vs_wire[npl]->Draw("COLZ");
       
-      
+      poutROOT->cd(); 
       pdcResCanvProf->cd(npl+1);
       pdcResProf[npl] = H_pres_vs_wire[npl]->ProfileX(Form("SHMS Profile of Residuals, Plane %s", pdc_pl_names[npl].c_str()), 0., pnwires[npl]);
       pdcResProf[npl]->Draw();
@@ -976,6 +991,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //Change to SupPad 2 to plot mean
   pdcResGraphCanv->cd(1);
   //dcResGraphCanv->SetGrid();
+  pgr_mean->SetTitle("SHMS DC Residuals Mean");   
   pgr_mean->SetMarkerStyle(22);
   pgr_mean->SetMarkerColor(kBlue);
   pgr_mean->SetMarkerSize(1);
@@ -995,6 +1011,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   pdcResGraphCanv->cd(2);
   TGraph *pgr_residual = new TGraphErrors(12, x, sigma, x_err, sigma_err);
   //dcResGraphCanv->SetGrid();
+  pgr_residual->SetTitle("SHMS DC Residuals Sigma");
   pgr_residual->SetMarkerStyle(22);
   pgr_residual->SetMarkerColor(kRed);
   pgr_residual->SetMarkerSize(1);
@@ -1069,6 +1086,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       phodCanv2D->cd(npl + 5);
       H_phodBeta_v_Ytrk[npl]->Draw("COLZ");
       
+      poutROOT->cd();
       //X-Profile of 2D Histos beta vs xtrk (or ytrk)
       phod_xProfX[npl] = new TProfile();
       phod_yProfX[npl] = new TProfile();
