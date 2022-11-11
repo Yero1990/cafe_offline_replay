@@ -92,7 +92,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //TString filename = Form("../../../ROOTfiles/good_Heep_hmsElec/g%d_coin.root", run);
   //TString filename = Form("../../../ROOTfiles/good_Heep_hmsProt/hprot_kg%d.root", run);
   //TString filename = Form("../../../ROOTfiles/coin_replay_trkStudy_%d_-1.root", run);
-  
+
  
 
 
@@ -744,7 +744,6 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
     } //END LOOP OVER DC PLANES
   
   
-  
   TGraph *hgr_mean = new TGraphErrors(12, x, mean, x_err, mean_err);
   
   //Change to SupPad 2 to plot mean
@@ -752,7 +751,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //dcResGraphCanv->SetGrid();
   hgr_mean->SetMarkerStyle(22);
   hgr_mean->SetMarkerColor(kBlue);
-  hgr_mean->SetMarkerSize(2);
+  hgr_mean->SetMarkerSize(1);
   hgr_mean->GetYaxis()->SetRangeUser(-250, 250);
   
   //Set Axis Titles
@@ -771,7 +770,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //dcResGraphCanv->SetGrid();
   hgr_residual->SetMarkerStyle(22);
   hgr_residual->SetMarkerColor(kRed);
-  hgr_residual->SetMarkerSize(2);
+  hgr_residual->SetMarkerSize(1);
   hgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
   
   //Set Axis Titles
@@ -872,14 +871,13 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   
   hcerCanv->SaveAs(Form("./hms_Calib_%d/hCer.pdf", run));
       
-  //Write Histograms to ROOT file
-  houtROOT->Write();
+  //Write Histograms to ROOT file 
+  houtROOT->cd();
+  houtROOT->Write(); 
   houtROOT->WriteTObject(hgr_mean);
   houtROOT->WriteTObject(hgr_residual);
   houtROOT->Close();
 
-
-  
   //===SHMS Drift Chambers===
   
   pdcTimeCanv = new TCanvas("pDC Times", "SHMS DC TIMES",  1500, 500);
@@ -980,7 +978,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //dcResGraphCanv->SetGrid();
   pgr_mean->SetMarkerStyle(22);
   pgr_mean->SetMarkerColor(kBlue);
-  pgr_mean->SetMarkerSize(2);
+  pgr_mean->SetMarkerSize(1);
   pgr_mean->GetYaxis()->SetRangeUser(-250, 250);
   
   //Set Axis Titles
@@ -999,7 +997,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
   //dcResGraphCanv->SetGrid();
   pgr_residual->SetMarkerStyle(22);
   pgr_residual->SetMarkerColor(kRed);
-  pgr_residual->SetMarkerSize(2);
+  pgr_residual->SetMarkerSize(1);
   pgr_residual->GetYaxis()->SetRangeUser(0, 1000.);
   
   //Set Axis Titles
@@ -1133,9 +1131,10 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 
 
   //Write Histograms to ROOT file
-  poutROOT->Write();
+  poutROOT->cd();
+  poutROOT->Write(); 
   poutROOT->WriteTObject(pgr_mean);
-  poutROOT->WriteTObject(pgr_residual);   
+  poutROOT->WriteTObject(pgr_residual);    
   poutROOT->Close();
 	
 
