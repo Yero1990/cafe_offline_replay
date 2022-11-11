@@ -1388,9 +1388,16 @@ void DC_calib::GetTwentyPercent_Card()
 
 	   //else if (entries_card[ip][card] >= 2000)
 	   //{
-	       wireBinContentLow[ip][card]  = wireBinContentMax[ip][card]*0.20;        // Get content with 20% of max bin content
-	       wireBinContentHigh[ip][card] = wireBinContentMax[ip][card]*0.60;       // Get content with 60% of max bin content
-	       //}
+	   
+	   wireBinContentLow[ip][card]  = wireBinContentMax[ip][card]*0.20;        // Get content with 20% of max bin content
+	   wireBinContentHigh[ip][card] = wireBinContentMax[ip][card]*0.60;       // Get content with 60% of max bin content
+	   
+	  
+	   //temporary (for calib on run hms defocused run 4407,
+	   //wireBinContentLow[ip][card]  = wireBinContentMax[ip][card]*0.05;
+	   //wireBinContentHigh[ip][card] = wireBinContentMax[ip][card]*0.50; 
+	   
+	   //}
 	   
 	   // | content_of_desired_bin - (binSearch_HighContent-binSearchLowContent) | <= binDiffTherhold 
 	   fitted_card_hist[ip][card].GetBinWithContent(wireBinContentLow[ip][card],  binValLow,  binSearchLow, binSearchHigh, binDiffThreshLow); 
