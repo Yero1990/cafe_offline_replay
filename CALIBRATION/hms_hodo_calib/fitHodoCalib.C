@@ -34,11 +34,8 @@ void fitHodoCalib(TString filename,Int_t runNUM,Bool_t cosmic_flag=kFALSE)
 
   gStyle->SetOptFit();  
   gROOT->SetBatch(kTRUE);    //do not display plots
-
-
  
   Int_t evtNUM = 500000;
-
 
 
   TFile *data_file = new TFile(filename, "READ"); 
