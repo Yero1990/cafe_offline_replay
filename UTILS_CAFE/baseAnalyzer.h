@@ -16,10 +16,10 @@ class baseAnalyzer
 public:
   
   //Constructor / Destructor
-  baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string earm="", Bool_t ana_data=0, string ana_cuts="", string ana_type="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0); //initialize member variables
+  baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string earm="", string ana_type="", string ana_cuts="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0); //initialize member variables
 
   //2nd constructor (overload constructor, i.e., different arguments)
-  baseAnalyzer(string earm="", Bool_t ana_data=0, string ana_cuts="", string ana_type="");
+  baseAnalyzer(string earm="", string ana_type="", string ana_cuts="");
   
   ~baseAnalyzer();
   
@@ -269,6 +269,11 @@ protected:
   
   Double_t simc_cafe_counts=0;    // MF/SRC event rate
   Double_t simc_cafe_rates=0;    // MF/SRC event rate
+
+
+  //this variable can be for either "prod" or "sample" data replay
+  TString replay_type;    // either "prod" (for production) or "sample" for sample replay of 100k events (or any other sample evts)
+
   
   //Initialization parameters (variables actually used in baseAnalyzer.cpp)
   int run;          // run number
@@ -276,9 +281,8 @@ protected:
   TString daq_mode;   //"coin" or "singles"
   TString e_arm_name;   // electron arm: "HMS" or "SHMS"
   TString h_arm_name;   //hadron arm
-  Bool_t analyze_data;    // analyze data ? if true (analyze data), if false, (analyze_simc)
   TString analysis_cut;    // analysis cuts: either "bcm_calib", "lumi", "optics", "heep_singles", "heep_coin", "MF" or "SRC" 
-  TString analysis_type;   // online analysis prefix: either "prod" (for production) or "sample" for sample replay of 100k events (or any other sample evts)
+  TString analysis_type;   // analysis prefix for "data" or "simc"  
   Bool_t helicity_flag;     //helicity flag
   TString bcm_type;       // BCM type : "BCM1, BCM2, BCM4A, BCM4B, BCM4C"
   Double_t bcm_thrs;      // BCM current threshold cut (analyze data and scalers ONLY above a certain bcm_thrs, e.g. > 5 uA)
@@ -288,8 +292,8 @@ protected:
   
   Bool_t combine_runs_flag;     //flag to combine multiple runs (usually sequential runs @ same kinematics in an experiment)
 
+  
   // Read in general info from REPORT file 
-
   // target type (will be read from report file, rather than user input -- SAFER THIS WAY! :) )
   TString tgt_type;
   Double_t tgt_mass;

@@ -10,11 +10,19 @@ Date Created: August 22, 2020
 using namespace std;
 
 //_______________________________________________________________________________
-baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string earm="", Bool_t ana_data=0, string ana_cuts="", string ana_type="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0 )
-  : run(irun), evtNum(ievt), daq_mode(mode), e_arm_name(earm), analyze_data(ana_data), analysis_cut(ana_cuts), analysis_type(ana_type), helicity_flag(hel_flag), bcm_type(bcm_name), bcm_thrs(thrs), trig_type_single(trig_single), trig_type_coin(trig_coin), combine_runs_flag(combine_flag)   //initialize member list 
+baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string earm="", string ana_type="", string ana_cuts="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0 )
+  : run(irun), evtNum(ievt), daq_mode(mode), e_arm_name(earm), analysis_type(ana_type), analysis_cut(ana_cuts), helicity_flag(hel_flag), bcm_type(bcm_name), bcm_thrs(thrs), trig_type_single(trig_single), trig_type_coin(trig_coin), combine_runs_flag(combine_flag)   //initialize member list 
 {
   
   cout << "Calling BaseConstructor " << endl;
+
+  //determine if the replay is a sample of full production
+  if(ievt==-1){
+    replay_type="prod";
+  }
+  else if(ievt!=-1){
+    replay_type="sample";
+  }
   
   //Set prefix depending on DAQ mode and electron arm (used for naming leaf variables)
   if(daq_mode=="coin" && e_arm_name=="SHMS"){
@@ -47,12 +55,20 @@ baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string ear
 }
 
 //_______________________________________________________________________________
-baseAnalyzer::baseAnalyzer(string earm="", Bool_t ana_data=0, string ana_cuts="", string ana_type="")
-  : e_arm_name(earm), analyze_data(ana_data), analysis_cut(ana_cuts), analysis_type(ana_type)
+baseAnalyzer::baseAnalyzer(string earm="", string ana_type="", string ana_cuts="")
+  : e_arm_name(earm), analysis_type(ana_type), analysis_cut(ana_cuts)
 {
   
   cout << "Calling BaseConstructor (SIMC) " << endl;
 
+    //determine if the replay is a sample of full production
+  if(ievt==-1){
+    replay_type="prod";
+  }
+  else if(ievt!=-1){
+    replay_type="sample";
+  }
+  
   //Set prefix depending on DAQ mode and electron arm (used for naming leaf variables)                                                                                                         
   if(e_arm_name=="SHMS"){
     eArm = "P";
@@ -594,15 +610,16 @@ void baseAnalyzer::ReadInputFile()
   TString temp; //temporary string placeholder
 
 
-  if(analyze_data==true){
+  if(analysis_type=="data"){
 
     //-------------------------------
     //----INPUTS (USER READS IN)-----
     //-------------------------------
+
     
     //Define Input (.root) File Name Patterns (read principal ROOTfile from experiment)
     temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_InputFileName = Form(temp.Data(),  analysis_type.Data(), analysis_type.Data(), run, evtNum);
+    data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
     
     //Check if ROOTfile exists
     in_file.open(data_InputFileName.Data());
@@ -616,7 +633,7 @@ void baseAnalyzer::ReadInputFile()
     
     //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
     temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_InputReport = Form(temp.Data(), analysis_type.Data(), analysis_type.Data(), run, evtNum);
+    data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
     
     //Check if REPORTFile exists
     in_file.open(data_InputReport.Data());
@@ -634,19 +651,19 @@ void baseAnalyzer::ReadInputFile()
     //----------------------------------
     //Define Output (.root) File Name Pattern (analyzed histos are written to this file)
     temp = trim(split(FindString("output_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_OutputFileName = Form(temp.Data(), analysis_type.Data(), run, evtNum);
+    data_OutputFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
     
     //Define Output (.root) File Name Pattern (analyzed combined histos are written to this file)
-    temp = trim(split(FindString("output_ROOTfilePattern_final", input_FileNamePattern.Data())[0], '=')[1]);
-    data_OutputFileName_combined = Form(temp.Data(), analysis_type.Data());
+    temp = trim(split(FindString("output_ROOTfilePattern_comb", input_FileNamePattern.Data())[0], '=')[1]);
+    data_OutputFileName_combined = Form(temp.Data(), replay_type.Data());
     
     //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- append run numbers
     temp = trim(split(FindString("output_SummaryPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    output_SummaryFileName = Form(temp.Data(), analysis_type.Data());
+    output_SummaryFileName = Form(temp.Data(), replay_type.Data());
     
     //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- short report on a per-run basis
     temp = trim(split(FindString("output_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    output_ReportFileName = Form(temp.Data(), analysis_type.Data(), run, evtNum);
+    output_ReportFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
     
   }
   
@@ -908,7 +925,7 @@ void baseAnalyzer::ReadInputFile()
     
   }
 
-    if(analyze_data==false){
+    if(analysis_type=="simc"){
       // Read SIMC input file central values during online analysis (to be used in calculations later,
       // ultimately will only need to read from data report, since both data/simc will be equivalent kinematics)
       
@@ -2043,7 +2060,7 @@ void baseAnalyzer::ReadTree()
   cout << "Calling Base ReadTree()  " << endl;
 
   
-  if(analyze_data==true)
+  if(analysis_type=="data")
     {
 
       
@@ -2293,7 +2310,7 @@ void baseAnalyzer::ReadTree()
 
     } //END DATA SET BRANCH ADDRESS
 
-  else if(analyze_data==false)
+  else if(analysis_type=="simc")
     {
 
       cout << "Reading SIMC Tree . . . " << endl;
@@ -2469,7 +2486,7 @@ void baseAnalyzer::EventLoop()
   
   //Loop over Events
   
-  if(analyze_data==true)
+  if(analysis_type=="data")
     {
 
       // Get Coin. Time peak to apply as an offset to center the coin. time peak at 0 ns    
@@ -3092,7 +3109,7 @@ void baseAnalyzer::EventLoop()
 
 
   
-  if(analyze_data==false)
+  if(analysis_type=="simc")
     {
 
       cout << "Analyzing SIMC Events | nentries -->  " << nentries << endl;
@@ -4085,7 +4102,7 @@ void baseAnalyzer::WriteHist()
 
   
   //Write Data Histograms
-  if(analyze_data==true)
+  if(analysis_type=="data")
     {
 
       cout << "Write DATA Histos to File . . ." << endl;
@@ -4126,7 +4143,7 @@ void baseAnalyzer::WriteHist()
 
     }
 
-  else if(analyze_data==false){
+  else if(analysis_type=="simc"){
 
     cout << "Write SIMC Histos to: " << simc_OutputFileName_rad.Data() << endl;
     
@@ -4162,7 +4179,7 @@ void baseAnalyzer::WriteReport()
   
   cout << "Calling WriteReport() . . ." << endl;
   
-  if(analyze_data==true){
+  if(analysis_type=="data"){
 
 
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
@@ -4616,7 +4633,7 @@ void baseAnalyzer::WriteReportSummary()
   cout << "Calling WriteReportSummary() . . ." << endl;
 
   
-  if(analyze_data==true){
+  if(analysis_type=="data"){
 
     //---------------------------------------------------------
 
@@ -4983,7 +5000,7 @@ void baseAnalyzer::MakePlots()
   Bool_t simc_exist = !gSystem->AccessPathName(  simc_OutputFileName_rad );
  
     
-  string cmd=Form("root -l -q -b \"UTILS_CAFE/online_scripts/make_online_plots.cpp(%d, %d, %i, \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", 1)\" ", run, evtNum, simc_exist, tgt_type.Data(), analysis_type.Data(), analysis_cut.Data(), data_OutputFileName.Data(), simc_OutputFileName_rad.Data());
+  string cmd=Form("root -l -q -b \"UTILS_CAFE/online_scripts/make_online_plots.cpp(%d, %d, %i, \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", \\\"%s\\\", 1)\" ", run, evtNum, simc_exist, tgt_type.Data(), replay_type.Data(), analysis_cut.Data(), data_OutputFileName.Data(), simc_OutputFileName_rad.Data());
   cout << cmd.c_str() << endl;
 
   if(analysis_cut!="optics"){

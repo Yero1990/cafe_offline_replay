@@ -8,9 +8,9 @@
 # in order to make count estimates, and projections on how long the run will take.
 
 
-# Which analysis file type are we doing? "prod" or "sample"
-ana_type=${0##*_}
-ana_type=${ana_type%%.sh}
+# Which analysis file type are we doing? "prod"
+replay_type=${0##*_}
+replay_type=${replay_type%%.sh}
 
 
 #user input
@@ -22,7 +22,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     echo "" 
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
     echo ""
-    echo "Usage:  ./run_cafe_${ana_type}.sh <run_number> <kin_type> <evt_number>"
+    echo "Usage:  ./run_cafe_${replay_type}.sh <run_number> <kin_type> <evt_number>"
     echo ""
     echo "<kin_type> = \"bcm_calib\", \"lumi\", \"optics\", \"heep_singles\", \"heep_coin\", \"MF\" or \"SRC\" "
     echo ""
@@ -38,7 +38,7 @@ else
     echo "" 
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
     echo ""
-    echo "Usage: ./run_cafe_${ana_type}.sh <run_number> <kin_type> <evt_number>"
+    echo "Usage: ./run_cafe_${replay_type}.sh <run_number> <kin_type> <evt_number>"
     echo ""     
     echo "<kin_type> = \"bcm_calib\", \"lumi\", \"optics\", \"heep_singles\", \"heep_coin\", \"MF\" or \"SRC\" "
     echo ""
@@ -48,32 +48,24 @@ else
     exit 0
 fi
 
-if [ -z "$3" ] && [ "${ana_type}" = "sample" ]; then
-    echo "" 
-    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
-    echo ""
-    echo "Usage: ./run_cafe_${ana_type}.sh <run_number> <kin_type> <evt_number> <optional evt_number>"
-    echo ""
-    echo "No number of events was specified. Defaulting to 100k event sample"
-    echo ""
-    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"    
-    evtNum=-1
-    echo "evtNum=$evtNum"
-    echo "" 
-elif [ "${ana_type}" = "prod" ]; then
+if [ "${replay_type}" = "prod" ]; then
     echo ""
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
     echo ""
-    echo "Usage: ./run_cafe_${ana_type}.sh <run_number> <kin_type> "
+    echo "Usage: ./run_cafe_${replay_type}.sh <run_number> <kin_type> "
     echo ""
-    echo "full event replay."
+    echo "defaults to full event (-1) replay, unless event number is explicitly specified"
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
-    evtNum=-1
+
+    if [ -z "$3" ]; then 
+	evtNum=-1
+    fi
+    
 fi
 
 daq_mode="coin"
 e_arm="SHMS"
-analyze_data=1   # 1: true (analyze data), 0: false (analyze simc)
+ana_type="data"   # "data" or "simc"
 hel_flag=0
 bcm_type="BCM1"
 bcm_thrs=5           # beam current threhsold cut > bcm_thrs [uA]
@@ -91,6 +83,7 @@ fi
 
 # cafe serious analysis script
 prod_script="UTILS_CAFE/main_data_analysis.cpp"
+
 #optics_script="UTILS_CAFE/online_scripts/plotOptics.C"
 optics_script="UTILS_CAFE/online_scripts/plotOptics_modified.C"   # modified by Dien Nguyen
 
@@ -98,19 +91,19 @@ optics_script="UTILS_CAFE/online_scripts/plotOptics_modified.C"   # modified by 
 fill_list_script="UTILS_CAFE/online_scripts/fill_cafe_runlist.py"
 
 # run scripts commands
-runHcana="./hcana -q \"${replay_script}(${runNum}, ${evtNum}, \\\"${ana_type}\\\")\""
+runHcana="./hcana -q \"${replay_script}(${runNum}, ${evtNum}, \\\"${replay_type}\\\")\""
 
-runOptics="root -l -q -b \"${optics_script}(${runNum}, ${evtNum}, \\\"${ana_type}\\\")\""
+runOptics="root -l -q -b \"${optics_script}(${runNum}, ${evtNum}, \\\"${replay_type}\\\")\""
 
 runCafe="root -l -q -b \"${prod_script}( ${runNum},    ${evtNum}, 
 	     	   		    \\\"${daq_mode}\\\",  \\\"${e_arm}\\\", 
-				   ${analyze_data}, \\\"${kin_type}\\\", \\\"${ana_type}\\\",
+				   \\\"${ana_type}\\\", \\\"${kin_type}\\\",
           			    ${hel_flag},
                                    \\\"${bcm_type}\\\", ${bcm_thrs},
                                    \\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
                      )\""
 
-fill_RunList="python ${fill_list_script} ${ana_type} ${runNum} ${evtNum}"
+fill_RunList="python ${fill_list_script} ${replay_type} ${runNum} ${evtNum}"
 
 
 
@@ -173,7 +166,7 @@ fill_RunList="python ${fill_list_script} ${ana_type} ${runNum} ${evtNum}"
     
     # Only full run list for production runs (i.e., full event replays)
     # sample runs (./run_cafe_sample.sh, are just for getting quick estimates to make predictions)
-    if [ "${ana_type}" = "prod" ]; then
+    if [ "${replay_type}" = "prod" ]; then
 	echo "" 
 	echo ""
 	echo ""

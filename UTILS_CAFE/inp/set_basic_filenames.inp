@@ -7,6 +7,6 @@ input_REPORTPattern          = REPORT_OUTPUT/%s/cafe_%s_%d_%d.report
 
 #Set User Analyzed Output File Name Pattern
 output_ROOTfilePattern        = CAFE_OUTPUT/ROOT/cafe_%s_histos_%d_%d.root
-output_ROOTfilePattern_final  = CAFE_OUTPUT/ROOT/cafe_%s_histos_final.root
+output_ROOTfilePattern_comb   = CAFE_OUTPUT/ROOT/cafe_%s_histos_combined.root
 output_SummaryPattern         = CAFE_OUTPUT/REPORT/cafe_%s_report_summary.txt
 output_REPORTPattern          = CAFE_OUTPUT/REPORT/cafe_%s_report_%d_%d.txt
