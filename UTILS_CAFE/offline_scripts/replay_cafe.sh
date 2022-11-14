@@ -77,6 +77,7 @@ if [ "${ana_type}" = "prod" ]; then
 	echo "------------------------------------------------"
 	echo ""
 	echo "target:  dummy, h, d2, be9, b10, b11, c12, ca40, ca48, fe54 "
+	echo "target runlist is read from: UTILS_CAFE/runlist/${target}_${kin}.txt"
 	echo ""
 	echo "kin: singles, coin, MF or SRC "
 	echo ""

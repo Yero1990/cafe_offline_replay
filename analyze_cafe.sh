@@ -23,6 +23,6 @@ runNum=$1     # run number
 kin_type=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC", depending on the production type
 evtNum=$3     # number of events to replay (optional, but will default to all events if none specified)
 
-# cafe serious analysis script
+# cafe analysis script
 prod_script="UTILS_CAFE/main_data_analysis.cpp"
 
