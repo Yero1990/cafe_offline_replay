@@ -7,7 +7,7 @@ filename='calib_test_runs.txt'
 for run in $(cat $filename) ; do  
     
     #run=16962
-    evt=200000
+    evt=2000
     
     # generic filename to be read by analzye_script
     root_file="ROOTfiles/cafe_replay_checkCalib_${run}_${evt}.root"

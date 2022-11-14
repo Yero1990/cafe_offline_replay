@@ -17,10 +17,10 @@ baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string ear
   cout << "Calling BaseConstructor " << endl;
 
   //determine if the replay is a sample of full production
-  if(ievt==-1){
+  if(evtNum==-1){
     replay_type="prod";
   }
-  else if(ievt!=-1){
+  else if(evtNum!=-1){
     replay_type="sample";
   }
   
@@ -62,10 +62,10 @@ baseAnalyzer::baseAnalyzer(string earm="", string ana_type="", string ana_cuts="
   cout << "Calling BaseConstructor (SIMC) " << endl;
 
     //determine if the replay is a sample of full production
-  if(ievt==-1){
+  if(evtNum==-1){
     replay_type="prod";
   }
-  else if(ievt!=-1){
+  else if(evtNum!=-1){
     replay_type="sample";
   }
   
@@ -4184,6 +4184,7 @@ void baseAnalyzer::WriteReport()
 
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
 
+      cout << "test1_start" << endl;
       cafe_Ib_simc = stod(split(FindString("cafe_Ib_simc",    input_SIMCinfo_FileName.Data())[0], '=')[1]);
       total_simc_counts = stod(split(FindString(Form("%s_%s_counts", tgt_type.Data(), analysis_cut.Data()),    input_SIMCinfo_FileName.Data())[0], '=')[1]); // [counts]
       total_simc_time = stod(split(FindString(Form("%s_%s_time", tgt_type.Data(), analysis_cut.Data()),    input_SIMCinfo_FileName.Data())[0], '=')[1]); // [hr]
@@ -4192,12 +4193,13 @@ void baseAnalyzer::WriteReport()
       // [mC]                [uC / sec]        [hr]      [sec]/[hr]  0.001 mC / 1 uC
       total_simc_charge =  cafe_Ib_simc * total_simc_time * 3600. * 1e-3;  
       
-
+      cout << "test1_end" << endl;         
 
     }
     
     else if( (analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ) {
 
+      cout << "test2_start" << endl;      
       heep_Ib_simc = stod(split(FindString("heep_Ib_simc",    input_SIMCinfo_FileName.Data())[0], '=')[1]);
 
       heep_kin0_counts = stod(split(FindString("heep_kin0_counts",    input_SIMCinfo_FileName.Data())[0], '=')[1]); 
@@ -4216,7 +4218,8 @@ void baseAnalyzer::WriteReport()
       heep_kin0_charge =  heep_Ib_simc * heep_kin0_time * 3600. * 1e-3;
       heep_kin1_charge =  heep_Ib_simc * heep_kin1_time * 3600. * 1e-3;
       heep_kin2_charge =  heep_Ib_simc * heep_kin2_time * 3600. * 1e-3;
-    
+      
+      cout << "test2_end" << endl;      
     }
     
     

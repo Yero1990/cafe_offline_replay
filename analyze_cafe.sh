@@ -20,9 +20,34 @@
 
 
 runNum=$1     # run number
-kin_type=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC", depending on the production type
+kin_type=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC",
 evtNum=$3     # number of events to replay (optional, but will default to all events if none specified)
 
+if [ -z "$1" ] || [ -z "$2" ]; then     
+    echo "" 
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:"
+    echo ""
+    echo "Usage:  ./analyze_cafe_${replay_type}.sh <run_number> <kin_type> <evt_number>"
+    echo ""
+    echo "<kin_type> = \"bcm_calib\", \"lumi\", \"optics\", \"heep_singles\", \"heep_coin\", \"MF\" or \"SRC\" "
+    echo ""
+    echo "If you don't know which <kin_type> to choose, please ask the run coordinator ! ! ! " 
+    echo ""
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" 
+
+    exit 0  
+
+
 # cafe analysis script
-prod_script="UTILS_CAFE/main_data_analysis.cpp"
+prod_script="UTILS_CAFE/main_analysis.cpp"
+
+run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},           
+                                    \\\"${daq_mode}\\\",  \\\"${e_arm}\\\",  
+                                   \\\"${ana_type}\\\", \\\"${kin_type}\\\",
+                                    ${hel_flag},                        
+                                   \\\"${bcm_type}\\\", ${bcm_thrs},
+                                   \\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
+                     )\""
+
+
 

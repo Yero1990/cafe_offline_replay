@@ -10,22 +10,22 @@
 # Brief: This shell script replays the raw (.dat) files 
 #        and outputs the raw (.root) files. The leaf
 #        variables to be written are specified under 
-#        DEF-files/cafe_{ana_type}.def and may be modified.
-#        Where {ana_type} can be either production where only
+#        DEF-files/cafe_{replay_type}.def and may be modified.
+#        Where {replay_type} can be either production where only
 #        necessary leaf variables are written for doing physics analysis,
 #        or calibration (i.e., "hod_calib", "dc_calib", "cal_calib", "scalers",
 #        "reftime", "timewin")
 
-# What type of input is {ana_type} ?
-# Answer: {ana_type} is an input based on the suffix of a symbolic link made to this shell script.
+# What type of input is {replay_type} ?
+# Answer: {replay_type} is an input based on the suffix of a symbolic link made to this shell script.
 # For examlpe, if a symbolic link is made:  ln -sf UTILS_CAFE/offline_scripts/replay_cafe.sh replay_cafe_suffix.sh
-# then the {ana_type} becomes "suffix".  This way, there exists ONLY this shell script, from which different
+# then the {replay_type} becomes "suffix".  This way, there exists ONLY this shell script, from which different
 # shell scripts can be linked to, and based on the "suffix", then a different part of this shell script would be executed
 
 
 # Which replay type are we doing? physics analysis ("prod"), or calibration ("hodcalib", "dccalib", "calcalib", "scalers", "reftime", "timewin")
-ana_type=${0##*_}
-ana_type=${ana_type%%.sh}     
+replay_type=${0##*_}
+replay_type=${replay_type%%.sh}     
 
 HCREPLAY="/work/hallc/c-cafe-2022/$USER/cafe_offline_replay"
 echo "HCREPLAY=${HCREPLAY}"
@@ -49,7 +49,7 @@ replay_script="${HCREPLAY}/SCRIPTS/COIN/PRODUCTION/replay_cafe.C"
 # ==========================
 # replay production
 # ==========================
-if [ "${ana_type}" = "prod" ]; then
+if [ "${replay_type}" = "prod" ]; then
     
     # Display help output if no argumenr specified
     if [  $# -eq 0 ]; then
@@ -59,10 +59,10 @@ if [ "${ana_type}" = "prod" ]; then
 	echo "Brief: This shell script replays the raw (.dat) files "
 	echo "       and outputs the raw (.root) files. The leaf "
 	echo "       variables to be written are specified under "
-	echo "       DEF-files/cafe_${ana_type}.def and may be modified. "
+	echo "       DEF-files/cafe_${replay_type}.def and may be modified. "
 	echo ""
 	echo "-----------------------------------------"
-	echo "Usage 1):  ./replay_cafe_${ana_type}.sh run evt "
+	echo "Usage 1):  ./replay_cafe_${replay_type}.sh run evt "
 	echo "-----------------------------------------"
 	echo ""
 	echo "run: run number"
@@ -70,10 +70,10 @@ if [ "${ana_type}" = "prod" ]; then
 	echo "evt: event number; defaults to -1 (all events)"
 	echo "      if no argument is given"
 	echo ""
-	echo "example 1: ./replay_cafe_${ana_type}.sh 3288 100000"
+	echo "example 1: ./replay_cafe_${replay_type}.sh 3288 100000"
 	echo ""
 	echo "------------------------------------------------"
-	echo "Usage 2):  ./replay_cafe_${ana_type}.sh target kin evt "
+	echo "Usage 2):  ./replay_cafe_${replay_type}.sh target kin evt "
 	echo "------------------------------------------------"
 	echo ""
 	echo "target:  dummy, h, d2, be9, b10, b11, c12, ca40, ca48, fe54 "
@@ -84,7 +84,7 @@ if [ "${ana_type}" = "prod" ]; then
 	echo "evt: event number defaults to -1 (all events), "
 	echo "unless explicitly specified as 3rd argument"
 	echo ""
-	echo "example 2: ./replay_cafe_${ana_type}.sh ca48 MF 350000"
+	echo "example 2: ./replay_cafe_${replay_type}.sh ca48 MF 350000"
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" 
 	echo "" 
@@ -106,7 +106,7 @@ if [ "${ana_type}" = "prod" ]; then
 	fi
 	
 	# hcana command
-	run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${ana_type}\\\")\""
+	run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${replay_type}\\\")\""
 	
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
@@ -146,7 +146,7 @@ if [ "${ana_type}" = "prod" ]; then
 	for run in $(cat $filename) ; do    
 	    
 	    # hcana command
-	    run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${ana_type}\\\")\""
+	    run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${replay_type}\\\")\""
 	    
 	    {
 		echo ""
@@ -175,7 +175,7 @@ if [ "${ana_type}" = "prod" ]; then
 
 else
     
-    # {ana_type} for calibration may be one of these:  ("hodcalib", "dccalib", "calcalib", "scalers", "reftime", "timewin")
+    # {replay_type} for calibration may be one of these:  ("hodcalib", "dccalib", "calcalib", "scalers", "reftime", "timewin")
     # Display help output if no argumenr specified
     if [  $# -eq 0 ]; then
 	echo "" 
@@ -184,11 +184,11 @@ else
 	echo "Brief: This shell script replays the raw (.dat) files "
 	echo "       and outputs the raw (.root) files for calibration"
 	echo "       purposes. The leaf variables to be written are "
-	echo "       specified under: DEF-files/cafe_${ana_type}.def "
+	echo "       specified under: DEF-files/cafe_${replay_type}.def "
 	echo "       and may be modified. "
 	echo ""
 	echo "-----------------------------------------"
-	echo "Usage 1):  ./replay_cafe_${ana_type}.sh run evt "
+	echo "Usage 1):  ./replay_cafe_${replay_type}.sh run evt "
 	echo "-----------------------------------------"
 	echo ""
 	echo "run: run number"
@@ -196,7 +196,7 @@ else
 	echo "evt: event number defaults to -1 (all events), "
 	echo "unless explicitly specified as 3rd argument"
 	echo ""
-	echo "example 1: ./replay_cafe_${ana_type}.sh 3288 100000"
+	echo "example 1: ./replay_cafe_${replay_type}.sh 3288 100000"
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" 
 	echo "" 
@@ -217,7 +217,7 @@ else
 	fi
 	
 	# hcana command                                                                       
-        run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${ana_type}\\\")\""   
+        run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${replay_type}\\\")\""   
 
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="

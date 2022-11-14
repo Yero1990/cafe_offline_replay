@@ -14,8 +14,8 @@ run=$2
     
 
 #Use: on terminal type (for example) >> jcacheGet.sh shms 1791
-spec=$1 
-runNUM=$2
+#spec=$1 
+#runNUM=$2
 
 #for run in {1149..1171}
 #do
@@ -28,7 +28,9 @@ runNUM=$2
 echo ${run}
 #mss="/mss/hallc/spring17/raw/${spec}_all_0${run}.dat"
 #mss="/mss/hallc/c-polhe3/raw/${spec}_all_${run}.dat"                                
-mss="/mss/hallc/c-cafe-2022/raw/${spec}_all_${run}.dat"
+#mss="/mss/hallc/c-cafe-2022/raw/${spec}_all_${run}.dat"
+mss="/mss/hallc/xem2/raw/${spec}_all_${run}.dat"
+
 jcacheCMD="jcache get ${mss} -e cyero002@gmail.com -x"
 
 echo "Executing command: ${jcacheCMD}" 

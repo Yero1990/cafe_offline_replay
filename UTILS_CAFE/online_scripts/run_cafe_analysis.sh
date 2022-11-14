@@ -60,7 +60,14 @@ if [ "${replay_type}" = "prod" ]; then
     if [ -z "$3" ]; then 
 	evtNum=-1
     fi
-    
+fi
+
+
+# check if full replay or sample events
+if [[ "$evtNum" -eq -1 ]]; then
+    replay_type="prod"
+else
+    replay_type="sample"
 fi
 
 daq_mode="coin"
@@ -82,7 +89,8 @@ else
 fi
 
 # cafe serious analysis script
-prod_script="UTILS_CAFE/main_data_analysis.cpp"
+#prod_script="UTILS_CAFE/main_data_analysis.cpp"
+prod_script="UTILS_CAFE/main_analysis.cpp" 
 
 #optics_script="UTILS_CAFE/online_scripts/plotOptics.C"
 optics_script="UTILS_CAFE/online_scripts/plotOptics_modified.C"   # modified by Dien Nguyen

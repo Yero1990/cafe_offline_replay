@@ -157,8 +157,8 @@ void replay_production_xem_hms(Int_t RunNumber=0, Int_t MaxEvent=0) {
   // Define output ROOT file
   analyzer->SetOutFile(ROOTFileName.Data());
   // Define output DEF-file 
-  //analyzer->SetOdefFile("DEF-files/xem_hms_hod.def");
-  analyzer->SetOdefFile("DEF-files/xem_hms_dc.def");
+  analyzer->SetOdefFile("DEF-files/xem_hms_hod.def");
+  //analyzer->SetOdefFile("DEF-files/xem_hms_dc.def");
   //analyzer->SetOdefFile("DEF-files/xem_hms_cal.def");
   //analyzer->SetOdefFile("DEF-files/xem_hms_timewin.def"); 
 
