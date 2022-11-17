@@ -21,7 +21,7 @@ set_refTimes=1
 debug=0
   
 # Which analysis file type are we doing? "reftime" or "timewin"? 
-ana_type="timewin" #"reftime"
+ana_type="reftime"
 
 # this rootfile name pattern assumes pattern defined in replay_cafe.C script (please do NOT modify replay script) 
 filename="../../ROOTfiles/${ana_type}/cafe_replay_${ana_type}_${runNum}_${evtNum}.root"
