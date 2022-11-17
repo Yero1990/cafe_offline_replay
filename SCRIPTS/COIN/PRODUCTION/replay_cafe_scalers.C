@@ -50,7 +50,20 @@ void replay_cafe_scalers(Int_t RunNumber = 0, Int_t MaxEvent = 0, TString ftype=
   //const char* RunFileNamePattern = "raw/coin_all_%05d.dat";
 
   // Create dir. to store monitoring histos
-  TString cmd = Form("mkdir -p ROOTfiles/%s", ftype.Data());
+  TString cmd = "";
+
+  if((ftype=="prod") && (MaxEvent==-1)){   
+    ftype="prod";
+    cmd = Form("mkdir -p ROOTfiles/%s", ftype.Data());
+  }
+  else if( (ftype=="prod") && (MaxEvent!=-1) ){  
+    ftype="sample";
+    cmd = Form("mkdir -p ROOTfiles/%s", ftype.Data());  
+  }
+  else{
+    cmd = Form("mkdir -p ROOTfiles/%s", ftype.Data()); 
+  }
+
   gSystem->Exec(cmd); // create study type dir. if it doesn't exist
   
   if((ftype=="shms50k") || (ftype=="hms50k")){

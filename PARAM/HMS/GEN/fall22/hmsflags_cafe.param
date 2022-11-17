@@ -16,8 +16,9 @@
   hdelta_offset = 0.       ; (%)   hdelta_tar = hdelta_tar + hdelta_offset
   htheta_offset = 0.  ; (rad) hyp_tar = hyp_tar + htheta_offset
 ;  hphi_offset   = -4.946337367e-3 ; (rad) hxp_tar = hxp_tar + hphi_offset
+
 hphi_offset = 0.
-;
+
 
 ;saturation correction flag
 ;  hsatcorr = 2000 ; 
