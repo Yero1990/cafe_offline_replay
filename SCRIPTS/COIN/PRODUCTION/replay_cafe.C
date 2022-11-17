@@ -92,9 +92,6 @@ void replay_cafe(Int_t RunNumber = 0, Int_t MaxEvent = 0, TString ftype="") {
   gHcParms->Load(gHcParms->GetString("g_ctp_cuts_filename"));                 // load the detector cuts param 
   gHcParms->Load(gHcParms->GetString("g_ctp_kinematics_filename"), RunNumber); // load the standard.kinematics file
 
-  //Load params for coin. trigger configuration (up-to-date)
-  gHcParms->Load("PARAM/TRIG/tcoin.param"); 
-
   // Load the Hall C detector map
   gHcDetectorMap = new THcDetectorMap();
 
