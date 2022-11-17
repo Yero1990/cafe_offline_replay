@@ -3,5 +3,5 @@
  
  
 
-pngcer_adcTimeWindowMin = -2e+02, -200.00, -200.00, -200.00, 
-pngcer_adcTimeWindowMax = 200.00, 200.00, 200.00, 200.00, 
+pngcer_adcTimeWindowMin = -1e+02, -100.00, -100.00, -100.00, 
+pngcer_adcTimeWindowMax = 100.00, 100.00, 100.00, 100.00, 

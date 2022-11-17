@@ -23,6 +23,7 @@ block T.coin.pFADC_TREF_ROC2_adcMultiplicity
 
 # ---------------------------------------
 
+block H.hod.starttime
 
 block H.cer.goodAdcTdcDiffTime
 block H.cer.goodAdcMult
@@ -32,11 +33,22 @@ block H.dc.*.rawtdc
 block H.hod.*.*TdcTimeUnCorr
 block H.hod.*.*AdcTdcDiffTime
 block H.hod.*.*AdcMult
-
+block H.hod.*.*AdcPulseAmp*    
+block H.hod.*.*AdcPulseTime*
+ 
 block H.cal.*.*AdcTdcDiffTime
 block H.cal.*.*AdcMult
+block H.cal.*.*AdcPulseAmp
+
+block H.hod.beta
+block H.cal.etottracknorm
 
 #----------------------------------------
+
+block P.hod.starttime
+
+block P.hod.beta
+block P.cal.etottracknorm
 
 block P.hgcer.goodAdcTdcDiffTime
 block P.hgcer.goodAdcMult
@@ -49,11 +61,15 @@ block P.dc.*.rawtdc
 block P.hod.*.*TdcTimeUnCorr
 block P.hod.*.*AdcTdcDiffTime
 block P.hod.*.*AdcMult
+block P.hod.*.*AdcPulseAmp*
+block P.hod.*.*AdcPulseTime* 
 
 block P.cal.pr.good*AdcTdcDiffTime
 block P.cal.pr.good*AdcMult
 block P.cal.pr.good*AdcPulseTime
+block P.cal.pr.*AdcPulseAmp 
 
 block P.cal.fly.goodAdcTdcDiffTime
 block P.cal.fly.goodAdcMult
 block P.cal.fly.goodAdcPulseTime
+block P.cal.fly.*AdcPulseAmp 

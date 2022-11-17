@@ -3,5 +3,5 @@
  
  
 
-hcer_adcTimeWindowMin = -1.9e+02, -190.00, 
-hcer_adcTimeWindowMax = 190.00, 190.00, 
+hcer_adcTimeWindowMin = 0, 0.00, 
+hcer_adcTimeWindowMax = 200.00, 200.00, 
