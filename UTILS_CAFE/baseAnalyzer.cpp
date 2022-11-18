@@ -892,7 +892,6 @@ void baseAnalyzer::ReadInputFile()
 
     simc_InputFileName_rad = "../hallc_simulations/worksim/cafe_heep_scan_kin0_rad.root"; //shms 8.55 GeV, 8.3 deg
     simc_ifile             = "../hallc_simulations/infiles/cafe_heep_scan_kin0_rad.data";
-    
     simc_OutputFileName_rad = "../hallc_simulations/cafe_output/cafe_heep_scan_kin0_rad_output.root"; //shms 8.55 GeV, 8.3 deg
     
   }

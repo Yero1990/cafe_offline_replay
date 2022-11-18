@@ -1,12 +1,29 @@
-# Set Input File Name Pattern from replayed data (same file pattern as set in replay_cafe.C script)
+# NOTE: Need to figure out whether to only define generic file paths here, and have the user
+# modify their own file name structure within the code
 
-# cafe data  | %s %s %d %d -> <analysis_type>, <analysis_type>, <runNum>, <evtNum>
+# NOTE to User: filename structure set in baseAnalyzer.cpp, method: baseAnalyzer:ReadInputFile()
+
+#---------------------------------
+# Set Input DataFile Name Pattern
+#---------------------------------
 input_ROOTfilePattern        = ROOTfiles/%s/cafe_replay_%s_%d_%d.root
 input_REPORTPattern          = REPORT_OUTPUT/%s/cafe_%s_%d_%d.report
 
-
-#Set User Analyzed Output File Name Pattern
+#------------------------------
+# Set Ouput Data File Pattern
+#------------------------------
 output_ROOTfilePattern        = CAFE_OUTPUT/ROOT/cafe_%s_histos_%d_%d.root
 output_ROOTfilePattern_comb   = CAFE_OUTPUT/ROOT/cafe_%s_histos_combined.root
 output_SummaryPattern         = CAFE_OUTPUT/REPORT/cafe_%s_report_summary.txt
 output_REPORTPattern          = CAFE_OUTPUT/REPORT/cafe_%s_report_%d_%d.txt
+
+#----------------------------------
+# Set Input SIMC File Name Path
+#----------------------------------
+input_ROOTfilePattern_simc  = ../hallc_simulations/worksim/cafe_heep_scan_kin0_rad.root
+input_file_simc             = ../hallc_simulations/infiles/cafe_heep_scan_kin0_rad.root
+
+#-----------------------------------
+# Set Output SIMC File Name Path
+#-----------------------------------
+output_ROOTfilePattern_simc = ../hallc_simulations/worksim/analyzed/cafe_heep_scan_kin0_rad_analyzed.root
