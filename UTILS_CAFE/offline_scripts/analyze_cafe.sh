@@ -52,6 +52,7 @@ printSIMCHelpMsg(){
     echo "Usage:  ./analyze_cafe_${ana_type}.sh <ana_cut> <evt_number>"
     echo ""
     echo "<ana_cut> = \"heep_singles\", \"heep_coin\", \"MF\" or \"SRC\" "
+    echo "<ana_cut> sets analysis cuts based on the type of analysis selected" 
     echo ""
     echo "If no <evt_number> specified, defaults to -1 (all events) " 
     echo ""
@@ -82,7 +83,7 @@ if [ "${ana_type}" = "data" ]; then
     
 fi
 
-# DATA Help Message / Usage
+# SIMC Help Message / Usage
 if [ "${ana_type}" = "simc" ]; then
     
     if [ -z "$2" ] || [ -z "$3" ]; then     
