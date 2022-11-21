@@ -125,11 +125,3 @@ while true; do
 done
 
 
-# see swif2 documentaiton: https://scicomp.jlab.org/docs/swif2
-# the output .err and .out filess will be writte to: /farm_out/${USER}/swif/${Workflow}/
-
-# to write files thru cache to tape (permanet storage), see: https://scicomp.jlab.org/docs/write-through-cache
-
-# if job fails,
-# user can retry, for example:
-# swif2 retry-jobs ${Workflow} -problems SWIF_SYSTEM_ERROR SLURM_NODE_FAIL

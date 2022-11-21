@@ -18,7 +18,28 @@ the user can look for the workflow name, and check the status
 of the submitted jobs
 
 
-# Useful swif commands examples
+# Useful swif commands examples (added by C. Yero)
+# see swif2 documentaiton: https://scicomp.jlab.org/docs/swif2
+# to write files thru cache to tape (permanet storage),
+# see: https://jlab.servicenowservices.com/scicomp?id=kb_article_view&sysparm_article=KB0014975&sys_kb_id=391b3b031bd61550a552ed3ce54bcbb1&spa=1
 
-# modify all problem jobs related to out of memory 
-swif2 modify-jobs "cafe_cyero" -ram mult 3 -cores set 4 -problems SLURM_OUT_OF_MEMORY
+# for submitted jobs: the output .err and .out filess will be writte to: /farm_out/${USER}/swif/${Workflow}/
+
+# modify all problem jobs related to out of memory (triple the original ram, and set cores to 4)  
+  swif2 modify-jobs "cafe_cyero" -ram mult 3 -cores set 4 -problems SLURM_OUT_OF_MEMORY
+
+# if job fails due to "SWIF_SYSTEM_ERROR" or  "SLURM_NODE_FAIL",  user can retry, for example:
+  swif2 retry-jobs ${Workflow} -problems SWIF_SYSTEM_ERROR SLURM_NODE_FAIL
+
+
+#--------------------
+Copying files to cache (and write-through tape) for regular backups
+
+Email snippet from Ying:
+If you want to put all files under /cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles,
+you can run "jcache put /cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles -d".
+
+Or do nothing, after a file created 12 days later, cacheManager will auto back up the file to tape library.
+Before 12 days, you can change or overwrite the files.
+                                                                                                                                                                              
+                
