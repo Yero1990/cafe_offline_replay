@@ -13,6 +13,8 @@
 
 !runplan/*.pdf
 !CALIBRATION/bcm_calib/*
+!hcswif/*
+!jobsub
 
 # Directories
 RAID

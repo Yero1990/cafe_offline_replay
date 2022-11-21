@@ -1,0 +1,24 @@
+This directory has the job submission script
+written by R. Trotta / S.J.D. Kay.
+
+To submit a job to the batch, just do:
+
+./run_bash_template.sh runlist.txt evt_number
+
+Please refer to the code to verify job-submission
+parameters are consistent with the user preferences.
+
+To check the status of the submitted job, please visit:
+
+https://scicomp.jlab.org/scicomp/home
+
+and click on Swif2 Jobs under 'Cluster Info' which
+will take the user to 'Active Workflows' section which
+the user can look for the workflow name, and check the status
+of the submitted jobs
+
+
+# Useful swif commands examples
+
+# modify all problem jobs related to out of memory 
+swif2 modify-jobs "cafe_cyero" -ram mult 3 -cores set 4 -problems SLURM_OUT_OF_MEMORY
