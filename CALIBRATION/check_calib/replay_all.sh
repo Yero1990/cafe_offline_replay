@@ -1,13 +1,14 @@
 #! /bin/bash 
 
 
-filename='calib_test_runs.txt' 
-
+#filename='calib_test_runs.txt' 
+filename='h_singles_aug08.txt'
+#filename='optics_aug08.txt'
 
 for run in $(cat $filename) ; do  
     
-    #run=16962
-    evt=2000
+    #run=16036
+    evt=200000
     
     # generic filename to be read by analzye_script
     root_file="ROOTfiles/cafe_replay_checkCalib_${run}_${evt}.root"

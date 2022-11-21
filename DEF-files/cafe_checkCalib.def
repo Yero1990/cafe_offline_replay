@@ -14,11 +14,11 @@ block P.ngcer.npe*
 block P.hgcer.npe*  
 
 
-block H.hod.beta*                                                                                                                                                                                                                                          
-block H.hod.*.Track*                                                                                                                                                                                                                                            
-block H.dc.*.time                                                                                                                                                                                                                                              
-block H.dc.*.wirenum                                                                                                                                                                                                                                            
-block H.dc.*.dist                                                                                                                                                                                                                                              
+block H.hod.beta*                                                                                                                  
+block H.hod.*.Track*                                                                                                
+block H.dc.*.time                                                                                                 
+block H.dc.*.wirenum                                                                                                     
+block H.dc.*.dist                                                                                                                                                                                     
 block H.dc.*.nhit                                                                                                                                                                                                                                               
 block H.dc.residual*                                                                                                                                                                                                                                            
 block H.dc.x_fp                                                                                                                                                                                                                                                 

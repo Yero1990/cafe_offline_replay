@@ -17,10 +17,14 @@ g_ctp_cuts_filename       = "DBASE/COIN/GEN/archive/det_cuts_spring18.param"
 ; pionlt defocused run used in CaFe calorimeter calibration
 14967-14967
 g_ctp_parm_filename       = "DBASE/COIN/GEN/general_defocused.param" 
-
+g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_aug08.param"
+g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_aug08.param"
 
 ; cafe aug 08 data (optics and heep singles)
-
+16023-16037
+g_ctp_parm_filename       = "DBASE/COIN/GEN/general_cafe_aug08.param"
+g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_aug08.param" 
+g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_aug08.param"
 
 ; cafe official start date (sep 2022)
 16946-17144

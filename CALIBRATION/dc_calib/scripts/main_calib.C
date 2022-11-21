@@ -21,8 +21,8 @@ int main_calib()
   //template arguments
   //DC_calib obj("spec", "path/to/rootfile.root", runNUM, eventNUm, "pid_flag", "calib_mode"); pid_flag: "pid_elec" or "pid_kFALSE", calib_mode: "wire" or "card"
                
-  DC_calib obj("HMS", "ROOTfiles/hms_replay_production_all_4407_-1_dcUnCalib.root", 4407, -1, "pid_elec", "card");
-  //DC_calib obj("SHMS", "ROOTfiles/shms_replay_production_all_17243_-1_dcUnCalib.root", 17243, -1, "pid_elec", "card");  
+  DC_calib obj("HMS", "ROOTfiles/cafe_replay_dccalib_14967_1000000_dcUnCalib.root ", 14967, -1, "pid_elec", "card");
+  //DC_calib obj("SHMS", "ROOTfiles/cafe_replay_dccalib_14967_1000000_dcUnCalib.root ", 14967, -1, "pid_elec", "card");  
 
   //DC_calib obj("SHMS", "../../../ROOTfiles/dccalib/cafe_replay_dccalib_16975_-1_dcUnCalib.root", 16975, -1, "pid_elec", "card");
   
