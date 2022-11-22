@@ -16,7 +16,7 @@ baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string ear
   
   cout << "Calling BaseConstructor " << endl;
 
-  //determine if the replay is a sample of full production
+  //determine if the replay is a sample of full production based on number of events replayed
   if(evtNum==-1){
     replay_type="prod";
   }
@@ -58,7 +58,8 @@ baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string ear
 baseAnalyzer::baseAnalyzer(string earm="", string ana_type="", string ana_cuts="")
   : e_arm_name(earm), analysis_type(ana_type), analysis_cut(ana_cuts)
 {
-  
+
+  // overload constructor function
   cout << "Calling BaseConstructor (SIMC) " << endl;
 
     //determine if the replay is a sample of full production
@@ -597,12 +598,21 @@ void baseAnalyzer::ReadInputFile()
   input_CutFileName     = "UTILS_CAFE/inp/set_basic_cuts.inp";
   input_HBinFileName    = "UTILS_CAFE/inp/set_basic_histos.inp";
   input_SIMCinfo_FileName = "UTILS_CAFE/inp/set_basic_simc_param.inp";
+
   
-  if(analysis_cut=="SRC"){
+  // careful here: user can set different bins for same histograms accordingly,
+  // but it ratios of same histograms will be taken, ensure that EXACTLY the same
+  // binning is used for the relevant histogram in question
+  if(analysis_cut=="MF"){
+    input_HBinFileName    = "UTILS_CAFE/inp/set_basic_histos_MF.inp";
+  }
+  
+  else if(analysis_cut=="SRC"){
     input_HBinFileName    = "UTILS_CAFE/inp/set_basic_histos_SRC.inp";
   }
 
   cout << " input_HBinFileName"<<  input_HBinFileName << endl;
+
   //==========================================
   //     READ FILE NAME PATTERN
   //==========================================
@@ -617,7 +627,7 @@ void baseAnalyzer::ReadInputFile()
     //-------------------------------
 
     
-    //Define Input (.root) File Name Patterns (read principal ROOTfile from experiment)
+    //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
     temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
     data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
     

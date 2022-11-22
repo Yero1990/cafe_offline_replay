@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-void main_data_analysis(int     run           = 3243,   int evtNum           = -1,
+void main_analysis(int     run           = 3243,   int evtNum           = -1,
 		   TString daq_mode      = "coin", TString e_arm        = "SHMS",
 		   TString analysis_type = "data", TString analysis_cut = "bcm_calib",
 		   Bool_t  hel_flag     = 0, TString bcm_type  = "BCM4A",  double bcm_thrs        = 5,
@@ -12,7 +12,7 @@ void main_data_analysis(int     run           = 3243,   int evtNum           = -
 {
 
 
-  //----initialize baseAnalyzer (base class)----
+  // initialize baseAnalyzer (base class)
   baseAnalyzer ba(run, evtNum, daq_mode.Data(), e_arm.Data(), analysis_type.Data(), analysis_cut.Data(),
 		  hel_flag, bcm_type.Data(), bcm_thrs, trig_single.Data(),
 		  trig_coin.Data(), combine_runs);
@@ -20,20 +20,21 @@ void main_data_analysis(int     run           = 3243,   int evtNum           = -
 
   // data analysis
   if(analysis_type=="data"){
-
+    
     // bcm scalers analysis
     if(analysis_cut=="bcm_calib"){
       ba.run_cafe_scalers();
     }
-
     // standard data analysis
     else{
       ba.run_data_analysis();
     }
     
   }
-  
+
+  // simc analysis
   if(analysis_type=="simc"){
+
     //only relevant arguments for SIMC: e_arm, analysis_type, analysis_cut
     ba.run_simc_analysis();
   }

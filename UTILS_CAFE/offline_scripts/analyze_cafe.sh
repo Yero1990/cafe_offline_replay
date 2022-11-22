@@ -43,7 +43,7 @@ printDataHelpMsg(){
     echo ""
     echo "example: ./analyze_cafe_${ana_type}.sh 16978 MF 100000"
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" 
-
+    echo "" 
 }
 
 printSIMCHelpMsg(){
@@ -58,7 +58,7 @@ printSIMCHelpMsg(){
     echo "If no <evt_number> specified, defaults to -1 (all events) " 
     echo ""
     echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" 
-
+    echo "" 
 }
 
 
@@ -129,3 +129,24 @@ run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},
 
 
 
+
+# Start data  analysis
+{
+
+    echo "" 
+    echo ""
+    echo ""
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+    echo ""
+    echo "Running CaFe Data Analysis for replayed run ${runNum}:"
+    echo " -> SCRIPT:  ${prod_script}"
+    echo " -> RUN:     ${runNum}"
+    echo " -> COMMAND: ${run_cafe}"
+    echo ""
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+    echo "" 
+    echo ""
+    echo ""
+
+
+}
