@@ -45,7 +45,6 @@ echo ""
 replay_script="${HCREPLAY}/SCRIPTS/COIN/PRODUCTION/replay_cafe.C" 
 
 
-
 # ==========================
 # replay production
 # ==========================
@@ -108,6 +107,7 @@ if [ "${replay_type}" = "prod" ]; then
 	# hcana command
 	run_hcana="./hcana -q \"${replay_script}(${run}, ${evt}, \\\"${replay_type}\\\")\""
 	
+
 	echo ""
 	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
 	echo "" 
@@ -124,7 +124,7 @@ if [ "${replay_type}" = "prod" ]; then
 	
 	sleep 2
 	eval ${run_hcana}
-	
+        
 	
     else
 	

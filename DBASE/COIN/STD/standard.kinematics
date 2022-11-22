@@ -737,7 +737,7 @@ hpartmass = 0.93827231
 ppartmass = 0.000511
 
 # Fe54 SRC Kinematics                                                              
-17135 - 999999
+17135 - 17145
 # run 17137 marked as junk due to no beam (but I will count it as a good run, as it has 14868 counts, which may be a few src events anyways)
 # run 17139 is junk as DAQ crashed
 gpbeam = 10.549355                                      
@@ -749,3 +749,54 @@ ppcentral = 8.55
 hpartmass = 0.93827231                                                                  
 ppartmass = 0.000511
 
+# XEM delta scan 
+17166-17167
+gpbeam = 10.549355 
+gtargmass_amu = 1.00794
+htheta_lab = -19.54
+ptheta_lab = 26.02
+hpcentral = 6.476
+ppcentral = 4.935
+hpartmass = 0.93827231
+ppartmass = 0.000511 
+
+17171
+gpbeam = 10.549355
+gtargmass_amu = 1.00794 
+htheta_lab = -29.41
+ptheta_lab = 9.24
+hpcentral = 4.17  
+ppcentral = 8.0
+hpartmass = 0.93827231
+ppartmass = 0.000511 
+
+17176
+gpbeam = 10.549355  
+gtargmass_amu = 1.00794   
+htheta_lab = -31.73
+ptheta_lab = 10.77
+hpcentral = 3.76
+ppcentral = 8.0 
+hpartmass = 0.93827231
+ppartmass = 0.000511
+
+
+17186                     
+gpbeam = 10.549355                               
+gtargmass_amu = 1.00794                                                          
+htheta_lab = -37.37                                                                       
+ptheta_lab = 12.24                                     
+hpcentral = 2.94                                                                 
+ppcentral = 8.0                                                                    
+hpartmass = 0.93827231                                                                       
+ppartmass = 0.000511
+
+17187
+gpbeam = 10.549355
+gtargmass_amu = 1.00794
+htheta_lab = -40.97
+ptheta_lab = 10.78
+hpcentral = 2.51
+ppcentral = 8.0
+hpartmass = 0.93827231
+ppartmass = 0.000511 

@@ -474,7 +474,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       if(hms_pid=="p"){
 
 	//cout << "hms pid: protons " << endl;    
-	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
+	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.1;
 	hms_pid_cut = beta_cut;
 	//cout << "beta_cut = " << beta_cut << endl;
 	//cout << Form("(beta_central-beta)=(%.3f, %.3f)", hbeta_central, hhod_beta_notrk) << endl;
@@ -484,8 +484,8 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 
 	//cout << "hms pid: electrons " << endl;    
 	cal_elec = hcal_etot > 0.1;  
-	cer_elec = hcer_npesum>1.0;
-	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.2;
+	cer_elec = hcer_npesum>0.5;
+	beta_cut= abs(hbeta_central-hhod_beta_notrk)<0.1;
 	hms_pid_cut = cal_elec && cer_elec && beta_cut;
       }
 
@@ -493,7 +493,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
       if(shms_pid=="p"){
            
 	//cout << "shms pid: protons " << endl; 
-       	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
+       	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.1;
 	shms_pid_cut = beta_cut;
 
       }
@@ -502,7 +502,7 @@ void checkCalib(TString filename="", int run=0, TString hms_pid="", TString shms
 	//cout << "shms pid: electrons " << endl;
 	cal_elec = pcal_etot > 0.1;  
 	cer_elec = pngcer_npesum>1.0;
-	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.2;
+	beta_cut= abs(pbeta_central-phod_beta_notrk)<0.1;
 	shms_pid_cut = cal_elec && cer_elec && beta_cut;
       
       }

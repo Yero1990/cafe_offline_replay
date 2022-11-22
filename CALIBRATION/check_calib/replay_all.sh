@@ -2,8 +2,9 @@
 
 
 #filename='calib_test_runs.txt' 
-filename='h_singles_aug08.txt'
-#filename='optics_aug08.txt'
+#filename='h_singles_aug08.txt'
+filename='optics_aug08.txt'
+#filename='hms_xem.txt'
 
 for run in $(cat $filename) ; do  
     
