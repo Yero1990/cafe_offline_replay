@@ -16,4 +16,4 @@
 #include "PARAM/SHMS/AERO/paero_cuts.param"
 
 ; TRIG default param
-#include "PARAM/TRIG/fall22/tcoin_fall22.param"
+#include "PARAM/TRIG/fall22/tcoin_aug08.param"

@@ -31,6 +31,9 @@ of the submitted jobs
 # if job fails due to "SWIF_SYSTEM_ERROR" or  "SLURM_NODE_FAIL",  user can retry, for example:
   swif2 retry-jobs ${Workflow} -problems SWIF_SYSTEM_ERROR SLURM_NODE_FAIL
 
+#delete workflow
+swif2 cancel -workflow $workflow_name -delete
+
 
 #--------------------
 Copying files to cache (and write-through tape) for regular backups
