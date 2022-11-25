@@ -39,8 +39,8 @@ else
 fi
 
 # 15/02/22 - SJDK - Added the swif2 workflow as a variable you can specify here
-Workflow="cafe_aug08_${USER}" # Change this as desired
-#Workflow="cafe_official_${USER}" # Change this as desired
+#Workflow="cafe_aug08_${USER}" # Change this as desired
+Workflow="cafe_official_${USER}" # Change this as desired
 
 # Input run numbers, this just points to a file which is a list of run numbers, one number per line
 inputFile="${inputFile}${RunList}"
@@ -99,6 +99,9 @@ while true; do
 		    echo "CPU: 2" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 		    echo "INPUT_FILES: ${tape_file}" >> ${batch}
                     echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/replay_cafe_prod.sh ${runNum} ${MAXEVENTS}"  >> ${batch} ### Insert your script at end!
+		    
+		    # simulation script (will need to make alternate submittion script for simulation)
+		    #echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/hallc_simulations/simulate.py" >> ${batch}
                     echo "MAIL: ${USER}@jlab.org" >> ${batch}
                     echo "Submitting batch"
 		    # swif2 is now used for job submission, we use our old jsub style scripts. The argument set to "LTSep" currently is the workflow. Change this if you want.
