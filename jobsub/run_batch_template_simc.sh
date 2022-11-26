@@ -171,7 +171,7 @@ elif [ "${ana_type}" = "simc" ]; then
 		    echo "JOBNAME: ${simc_ifile_name}" >> ${batch}
 		    echo "DISK_SPACE: 3 GB" >> ${batch}
 		    echo "MEMORY: 3000 MB" >> ${batch}
-		    echo "CPU: 2" >> ${batch}
+		    echo "CPU: 1" >> ${batch}
 		    echo "COMMAND:${script_path}simulate.py ${simc_ifile_name}" >> ${batch}
 		    echo "MAIL: ${USER}@jlab.org" >> ${batch}
 		    echo "Submitting batch"
