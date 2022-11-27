@@ -20,10 +20,10 @@ output_REPORTPattern          = CAFE_OUTPUT/REPORT/cafe_%s_report_%d_%d.txt
 #----------------------------------
 # Set Input SIMC File Name Path
 #----------------------------------
-input_ROOTfilePattern_simc  = ../hallc_simulations/worksim/cafe_heep_scan_kin0_rad.root
-input_file_simc             = ../hallc_simulations/infiles/cafe_heep_scan_kin0_rad.root
+input_ROOTfilePattern_simc  = ../hallc_simulations/worksim/cafe_d2_MF_rad.root
+input_file_simc             = ../hallc_simulations/infiles/cafe_d2_MF_rad.data
 
 #-----------------------------------
 # Set Output SIMC File Name Path
 #-----------------------------------
-output_ROOTfilePattern_simc = ../hallc_simulations/worksim/analyzed/cafe_heep_scan_kin0_rad_analyzed.root
+output_ROOTfilePattern_simc = ../hallc_simulations/worksim/analyzed/cafe_d2_MF_rad_analyzed.root
