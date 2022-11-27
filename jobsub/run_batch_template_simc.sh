@@ -172,7 +172,7 @@ elif [ "${ana_type}" = "simc" ]; then
 		    echo "DISK_SPACE: 3 GB" >> ${batch}
 		    echo "MEMORY: 3000 MB" >> ${batch}
 		    echo "CPU: 1" >> ${batch}
-		    echo "COMMAND:${script_path}simulate.py ${simc_ifile_name}" >> ${batch}
+		    echo "COMMAND: python ${script_path}simulate.py ${simc_ifile_name}" >> ${batch}
 		    echo "MAIL: ${USER}@jlab.org" >> ${batch}
 		    echo "Submitting batch"
 		    # swif2 is now used for job submission, we use our old jsub style scripts. The argument set to "LTSep" currently is the workflow. Change this if you want.
