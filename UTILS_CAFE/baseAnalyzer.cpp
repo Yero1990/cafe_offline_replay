@@ -1572,8 +1572,8 @@ void baseAnalyzer::CreateHist()
 
   for (Int_t npl = 0; npl < dc_PLANES; npl++ )
     {
-      pid_HList->Add(H_hdcRed[npl]);
-      pid_HList->Add(H_pdcRed[npl]);
+      pid_HList->Add(H_hdcRes[npl]);
+      pid_HList->Add(H_pdcRes[npl]);
     }
   
   //Add 2D PID
@@ -2272,8 +2272,8 @@ void baseAnalyzer::ReadTree()
 	    ndc_nhit = base + "." + "nhit";
 
 	    //------Set HMS Branch Address-------
-	    T->SetBranchAddress(ndc_nhit, &hdc_nhit[npl]);
-	    T->SetBranchAddress("H.dc.residualExclPlane", &hdc_res[0]);
+	    tree->SetBranchAddress(ndc_nhit, &hdc_nhit[npl]);
+	    tree->SetBranchAddress("H.dc.residualExclPlane", &hdc_res[0]);
 
 	    
 	    //----Define SHMS TTree Leaf Names-----
@@ -2281,8 +2281,8 @@ void baseAnalyzer::ReadTree()
 	    ndc_nhit = base + "." + "nhit";
 
 	    //------Set SHMS Branch Address-------
-	    T->SetBranchAddress(ndc_nhit, &pdc_nhit[npl]);
-	    T->SetBranchAddress("P.dc.residualExclPlane", &pdc_res[0]);
+	    tree->SetBranchAddress(ndc_nhit, &pdc_nhit[npl]);
+	    tree->SetBranchAddress("P.dc.residualExclPlane", &pdc_res[0]);
 
 	    
 	  }
@@ -2329,6 +2329,7 @@ void baseAnalyzer::ReadTree()
 	  
 	  //HMS DETECTORS
 	  tree->SetBranchAddress("H.cer.npeSum",         &hcer_npesum);
+	  tree->SetBranchAddress("H.cal.etot",           &hcal_etot);
 	  tree->SetBranchAddress("H.cal.etotnorm",       &hcal_etotnorm);
 	  tree->SetBranchAddress("H.cal.etottracknorm",  &hcal_etottracknorm);
 	  tree->SetBranchAddress("H.hod.betanotrack",    &hhod_beta_ntrk);
@@ -2377,6 +2378,7 @@ void baseAnalyzer::ReadTree()
 	  //SHMS DETECTORS
 	  tree->SetBranchAddress("P.ngcer.npeSum",       &pngcer_npesum);
 	  tree->SetBranchAddress("P.hgcer.npeSum",       &phgcer_npesum);
+	  tree->SetBranchAddress("P.cal.etot",           &pcal_etot);
 	  tree->SetBranchAddress("P.cal.etotnorm",       &pcal_etotnorm);
 	  tree->SetBranchAddress("P.cal.etottracknorm",  &pcal_etottracknorm);
 	  tree->SetBranchAddress("P.hod.betanotrack",    &phod_beta_ntrk);
@@ -2549,40 +2551,309 @@ void baseAnalyzer::ReadTree()
 }
 
 //_______________________________________________________________________________
-Double_t baseAnalyzer::GetCoinTimePeak()
+Double_t baseAnalyzer::GetPeak(TString peak_type="", bool quality_check=false)
 {
  
-  cout << "Calling GetCoinTimePeak() . . . " <<  endl;
+  cout << "Calling GetPeak() . . . " <<  endl;
   
   // coin. time offset param (i.e., coin time peak value)
   Double_t ctime_offset = 0.0;
+
+  // hodoscope beta peak value
+  Double_t hms_beta_val = 0.0;
+  Double_t shms_beta_val = 0.0;
   
+  // calorimeter etottracknorm
+  Double_t shms_ecal_val = 0.0;
+
+    
   // declare histogram to fill sample coin. time 
   TH1F *ctime_peak = new TH1F("ctime_peak", "Coin. Time Peak ", 200,-100,100);
+
+  TH1F *hms_beta_peak  = new TH1F("hms_beta_peak", "HMS Hodoscope Beta Peak", 100, 0.1,1.5);
+  TH1F *shms_beta_peak  = new TH1F("shms_beta_peak", "SHMS Hodoscope Beta Peak", 100, 0.1,1.5);
+
+  TH1F *shms_ecal_peak  = new TH1F("ecal_peak", "SHMS Calorimeter E/p Peak", 100, 0.1,1.5);
   
-  for(int ientry=0; ientry<10000; ientry++)
+  Long64_t sample_entries = 50000;
+  for(int ientry=0; ientry<sample_entries; ientry++)
     {	  
       tree->GetEntry(ientry);
+      
       // Fill sample histo to find peak
+
       ctime_peak->Fill(epCoinTime);	  	  
 
-      cout << "SampleEventLoop: " << std::setprecision(2) << double(ientry) / 10000. * 100. << "  % " << std::flush << "\r";
+      shms_beta_peak->Fill(phod_gtr_beta);
+      hms_beta_peak->Fill(hhod_gtr_beta);
+
+      shms_ecal_peak->Fill(pcal_etottracknorm);
+
+      
+      cout << "SampleEventLoop: " << std::setprecision(2) << double(ientry) / sample_entries * 100. << "  % " << std::flush << "\r";
 
     }
   
   
   // bin number corresponding to maximum bin content
-  int binmax = ctime_peak->GetMaximumBin();
+  int binmax_ctime = ctime_peak->GetMaximumBin();
+
+  int binmax_pbeta =  shms_beta_peak->GetMaximumBin();
+  int binmax_hbeta =  hms_beta_peak->GetMaximumBin();
+
+  int binmax_pecal = shms_ecal_peak->GetMaximumBin();
   
   // x-value corresponding to bin number with max content (i.e., peak)
-  double xmax = ctime_peak->GetXaxis()->GetBinCenter(binmax);
-  ctime_offset =  xmax;      
+  double xmax_ctime = ctime_peak->GetXaxis()->GetBinCenter(binmax_ctime);
 
-  cout << "coin time offset [ns] = " << ctime_offset << endl;  
-  return ctime_offset; // in ns
+  double xmax_pbeta = shms_beta_peak->GetXaxis()->GetBinCenter(binmax_pbeta);
+  double xmax_hbeta = hms_beta_peak->GetXaxis()->GetBinCenter(binmax_hbeta);
+
+  double xmax_pecal = shms_ecal_peak->GetXaxis()->GetBinCenter(binmax_pecal);
+
+  ctime_offset  = xmax_ctime;      
+  hms_beta_val  = xmax_hbeta;
+  shms_beta_val = xmax_pbeta;
+  shms_ecal_val = xmax_pecal;
   
-   
+  cout << "coin time offset [ns] = " << ctime_offset << endl;  
+
+  if(peak_type=="ctime"){
+    return ctime_offset; // in ns
+  }
+  
+  else if(peak_type=="hms_beta_peak"){
+    return hms_beta_val;
+  }
+  
+  else if(peak_type=="shms_beta_peak"){
+    return shms_beta_val;
+  }
+  
+  else if(peak_type=="shms_cal_peak"){
+    return shms_ecal_val;
+  }
+  else{
+    cout << "select peak_type" << endl;
+    return 0;
+  }
+
+  //=====================================================================================================
+  
+
+  //===================
+  //
+  // QUALITY CHECKS
+  //
+  //===================
+
+  if(quality_check){
+
+    
+    // do quality check on calibration variables (beta, E/p) by fitting peak
+    // to extract the mean and sigma (and save to .csv file)
+
+    //-----------------------------
+    // Define Quality Check Histos
+    //-----------------------------
+    TH1F *ctime_qual = new TH1F("ctime_qual", "Coin. Time ", 200,-100,100);
+    TH1F *hbeta_qual  = new TH1F("hms_beta_qual", "HMS Hodoscope Beta ", 100, 0.1,1.5);
+    TH1F *pbeta_qual  = new TH1F("shms_beta_qual", "SHMS Hodoscope Beta ", 100, 0.1,1.5);
+    TH1F *pcal_qual  = new TH1F("shms_cal_qual", "SHMS Calorimeter E/p-track ", 100, 0.1,1.5);
+  
+
+    //---------------------------------------
+    // Define Minimal Cuts for Quality Check
+    //---------------------------------------
+    Bool_t hnhit = false;
+    Bool_t pnhit = false;
+    Bool_t hbeta_cut = false;
+    Bool_t pbeta_cut = false;
+    Bool_t hcal_etot_cut  = false;
+    Bool_t pcal_etot_cut  = false;
+
+    // keep event sample at a minimum for checks
+    if(nentries>150000){ sample_entries = 150000;}
+    else {sample_entries = nentries;}
+
+    
+    for(int ientry=0; ientry<sample_entries; ientry++)
+      {	  
+	tree->GetEntry(ientry);
+	
+	//Require single DC hit per plane
+	hnhit = hdc_nhit[0]==1&&hdc_nhit[1]==1&&hdc_nhit[2]==1&&hdc_nhit[3]==1&&hdc_nhit[4]==1&&hdc_nhit[5]==1&& 
+	  hdc_nhit[6]==1&&hdc_nhit[7]==1&&hdc_nhit[8]==1&&hdc_nhit[9]==1&&hdc_nhit[10]==1&&hdc_nhit[11]==1;
+	
+	//Require single DC hit per plane
+	pnhit = pdc_nhit[0]==1&&pdc_nhit[1]==1&&pdc_nhit[2]==1&&pdc_nhit[3]==1&&pdc_nhit[4]==1&&pdc_nhit[5]==1&& 
+	  pdc_nhit[6]==1&&pdc_nhit[7]==1&&pdc_nhit[8]==1&&pdc_nhit[9]==1&&pdc_nhit[10]==1&&pdc_nhit[11]==1;
+
+	// Require beta (no track info, to not bias residuals) cut around peak (e- or proton)
+	hbeta_cut = abs(hhod_beta_ntrk-hms_beta_val)<0.1;
+	pbeta_cut = abs(phod_beta_ntrk-shms_beta_val)<0.1;
+
+	// Require hms/shms calorimeter  total energy >0.1 (clean up background)
+	hcal_etot_cut = hcal_etotnorm<0.6; // assumes hms are hadrons
+	pcal_etot_cut = abs(pcal_etotnorm-shms_ecal_val)<0.2;
+
+	
+	// Fill sample histos (to be fitted later)
+	ctime_qual->Fill(epCoinTime);	  	  
+	pbeta_qual->Fill(phod_gtr_beta);
+	hbeta_qual->Fill(hhod_gtr_beta);	
+	pcal_qual->Fill(pcal_etottracknorm);
+
+
+      // --------- drift chamber residuals ----------
+      
+      for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+	{
+
+	  //Loop over all HMS hits per plane
+	  for (Int_t j=0; j < hdc_nhit[npl]; j++)
+	    {	      
+	      if( hbeta_cut && hcal_etot_cut && hnhit ){
+
+		//Fill Residual
+		H_hdcRes[npl]->Fill(hdc_res[npl]);
+
+	      }
+	      
+	    }
+	  
+	  //Loop over all SHMS hits per plane
+	  for (Int_t j=0; j < pdc_nhit[npl]; j++)
+	    {	      
+	      if( pbeta_cut && pcal_etot_cut && pnhit ){
+		
+		//Fill Residual
+		H_pdcRes[npl]->Fill(pdc_res[npl]);
+
+	      }
+	      
+	    }	  
+	    
+	} // end plane loop     
+
+    } // end event loop
+
+    
+    // Define Fit Param Limits Variables
+    double binmax, amplitude, center, stdev, xmin_fit, xmax_fit;
+
+    // --- coin time fit param ---
+    stdev     = 2.5; // ns
+    amplitude = ctime_qual->GetBinContent( ctime_qual->GetMaximumBin() );
+    center   =  ctime_qual->GetBinCenter( ctime_qual->GetMaximumBin() );
+    xmin_fit = center - stdev; xmax_fit = center + stdev;
+    TF1 *ctime_fit = new TF1("ctime_fit","gaus", xmin_fit, xmax_fit);
+    ctime_fit->SetParameters(amplitude, center, stdev);
+    ctime_qual->Fit("ctime_fit", "R");
+    
+    // --- hms beta fit param ---
+    stdev     = 0.12;
+    amplitude = hbeta_qual->GetBinContent( hbeta_qual->GetMaximumBin() );
+    center   =  hbeta_qual->GetBinCenter( hbeta_qual->GetMaximumBin() );
+    xmin_fit = center - stdev; xmax_fit = center + stdev;
+    TF1 *hbeta_fit = new TF1("hbeta_fit","gaus", xmin_fit, xmax_fit);
+    hbeta_fit->SetParameters(amplitude, center, stdev);
+    hbeta_qual->Fit("hbeta_fit", "R");
+
+    // --- shms beta fit param ---
+    stdev     = 0.12;
+    amplitude = pbeta_qual->GetBinContent( pbeta_qual->GetMaximumBin() );
+    center   =  pbeta_qual->GetBinCenter( pbeta_qual->GetMaximumBin() );
+    xmin_fit = center - stdev; xmax_fit = center + stdev;
+    TF1 *pbeta_fit = new TF1("pbeta_fit","gaus", xmin_fit, xmax_fit);
+    pbeta_fit->SetParameters(amplitude, center, stdev);
+    pbeta_qual->Fit("pbeta_fit", "R");
+
+    // --- shms cal fit param ---
+    stdev     = 0.12;
+    amplitude = pcal_qual->GetBinContent( pcal_qual->GetMaximumBin() );
+    center   =  pcal_qual->GetBinCenter( pcal_qual->GetMaximumBin() );
+    TF1 *pcal_fit  = new TF1("pcal_fit","gaus",  xmin_fit, xmax_fit);
+    pcal_fit->SetParameters(amplitude, center, stdev);
+    pcal_qual->Fit("pcal_fit", "R");
+    
+
+    TF1 *hdc_res_fit = 0;
+    TF1 *pdc_res_fit = 0;
+    //Loop over DC planes
+    for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+      {
+
+	// Set HMS Mean/Sigma Parameters for Fit
+	binmax = H_hdcRes[npl]->GetMaximumBin(); 	  
+	stdev  = H_hdcRes[npl]->GetStdDev(); 
+	amplitude = H_hdcRes[npl]->GetBinContent(binmax);
+	center = H_hdcRes[npl]->GetBinCenter(binmax);
+	xmin_fit = center - (1.5*stdev);
+	xmax_fit = center + (1.5*stdev);
+	hdc_res_fit = new TF1("hdc_res_fit","gaus", xmin_fit, xmax_fit);
+	hdc_res_fit->SetParameters(amplitude, center, stdev );
+	H_hdcRes[npl]->Fit("hdc_res_fit", "R");	  
+
+	//Get HMS Mean/Sigma for residuals and convert to microns                                                                                                                            
+	hdc_res_mean[npl]      = hdc_res_fit->GetParameter(1)*1e4;
+	hdc_res_mean_err[npl]  = hdc_res_fit->GetParError(1)*1e4;
+	hdc_res_sigma[npl]     = hdc_res_fit->GetParameter(2)*1e4;
+	hdc_res_sigma_err[npl] = hdc_res_fit->GetParError(2)*1e4;
+
+	// -------------
+	
+	// Set SHMS Mean/Sigma Parameters for Fit
+	binmax = H_pdcRes[npl]->GetMaximumBin(); 	  
+	stdev  = H_pdcRes[npl]->GetStdDev(); 
+	amplitude = H_pdcRes[npl]->GetBinContent(binmax);
+	center = H_pdcRes[npl]->GetBinCenter(binmax);
+	xmin_fit = center - (1.5*stdev);
+	xmax_fit = center + (1.5*stdev);
+	pdc_res_fit = new TF1("pdc_res_fit","gaus", xmin_fit, xmax_fit);
+	pdc_res_fit->SetParameters(amplitude, center, stdev );
+	H_pdcRes[npl]->Fit("pdc_res_fit", "R");	  
+
+	//Get HMS Mean/Sigma for residuals and convert to microns                                                                                                                            
+	pdc_res_mean[npl]      = pdc_res_fit->GetParameter(1)*1e4;
+	pdc_res_mean_err[npl]  = pdc_res_fit->GetParError(1)*1e4;
+	pdc_res_sigma[npl]     = pdc_res_fit->GetParameter(2)*1e4;
+	pdc_res_sigma_err[npl] = pdc_res_fit->GetParError(2)*1e4;
+
+	
+	
+      }
+
+    
+    // Get Fit Results Parameters
+    ctime_mean      = ctime_fit->GetParameter(1);
+    ctime_mean_err  = ctime_fit->GetParError(1); 
+    ctime_sigma     = ctime_fit->GetParameter(2); 
+    ctime_sigma_err = ctime_fit->GetParError(2);
+    
+    hbeta_mean      = hbeta_fit->GetParameter(1);
+    hbeta_mean_err  = hbeta_fit->GetParError(1); 
+    hbeta_sigma     = hbeta_fit->GetParameter(2); 
+    hbeta_sigma_err = hbeta_fit->GetParError(2);
+
+    pbeta_mean      = pbeta_fit->GetParameter(1);
+    pbeta_mean_err  = pbeta_fit->GetParError(1); 
+    pbeta_sigma     = pbeta_fit->GetParameter(2); 
+    pbeta_sigma_err = pbeta_fit->GetParError(2);
+
+    pcal_mean      = pcal_fit->GetParameter(1);
+    pcal_mean_err  = pcal_fit->GetParError(1); 
+    pcal_sigma     = pcal_fit->GetParameter(2); 
+    pcal_sigma_err = pcal_fit->GetParError(2);
+
+    
+
+  } // end boolean: quality_check
+
+  
+  
 }
+
 
 //_______________________________________________________________________________
 void baseAnalyzer::EventLoop()
@@ -2599,8 +2870,15 @@ void baseAnalyzer::EventLoop()
     {
 
       // Get Coin. Time peak to apply as an offset to center the coin. time peak at 0 ns    
-      Double_t ctime_offset = GetCoinTimePeak();
-	
+      Double_t ctime_offset = GetPeak("ctime");
+
+
+      // Get Hodo Beta peaks (to be used as reference for cut on dc residuals, as well as initial fit param)
+      Double_t hms_beta_peak = GetPeak("hms_beta_peak");
+      Double_t shms_beta_peak = GetPeak("shms_beta_peak");
+      Double_t shms_cal_peak = GetPeak("shms_cal_peak");
+
+      
       cout << "Analyzing DATA Events | nentries -->  " << nentries << endl;
 
       for(int ientry=0; ientry<nentries; ientry++)
@@ -2998,49 +3276,7 @@ void baseAnalyzer::EventLoop()
 		  H_hXColl_vs_hYColl_noCUT  ->Fill(hYColl, hXColl);
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
-		  
-		  // --------- drift chamber residuals ----------
-
-		  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
-		    {
-		      
-		      //Require single hit per plane
-		      hnhit = hdc_nhit[0]==1&&hdc_nhit[1]==1&&hdc_nhit[2]==1&&hdc_nhit[3]==1&&hdc_nhit[4]==1&&hdc_nhit[5]==1&& 
-			hdc_nhit[6]==1&&hdc_nhit[7]==1&&hdc_nhit[8]==1&&hdc_nhit[9]==1&&hdc_nhit[10]==1&&hdc_nhit[11]==1;
-		      
-		      //Require single hit per plane
-		      pnhit = pdc_nhit[0]==1&&pdc_nhit[1]==1&&pdc_nhit[2]==1&&pdc_nhit[3]==1&&pdc_nhit[4]==1&&pdc_nhit[5]==1&& 
-			pdc_nhit[6]==1&&pdc_nhit[7]==1&&pdc_nhit[8]==1&&pdc_nhit[9]==1&&pdc_nhit[10]==1&&pdc_nhit[11]==1;
-
-
-		      //Loop over hits
-		      for (Int_t j=0; j < hdc_nhit[npl]; j++)
-			{
-			  
-			  if(hnhit){
-			    //Fill Residual
-			    H_hdcRes[npl]->Fill(hdc_res[npl]);
-			  }
-
-			  
-			}
-
-
-		      //Loop over hits
-		      for (Int_t j=0; j < pdc_nhit[npl]; j++)
-			{
-
-			  if(pnhit){
-			    //Fill Residual
-			    H_pdcRes[npl]->Fill(pdc_res[npl]);
-			  }
-			  
-			}
-
-		      
-		    }
-		  
-		  //----------------------------------------------
+       
 		  
 
 		  if(c_baseCuts){
@@ -4814,12 +5050,12 @@ void baseAnalyzer::WriteOfflineReport()
     }
 
     out_file.open(output_ReportFileName);
-    out_file << Form("# Run %d Offline Data Analysis Summary", run)<< endl;
+    out_file << Form("# Run %d Offline Data Analysis Report", run)<< endl;
     out_file << "                                     " << endl;
     out_file << "#//////////////////////////////////////////" << endl; 
     out_file << "                                         //" << endl;  
     out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
-    out_file << "# ! ! !   OFFLINE MAIN INFO   ! ! !     //" << endl;
+    out_file << "# ! ! !  OFFLINE MAIN REPORT   ! ! !     //" << endl;
     out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
     out_file << "                                         //" << endl;
     out_file << Form("Current [uA]        : %.3f          ", avg_current_bcm_cut) << endl;
@@ -5180,13 +5416,28 @@ void baseAnalyzer::WriteReportSummary()
       out_file << "#        Data Analysis Summary        " << endl;
       out_file << "#-------------------------------------" << endl;
       out_file << "#                                     " << endl;
-      out_file << "#                       " << endl;
-      out_file << "# Units: charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
+      out_file << "#                                     " << endl;      
+      out_file << Form("# target_name: %s        kin_type:  %s            ", tgt_type.Data(), analysis_cut.Data() ) << endl;
+      out_file << Form("# target_amu: %.6f                 ", tgt_mass        ) << endl;   
+      out_file << Form("# beam_energy [GeV]: %.4f          ", beam_energy ) << endl;            
+      out_file << "" << endl;      
+      out_file << Form("# hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
+      out_file << Form("# hms_h_momentum [GeV/c]: %.4f             ",  hms_p ) << endl;
+      out_file << Form("# hms_h_angle [deg]: %.4f                  ",  hms_angle ) << endl;          
+      out_file << "" << endl;      
+      out_file << Form("# shms_e_particle_mass [GeV]: %.6f          ",  shms_part_mass ) << endl;          
+      out_file << Form("# shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
+      out_file << Form("# shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
+      out_file << "" << endl;      
+      out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+      out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
 
       //original
       //out_file << std::setw(2) << "#! Run[i,0]/" << std::setw(25) << "charge[f,1]/" << std::setw(25) << "avg_current[f,2]/" << std::setw(25)  << "hTrkEff[f,3]/" << std::setw(25) << "hTrkEff_err[f,4]/" << std::setw(25) << "pTrkEff[f,5]/" << std::setw(25) << "pTrkEff_err[f,6]/" << std::setw(25) << "tgt_boil_factor[f,7]/" << std::setw(30) << "tgt_boil_factor_err[f,8]" << std::setw(25) << "hadAbs_factor[f,9]/" << std::setw(30) << "hadAbs_factor_err[f,10]/" << std::setw(25) <<  "cpuLT[f,11]/" << std::setw(25) << "cpuLT_err_Bi[f,12]/" << std::setw(25) << "cpuLT_err_Bay[f,13]/" << std::setw(25) << "tLT[f,14]/" << std::setw(25) << "tLT_err_Bi[f,15]/" << std::setw(25) << "tLT_err_Bay[f,16]/" << std::setw(25) << "S1X_rate[f,17]/" << std::setw(25) << "trig_rate[f,18]/"  << std::setw(25) << "edtm_rate[f,19]/"  << std::setw(25) << "Pre_Scale[f,20]/" << std::setw(25) << "edtm_accp[f,21]/" << std::setw(25) << "edtm_scaler[f,22]/" << std::setw(25) << "trig_accp[f,23]/" << std::setw(25) << "trig_scaler[f,24]/" << endl;
-            
+
+      out_file << "run, beam_time, charge, avg_current, W_counts, Pm_counts, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate,  PS1, PS2, PS3, PS5, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate, " << endl;
+
       out_file.close();
       in_file.close();
     

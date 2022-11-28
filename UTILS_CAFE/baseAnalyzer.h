@@ -9,9 +9,11 @@ Date Created: August 22, 2020
 
 #include "./UTILS/parse_utils.h" //useful C++ string parsing utilities
 #include "./UTILS/hist_utils.h" //useful C++ histogram bin extraction utility
+#include <string>
 
 class baseAnalyzer
 {
+
   
 public:
   
@@ -54,12 +56,17 @@ public:
   //void GetAsymmetry();
   
   // Helper Functions
-  Double_t GetCoinTimePeak();
+  Double_t GetPeak(TString peak_type="", bool quality_check=false);
   void CollimatorStudy();
   void MakePlots();
   Double_t GetLuminosity(TString user_input="");
 
-  
+    
+  //hms/shms dc calibration quality monitoring constanta
+  static const Int_t dc_PLANES = 12;
+  const string hdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v2", "1v1", "2v1", "2v2", "2x2", "2x1", "2u2", "2u1"};
+  const string pdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v1", "1v2", "2v2", "2v1", "2x2", "2x1", "2u2", "2u1"};
+
 protected:
 
   //Set Constants
@@ -755,11 +762,6 @@ protected:
   //Coin. Time
   TH1F *H_ep_ctime_total;
   TH1F *H_ep_ctime;
-  
-  //hms/shms dc calibration quality monitoring constanta
-  static const Int_t dc_PLANES = 12;
-  static const string hdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v2", "1v1", "2v1", "2v2", "2x2", "2x1", "2u2", "2u1"};
-  static const string pdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v1", "1v2", "2v2", "2v1", "2x2", "2x1", "2u2", "2u1"};
 
   //HMS
   TH1F *H_hCerNpeSum;  
@@ -1105,9 +1107,7 @@ protected:
   Bool_t good_shms_should;
   Bool_t good_shms_did;
   
-  // dc nhits (for residuals histos only)
-  Bool_t hnhit;
-  Bool_t pnhit;
+
   //-----------DEFINE DATA/SIMC CUTS (CUTS MUST BE EXACT SAME. Which is why only a variable is used for both)------
   //(See set_basic_cuts.inp file to modify the cuts),  the 'c_' denotes it is a cut
 
@@ -1375,6 +1375,7 @@ protected:
 
   //HMS DETECTORS
   Double_t hcer_npesum;
+  Double_t hcal_etot;
   Double_t hcal_etotnorm;
   Double_t hcal_etottracknorm;
   Double_t hhod_beta_ntrk;
@@ -1388,6 +1389,7 @@ protected:
   //SHMS DETECTORS
   Double_t phgcer_npesum;
   Double_t pngcer_npesum;
+  Double_t pcal_etot;
   Double_t pcal_etotnorm;
   Double_t pcal_etottracknorm;
   Double_t phod_beta_ntrk;
@@ -1697,7 +1699,45 @@ protected:
 
   //-----------------------------------------------------------------------------------------
 
+  // Quality Check Parameter Values (to be used for storing fit results/write to.csv file)
 
+  // coin time [ns]
+  Double_t ctime_mean;                                                                                                                          
+  Double_t ctime_mean_err;
+  Double_t ctime_sigma;   
+  Double_t ctime_sigma_err;
+
+  // HMS Hodo Beta (track)
+  Double_t hbeta_mean;                                                                                                                          
+  Double_t hbeta_mean_err;
+  Double_t hbeta_sigma;   
+  Double_t hbeta_sigma_err;
+
+  // SHMS Hodo Beta (track)
+  Double_t pbeta_mean;                                                                                                                          
+  Double_t pbeta_mean_err;
+  Double_t pbeta_sigma;   
+  Double_t pbeta_sigma_err;
+
+  // SHMS cal E_dep / p_track
+  Double_t pcal_mean;                                                                                                                          
+  Double_t pcal_mean_err;
+  Double_t pcal_sigma;   
+  Double_t pcal_sigma_err;
+
+  // HMS DC Residuals
+  Double_t hdc_res_mean[dc_PLANES];                                                                                                                          
+  Double_t hdc_res_mean_err[dc_PLANES];
+  Double_t hdc_res_sigma[dc_PLANES];   
+  Double_t hdc_res_sigma_err[dc_PLANES];
+
+   // SHMS DC Residuals
+  Double_t pdc_res_mean[dc_PLANES];                                                                                                                          
+  Double_t pdc_res_mean_err[dc_PLANES];
+  Double_t pdc_res_sigma[dc_PLANES];   
+  Double_t pdc_res_sigma_err[dc_PLANES];
+  
+  
   //------VARIABLES USED TO WRITE HISTOGRAMS TO ROOT FILE-------
 
   //Create Categorical TLists to store histograms based on caterogy
