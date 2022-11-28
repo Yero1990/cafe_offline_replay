@@ -26,7 +26,12 @@ hcal_xmax = 1.5
 hbeta_nbins = 100	  
 hbeta_xmin = 0.5	  
 hbeta_xmax = 1.5	  
-  	                  
+
+#dc residuals
+hdcRes_nbins = 100
+hdcRes_xmin  = -0.2
+hdcRes_xmax  = 0.2
+
 #----SHMS DETECTORS (FOR PID / TRACKING EFF. CHECKS)-----
 #noble gas cherenkov npe sum
 pngcer_nbins = 100  
@@ -47,7 +52,11 @@ pcal_xmax = 1.5
 pbeta_nbins = 100	  
 pbeta_xmin = 0.5	  
 pbeta_xmax = 1.5	  
-   
+
+#dc residuals
+pdcRes_nbins = 100
+pdcRes_xmin  = -0.2
+pdcRes_xmax  = 0.2
 
 #=============================
 # Kinematics Histograms Bins

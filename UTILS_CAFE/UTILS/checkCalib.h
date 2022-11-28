@@ -65,6 +65,7 @@ Double_t pdelta_nbins, pdelta_xmin, pdelta_xmax;
 Double_t hdcTime_nbins, hdcTime_xmin, hdcTime_xmax;
 Double_t hdcDist_nbins, hdcDist_xmin, hdcDist_xmax;
 Double_t hdcRes_nbins, hdcRes_xmin, hdcRes_xmax;
+
 //HMS HODO
 Double_t hhodBeta_nbins, hhodBeta_xmin, hhodBeta_xmax;
 Double_t hhodXtrk_nbins, hhodXtrk_xmin, hhodXtrk_xmax;  

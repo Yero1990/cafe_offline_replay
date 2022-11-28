@@ -30,7 +30,7 @@ public:
   
   //Function prototypes
   void Init(); 
-  void ReadInputFile();
+  void ReadInputFile(bool set_input_fnames=true, bool set_output_fnames=false);
   void ReadReport();
   void SetHistBins();
   void CreateHist();
@@ -42,7 +42,8 @@ public:
   void ApplyWeight();
   void ScaleSIMC(TString target="");
   void WriteHist();
-  void WriteReport();
+  void WriteOnlineReport();
+  void WriteOfflineReport();
   void WriteReportSummary();
   void CombineHistos();
   
@@ -405,7 +406,12 @@ protected:
 	                  
   Double_t hbeta_nbins;	  
   Double_t hbeta_xmin;	  
-  Double_t hbeta_xmax;	  
+  Double_t hbeta_xmax;
+
+  Double_t hdcRes_nbins;
+  Double_t hdcRes_xmin;
+  Double_t hdcRes_xmax;
+
   	                  
   //-SHMS-                
   Double_t pngcer_nbins;  
@@ -423,7 +429,10 @@ protected:
   Double_t pbeta_nbins;	  
   Double_t pbeta_xmin;	  
   Double_t pbeta_xmax;	  
-	                      
+
+  Double_t pdcRes_nbins;
+  Double_t pdcRes_xmin;
+  Double_t pdcRes_xmax;	                      
 
   //-----------------------------
   //Kinematics Histograms Bins
@@ -746,6 +755,11 @@ protected:
   //Coin. Time
   TH1F *H_ep_ctime_total;
   TH1F *H_ep_ctime;
+  
+  //hms/shms dc calibration quality monitoring constanta
+  static const Int_t dc_PLANES = 12;
+  static const string hdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v2", "1v1", "2v1", "2v2", "2x2", "2x1", "2u2", "2u1"};
+  static const string pdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v1", "1v2", "2v2", "2v1", "2x2", "2x1", "2u2", "2u1"};
 
   //HMS
   TH1F *H_hCerNpeSum;  
@@ -753,6 +767,7 @@ protected:
   TH1F *H_hCalEtotTrkNorm;
   TH1F *H_hHodBetaNtrk;   
   TH1F *H_hHodBetaTrk;   
+  TH1F *H_hdcRes[dc_PLANES];
   
   //SHMS	       
   TH1F *H_pNGCerNpeSum;
@@ -761,6 +776,7 @@ protected:
   TH1F *H_pCalEtotTrkNorm;
   TH1F *H_pHodBetaNtrk;   
   TH1F *H_pHodBetaTrk;   
+  TH1F *H_pdcRes[dc_PLANES];
 
   //-------Define 2D PID Histograms (correlations between pid detectors)-------
   //All possible combinations of correlations serves for general PID purposes
@@ -1089,7 +1105,9 @@ protected:
   Bool_t good_shms_should;
   Bool_t good_shms_did;
   
-  
+  // dc nhits (for residuals histos only)
+  Bool_t hnhit;
+  Bool_t pnhit;
   //-----------DEFINE DATA/SIMC CUTS (CUTS MUST BE EXACT SAME. Which is why only a variable is used for both)------
   //(See set_basic_cuts.inp file to modify the cuts),  the 'c_' denotes it is a cut
 
@@ -1354,6 +1372,7 @@ protected:
   Double_t eKCoinTime;
   Double_t ePiCoinTime;
 
+
   //HMS DETECTORS
   Double_t hcer_npesum;
   Double_t hcal_etotnorm;
@@ -1362,7 +1381,9 @@ protected:
   Double_t hhod_beta;
   Double_t hhod_gtr_beta;
   Double_t hhod_GoodScinHit;
-  Double_t hdc_ntrack;    
+  Double_t hdc_ntrack;
+  Double_t hdc_res[dc_PLANES]; 		      		   
+  Double_t hdc_nhit[dc_PLANES];		     
  
   //SHMS DETECTORS
   Double_t phgcer_npesum;
@@ -1373,7 +1394,10 @@ protected:
   Double_t phod_beta;
   Double_t phod_gtr_beta;
   Double_t phod_GoodScinHit;
-  Double_t pdc_ntrack;    
+  Double_t pdc_ntrack;
+  Double_t pdc_res[dc_PLANES]; 
+  Double_t pdc_nhit[dc_PLANES];
+ 
 
   //-----------------------------------
   //-----Kinematics Leaf Variables-----

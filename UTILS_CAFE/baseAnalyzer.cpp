@@ -337,6 +337,14 @@ void baseAnalyzer::Init(){
                        		
   H_thrq_rand  =  NULL;	       	
   H_thrq_rand_sub = NULL;     	
+
+
+  //Loop over DC Planes
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
+      H_hdcRes[npl] = NULL;
+      H_pdcRes[npl] = NULL;
+    }
   
 }
 
@@ -575,13 +583,21 @@ baseAnalyzer::~baseAnalyzer()
   delete H_thrq_rand;	       	  H_thrq_rand  =  NULL;	       	
   delete H_thrq_rand_sub;     	  H_thrq_rand_sub = NULL;     	
 
+  
+  //Loop over DC Planes
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
 
+      delete H_hdcRes[npl];             H_hdcRes[npl] = NULL;
+      delete H_pdcRes[npl];             H_pdcRes[npl] = NULL;
+
+    }
   
   
 }
 
 //_______________________________________________________________________________
-void baseAnalyzer::ReadInputFile()
+void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fnames=false)
 {
   cout << "Calling Base ReadInputFiles() . . . " << endl;
   
@@ -626,313 +642,353 @@ void baseAnalyzer::ReadInputFile()
     //----INPUTS (USER READS IN)-----
     //-------------------------------
 
-    
-    //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
-    temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-    
-    //Check if ROOTfile exists
-    in_file.open(data_InputFileName.Data());
-    cout << "in_file.fail() --> " << in_file.fail() << endl;
-    if(in_file.fail()){
-      cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;
-      cout << "Exiting NOW !" << endl;
-      gSystem->Exit(0);
-    }  
-    in_file.close();
-    
-    //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
-    temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-    
-    //Check if REPORTFile exists
-    in_file.open(data_InputReport.Data());
-    cout << "in_file.fail() --> " << in_file.fail() << endl;
-    if(in_file.fail()){
-      cout << Form("REPORTFile: %s does NOT exist ! ! !", data_InputReport.Data()) << endl;
-      cout << "Exiting NOW !" << endl;
-      gSystem->Exit(0);
+    if(set_input_fnames) {
+
+      //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
+      temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
+      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      
+      //Check if ROOTfile exists
+      in_file.open(data_InputFileName.Data());
+      cout << "in_file.fail() --> " << in_file.fail() << endl;
+      if(in_file.fail()){
+	cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;
+	cout << "Exiting NOW !" << endl;
+	gSystem->Exit(0);
+      }  
+      in_file.close();
+      
+      //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
+      temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
+      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      
+      //Check if REPORTFile exists
+      in_file.open(data_InputReport.Data());
+      cout << "in_file.fail() --> " << in_file.fail() << endl;
+      if(in_file.fail()){
+	cout << Form("REPORTFile: %s does NOT exist ! ! !", data_InputReport.Data()) << endl;
+	cout << "Exiting NOW !" << endl;
+	gSystem->Exit(0);
+      }
+      in_file.close();
+
     }
-    in_file.close();
-    
     
     //----------------------------------
     //----OUTPUTS (USER WRITES OUT)-----
     //----------------------------------
-    //Define Output (.root) File Name Pattern (analyzed histos are written to this file)
-    temp = trim(split(FindString("output_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-    data_OutputFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
-    
-    //Define Output (.root) File Name Pattern (analyzed combined histos are written to this file)
-    temp = trim(split(FindString("output_ROOTfilePattern_comb", input_FileNamePattern.Data())[0], '=')[1]);
-    data_OutputFileName_combined = Form(temp.Data(), replay_type.Data());
-    
-    //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- append run numbers
-    temp = trim(split(FindString("output_SummaryPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    output_SummaryFileName = Form(temp.Data(), replay_type.Data());
-    
-    //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- short report on a per-run basis
-    temp = trim(split(FindString("output_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-    output_ReportFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
-    
+
+    if(set_output_fnames) {
+
+      //Define Output (.root) File Name Pattern (analyzed histos are written to this file)
+      temp = trim(split(FindString("output_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
+      data_OutputFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
+      
+      //Define Output (.root) File Name Pattern (analyzed combined histos are written to this file)
+      temp = trim(split(FindString("output_ROOTfilePattern_comb", input_FileNamePattern.Data())[0], '=')[1]);
+      data_OutputFileName_combined = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data()); //ex. cafe_prod_Ca48_SRC_total.root
+      
+      //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- appended run numbers
+      temp = trim(split(FindString("output_SummaryPattern", input_FileNamePattern.Data())[0], '=')[1]);
+      output_SummaryFileName = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data()); // ex. cafe_prod_Ca48_SRC_report_summary.csv
+      
+      //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- short report on a per-run basis
+      temp = trim(split(FindString("output_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
+      output_ReportFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
+      
+    } 
+
   }
   
   //==========================================
   //     READ TRACKING EFFICIENCY CUTS
   //==========================================
-  //HMS Tracking Efficiency Cut Flags / Limits
-  hdc_ntrk_cut_flag = stoi(split(FindString("hdc_ntrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hdc_ntrk_min = stod(split(FindString("c_hdc_ntrk_min", input_CutFileName.Data())[0], '=')[1]);
-  
-  hScinGood_cut_flag = stoi(split(FindString("hScinGood_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  
-  hcer_cut_flag = stoi(split(FindString("hcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hnpeSum_min = stod(split(FindString("c_hnpeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hnpeSum_max = stod(split(FindString("c_hnpeSum_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  hetotnorm_cut_flag = stoi(split(FindString("hetotnorm_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hetotnorm_min = stod(split(FindString("c_hetotnorm_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hetotnorm_max = stod(split(FindString("c_hetotnorm_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  hBeta_notrk_cut_flag = stoi(split(FindString("hBeta_notrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hBetaNtrk_min = stod(split(FindString("c_hBetaNtrk_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hBetaNtrk_max = stod(split(FindString("c_hBetaNtrk_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //SHMS Tracking Efficiency Cut Flags / Limits
-  pdc_ntrk_cut_flag = stoi(split(FindString("pdc_ntrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_pdc_ntrk_min = stod(split(FindString("c_pdc_ntrk_min", input_CutFileName.Data())[0], '=')[1]);
-  
-  pScinGood_cut_flag = stoi(split(FindString("pScinGood_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  
-  pngcer_cut_flag = stoi(split(FindString("pngcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_pngcer_npeSum_min = stod(split(FindString("c_pngcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  c_pngcer_npeSum_max = stod(split(FindString("c_pngcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
 
-  phgcer_cut_flag = stoi(split(FindString("phgcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_phgcer_npeSum_min = stod(split(FindString("c_phgcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  c_phgcer_npeSum_max = stod(split(FindString("c_phgcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  petotnorm_cut_flag = stoi(split(FindString("petotnorm_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_petotnorm_min = stod(split(FindString("c_petotnorm_min", input_CutFileName.Data())[0], '=')[1]);
-  c_petotnorm_max = stod(split(FindString("c_petotnorm_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  pBeta_notrk_cut_flag = stoi(split(FindString("pBeta_notrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_pBetaNtrk_min = stod(split(FindString("c_pBetaNtrk_min", input_CutFileName.Data())[0], '=')[1]);
-  c_pBetaNtrk_max = stod(split(FindString("c_pBetaNtrk_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  
-  //==========================================
-  
-
-  //==========================================
-  //     READ Data/SIMC ANALYSIS CUTS
-  //==========================================
-
-  //------PID Cuts (DATA ONLY)-----
-  
-  //Coincidence time cuts (check which coin. time cut is actually being applied. By default: electron-proton cut is being applied)
-  
-  ePctime_cut_flag = stoi(split(FindString("ePctime_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-
-  // main coincidence time peak min/max window cut
-  ePctime_cut_min = stod(split(FindString("ePctime_cut_min", input_CutFileName.Data())[0], '=')[1]);
-  ePctime_cut_max = stod(split(FindString("ePctime_cut_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // accidentals to the right of main coin. peak
-  ePctime_cut_min_R = stod(split(FindString("ePctime_cut_min_R", input_CutFileName.Data())[0], '=')[1]);
-  ePctime_cut_max_R = stod(split(FindString("ePctime_cut_max_R", input_CutFileName.Data())[0], '=')[1]);
-
-  // accidentals to the left of main coin. peak
-  ePctime_cut_min_L = stod(split(FindString("ePctime_cut_min_L", input_CutFileName.Data())[0], '=')[1]);
-  ePctime_cut_max_L = stod(split(FindString("ePctime_cut_max_L", input_CutFileName.Data())[0], '=')[1]);
-
-  //(SHMS PID) Calorimeter Total Energy Normalized By Track Momentum
-  petot_trkNorm_pidCut_flag = stoi(split(FindString("petot_trkNorm_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  cpid_petot_trkNorm_min = stod(split(FindString("cpid_petot_trkNorm_min", input_CutFileName.Data())[0], '=')[1]);
-  cpid_petot_trkNorm_max = stod(split(FindString("cpid_petot_trkNorm_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //(SHMS PID) Noble Gas Cherenkov
-  pngcer_pidCut_flag = stoi(split(FindString("pngcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  cpid_pngcer_npeSum_min = stod(split(FindString("cpid_pngcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  cpid_pngcer_npeSum_max = stod(split(FindString("cpid_pngcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //(SHMS PID) Heavy Gas Cherenkov
-  phgcer_pidCut_flag = stoi(split(FindString("phgcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  cpid_phgcer_npeSum_min = stod(split(FindString("cpid_phgcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  cpid_phgcer_npeSum_max = stod(split(FindString("cpid_phgcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
-  
-
-  //(HMS PID) Calorimeter Total Energy Normalized By Track Momentum
-  hetot_trkNorm_pidCut_flag = stoi(split(FindString("hetot_trkNorm_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  cpid_hetot_trkNorm_min = stod(split(FindString("cpid_hetot_trkNorm_min", input_CutFileName.Data())[0], '=')[1]);
-  cpid_hetot_trkNorm_max = stod(split(FindString("cpid_hetot_trkNorm_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //(HMS PID) Gas Cherenkov
-  hcer_pidCut_flag = stoi(split(FindString("hcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  cpid_hcer_npeSum_min = stod(split(FindString("cpid_hcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
-  cpid_hcer_npeSum_max = stod(split(FindString("cpid_hcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
-
-
-  //-----Kinematics Cuts------
-  // H(e,e'p)
-  
-  //4-Momentum Transfers [GeV^2]
-  Q2_heep_cut_flag = stoi(split(FindString("Q2_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_Q2_min = stod(split(FindString("c_heep_Q2_min", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_Q2_max = stod(split(FindString("c_heep_Q2_max", input_CutFileName.Data())[0], '=')[1]);
-
-  //bjorken-x
-  xbj_heep_cut_flag = stoi(split(FindString("xbj_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_xbj_min = stod(split(FindString("c_heep_xbj_min", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_xbj_max = stod(split(FindString("c_heep_xbj_max", input_CutFileName.Data())[0], '=')[1]);
-
-  
-  //Missing Energy [GeV]
-  Em_heep_cut_flag = stoi(split(FindString("Em_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_Em_min = stod(split(FindString("c_heep_Em_min", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_Em_max = stod(split(FindString("c_heep_Em_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //Invariant Mass, W [GeV]
-  W_heep_cut_flag = stoi(split(FindString("W_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_W_min = stod(split(FindString("c_heep_W_min", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_W_max = stod(split(FindString("c_heep_W_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  //Missing Mass Cut (Check which MM Cut is actually being applied: By default, it should be proton MM) 
-  //Protons
-  MM_heep_cut_flag = stoi(split(FindString("MM_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_MM_min = stod(split(FindString("c_heep_MM_min", input_CutFileName.Data())[0], '=')[1]);
-  c_heep_MM_max = stod(split(FindString("c_heep_MM_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // CaFe A(e,e'p) Mean-Field (MF) Kinematic Cuts
-  // 4-Momentum Transfers [GeV^2]
-  Q2_MF_cut_flag = stoi(split(FindString("Q2_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Q2_min = stod(split(FindString("c_MF_Q2_min", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Q2_max = stod(split(FindString("c_MF_Q2_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  // Missing Momentum [GeV]
-  Pm_MF_cut_flag = stoi(split(FindString("Pm_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Pm_min = stod(split(FindString("c_MF_Pm_min", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Pm_max = stod(split(FindString("c_MF_Pm_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // Missing Energy [GeV] --- ONLY for deuteron target
-  Em_d2MF_cut_flag = stoi(split(FindString("Em_d2MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_d2MF_Em_min = stod(split(FindString("c_d2MF_Em_min", input_CutFileName.Data())[0], '=')[1]);
-  c_d2MF_Em_max = stod(split(FindString("c_d2MF_Em_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // Missing Energy [GeV] --- ONLY for MF A>2 nuclei
-  Em_MF_cut_flag = stoi(split(FindString("Em_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Em_min = stod(split(FindString("c_MF_Em_min", input_CutFileName.Data())[0], '=')[1]);
-  c_MF_Em_max = stod(split(FindString("c_MF_Em_max", input_CutFileName.Data())[0], '=')[1]);
-  
-  // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts 
-  // 4-Momentum Transfers [GeV^2]
-  Q2_SRC_cut_flag = stoi(split(FindString("Q2_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Q2_min = stod(split(FindString("c_SRC_Q2_min", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Q2_max = stod(split(FindString("c_SRC_Q2_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // Missing Momentum [GeV]
-  Pm_SRC_cut_flag = stoi(split(FindString("Pm_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Pm_min = stod(split(FindString("c_SRC_Pm_min", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Pm_max = stod(split(FindString("c_SRC_Pm_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // x-Bjorken
-  Xbj_SRC_cut_flag = stoi(split(FindString("Xbj_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Xbj_min = stod(split(FindString("c_SRC_Xbj_min", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_Xbj_max = stod(split(FindString("c_SRC_Xbj_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // in-plane recoil (undetected) angle, theta_rq [deg]
-  thrq_SRC_cut_flag = stoi(split(FindString("thrq_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_thrq_min = stod(split(FindString("c_SRC_thrq_min", input_CutFileName.Data())[0], '=')[1]);
-  c_SRC_thrq_max = stod(split(FindString("c_SRC_thrq_max", input_CutFileName.Data())[0], '=')[1]);
-
-
-  // Missing Energy [GeV] --- ONLY for deuteron target
-  Em_d2SRC_cut_flag = stoi(split(FindString("Em_d2SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_d2SRC_Em_min = stod(split(FindString("c_d2SRC_Em_min", input_CutFileName.Data())[0], '=')[1]);
-  c_d2SRC_Em_max = stod(split(FindString("c_d2SRC_Em_max", input_CutFileName.Data())[0], '=')[1]);
-
-  // Missing Energy [GeV] --- ONLY for MF A>2 nuclei
-  Em_SRC_cut_flag = stoi(split(FindString("Em_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  
-  //------Acceptance Cuts-------
-  
-  //Hadron Arm
-  hdelta_cut_flag = stoi(split(FindString("hdelta_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hdelta_min = stod(split(FindString("c_hdelta_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hdelta_max = stod(split(FindString("c_hdelta_max", input_CutFileName.Data())[0], '=')[1]);
-
-  hxptar_cut_flag = stoi(split(FindString("hxptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hxptar_min = stod(split(FindString("c_hxptar_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hxptar_max = stod(split(FindString("c_hxptar_max", input_CutFileName.Data())[0], '=')[1]);
-
-  hyptar_cut_flag = stoi(split(FindString("hyptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_hyptar_min = stod(split(FindString("c_hyptar_min", input_CutFileName.Data())[0], '=')[1]);
-  c_hyptar_max = stod(split(FindString("c_hyptar_max", input_CutFileName.Data())[0], '=')[1]);
-
-  hmsCollCut_flag = stoi(split(FindString("hmsCollCut_flag", input_CutFileName.Data())[0], '=')[1]);
-  
-  //Electron Arm
-  edelta_cut_flag = stoi(split(FindString("edelta_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_edelta_min = stod(split(FindString("c_edelta_min", input_CutFileName.Data())[0], '=')[1]);
-  c_edelta_max = stod(split(FindString("c_edelta_max", input_CutFileName.Data())[0], '=')[1]);
-
-  exptar_cut_flag = stoi(split(FindString("exptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_exptar_min = stod(split(FindString("c_exptar_min", input_CutFileName.Data())[0], '=')[1]);
-  c_exptar_max = stod(split(FindString("c_exptar_max", input_CutFileName.Data())[0], '=')[1]);
-
-  eyptar_cut_flag = stoi(split(FindString("eyptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_eyptar_min = stod(split(FindString("c_eyptar_min", input_CutFileName.Data())[0], '=')[1]);
-  c_eyptar_max = stod(split(FindString("c_eyptar_max", input_CutFileName.Data())[0], '=')[1]);
-
-  shmsCollCut_flag = stoi(split(FindString("shmsCollCut_flag", input_CutFileName.Data())[0], '=')[1]);
-
-  // Z-Reaction Vertex Difference Cut
-  ztarDiff_cut_flag = stoi(split(FindString("ztarDiff_cut_flag", input_CutFileName.Data())[0], '=')[1]);
-  c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
-  c_ztarDiff_max = stod(split(FindString("c_ztarDiff_max", input_CutFileName.Data())[0], '=')[1]);
-
-
-  // =====================
-  //  SIMC
-  //======================
- 
+  if(set_input_fnames) {
     
-    //Define Input/Output SIMC File Name Pattern (currently hard-coded filenames, maybe later can be re-implemented better)
-  if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ){
+    //HMS Tracking Efficiency Cut Flags / Limits
+    hdc_ntrk_cut_flag = stoi(split(FindString("hdc_ntrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hdc_ntrk_min = stod(split(FindString("c_hdc_ntrk_min", input_CutFileName.Data())[0], '=')[1]);
+    
+    hScinGood_cut_flag = stoi(split(FindString("hScinGood_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    hcer_cut_flag = stoi(split(FindString("hcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hnpeSum_min = stod(split(FindString("c_hnpeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hnpeSum_max = stod(split(FindString("c_hnpeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    hetotnorm_cut_flag = stoi(split(FindString("hetotnorm_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hetotnorm_min = stod(split(FindString("c_hetotnorm_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hetotnorm_max = stod(split(FindString("c_hetotnorm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    hBeta_notrk_cut_flag = stoi(split(FindString("hBeta_notrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hBetaNtrk_min = stod(split(FindString("c_hBetaNtrk_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hBetaNtrk_max = stod(split(FindString("c_hBetaNtrk_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //SHMS Tracking Efficiency Cut Flags / Limits
+    pdc_ntrk_cut_flag = stoi(split(FindString("pdc_ntrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_pdc_ntrk_min = stod(split(FindString("c_pdc_ntrk_min", input_CutFileName.Data())[0], '=')[1]);
+    
+    pScinGood_cut_flag = stoi(split(FindString("pScinGood_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    pngcer_cut_flag = stoi(split(FindString("pngcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_pngcer_npeSum_min = stod(split(FindString("c_pngcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    c_pngcer_npeSum_max = stod(split(FindString("c_pngcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    phgcer_cut_flag = stoi(split(FindString("phgcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_phgcer_npeSum_min = stod(split(FindString("c_phgcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    c_phgcer_npeSum_max = stod(split(FindString("c_phgcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    petotnorm_cut_flag = stoi(split(FindString("petotnorm_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_petotnorm_min = stod(split(FindString("c_petotnorm_min", input_CutFileName.Data())[0], '=')[1]);
+    c_petotnorm_max = stod(split(FindString("c_petotnorm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    pBeta_notrk_cut_flag = stoi(split(FindString("pBeta_notrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_pBetaNtrk_min = stod(split(FindString("c_pBetaNtrk_min", input_CutFileName.Data())[0], '=')[1]);
+    c_pBetaNtrk_max = stod(split(FindString("c_pBetaNtrk_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    //==========================================
+    
+    
+    //==========================================
+    //     READ Data/SIMC ANALYSIS CUTS
+    //==========================================
+    
+    //------PID Cuts (DATA ONLY)-----
+    
+    //Coincidence time cuts (check which coin. time cut is actually being applied. By default: electron-proton cut is being applied)
+    
+    ePctime_cut_flag = stoi(split(FindString("ePctime_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    // main coincidence time peak min/max window cut
+    ePctime_cut_min = stod(split(FindString("ePctime_cut_min", input_CutFileName.Data())[0], '=')[1]);
+    ePctime_cut_max = stod(split(FindString("ePctime_cut_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // accidentals to the right of main coin. peak
+    ePctime_cut_min_R = stod(split(FindString("ePctime_cut_min_R", input_CutFileName.Data())[0], '=')[1]);
+    ePctime_cut_max_R = stod(split(FindString("ePctime_cut_max_R", input_CutFileName.Data())[0], '=')[1]);
+    
+    // accidentals to the left of main coin. peak
+    ePctime_cut_min_L = stod(split(FindString("ePctime_cut_min_L", input_CutFileName.Data())[0], '=')[1]);
+    ePctime_cut_max_L = stod(split(FindString("ePctime_cut_max_L", input_CutFileName.Data())[0], '=')[1]);
+    
+    //(SHMS PID) Calorimeter Total Energy Normalized By Track Momentum
+    petot_trkNorm_pidCut_flag = stoi(split(FindString("petot_trkNorm_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    cpid_petot_trkNorm_min = stod(split(FindString("cpid_petot_trkNorm_min", input_CutFileName.Data())[0], '=')[1]);
+    cpid_petot_trkNorm_max = stod(split(FindString("cpid_petot_trkNorm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //(SHMS PID) Noble Gas Cherenkov
+    pngcer_pidCut_flag = stoi(split(FindString("pngcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    cpid_pngcer_npeSum_min = stod(split(FindString("cpid_pngcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    cpid_pngcer_npeSum_max = stod(split(FindString("cpid_pngcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //(SHMS PID) Heavy Gas Cherenkov
+    phgcer_pidCut_flag = stoi(split(FindString("phgcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    cpid_phgcer_npeSum_min = stod(split(FindString("cpid_phgcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    cpid_phgcer_npeSum_max = stod(split(FindString("cpid_phgcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    //(HMS PID) Calorimeter Total Energy Normalized By Track Momentum
+    hetot_trkNorm_pidCut_flag = stoi(split(FindString("hetot_trkNorm_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    cpid_hetot_trkNorm_min = stod(split(FindString("cpid_hetot_trkNorm_min", input_CutFileName.Data())[0], '=')[1]);
+    cpid_hetot_trkNorm_max = stod(split(FindString("cpid_hetot_trkNorm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //(HMS PID) Gas Cherenkov
+    hcer_pidCut_flag = stoi(split(FindString("hcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    cpid_hcer_npeSum_min = stod(split(FindString("cpid_hcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
+    cpid_hcer_npeSum_max = stod(split(FindString("cpid_hcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    //-----Kinematics Cuts------
+    // H(e,e'p)
+    
+    //4-Momentum Transfers [GeV^2]
+    Q2_heep_cut_flag = stoi(split(FindString("Q2_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_Q2_min = stod(split(FindString("c_heep_Q2_min", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_Q2_max = stod(split(FindString("c_heep_Q2_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //bjorken-x
+    xbj_heep_cut_flag = stoi(split(FindString("xbj_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_xbj_min = stod(split(FindString("c_heep_xbj_min", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_xbj_max = stod(split(FindString("c_heep_xbj_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    //Missing Energy [GeV]
+    Em_heep_cut_flag = stoi(split(FindString("Em_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_Em_min = stod(split(FindString("c_heep_Em_min", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_Em_max = stod(split(FindString("c_heep_Em_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //Invariant Mass, W [GeV]
+    W_heep_cut_flag = stoi(split(FindString("W_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_W_min = stod(split(FindString("c_heep_W_min", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_W_max = stod(split(FindString("c_heep_W_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    //Missing Mass Cut (Check which MM Cut is actually being applied: By default, it should be proton MM) 
+    //Protons
+    MM_heep_cut_flag = stoi(split(FindString("MM_heep_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_MM_min = stod(split(FindString("c_heep_MM_min", input_CutFileName.Data())[0], '=')[1]);
+    c_heep_MM_max = stod(split(FindString("c_heep_MM_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // CaFe A(e,e'p) Mean-Field (MF) Kinematic Cuts
+    // 4-Momentum Transfers [GeV^2]
+    Q2_MF_cut_flag = stoi(split(FindString("Q2_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Q2_min = stod(split(FindString("c_MF_Q2_min", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Q2_max = stod(split(FindString("c_MF_Q2_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Missing Momentum [GeV]
+    Pm_MF_cut_flag = stoi(split(FindString("Pm_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Pm_min = stod(split(FindString("c_MF_Pm_min", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Pm_max = stod(split(FindString("c_MF_Pm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Missing Energy [GeV] --- ONLY for deuteron target
+    Em_d2MF_cut_flag = stoi(split(FindString("Em_d2MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_d2MF_Em_min = stod(split(FindString("c_d2MF_Em_min", input_CutFileName.Data())[0], '=')[1]);
+    c_d2MF_Em_max = stod(split(FindString("c_d2MF_Em_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Missing Energy [GeV] --- ONLY for MF A>2 nuclei
+    Em_MF_cut_flag = stoi(split(FindString("Em_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Em_min = stod(split(FindString("c_MF_Em_min", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_Em_max = stod(split(FindString("c_MF_Em_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts 
+    // 4-Momentum Transfers [GeV^2]
+    Q2_SRC_cut_flag = stoi(split(FindString("Q2_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Q2_min = stod(split(FindString("c_SRC_Q2_min", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Q2_max = stod(split(FindString("c_SRC_Q2_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Missing Momentum [GeV]
+    Pm_SRC_cut_flag = stoi(split(FindString("Pm_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Pm_min = stod(split(FindString("c_SRC_Pm_min", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Pm_max = stod(split(FindString("c_SRC_Pm_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // x-Bjorken
+    Xbj_SRC_cut_flag = stoi(split(FindString("Xbj_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Xbj_min = stod(split(FindString("c_SRC_Xbj_min", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_Xbj_max = stod(split(FindString("c_SRC_Xbj_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // in-plane recoil (undetected) angle, theta_rq [deg]
+    thrq_SRC_cut_flag = stoi(split(FindString("thrq_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_thrq_min = stod(split(FindString("c_SRC_thrq_min", input_CutFileName.Data())[0], '=')[1]);
+    c_SRC_thrq_max = stod(split(FindString("c_SRC_thrq_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    // Missing Energy [GeV] --- ONLY for deuteron target
+    Em_d2SRC_cut_flag = stoi(split(FindString("Em_d2SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_d2SRC_Em_min = stod(split(FindString("c_d2SRC_Em_min", input_CutFileName.Data())[0], '=')[1]);
+    c_d2SRC_Em_max = stod(split(FindString("c_d2SRC_Em_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Missing Energy [GeV] --- ONLY for MF A>2 nuclei
+    Em_SRC_cut_flag = stoi(split(FindString("Em_SRC_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    //------Acceptance Cuts-------
+    
+    //Hadron Arm
+    hdelta_cut_flag = stoi(split(FindString("hdelta_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hdelta_min = stod(split(FindString("c_hdelta_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hdelta_max = stod(split(FindString("c_hdelta_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    hxptar_cut_flag = stoi(split(FindString("hxptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hxptar_min = stod(split(FindString("c_hxptar_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hxptar_max = stod(split(FindString("c_hxptar_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    hyptar_cut_flag = stoi(split(FindString("hyptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_hyptar_min = stod(split(FindString("c_hyptar_min", input_CutFileName.Data())[0], '=')[1]);
+    c_hyptar_max = stod(split(FindString("c_hyptar_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    hmsCollCut_flag = stoi(split(FindString("hmsCollCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    //Electron Arm
+    edelta_cut_flag = stoi(split(FindString("edelta_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_edelta_min = stod(split(FindString("c_edelta_min", input_CutFileName.Data())[0], '=')[1]);
+    c_edelta_max = stod(split(FindString("c_edelta_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    exptar_cut_flag = stoi(split(FindString("exptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_exptar_min = stod(split(FindString("c_exptar_min", input_CutFileName.Data())[0], '=')[1]);
+    c_exptar_max = stod(split(FindString("c_exptar_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    eyptar_cut_flag = stoi(split(FindString("eyptar_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_eyptar_min = stod(split(FindString("c_eyptar_min", input_CutFileName.Data())[0], '=')[1]);
+    c_eyptar_max = stod(split(FindString("c_eyptar_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    shmsCollCut_flag = stoi(split(FindString("shmsCollCut_flag", input_CutFileName.Data())[0], '=')[1]);
+    
+    // Z-Reaction Vertex Difference Cut
+    ztarDiff_cut_flag = stoi(split(FindString("ztarDiff_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
+    c_ztarDiff_max = stod(split(FindString("c_ztarDiff_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+    // =====================
+    //  SIMC
+    //======================
+    
+    temp = trim(split(FindString("input_file_simc", input_FileNamePattern.Data())[0], '=')[1]);
+    simc_ifile = temp.Data();
+    
+    temp = trim(split(FindString("input_ROOTfilePattern_simc_rad", input_FileNamePattern.Data())[0], '=')[1]);
+    simc_InputFileName_rad = temp.Data();
+    
+    temp = trim(split(FindString("input_ROOTfilePattern_simc_norad", input_FileNamePattern.Data())[0], '=')[1]);
+    simc_InputFileName_norad = temp.Data();
 
+  } //end: set_input_fname flag
+  
+  
+  if(set_output_fnames) {
+    
+    //----------------------------------------
+    // Define  SIMC analyzed output filename
+    //----------------------------------------
+    temp = trim(split(FindString("output_ROOTfilePattern_simc_rad", input_FileNamePattern.Data())[0], '=')[1]);
+    simc_OutputFileName_rad = temp.Data();
+    
+    temp = trim(split(FindString("output_ROOTfilePattern_simc_norad", input_FileNamePattern.Data())[0], '=')[1]);
+    simc_OutputFileName_norad = temp.Data();
+
+  }
+    
+    /*
+    //Define Input/Output SIMC File Name Pattern (currently hard-coded filenames, maybe later can be re-implemented better)
+    if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ){
+    
     simc_InputFileName_rad = "../hallc_simulations/worksim/cafe_heep_scan_kin0_rad.root"; //shms 8.55 GeV, 8.3 deg
     simc_ifile             = "../hallc_simulations/infiles/cafe_heep_scan_kin0_rad.data";
     simc_OutputFileName_rad = "../hallc_simulations/cafe_output/cafe_heep_scan_kin0_rad_output.root"; //shms 8.55 GeV, 8.3 deg
     
-  }
-  
-  if(analysis_cut=="MF"){
-
+    }
+    
+    if(analysis_cut=="MF"){
+    
     // default existing C12 MF SIMC file (other targets can be scaled from C12)
     simc_InputFileName_rad = "../hallc_simulations/worksim/cafe_c12_MF_rad.root";
     simc_ifile             = "../hallc_simulations/infiles/cafe_c12_MF_rad.data";
-
+    
     //simc_InputFileName_rad = "../hallc_simulations/worksim/cafe_d2_MF_rad.root";
     //simc_ifile             = "../hallc_simulations/infiles/cafe_d2_MF_rad.data";
-
+    
     // define MF SIMC output root file
     simc_OutputFileName_rad = "../hallc_simulations/cafe_output/cafe_c12_MF_rad_output.root";
     
     //simc_OutputFileName_rad = "../hallc_simulations/cafe_output/cafe_d2_MF_rad_output.root";
-
-      
-  }
-  
-  if(analysis_cut=="SRC"){
-
+    
+    
+    }
+    
+    if(analysis_cut=="SRC"){
+    
     // default existing d2 SRC SIMC file (other targets can be scaled from d2)
     simc_InputFileName_rad = "../hallc_simulations/worksim/cafe_d2_SRC_rad.root";
     simc_ifile             = "../hallc_simulations/infiles/cafe_d2_SRC_rad.data";
-
+    
     // define SRC SIMC output root file
     simc_OutputFileName_rad = "../hallc_simulations/cafe_output/cafe_d2_SRC_rad_output.root";
     
-  }
+    }
+    */
+    
+    
+    
+    
 
     if(analysis_type=="simc"){
       // Read SIMC input file central values during online analysis (to be used in calculations later,
@@ -946,7 +1002,8 @@ void baseAnalyzer::ReadInputFile()
       shms_angle_simc  = stod(split(split(FindString("spec%e%theta", simc_ifile.Data())[0], '=')[1], '!')[0]); //deg
       
     }
-    
+
+  
 }
   
 
@@ -1115,6 +1172,10 @@ void baseAnalyzer::SetHistBins()
   hbeta_xmin   = stod(split(FindString("hbeta_xmin",  input_HBinFileName.Data())[0], '=')[1]);
   hbeta_xmax   = stod(split(FindString("hbeta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
+  hdcRes_nbins = stod(split(FindString("hdcRes_nbins", input_HBinFileName.Data())[0], '=')[1]);
+  hdcRes_xmin  = stod(split(FindString("hdcRes_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  hdcRes_xmax  = stod(split(FindString("hdcRes_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+    
   //--SHMS DETECTORS--
   pngcer_nbins = stod(split(FindString("pngcer_nbins",input_HBinFileName.Data())[0], '=')[1]);
   pngcer_xmin  = stod(split(FindString("pngcer_xmin", input_HBinFileName.Data())[0], '=')[1]);
@@ -1132,6 +1193,10 @@ void baseAnalyzer::SetHistBins()
   pbeta_xmin   = stod(split(FindString("pbeta_xmin",  input_HBinFileName.Data())[0], '=')[1]);
   pbeta_xmax   = stod(split(FindString("pbeta_xmax",  input_HBinFileName.Data())[0], '=')[1]);
 
+  pdcRes_nbins = stod(split(FindString("pdcRes_nbins", input_HBinFileName.Data())[0], '=')[1]);
+  pdcRes_xmin  = stod(split(FindString("pdcRes_xmin",  input_HBinFileName.Data())[0], '=')[1]);
+  pdcRes_xmax  = stod(split(FindString("pdcRes_xmax",  input_HBinFileName.Data())[0], '=')[1]);
+    
   //---------------------------------
   // Kinematics Histograms Binning
   //---------------------------------
@@ -1293,9 +1358,6 @@ void baseAnalyzer::SetHistBins()
   MandelU_nbins	 = stod(split(FindString("MandelU_nbins",  	input_HBinFileName.Data())[0], '=')[1]);
   MandelU_xmin 	 = stod(split(FindString("MandelU_xmin",  	input_HBinFileName.Data())[0], '=')[1]);
   MandelU_xmax 	 = stod(split(FindString("MandelU_xmax",  	input_HBinFileName.Data())[0], '=')[1]);
-
-
-
     
   //Kinematics Defined in HCANA (which are not in primary/secondary modules)
   kf_nbins	= stod(split(FindString("kf_nbins",  	input_HBinFileName.Data())[0], '=')[1]);   //final electron momentum
@@ -1472,6 +1534,7 @@ void baseAnalyzer::CreateHist()
   H_hCalEtotTrkNorm = new TH1F("H_hCalEtotTrkNorm", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
   H_hHodBetaNtrk    = new TH1F("H_hHodBetaNtrk", "HMS Hodo #beta (no track); #beta (no track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
   H_hHodBetaTrk     = new TH1F("H_hHodBetaTrk", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
   
   //SHMS DETECTORS HISTOS
   H_pNGCerNpeSum    = new TH1F("H_pNGCerNpeSum", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
@@ -1480,6 +1543,7 @@ void baseAnalyzer::CreateHist()
   H_pCalEtotTrkNorm = new TH1F("H_pCalEtotTrkNorm", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
   H_pHodBetaNtrk    = new TH1F("H_pBetaNtrk", "SHMS Hodo #beta (no track); #beta (no track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
   H_pHodBetaTrk     = new TH1F("H_pBetaTrk", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
   //HMS 2D PID               
   H_hcal_vs_hcer     = new TH2F("H_hcal_vs_hcer", "HMS: Calorimeter vs. Cherenkov; Calorimeter E_{tot}/P_{trk}; Cherenkov NPE Sum", hcal_nbins, hcal_xmin, hcal_xmax, hcer_nbins, hcer_xmin, hcer_xmax);     
@@ -1505,6 +1569,13 @@ void baseAnalyzer::CreateHist()
   pid_HList->Add(H_pCalEtotTrkNorm);
   pid_HList->Add(H_pHodBetaNtrk);
   pid_HList->Add(H_pHodBetaTrk);
+
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
+      pid_HList->Add(H_hdcRed[npl]);
+      pid_HList->Add(H_pdcRed[npl]);
+    }
+  
   //Add 2D PID
   pid_HList->Add(H_hcal_vs_hcer);  
   pid_HList->Add(H_pcal_vs_phgcer);
@@ -2187,8 +2258,37 @@ void baseAnalyzer::ReadTree()
 	//----Collimator Quantities-----
 	tree->SetBranchAddress(Form("%s.extcor.xsieve", hArm.Data()),&hXColl);
 	tree->SetBranchAddress(Form("%s.extcor.ysieve", hArm.Data()),&hYColl);
+
+
+	//---Quality Monitor DC residuals----
+	TString base;
+	TString ndc_nhit;
 	
-      }
+	//Loop over DC Planes
+	for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+	  {
+	    //----Define HMS TTree Leaf Names-----
+	    base = "H.dc." + hdc_pl_names[npl];
+	    ndc_nhit = base + "." + "nhit";
+
+	    //------Set HMS Branch Address-------
+	    T->SetBranchAddress(ndc_nhit, &hdc_nhit[npl]);
+	    T->SetBranchAddress("H.dc.residualExclPlane", &hdc_res[0]);
+
+	    
+	    //----Define SHMS TTree Leaf Names-----
+	    base = "P.dc." + pdc_pl_names[npl];
+	    ndc_nhit = base + "." + "nhit";
+
+	    //------Set SHMS Branch Address-------
+	    T->SetBranchAddress(ndc_nhit, &pdc_nhit[npl]);
+	    T->SetBranchAddress("P.dc.residualExclPlane", &pdc_res[0]);
+
+	    
+	  }
+
+	
+      }// end "daq_mode" coin
       
       if(daq_mode=="singles"){
 	// Trigger Detector 
@@ -2898,6 +2998,50 @@ void baseAnalyzer::EventLoop()
 		  H_hXColl_vs_hYColl_noCUT  ->Fill(hYColl, hXColl);
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
+		  
+		  // --------- drift chamber residuals ----------
+
+		  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+		    {
+		      
+		      //Require single hit per plane
+		      hnhit = hdc_nhit[0]==1&&hdc_nhit[1]==1&&hdc_nhit[2]==1&&hdc_nhit[3]==1&&hdc_nhit[4]==1&&hdc_nhit[5]==1&& 
+			hdc_nhit[6]==1&&hdc_nhit[7]==1&&hdc_nhit[8]==1&&hdc_nhit[9]==1&&hdc_nhit[10]==1&&hdc_nhit[11]==1;
+		      
+		      //Require single hit per plane
+		      pnhit = pdc_nhit[0]==1&&pdc_nhit[1]==1&&pdc_nhit[2]==1&&pdc_nhit[3]==1&&pdc_nhit[4]==1&&pdc_nhit[5]==1&& 
+			pdc_nhit[6]==1&&pdc_nhit[7]==1&&pdc_nhit[8]==1&&pdc_nhit[9]==1&&pdc_nhit[10]==1&&pdc_nhit[11]==1;
+
+
+		      //Loop over hits
+		      for (Int_t j=0; j < hdc_nhit[npl]; j++)
+			{
+			  
+			  if(hnhit){
+			    //Fill Residual
+			    H_hdcRes[npl]->Fill(hdc_res[npl]);
+			  }
+
+			  
+			}
+
+
+		      //Loop over hits
+		      for (Int_t j=0; j < pdc_nhit[npl]; j++)
+			{
+
+			  if(pnhit){
+			    //Fill Residual
+			    H_pdcRes[npl]->Fill(pdc_res[npl]);
+			  }
+			  
+			}
+
+		      
+		    }
+		  
+		  //----------------------------------------------
+		  
 
 		  if(c_baseCuts){
 		    
@@ -3703,17 +3847,19 @@ void baseAnalyzer::CalcEff()
   //Choose what trigger type to use in correction factor (see set_basic_cuts.inp)
   //---- will need to thing about removing the lines below, and just require a Ps_singles and Ps_coin factors, to be applied in the full weight, since every trigger info is already wirtten
   // to a report file, there is no need to be selective, except on pre-scale factor that goes in weight
+
+  
+  if(trig_type_single=="trig1") { trig_rate = TRIG1scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig1, cpuLT_trig_err_Bi = cpuLT_trig1_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig1_err_Bay, tLT_trig = tLT_trig1, tLT_trig_err_Bi = tLT_trig1_err_Bi, tLT_trig_err_Bay = tLT_trig1_err_Bay, Ps_factor_single = Ps1_factor, total_trig_scaler_bcm_cut = total_trig1_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig1_accp_bcm_cut; }
+  if(trig_type_single=="trig2") { trig_rate = TRIG2scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig2, cpuLT_trig_err_Bi = cpuLT_trig2_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig2_err_Bay, tLT_trig = tLT_trig2, tLT_trig_err_Bi = tLT_trig2_err_Bi, tLT_trig_err_Bay = tLT_trig2_err_Bay, Ps_factor_single = Ps2_factor, total_trig_scaler_bcm_cut = total_trig2_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig2_accp_bcm_cut; }
+  if(trig_type_single=="trig3") { trig_rate = TRIG3scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig3, cpuLT_trig_err_Bi = cpuLT_trig3_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig3_err_Bay, tLT_trig = tLT_trig3, tLT_trig_err_Bi = tLT_trig3_err_Bi, tLT_trig_err_Bay = tLT_trig3_err_Bay, Ps_factor_single = Ps3_factor, total_trig_scaler_bcm_cut = total_trig3_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig3_accp_bcm_cut; }
+  if(trig_type_single=="trig4") { trig_rate = TRIG4scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig4, cpuLT_trig_err_Bi = cpuLT_trig4_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig4_err_Bay, tLT_trig = tLT_trig4, tLT_trig_err_Bi = tLT_trig4_err_Bi, tLT_trig_err_Bay = tLT_trig4_err_Bay, Ps_factor_single = Ps4_factor, total_trig_scaler_bcm_cut = total_trig4_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig4_accp_bcm_cut; }
+
+
+  if(trig_type_coin=="trig5") { trig_rate = TRIG5scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig5, cpuLT_trig_err_Bi = cpuLT_trig5_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig5_err_Bay, tLT_trig = tLT_trig5, tLT_trig_err_Bi = tLT_trig5_err_Bi, tLT_trig_err_Bay = tLT_trig5_err_Bay, Ps_factor_coin = Ps5_factor, total_trig_scaler_bcm_cut = total_trig5_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig5_accp_bcm_cut; }
+  if(trig_type_coin=="trig6") { trig_rate = TRIG6scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig6, cpuLT_trig_err_Bi = cpuLT_trig6_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig6_err_Bay, tLT_trig = tLT_trig6, tLT_trig_err_Bi = tLT_trig6_err_Bi, tLT_trig_err_Bay = tLT_trig6_err_Bay, Ps_factor_coin = Ps6_factor, total_trig_scaler_bcm_cut = total_trig6_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig6_accp_bcm_cut; }
+  
+  
   /*
-  if(trig_type_single=="trig1") { trig_rate = TRIG1scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig1, cpuLT_trig_err_Bi = cpuLT_trig1_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig1_err_Bay, tLT_trig = tLT_trig1, tLT_trig_err_Bi = tLT_trig1_err_Bi, tLT_trig_err_Bay = tLT_trig1_err_Bay, Ps_factor = Ps1_factor, total_trig_scaler_bcm_cut = total_trig1_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig1_accp_bcm_cut; }
-  if(trig_type_single=="trig2") { trig_rate = TRIG2scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig2, cpuLT_trig_err_Bi = cpuLT_trig2_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig2_err_Bay, tLT_trig = tLT_trig2, tLT_trig_err_Bi = tLT_trig2_err_Bi, tLT_trig_err_Bay = tLT_trig2_err_Bay, Ps_factor = Ps2_factor, total_trig_scaler_bcm_cut = total_trig2_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig2_accp_bcm_cut; }
-  if(trig_type_single=="trig3") { trig_rate = TRIG3scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig3, cpuLT_trig_err_Bi = cpuLT_trig3_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig3_err_Bay, tLT_trig = tLT_trig3, tLT_trig_err_Bi = tLT_trig3_err_Bi, tLT_trig_err_Bay = tLT_trig3_err_Bay, Ps_factor = Ps3_factor, total_trig_scaler_bcm_cut = total_trig3_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig3_accp_bcm_cut; }
-  if(trig_type_single=="trig4") { trig_rate = TRIG4scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig4, cpuLT_trig_err_Bi = cpuLT_trig4_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig4_err_Bay, tLT_trig = tLT_trig4, tLT_trig_err_Bi = tLT_trig4_err_Bi, tLT_trig_err_Bay = tLT_trig4_err_Bay, Ps_factor = Ps4_factor, total_trig_scaler_bcm_cut = total_trig4_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig4_accp_bcm_cut; }
-
-
-  if(trig_type_coin=="trig5") { trig_rate = TRIG5scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig5, cpuLT_trig_err_Bi = cpuLT_trig5_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig5_err_Bay, tLT_trig = tLT_trig5, tLT_trig_err_Bi = tLT_trig5_err_Bi, tLT_trig_err_Bay = tLT_trig5_err_Bay, Ps_factor = Ps5_factor, total_trig_scaler_bcm_cut = total_trig5_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig5_accp_bcm_cut; }
-  if(trig_type_coin=="trig6") { trig_rate = TRIG6scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig6, cpuLT_trig_err_Bi = cpuLT_trig6_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig6_err_Bay, tLT_trig = tLT_trig6, tLT_trig_err_Bi = tLT_trig6_err_Bi, tLT_trig_err_Bay = tLT_trig6_err_Bay, Ps_factor = Ps6_factor, total_trig_scaler_bcm_cut = total_trig6_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig6_accp_bcm_cut; }
-  */
-
   // select which pre-scale factors to apply in the weight (depend if looking at singles or coin)
   if(trig_type_single=="trig1") { Ps_factor_single = Ps1_factor; }
   if(trig_type_single=="trig2") { Ps_factor_single = Ps2_factor; }
@@ -3723,7 +3869,8 @@ void baseAnalyzer::CalcEff()
 
   if(trig_type_coin=="trig5") { Ps_factor_coin = Ps5_factor; }
   if(trig_type_coin=="trig6") { Ps_factor_coin = Ps6_factor; }
-
+  */
+  
   //Calculate HMS Tracking Efficiency                                                                                                                 
   hTrkEff = h_did / h_should;                                                                                                                  
   hTrkEff_err = sqrt(h_should-h_did) / h_should;
@@ -3794,11 +3941,11 @@ void baseAnalyzer::ApplyWeight()
 
   tgtBoil_corr = (1. - tgt_slope * avg_current_bcm_cut);
   tgtBoil_corr_err = sqrt( pow( avg_current_bcm_cut * tgt_slope_err , 2)  + pow( tgt_slope * avg_current_bcm_cut_err ,2) );
-
+  */
   //For now, assume no target boiling
   tgtBoil_corr = 1.;
   tgtBoil_corr_err = -1.0;
-  */
+  
   
   /*
     Proton, Pion or Kaon absorption correction:
@@ -3839,14 +3986,26 @@ void baseAnalyzer::ApplyWeight()
   // assuming these options are used on SHMS singles with EL-REAL trigger
   if((analysis_cut=="heep_singles") || (analysis_cut=="optics") || (analysis_cut=="lumi") || (analysis_cut=="bcm_calib")){ // For CaFe, PS2_factor is pre-scale factor for SHMS EL-REAL
 
-    FullWeight = Ps_factor_single;    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
+    FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig);    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
+
     cout << "Ps_factor_single = " << Ps_factor_single << endl;
+    cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
+    cout << "e- trk eff = " << pTrkEff  << endl;
+    cout << "total_LT = " << tLT_trig << endl;
+    cout << "FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig) = " <<  FullWeight << endl;
+    
   }
 
   else{ // else use pre-scale factor determined from trig_type input parameter (pre-scale factor for coincidence trigger, determined from input param)
 
-    FullWeight = Ps_factor_coin; 
-    cout << "Ps_factor_coin = " << Ps_factor_coin << endl; 
+    FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ); 
+    cout << "Ps_factor_coin = " << Ps_factor_coin << endl;
+    cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
+    cout << "e- trk eff = " << pTrkEff  << endl;
+    cout << "h trk eff = " << hTrkEff  << endl;
+    cout << "total_LT = " << tLT_trig << endl;
+    cout << "FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ) = " << FullWeight << endl;
+    
   }
   //Scale Data Histograms by Full Weight (Each run for a particular kinematics can then be combined, once they are scaled by the FullWeight)
 
@@ -3967,6 +4126,9 @@ void baseAnalyzer::ScaleSIMC(TString target="")
     scaling of momentum distributions of nucleus A to that of deuterium (a2 = A / d), the yield for nucleus A becomes: 
     Yield_A_SRC = Yield_d2_SRC * ( T_A / T_d2 ) * (areal_density_A / areal_density_d2) * a2
     
+    Nov 27, 2022
+    Might be better to write these scaling factors to a file and scale later (after root files has been analyzed)
+
    */
 
   Double_t scale_factor;
@@ -4179,21 +4341,20 @@ void baseAnalyzer::WriteHist()
   
 }
 //_______________________________________________________________________________
-void baseAnalyzer::WriteReport()
+void baseAnalyzer::WriteOnlineReport()
 {
   
-  /*  Method to write charge, efficiencies, live time and other relevant quantities to a data file
+  /*  Method to write online charge, efficiencies, live time and other relevant quantities to a data file
       on a run-by-run basis, meaning, each run that a report is written separately for each run.
    */
   
-  cout << "Calling WriteReport() . . ." << endl;
+  cout << "Calling WriteOnlineReport() . . ." << endl;
   
   if(analysis_type=="data"){
 
 
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
 
-      cout << "test1_start" << endl;
       cafe_Ib_simc = stod(split(FindString("cafe_Ib_simc",    input_SIMCinfo_FileName.Data())[0], '=')[1]);
       total_simc_counts = stod(split(FindString(Form("%s_%s_counts", tgt_type.Data(), analysis_cut.Data()),    input_SIMCinfo_FileName.Data())[0], '=')[1]); // [counts]
       total_simc_time = stod(split(FindString(Form("%s_%s_time", tgt_type.Data(), analysis_cut.Data()),    input_SIMCinfo_FileName.Data())[0], '=')[1]); // [hr]
@@ -4202,13 +4363,11 @@ void baseAnalyzer::WriteReport()
       // [mC]                [uC / sec]        [hr]      [sec]/[hr]  0.001 mC / 1 uC
       total_simc_charge =  cafe_Ib_simc * total_simc_time * 3600. * 1e-3;  
       
-      cout << "test1_end" << endl;         
 
     }
     
     else if( (analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ) {
 
-      cout << "test2_start" << endl;      
       heep_Ib_simc = stod(split(FindString("heep_Ib_simc",    input_SIMCinfo_FileName.Data())[0], '=')[1]);
 
       heep_kin0_counts = stod(split(FindString("heep_kin0_counts",    input_SIMCinfo_FileName.Data())[0], '=')[1]); 
@@ -4228,7 +4387,6 @@ void baseAnalyzer::WriteReport()
       heep_kin1_charge =  heep_Ib_simc * heep_kin1_time * 3600. * 1e-3;
       heep_kin2_charge =  heep_Ib_simc * heep_kin2_time * 3600. * 1e-3;
       
-      cout << "test2_end" << endl;      
     }
     
     
@@ -4631,16 +4789,376 @@ void baseAnalyzer::WriteReport()
     
   }
   
-}
+} // End WriteOnlineReport
 
-/*
+//_______________________________________________________________________________
+void baseAnalyzer::WriteOfflineReport()
+{
+  
+  /*  Method to write offline charge, efficiencies, live time and other relevant quantities to a data file
+      on a run-by-run basis, meaning, each run that a report is written separately for each run.
+   */
+  
+  cout << "Calling WriteOfflineReport() . . ." << endl;
+  
+  if(analysis_type=="data"){    
+    
+    //Check if file already exists
+    in_file.open(output_ReportFileName.Data());
+
+    if(!in_file.fail()){
+      cout << Form("Report File for run %d exists, will overwrite it . . . ", run) << endl;
+    }    
+    else if(in_file.fail()){
+      cout << "Report File does NOT exist, will create one . . . " << endl;
+    }
+
+    out_file.open(output_ReportFileName);
+    out_file << Form("# Run %d Offline Data Analysis Summary", run)<< endl;
+    out_file << "                                     " << endl;
+    out_file << "#//////////////////////////////////////////" << endl; 
+    out_file << "                                         //" << endl;  
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
+    out_file << "# ! ! !   OFFLINE MAIN INFO   ! ! !     //" << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
+    out_file << "                                         //" << endl;
+    out_file << Form("Current [uA]        : %.3f          ", avg_current_bcm_cut) << endl;
+    out_file << Form("Charge [mC]         : %.3f          ", total_charge_bcm_cut) << endl;
+    out_file << Form("Beam-on-Target [sec]: %.3f          ", total_time_bcm_cut) << endl;
+    out_file << "                                         " << endl;
+    if(analysis_cut=="heep_singles"){
+      out_file << Form("heep_counts : %.3f ", W_total) << endl;
+    }
+    if(analysis_cut=="heep_coin"){
+      out_file << Form("heep_counts : %.3f ", W_real) << endl;
+    }
+    if(analysis_cut=="MF"){
+      out_file << Form("MF_counts : %.3f", Pm_real )  << endl;
+    }
+    if(analysis_cut=="SRC"){
+      out_file << Form("SRC_counts : %.3f", Pm_real)  << endl;
+    }
+    out_file << "#                                        //" << endl;
+    out_file << "#//////////////////////////////////////////" << endl;
+    out_file << "                                     " << endl;    
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "# General Run Configuration                              " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "                                     " << endl;
+    out_file << Form("run_number: %d                     ", run) << endl;
+    out_file << "" << endl;
+    out_file << Form("start_of_run = %s", start_of_run.Data())<< endl;
+    out_file << Form("end_of_run = %s", end_of_run.Data())<< endl;
+    out_file << "" << endl;    
+    out_file << Form("kin_type: %s                     ", analysis_cut.Data()) << endl;
+    out_file << Form("daq_mode: %s                     ", daq_mode.Data()) << endl;
+    if(analysis_cut!="bcm_calib"){
+      out_file << Form("events_replayed: %lld              ", nentries ) << endl;
+    }
+    else if(analysis_cut=="bcm_calib"){
+      out_file << Form("events_replayed: %.0f              ", Scal_evNum ) << endl;
+    }
+    out_file << "" << endl;
+    out_file << Form("beam_energy [GeV]: %.4f          ", beam_energy ) << endl;          
+    out_file << Form("target_name: %s                       ", tgt_type.Data() ) << endl;
+    out_file << Form("target_amu: %.6f                 ", tgt_mass        ) << endl;      
+    out_file << "" << endl;      
+    out_file << Form("hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
+    out_file << Form("hms_h_momentum [GeV/c]: %.4f             ",  hms_p ) << endl;
+    out_file << Form("hms_h_angle [deg]: %.4f                  ",  hms_angle ) << endl;          
+    out_file << "" << endl;      
+    out_file << Form("shms_e_particle_mass [GeV]: %.6f          ",  shms_part_mass ) << endl;          
+    out_file << Form("shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
+    out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
+    out_file << "" << endl;      
+    out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
+    out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
+    out_file << Form("BCMi_Charge [mC]: %.3f ", total_charge_bcm_cut ) << endl;
+    out_file << "" << endl;
+    out_file << Form("BCM1_Charge [mC]: %.3f ", total_charge_bcm1_cut ) << endl;
+    out_file << Form("BCM2_Charge [mC]: %.3f ", total_charge_bcm2_cut ) << endl;
+    out_file << Form("BCM4A_Charge [mC]: %.3f ", total_charge_bcm4a_cut ) << endl;
+    out_file << Form("BCM4B_Charge [mC]: %.3f ", total_charge_bcm4b_cut ) << endl;
+    out_file << Form("BCM4C_Charge [mC]: %.3f ", total_charge_bcm4c_cut ) << endl;
+    if(analysis_cut=="bcm_calib"){
+      out_file << "" << endl;
+      out_file << "# pre-trigger scalers                 " << endl;
+      out_file << Form("S1X_scaler:  %.3f [ %.3f kHz ] ", total_s1x_scaler_bcm_cut,    S1XscalerRate_bcm_cut) << endl; 
+      out_file << Form("T1_scaler:  %.3f [ %.3f kHz ] ",  total_trig1_scaler_bcm_cut,  TRIG1scalerRate_bcm_cut) << endl;
+      out_file << Form("T2_scaler:  %.3f [ %.3f kHz ] ",  total_trig2_scaler_bcm_cut,  TRIG2scalerRate_bcm_cut) << endl;
+      out_file << Form("T3_scaler:  %.3f [ %.3f kHz ] ",  total_trig3_scaler_bcm_cut,  TRIG3scalerRate_bcm_cut) << endl;
+      out_file << Form("T4_scaler:  %.3f [ %.3f kHz ] ",  total_trig4_scaler_bcm_cut,  TRIG4scalerRate_bcm_cut) << endl;
+      out_file << Form("T5_scaler:  %.3f [ %.3f kHz ] ",  total_trig5_scaler_bcm_cut,  TRIG5scalerRate_bcm_cut) << endl;
+      out_file << Form("T6_scaler:  %.3f [ %.3f kHz ] ",  total_trig6_scaler_bcm_cut,  TRIG6scalerRate_bcm_cut) << endl;
+    }
+    if(analysis_cut=="heep_singles")
+      {
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe H(e,e')p  Singles Counts    " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    
+	out_file << Form("heep_total_singles_counts  : %.3f ", W_total) << endl;
+	out_file << Form("heep_total_singles_rate [Hz]  : %.3f ", W_total_rate) << endl;
+	out_file << "" << endl;
+	
+	// check if shms angle is within 0.1 deg of nominal
+	out_file << "" << endl;
+	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
+	out_file << Form("data_lumiNorm_counts [fb]: %.3f", W_total/GetLuminosity("data_lumi") ) << endl;
+	out_file << "" << endl;
+	
+      }
+
+    if(analysis_cut=="heep_coin")
+      {
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe H(e,e')p Coincidence Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    	out_file << "                                     " << endl;
+	out_file << Form("heep_total_counts    : %.3f", W_total) << endl;
+	out_file << Form("heep_real_counts     : %.3f", W_real)  << endl;
+	out_file << Form("heep_random_counts   : %.3f", W_rand)  << endl;
+	out_file << "                                     " << endl;
+	out_file << Form("heep_real_rate [Hz]  : %.3f", W_real_rate)  << endl;
+	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
+	out_file << Form("data_lumiNorm_counts [fb]: %.3f", W_real/GetLuminosity("data_lumi") ) << endl;
+	out_file << "" << endl;
+      }
+    
+    if(analysis_cut=="MF")
+      {
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe A(e,e')p Mean-Field (MF) Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "                                     " << endl;
+	out_file << Form("MF_total_counts    : %.3f", Pm_total) << endl;
+	out_file << Form("MF_real_counts     : %.3f", Pm_real )  << endl;
+	out_file << Form("MF_random_counts   : %.3f", Pm_rand )  << endl;
+	out_file << "                                     " << endl;
+	out_file << Form("MF_real_rate [Hz]  : %.3f", Pm_real_rate)  << endl;
+	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
+	out_file << Form("data_lumiNorm_counts [fb]: %.3f", Pm_real/GetLuminosity("data_lumi") ) << endl;
+	out_file << "                                     " << endl;
+      }
+    if(analysis_cut=="SRC")
+      {
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe A(e,e')p Short-Range Correlated (SRC) Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "                                     " << endl;
+	out_file << Form("SRC_total_counts    : %.3f", Pm_total) << endl;
+	out_file << Form("SRC_real_counts     : %.3f", Pm_real)  << endl;
+	out_file << Form("SRC_random_counts   : %.3f", Pm_rand)  << endl;
+	out_file << "                                     " << endl;
+	out_file << Form("SRC_real_rate [Hz]  : %.3f", Pm_real_rate)  << endl;
+	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
+	out_file << Form("data_lumiNorm_counts [fb]: %.3f", Pm_real/GetLuminosity("data_lumi") ) << endl;
+	out_file << "" << endl;
+      }
+
+    if(analysis_cut!="bcm_calib"){
+    out_file << "                                     " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "# DAQ Trigger Information  " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "                                     " << endl;
+    out_file << "# NOTE: scaler triggers are not pre-scaled | accepted triggers are pre-scaled  " << endl;
+    out_file << "#       cpu_live_time   = T#_accepted / ( T#_scaler / Ps#_factor)       " << endl;
+    out_file << "#       total_live_time = edtm_accepted / ( edtm_scaler / Ps#_factor)       " << endl;
+    out_file << "                                     " << endl;
+    out_file << Form("edtm_scaler   :  %.3f  ",         total_edtm_scaler_bcm_cut ) << endl;
+    out_file << Form("edtm_accepted :  %.3f  ",         total_edtm_accp_bcm_cut) << endl;
+    out_file << "                                     " << endl;
+    out_file << "# pre-scale factors (-1: trigger OFF)                 " << endl;
+    out_file << Form("Ps1_factor: %.1f", Ps1_factor) << endl;
+    out_file << Form("Ps2_factor: %.1f", Ps2_factor) << endl;
+    out_file << Form("Ps3_factor: %.1f", Ps3_factor) << endl;
+    out_file << Form("Ps4_factor: %.1f", Ps4_factor) << endl;
+    out_file << Form("Ps5_factor: %.1f", Ps5_factor) << endl;
+    out_file << Form("Ps6_factor: %.1f", Ps6_factor) << endl;
+    out_file << "                                     " << endl;
+    out_file << "# pre-trigger scalers                 " << endl;
+    out_file << Form("S1X_scaler:  %.3f [ %.3f kHz ] ", total_s1x_scaler_bcm_cut,    S1XscalerRate_bcm_cut) << endl; 
+    out_file << Form("T1_scaler:  %.3f [ %.3f kHz ] ",  total_trig1_scaler_bcm_cut,  TRIG1scalerRate_bcm_cut) << endl;
+    out_file << Form("T2_scaler:  %.3f [ %.3f kHz ] ",  total_trig2_scaler_bcm_cut,  TRIG2scalerRate_bcm_cut) << endl;
+    out_file << Form("T3_scaler:  %.3f [ %.3f kHz ] ",  total_trig3_scaler_bcm_cut,  TRIG3scalerRate_bcm_cut) << endl;
+    out_file << Form("T4_scaler:  %.3f [ %.3f kHz ] ",  total_trig4_scaler_bcm_cut,  TRIG4scalerRate_bcm_cut) << endl;
+    out_file << Form("T5_scaler:  %.3f [ %.3f kHz ] ",  total_trig5_scaler_bcm_cut,  TRIG5scalerRate_bcm_cut) << endl;
+    out_file << Form("T6_scaler:  %.3f [ %.3f kHz ] ",  total_trig6_scaler_bcm_cut,  TRIG6scalerRate_bcm_cut) << endl;
+    
+    out_file << "                                     " << endl;
+    out_file << "# accepted triggers (pre-scaled)     " << endl;
+    out_file << Form("T1_accepted: %.3f [ %.3f kHz ]  ", total_trig1_accp_bcm_cut,    TRIG1accpRate_bcm_cut) << endl;
+    out_file << Form("T2_accepted: %.3f [ %.3f kHz ]  ", total_trig2_accp_bcm_cut,    TRIG2accpRate_bcm_cut) << endl;
+    out_file << Form("T3_accepted: %.3f [ %.3f kHz ]  ", total_trig3_accp_bcm_cut,    TRIG3accpRate_bcm_cut) << endl;
+    out_file << Form("T4_accepted: %.3f [ %.3f kHz ]  ", total_trig4_accp_bcm_cut,    TRIG4accpRate_bcm_cut) << endl;
+    out_file << Form("T5_accepted: %.3f [ %.3f kHz ]  ", total_trig5_accp_bcm_cut,    TRIG5accpRate_bcm_cut) << endl;
+    out_file << Form("T6_accepted: %.3f [ %.3f kHz ]  ", total_trig6_accp_bcm_cut,    TRIG6accpRate_bcm_cut) << endl;
+    out_file << "                                     " << endl;
+    out_file << "# daq computer (cpu) and total live time  " << endl;
+    if(Ps1_factor > -1) {
+      out_file << Form("T1_cpuLT:    %.3f +- %.3f ",  cpuLT_trig1,                 cpuLT_trig1_err_Bi) << endl;
+      out_file << Form("T1_tLT:      %.3f +- %.3f ",  tLT_trig1,                   tLT_trig1_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    if(Ps2_factor > -1) {
+      out_file << Form("T2_cpuLT:    %.3f +- %.3f ",  cpuLT_trig2,                 cpuLT_trig2_err_Bi) << endl;
+      out_file << Form("T2_tLT:      %.3f +- %.3f ",  tLT_trig2,                   tLT_trig2_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    if(Ps3_factor > -1) {
+      out_file << Form("T3_cpuLT:    %.3f +- %.3f ",  cpuLT_trig3,                 cpuLT_trig3_err_Bi) << endl;
+      out_file << Form("T3_tLT:      %.3f +- %.3f ",  tLT_trig3,                   tLT_trig3_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    if(Ps4_factor > -1) {
+      out_file << Form("T4_cpuLT:    %.3f +- %.3f ",  cpuLT_trig4,                 cpuLT_trig4_err_Bi) << endl;
+      out_file << Form("T4_tLT:      %.3f +- %.3f ",  tLT_trig4,                   tLT_trig4_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    if(Ps5_factor > -1) {
+      out_file << Form("T5_cpuLT:    %.3f +- %.3f ",  cpuLT_trig5,                 cpuLT_trig5_err_Bi) << endl;
+      out_file << Form("T5_tLT:      %.3f +- %.3f ",  tLT_trig5,                   tLT_trig5_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    if(Ps6_factor > -1) {
+      out_file << Form("T6_cpuLT:    %.3f +- %.3f ",  cpuLT_trig6,                 cpuLT_trig6_err_Bi) << endl;
+      out_file << Form("T6_tLT:      %.3f +- %.3f ",  tLT_trig6,                   tLT_trig6_err_Bi) << endl;	
+      out_file << "                                     " << endl;
+    }
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "# Drift Chambers Tracking Efficiency  " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "                                     " << endl;
+    out_file << Form("hms_had_track_eff:  %.3f +- %.3f",  hTrkEff,  hTrkEff_err) << endl;
+    out_file << Form("shms_elec_track_eff: %.3f +- %.3f",  pTrkEff, pTrkEff_err) << endl;
+    out_file << "                                     " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "# Data Analysis Cuts                  " << endl;
+    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    out_file << "                                   " << endl;
+    out_file << "#--- Tracking Efficiency Definition --- " << endl;
+    out_file << "# tracking efficiency = (did && should) / should" << endl;
+    out_file << "" << endl;
+    if((analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
+      {
+	if(hdc_ntrk_cut_flag)    {out_file << Form("# (did) HMS min. number of tracks (H.dc.ntrack): >= %.1f", c_hdc_ntrk_min) << endl;}
+	if(hScinGood_cut_flag)   {out_file <<      "# (should) HMS good (fiducial) scintillator hit (H.hod.goodscinhit): true"  << endl;}
+	if(hcer_cut_flag)        {out_file << Form("# (should) HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.1f, %.1f)", c_hnpeSum_min, c_hnpeSum_max) << endl;}
+	if(hetotnorm_cut_flag)   {out_file << Form("# (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (%.1f, %.1f)", c_hetotnorm_min, c_hetotnorm_max) << endl;}
+	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.1f. %.1f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
+      }
+    if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
+      {
+	out_file << "                                   " << endl;
+	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): >= %.1f", c_pdc_ntrk_min) << endl;}
+	if(pScinGood_cut_flag)   {out_file <<      "# (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true"  << endl;}
+	if(pngcer_cut_flag)      {out_file << Form("# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.1f, %.1f)", c_pngcer_npeSum_min, c_pngcer_npeSum_max) << endl;}
+	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.1f, %.1f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
+	if(petotnorm_cut_flag)   {out_file << Form("# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (%.1f, %.1f)", c_petotnorm_min, c_petotnorm_max) << endl;}
+	if(pBeta_notrk_cut_flag) {out_file << Form("# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (%.1f. %.1f)", c_pBetaNtrk_min, c_pBetaNtrk_max) << endl;}
+      }
+    out_file << "                                   " << endl;
+      if(ePctime_cut_flag && ((analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") ))     {
+      out_file << "#---Coincidence Time Cut--- " << endl;
+      out_file << Form("# electron (SHMS)-proton(HMS) (prompt) coincidence time (CTime.epCoinTime_ROC2):   (%.3f, %.3f) [ns]", ePctime_cut_min, ePctime_cut_max) << endl;
+      out_file << Form("# electron (SHMS)-proton(HMS) (left)   accidentals sample: (%.3f, %.3f) [ns]", ePctime_cut_max_L, ePctime_cut_min_L) << endl;
+      out_file << Form("# electron (SHMS)-proton(HMS) (right)  accidentals sample: (%.3f, %.3f) [ns]", ePctime_cut_min_R, ePctime_cut_max_R) << endl;      
+    }
+    out_file << "                                   " << endl;
+    out_file << "#---Acceptance Cuts--- " << endl;
+    if((analysis_cut=="heep_coin")  ||  (analysis_cut=="MF") || (analysis_cut=="SRC"))
+       {    
+	 if(hdelta_cut_flag)        {out_file << Form("# HMS Momentum Acceptance (H.gtr.dp): (%.3f, %.3f) [%%]",  c_hdelta_min, c_hdelta_max ) << endl;}
+	 if(hxptar_cut_flag)        {out_file << Form("# HMS Out-of-Plane (xptar) Angular Acceptance (H.gtr.th): (%.3f, %.3f) [radians]",  c_hxptar_min, c_hxptar_max ) << endl;}
+	 if(hyptar_cut_flag)        {out_file << Form("# HMS In-Plane (yptar) Angular Acceptance (H.gtr.ph): (%.3f, %.3f) [radians]",  c_hyptar_min, c_hyptar_max ) << endl;}
+	 if(hmsCollCut_flag)        {out_file << "# HMS Collimator Cut: ON " << endl;}
+	 
+	 if(edelta_cut_flag)        {out_file << Form("# SHMS Momentum Acceptance (P.gtr.dp): (%.3f, %.3f) [%%]", c_edelta_min, c_edelta_max ) << endl;}
+	 if(exptar_cut_flag)        {out_file << Form("# SHMS Out-of-Plane (xptar) Angular Acceptance (P.gtr.th): (%.3f, %.3f) [radians]",  c_exptar_min, c_exptar_max ) << endl;}
+	 if(eyptar_cut_flag)        {out_file << Form("# SHMS In-Plane (yptar) Angular Acceptance (P.gtr.ph): (%.3f, %.3f) [radians]",  c_eyptar_min, c_eyptar_max ) << endl;}
+	 if(shmsCollCut_flag)       {out_file << "# SHMS Collimator Cut: ON " << endl;}
+	
+	 if(ztarDiff_cut_flag)      {out_file << Form("# Z-Reaction Vertex Difference (H.react.z-P.react.z): (%.3f, %.3f) [cm]", c_ztarDiff_min, c_ztarDiff_max ) << endl;}
+	
+       }
+    if((analysis_cut=="heep_singles") || (analysis_cut=="optics")  ||  (analysis_cut=="lumi") )
+      {
+	if(edelta_cut_flag)        {out_file << Form("# SHMS Momentum Acceptance (P.gtr.dp): (%.3f, %.3f) [%%]", c_edelta_min, c_edelta_max ) << endl;}
+	if(exptar_cut_flag)        {out_file << Form("# SHMS Out-of-Plane (xptar) Angular Acceptance (P.gtr.th): (%.3f, %.3f) [radians]",  c_exptar_min, c_exptar_max ) << endl;}
+	if(eyptar_cut_flag)        {out_file << Form("# SHMS In-Plane (yptar) Angular Acceptance (P.gtr.ph): (%.3f, %.3f) [radians]",  c_eyptar_min, c_eyptar_max ) << endl;}
+	if(shmsCollCut_flag)       {out_file << "# SHMS Collimator Cut: ON " << endl;}
+
+
+      }
+    out_file << "#                       " << endl;
+    out_file << "#---Particle Identification (PID) Cuts--- " << endl;
+    if((analysis_cut=="heep_coin")  ||  (analysis_cut=="MF") || (analysis_cut=="SRC"))
+      {    
+	if(hetot_trkNorm_pidCut_flag) {out_file << Form("# HMS calorimeter total energy / track momentum (H.cal.etottracknorm): (%.1f, %.1f)", cpid_hetot_trkNorm_min, cpid_hetot_trkNorm_max) << endl;}
+	if(hcer_pidCut_flag)          {out_file << Form("# HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.1f, %.1f)", cpid_hcer_npeSum_min, cpid_hcer_npeSum_max) << endl;}
+      }
+      if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ||  (analysis_cut=="MF") || (analysis_cut=="SRC"))
+      {
+	if(petot_trkNorm_pidCut_flag)  {out_file << Form("# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (%.1f, %.1f)",cpid_petot_trkNorm_min, cpid_petot_trkNorm_max) << endl;}
+	if(pngcer_pidCut_flag)        {out_file << Form("# SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.1f, %.1f)",cpid_pngcer_npeSum_min,cpid_pngcer_npeSum_max) << endl;}
+	if(phgcer_pidCut_flag)        {out_file << Form("# SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.1f, %.1f)",cpid_phgcer_npeSum_min,cpid_phgcer_npeSum_max) << endl;}
+      }
+    out_file << "#                       " << endl;
+    out_file << "#---Kinematics Cuts--- " << endl;
+    if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin"))
+      {
+	if(Q2_heep_cut_flag)  {out_file << Form("# H(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_heep_Q2_min, c_heep_Q2_max) << endl;}
+	if(xbj_heep_cut_flag) {out_file << Form("# H(e,e'p) x-Bjorken, Xbj (P.kin.primary.x_bj): (%.3f, %.3f)", c_heep_xbj_min, c_heep_xbj_max) << endl;}
+	if(W_heep_cut_flag)  {out_file << Form("# H(e,e'p) Invariant Mass, W (P.kin.primary.W): (%.3f, %.3f) [GeV]", c_heep_W_min, c_heep_W_max) << endl;}
+      }
+     if(analysis_cut=="heep_coin")
+       {
+	 if(MM_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Mass, MM (H.kin.secondary.Mrecoil): (%.3f, %.3f) [GeV]", c_heep_MM_min, c_heep_MM_max) << endl;}
+	 if(Em_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Energy, Em=nu-Ep (H.kin.secondary.Em): (%.3f, %.3f) [GeV]", c_heep_Em_min, c_heep_Em_max) << endl;}
+       }
+     if(analysis_cut=="MF")
+       {
+	 if(Q2_MF_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_MF_Q2_min, c_MF_Q2_max) << endl;}
+	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
+	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
+
+       }
+     if(analysis_cut=="SRC")
+       {
+	 if(Q2_SRC_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_SRC_Q2_min, c_SRC_Q2_max) << endl;}
+	 if(Pm_SRC_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;}
+	 if(Xbj_SRC_cut_flag) {out_file << Form("# A(e,e'p) x-Bjorken, Xbj (P.kin.primary.x_bj): (%.3f, %.3f)", c_SRC_Xbj_min, c_SRC_Xbj_max) << endl;}
+	 if(thrq_SRC_cut_flag) {out_file << Form("# A(e,e'p) theta_rq  (H.kin.secondary.th_bq): (%.3f, %.3f) [deg]", c_SRC_thrq_min, c_SRC_thrq_max) << endl;}	 
+	 if(Em_d2SRC_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_SRC_cut_flag && tgt_type!="LD2") {out_file << "# A(e,e'p) Dynamic Missing Energy (A>2 nuclei), Em_src = nu - Tp - (sqrt(MN*MN + Pm*Pm) - MN) | see definition in baseAnalyzer.cpp" << endl;}
+
+       }
+					    
+    } // end !bcm_calib requirement
+    
+    
+    // CLOSE files
+    out_file.close();
+    in_file.close();
+    
+  }
+  
+} //end WriteOfflineReport
+
+
 //_______________________________________________________________________________
 void baseAnalyzer::WriteReportSummary()
 {
   
-  //Method to write charge, efficiencies, live time and other relevant quantities to a data file
+  // Method to write charge, efficiencies, live time and other relevant quantities to a data file
   //  on a run-by-run basis, and self-updating file, meaning, each run that is replayed will be appended into the file.    
-   
+
+  // Nov 27, 2022
+  // Updating this method is work in progress, to make it into a .csv format for easy plottinh via python
+  // also still need to add certain quality-monitoring numerical peak values from a fit (e.g., beta peak, cal E/p peak, dc residuals, for quality monitoring) 
   
   cout << "Calling WriteReportSummary() . . ." << endl;
 
@@ -4662,33 +5180,12 @@ void baseAnalyzer::WriteReportSummary()
       out_file << "#        Data Analysis Summary        " << endl;
       out_file << "#-------------------------------------" << endl;
       out_file << "#                                     " << endl;
-      out_file << Form("# %s  | Beam Current Threshold: > %.2f uA ", bcm_type.Data(), bcm_thrs) << endl;
-      out_file << "#                                     " << endl;
-      out_file << Form("# DAQ Mode: %s | Trigger: %s              ", daq_mode.Data(), trig_type.Data()) << endl;
-      out_file << Form("# electron arm: %s                        ", e_arm_name.Data() ) << endl;
-      out_file << "#                                              " << endl;
-      out_file << "#---PID Cuts--- " << endl;
-      if(ePctime_cut_flag)         {out_file << Form("# Proton Coincidence Time Cut: (%.3f, %.3f )ns", ePctime_cut_min, ePctime_cut_max) << endl;}
-      if(petot_trkNorm_pidCut_flag)   {out_file << Form("# SHMS Calorimeter EtotTrackNorm Cut: (%.3f, %.3f)", cpid_petot_trkNorm_min,  cpid_petot_trkNorm_max) << endl;}
-      if(pngcer_pidCut_flag) {out_file << Form("# SHMS Noble Gas Cherenkov NPE Sum Cut: (%.3f, %.3f)", cpid_pngcer_npeSum_min,  cpid_pngcer_npeSum_max) << endl;}
-      if(phgcer_pidCut_flag) {out_file << Form("# SHMS Heavy Gas Cherenkov NPE Sum Cut: (%.3f, %.3f)", cpid_phgcer_npeSum_min,  cpid_phgcer_npeSum_max) << endl;}
-      if(hetot_trkNorm_pidCut_flag) {out_file << Form("# HMS Calorimeter EtotTrackNorm Cut: (%.3f, %.3f)", cpid_hetot_trkNorm_min,  cpid_hetot_trkNorm_max) << endl;}
-      if(hcer_pidCut_flag) {out_file << Form("# HMS Gas Cherenkov NPE Sum Cut: (%.3f, %.3f)", cpid_hcer_npeSum_min,  cpid_hcer_npeSum_max) << endl;}      
-      out_file << "#                                     " << endl;
-      out_file << "#---Kinematics Cuts--- " << endl;
-      if(Q2_heep_cut_flag)            {out_file << Form("# 4-Momentum Transfer (Q^2): (%.3f, %.3f) GeV^2", c_heep_Q2_min, c_heep_Q2_max ) << endl;}
-      if(Em_heep_cut_flag)            {out_file << Form("# Missing Energy, Em: (%.3f, %.3f) GeV",   c_heep_Em_min, c_heep_Em_max ) << endl;}
-      if(W_heep_cut_flag)             {out_file << Form("# Invariant Mass, W: (%.3f, %.3f) GeV",   c_heep_W_min,  c_heep_W_max  ) << endl;}
-      if(MM_heep_cut_flag)          {out_file << Form("# Missing Mass, MM: (%.3f, %.3f) GeV",   c_heep_MM_min,  c_heep_MM_max  ) << endl;}
-      out_file << "#                                     " << endl;
-      out_file << "#---Acceptance Cuts--- " << endl;
-      if(hdelta_cut_flag)        {out_file << Form("# HMS Momentum Acceptance: (%.3f, %.3f) %%",  c_hdelta_min, c_hdelta_max ) << endl;}
-      if(edelta_cut_flag)        {out_file << Form("# SHMS Momentum Acceptance: (%.3f, %.3f) %%", c_edelta_min, c_edelta_max ) << endl;}
-      if(ztarDiff_cut_flag)      {out_file << Form("# Z-Reaction Vertex Difference: (%.3f, %.3f) %%", c_ztarDiff_min, c_ztarDiff_max ) << endl;}
       out_file << "#                       " << endl;
       out_file << "# Units: charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
-      out_file << std::setw(2) << "#! Run[i,0]/" << std::setw(25) << "charge[f,1]/" << std::setw(25) << "avg_current[f,2]/" << std::setw(25)  << "hTrkEff[f,3]/" << std::setw(25) << "hTrkEff_err[f,4]/" << std::setw(25) << "pTrkEff[f,5]/" << std::setw(25) << "pTrkEff_err[f,6]/" << std::setw(25) << "tgt_boil_factor[f,7]/" << std::setw(30) << "tgt_boil_factor_err[f,8]" << std::setw(25) << "hadAbs_factor[f,9]/" << std::setw(30) << "hadAbs_factor_err[f,10]/" << std::setw(25) <<  "cpuLT[f,11]/" << std::setw(25) << "cpuLT_err_Bi[f,12]/" << std::setw(25) << "cpuLT_err_Bay[f,13]/" << std::setw(25) << "tLT[f,14]/" << std::setw(25) << "tLT_err_Bi[f,15]/" << std::setw(25) << "tLT_err_Bay[f,16]/" << std::setw(25) << "S1X_rate[f,17]/" << std::setw(25) << "trig_rate[f,18]/"  << std::setw(25) << "edtm_rate[f,19]/"  << std::setw(25) << "Pre_Scale[f,20]/" << std::setw(25) << "edtm_accp[f,21]/" << std::setw(25) << "edtm_scaler[f,22]/" << std::setw(25) << "trig_accp[f,23]/" << std::setw(25) << "trig_scaler[f,24]/" << endl;
+
+      //original
+      //out_file << std::setw(2) << "#! Run[i,0]/" << std::setw(25) << "charge[f,1]/" << std::setw(25) << "avg_current[f,2]/" << std::setw(25)  << "hTrkEff[f,3]/" << std::setw(25) << "hTrkEff_err[f,4]/" << std::setw(25) << "pTrkEff[f,5]/" << std::setw(25) << "pTrkEff_err[f,6]/" << std::setw(25) << "tgt_boil_factor[f,7]/" << std::setw(30) << "tgt_boil_factor_err[f,8]" << std::setw(25) << "hadAbs_factor[f,9]/" << std::setw(30) << "hadAbs_factor_err[f,10]/" << std::setw(25) <<  "cpuLT[f,11]/" << std::setw(25) << "cpuLT_err_Bi[f,12]/" << std::setw(25) << "cpuLT_err_Bay[f,13]/" << std::setw(25) << "tLT[f,14]/" << std::setw(25) << "tLT_err_Bi[f,15]/" << std::setw(25) << "tLT_err_Bay[f,16]/" << std::setw(25) << "S1X_rate[f,17]/" << std::setw(25) << "trig_rate[f,18]/"  << std::setw(25) << "edtm_rate[f,19]/"  << std::setw(25) << "Pre_Scale[f,20]/" << std::setw(25) << "edtm_accp[f,21]/" << std::setw(25) << "edtm_scaler[f,22]/" << std::setw(25) << "trig_accp[f,23]/" << std::setw(25) << "trig_scaler[f,24]/" << endl;
             
       out_file.close();
       in_file.close();
@@ -4697,14 +5194,17 @@ void baseAnalyzer::WriteReportSummary()
 
     //Open Report FIle in append mode
     out_file.open(output_SummaryFileName, ios::out | ios::app);
-    out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
+
+    //original
+    //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
+
     out_file.close();
   }
   
   cout << "Ending WriteReportSummary() . . ." << endl;
   
 } //End WriteReport()
-*/
+
 
 //_______________________________________________________________________________
 void baseAnalyzer::CombineHistos()
@@ -5041,8 +5541,9 @@ void baseAnalyzer::run_data_analysis()
   */
   //------------------
   Init();
-  ReadInputFile();
+  ReadInputFile(true, false);  // boolean : (set_input_fnames, set_output_fnames)
   ReadReport();
+  ReadInputFile(false, true);  // this method needs to be called second time, to set output fnames using tgt_types in filename (since tgt_types is defined in ReadReport)
   SetHistBins();
   CreateHist();
   
@@ -5056,7 +5557,10 @@ void baseAnalyzer::run_data_analysis()
   ApplyWeight();
 
   WriteHist();
-  WriteReport();
+  WriteOfflineReport();
+
+  
+  //WriteOnlineReport();
   //WriteReportSummary();
   CombineHistos();
   MakePlots();
@@ -5072,13 +5576,13 @@ void baseAnalyzer::run_cafe_scalers()
  
   //------------------
   Init();
-  ReadInputFile();
+  ReadInputFile(true, false);
   ReadReport();
-  
+  ReadInputFile(false, true);
   ReadScalerTree();   
   ScalerEventLoop();       
   CalcEff();
-  WriteReport();
+  WriteOfflineReport();
 
   //------------------
   
@@ -5089,7 +5593,7 @@ void baseAnalyzer::run_simc_analysis()
 {
 
   Init();
-  ReadInputFile();
+  ReadInputFile(true, true);
   SetHistBins();
   CreateHist();
   ReadTree();
