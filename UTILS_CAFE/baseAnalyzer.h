@@ -349,6 +349,7 @@ protected:
   TString simc_ifile;  // simc input file (to read central settings used in simulation)
   
   //Output ROOTfile Name
+  TString data_OutputFileName_skim; // only for saving skimmed leaf variables (with minimal cuts, like bcm cut and edtm cut) 
   TString data_OutputFileName;
   TString simc_OutputFileName_rad;
   TString simc_OutputFileName_norad;

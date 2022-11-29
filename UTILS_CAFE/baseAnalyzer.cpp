@@ -681,9 +681,13 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
     if(set_output_fnames) {
 
+      //Define Output (.root) File Name Pattern (skimmed leaf variables are written to this file, with minimal cuts -> bcm_cut, edtm_cut)  
+      temp = trim(split(FindString("output_skimROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);   
+      data_OutputFileName_skim = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);;
+      
       //Define Output (.root) File Name Pattern (analyzed histos are written to this file)
       temp = trim(split(FindString("output_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_OutputFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
+      data_OutputFileName = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);
       
       //Define Output (.root) File Name Pattern (analyzed combined histos are written to this file)
       temp = trim(split(FindString("output_ROOTfilePattern_comb", input_FileNamePattern.Data())[0], '=')[1]);
@@ -2142,10 +2146,11 @@ void baseAnalyzer::CreateSkimTree()
   cout << "Calling Base CreateSkimTree()  " << endl;
 
   tree_skim = new TTree("TSkim", "Skimmed TTree");
-
+  tree_skim->SetDirectory(0);
   // add branches (assumes the variables already exist, so this method must be called right after
   // setting the branch addree of the other variables
-  tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime, "CTime.epCoinTime_ROC2/D");
+  
+  tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime, "epCoinTime/D");
 
 }
 
@@ -3282,7 +3287,7 @@ void baseAnalyzer::EventLoop()
 		  
 		  //----------------------Fill DATA Histograms-----------------------
 
-		  // Fill Skimmed Tree
+		  // Fill Skimmed Tree (no cuts except edtm_cut and bcm_cut applied, so user will need to implement their own cuts)
 		  tree_skim->Fill();
 		  
 		  //2D Kin plots to help clean out online Em data
@@ -3515,7 +3520,7 @@ void baseAnalyzer::EventLoop()
 	}//END DATA EVENT LOOP
 
       //Save Skimmed Tree
-      tree_skim->SaveAs("skimmed_tree.root");
+      tree_skim->SaveAs( data_OutputFileName_skim.Data() );
       
     }//END DATA ANALYSIS
 
@@ -4570,6 +4575,8 @@ void baseAnalyzer::WriteHist()
       
       //Close File
       outROOT->Close();
+
+      
 
     }
 
@@ -5837,7 +5844,8 @@ void baseAnalyzer::run_data_analysis()
   //WriteOnlineReport();
   //WriteReportSummary();
   CombineHistos();
-  MakePlots();
+  
+  //MakePlots();
   
   //------------------
 

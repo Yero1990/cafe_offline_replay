@@ -12,7 +12,8 @@ input_REPORTPattern          = REPORT_OUTPUT/%s/cafe_%s_%d_%d.report
 #------------------------------
 # Set Ouput Data File Pattern
 #------------------------------
-output_ROOTfilePattern        = CAFE_OUTPUT/ROOT/cafe_%s_histos_%d_%d.root
+output_skimROOTfilePattern    = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_%d_%d_skimmed.root
+output_ROOTfilePattern        = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_%d_%d_histos.root
 output_ROOTfilePattern_comb   = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_total.root
 output_SummaryPattern         = CAFE_OUTPUT/REPORT/cafe_%s_%s_%s_report_summary.csv
 output_REPORTPattern          = CAFE_OUTPUT/REPORT/cafe_%s_report_%d_%d.txt

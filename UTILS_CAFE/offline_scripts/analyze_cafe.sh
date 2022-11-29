@@ -127,9 +127,6 @@ run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},
                                    \\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
                      )\""
 
-
-
-
 # Start data  analysis
 {
 
@@ -147,6 +144,6 @@ run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},
     echo "" 
     echo ""
     echo ""
-
+    eval ${run_cafe}
 
 }
