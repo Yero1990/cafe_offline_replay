@@ -98,6 +98,7 @@ void baseAnalyzer::Init(){
   
   //Initialize TTree Pointers
   tree        = NULL;
+  tree_skim   = NULL;
   scaler_tree = NULL;
 
   //Initialize Scaler Pointer
@@ -2134,6 +2135,20 @@ void baseAnalyzer::ScalerEventLoop()
   
 }
 
+void baseAnalyzer::CreateSkimTree()
+{
+  
+  // Method to create a skimmed version of the data TTree  
+  cout << "Calling Base CreateSkimTree()  " << endl;
+
+  tree_skim = new TTree("TSkim", "Skimmed TTree");
+
+  // add branches (assumes the variables already exist, so this method must be called right after
+  // setting the branch addree of the other variables
+  tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime, "CTime.epCoinTime_ROC2/D");
+
+}
+
 //_______________________________________________________________________________
 void baseAnalyzer::ReadTree()
 {
@@ -2152,7 +2167,9 @@ void baseAnalyzer::ReadTree()
       //Get the data tree
       tree = (TTree*)inROOT->Get("T");
       nentries = tree->GetEntries();
-            
+
+    
+      
       //---------------SetBranchAddress-----------------
 
       // Global Variables
@@ -2418,6 +2435,8 @@ void baseAnalyzer::ReadTree()
 	  
 	}
 
+      // Call function to create skimmed version of data tree
+      CreateSkimTree();
 
     } //END DATA SET BRANCH ADDRESS
 
@@ -3263,6 +3282,8 @@ void baseAnalyzer::EventLoop()
 		  
 		  //----------------------Fill DATA Histograms-----------------------
 
+		  // Fill Skimmed Tree
+		  tree_skim->Fill();
 		  
 		  //2D Kin plots to help clean out online Em data
 		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
@@ -3493,7 +3514,9 @@ void baseAnalyzer::EventLoop()
 
 	}//END DATA EVENT LOOP
 
-          
+      //Save Skimmed Tree
+      tree_skim->SaveAs("skimmed_tree.root");
+      
     }//END DATA ANALYSIS
 
 

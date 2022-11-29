@@ -39,6 +39,7 @@ public:
   void ReadScalerTree();  
   void ScalerEventLoop(); //bcm current cut threshold in uA units
   void ReadTree();
+  void CreateSkimTree();
   void EventLoop();
   void CalcEff();
   void ApplyWeight();
@@ -994,8 +995,10 @@ protected:
 
   //----------DATA-RELATED VARIABLES-----------
   TTree *tree;
+  TTree *tree_skim;
   Long64_t nentries;
-
+  
+  
   //Set-Up Tdc Counters for accepted triggers
   Double_t total_trig1_accp = 0;
   Double_t total_trig2_accp = 0;
