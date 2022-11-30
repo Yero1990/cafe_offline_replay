@@ -81,7 +81,7 @@ if [ "${ana_type}" = "data" ]; then
 	exit 0
 	
 	# fool-proof make sure only options: bcm_calib, lumi, optics, heep_singles, heep_coin, MF, SRC are used
-    elif [ "$ana_cut" == "bcm_calib" ] || [ "$ana_cut" == "lumi" ] || [ "$ana_cut" == "optics" ] || [ "$ana_cut" == "heep_singles" ] ||  [ "$ana_cut" == "heep_coin" ] || [ "$ana_cut" == "MF" ] || [ "$ana_cut" == "SRC" ]; then 
+    elif [ "$ana_cut" != "bcm_calib" ] || [ "$ana_cut" != "lumi" ] || [ "$ana_cut" != "optics" ] || [ "$ana_cut" != "heep_singles" ] ||  [ "$ana_cut" != "heep_coin" ] || [ "$ana_cut" != "MF" ] || [ "$ana_cut" != "SRC" ]; then 
 	echo "" 
     else
 	printDataHelpMsg	
@@ -142,10 +142,11 @@ if [ "${ana_type}" = "data" ]; then
 	    
 	    sleep 2
 	    eval ${run_cafe}
+	    exit 0  
 	}
 	
     else
-
+	
 	# if no run-number is detected order of arguments now is as follows: target, kin, evt (run number excluded)
 	# read 1st and 2nd arguments
 	target=$1
@@ -164,6 +165,7 @@ if [ "${ana_type}" = "data" ]; then
 
 	for run in $(cat $filename) ; do    
 
+	    echo "reading run ----> ${run}" 
 	    # Default arguments (not required by user as input, unless the user sets as command-line arguments)
 	    daq_mode="coin"
 	    e_arm="SHMS"
@@ -202,6 +204,7 @@ if [ "${ana_type}" = "data" ]; then
 		
 		sleep 2
 		eval ${run_cafe}
+		 
 	    }
 	    
 	done
@@ -222,7 +225,7 @@ if [ "${ana_type}" = "simc" ]; then
 	printSIMCHelpMsg	
 	exit 0
 	# fool-proof make sure only options: bcm_calib, lumi, optics, heep_singles, heep_coin, MF, SRC are used
-    elif [ [ "$ana_cut" == "heep_singles" ] ||  [ "$ana_cut" == "heep_coin" ] || [ "$ana_cut" == "MF" ] || [ "$ana_cut" == "SRC" ] ]; then 
+    elif [ [ "$ana_cut" != "heep_singles" ] ||  [ "$ana_cut" != "heep_coin" ] || [ "$ana_cut" != "MF" ] || [ "$ana_cut" != "SRC" ] ]; then 
 	echo "" 
     else
 	printSIMCHelpMsg	

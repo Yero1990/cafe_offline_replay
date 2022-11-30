@@ -88,7 +88,7 @@ c_pBetaNtrk_max = 1.5
 #---- Coincidence Time Cut -----
 
 # electron-Proton main coincidence time cut [ns] 
-ePctime_cut_flag = 1
+ePctime_cut_flag = 0
 ePctime_cut_min = -3.0
 ePctime_cut_max = 3.0
 
@@ -104,12 +104,12 @@ ePctime_cut_max_L = -10.0
 #------PID Cuts------
 
 # (SHMS PID) Calorimeter Total Energy Normalized By Track Momentum
-petot_trkNorm_pidCut_flag = 1
+petot_trkNorm_pidCut_flag = 0
 cpid_petot_trkNorm_min = 0.6
 cpid_petot_trkNorm_max = 1.2
 
 # (SHMS PID) Noble Gas Cherenkov Total Number of Photo-Electrons
-pngcer_pidCut_flag = 1
+pngcer_pidCut_flag = 0
 cpid_pngcer_npeSum_min = 1.5
 cpid_pngcer_npeSum_max = 100.
 
@@ -119,12 +119,12 @@ cpid_phgcer_npeSum_min = 0.0
 cpid_phgcer_npeSum_max = 1.5
 
 # (HMS PID) Calorimeter Total Energy Normalized By Track Momentum
-hetot_trkNorm_pidCut_flag = 1
+hetot_trkNorm_pidCut_flag = 0
 cpid_hetot_trkNorm_min = 0.
 cpid_hetot_trkNorm_max = 0.6
 
 # (HMS PID) Gas Cherenkov
-hcer_pidCut_flag = 1
+hcer_pidCut_flag = 0
 cpid_hcer_npeSum_min = 0.
 cpid_hcer_npeSum_max = 0.5
 
@@ -132,7 +132,7 @@ cpid_hcer_npeSum_max = 0.5
 #------Acceptance Cuts------
 
 # hadron arm momentum acceptance, Delta [%] 
-hdelta_cut_flag = 1
+hdelta_cut_flag = 0
 c_hdelta_min = -10.
 c_hdelta_max = 10.
 
@@ -147,10 +147,10 @@ c_hyptar_min = -0.035
 c_hyptar_max = 0.035
 
 # HMS colliamtor cut (can be used as alternative to xptar,yptar cuts)
-hmsCollCut_flag = 1
+hmsCollCut_flag = 0
 
 # electron arm momentum acceptance, Delta [%] 
-edelta_cut_flag = 1
+edelta_cut_flag = 0
 c_edelta_min = 0.
 c_edelta_max = 22.
 
@@ -165,7 +165,7 @@ c_eyptar_min = -0.024
 c_eyptar_max = 0.024
 
 # SHMS colliamtor cut (can be used as alternative to xptar,yptar cuts)
-shmsCollCut_flag = 1
+shmsCollCut_flag = 0
 
 # Z-Reaction Vertex Difference, [cm]
 ztarDiff_cut_flag = 0
@@ -203,7 +203,7 @@ c_heep_Em_min = -0.05
 c_heep_Em_max = 0.05
 
 # Invariant Mass, W [GeV]
-W_heep_cut_flag = 1
+W_heep_cut_flag = 0
 c_heep_W_min = 0.85
 c_heep_W_max = 1.05
 

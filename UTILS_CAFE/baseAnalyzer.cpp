@@ -3289,7 +3289,8 @@ void baseAnalyzer::EventLoop()
 
 		  // Fill Skimmed Tree (no cuts except edtm_cut and bcm_cut applied, so user will need to implement their own cuts)
 		  tree_skim->Fill();
-		  
+	      
+
 		  //2D Kin plots to help clean out online Em data
 		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
 		    H_Em_nuc_vs_Pm ->Fill(Pm, Em_nuc);
@@ -4262,7 +4263,7 @@ void baseAnalyzer::ApplyWeight()
 
   else{ // else use pre-scale factor determined from trig_type input parameter (pre-scale factor for coincidence trigger, determined from input param)
 
-    FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ); 
+    //FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ); 
     cout << "Ps_factor_coin = " << Ps_factor_coin << endl;
     cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
     cout << "e- trk eff = " << pTrkEff  << endl;
@@ -5412,6 +5413,7 @@ void baseAnalyzer::WriteOfflineReport()
     
   }
   
+  cout << "End WriteOfflineReport " << endl;
 } //end WriteOfflineReport
 
 
@@ -5479,6 +5481,8 @@ void baseAnalyzer::WriteReportSummary()
     //original
     //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
 
+    out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << endl;
+
     out_file.close();
   }
   
@@ -5503,11 +5507,14 @@ void baseAnalyzer::CombineHistos()
      retrieve TList object from ROOTfiles and call TList obj->GetEntries().
   */
 
+  cout << "Calling CombineHistos()  . . . " << endl;
 
-  //Decide whether to combine all histograms or NOT. (Look in main_controls.inp)
+  //Decide whether to combine all histograms or NOT. 
   //If the list of runs correspond to different kinematics, then they should NOT be combined (combine_runs_flag=0)
   if(combine_runs_flag==0) return;   //exit this function if combine_runs_flag == 0; 
   
+  cout << "combine runs flag -->  " << combine_runs_flag << endl;
+ 
   //Check if combined ROOTfile exits, otherwise, create it and add the histograms from the 1st run on the list
   Bool_t file_not_exist = gSystem->AccessPathName(data_OutputFileName_combined.Data());
 
@@ -5549,6 +5556,8 @@ void baseAnalyzer::CombineHistos()
   //If combined ROOTfile already exists, keep adding histo counts for each run
   
   else{
+
+    cout << "Combined ROOTfile already exist, will keep adding histo counts for each  run" << endl;
     
     //determine what class types are in the list
     TString class_name;
@@ -5559,7 +5568,8 @@ void baseAnalyzer::CombineHistos()
     
     
     outROOT = new TFile(data_OutputFileName_combined.Data(), "READ");  
-    
+
+    cout << "ROOTfile (opened in READ mode): " << data_OutputFileName_combined.Data() << endl;
     //------------------------------------------
     //Lopp over pid_HList of histogram objects
     //------------------------------------------
@@ -5568,6 +5578,8 @@ void baseAnalyzer::CombineHistos()
 	
 	//Determine object data type (as of now, either TH1F or TH2F are possible)
 	class_name = pid_HList->At(i)->ClassName();
+	
+	cout << "Looping over pid_HList objects: " << i << " / " << pid_HList->GetEntries() << endl;
 	
 	//Read ith histograms in the list from current run
 	if(class_name=="TH1F") {
@@ -5601,6 +5613,8 @@ void baseAnalyzer::CombineHistos()
     //------------------------------------------
     for(int i=0; i<kin_HList->GetEntries(); i++)
       {
+
+	cout << "Looping over kin_HList objects: " << i << " / " << kin_HList->GetEntries() << endl; 
 	
 	//Determine object data type (as of now, either TH1F or TH2F are possible)
 	class_name = kin_HList->At(i)->ClassName();
@@ -5637,7 +5651,8 @@ void baseAnalyzer::CombineHistos()
     //------------------------------------------
     for(int i=0; i<accp_HList->GetEntries(); i++)
       {
-	
+	cout << "Looping over accp_HList objects: " << i << " / " << accp_HList->GetEntries() << endl;   
+
 	//Determine object data type (as of now, either TH1F or TH2F are possible)
 	class_name = accp_HList->At(i)->ClassName();
 	
@@ -5674,6 +5689,7 @@ void baseAnalyzer::CombineHistos()
     
   } //end else statement (assumes combined ROOTfile already exists)
   
+  cout << "End CombineHistos() . . . " << endl;
 }
 
 //______________________________________________________________________________
@@ -5842,7 +5858,8 @@ void baseAnalyzer::run_data_analysis()
 
   
   //WriteOnlineReport();
-  //WriteReportSummary();
+  
+  WriteReportSummary();
   CombineHistos();
   
   //MakePlots();
