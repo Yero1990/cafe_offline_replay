@@ -57,7 +57,7 @@ public:
   //void GetAsymmetry();
   
   // Helper Functions
-  Double_t GetPeak(TString peak_type="", bool quality_check=false);
+  void GetPeak();
   void CollimatorStudy();
   void MakePlots();
   Double_t GetLuminosity(TString user_input="");
@@ -770,8 +770,11 @@ protected:
   TH1F *H_hCalEtotNorm;
   TH1F *H_hCalEtotTrkNorm;
   TH1F *H_hHodBetaNtrk;   
-  TH1F *H_hHodBetaTrk;   
-  TH1F *H_hdcRes[dc_PLANES];
+  TH1F *H_hHodBetaTrk;
+  
+  //HMS quality check histos
+  TH1F *H_hdcRes_fit[dc_PLANES];
+  TH1F *H_hbeta_fit;
   
   //SHMS	       
   TH1F *H_pNGCerNpeSum;
@@ -780,8 +783,16 @@ protected:
   TH1F *H_pCalEtotTrkNorm;
   TH1F *H_pHodBetaNtrk;   
   TH1F *H_pHodBetaTrk;   
-  TH1F *H_pdcRes[dc_PLANES];
 
+  //SHMS quality check histos
+  TH1F *H_pdcRes_fit[dc_PLANES];
+  TH1F *H_pbeta_fit;
+  TH1F *H_pcal_fit;
+
+  // coin time quality check
+  TH1F *H_ctime_fit;
+  
+  
   //-------Define 2D PID Histograms (correlations between pid detectors)-------
   //All possible combinations of correlations serves for general PID purposes
 
@@ -1402,7 +1413,6 @@ protected:
   Double_t hcal_etottracknorm;
   Double_t hhod_beta_ntrk;
   Double_t hhod_beta;
-  Double_t hhod_gtr_beta;
   Double_t hhod_GoodScinHit;
   Double_t hdc_ntrack;
   Double_t hdc_res[dc_PLANES]; 		      		   
@@ -1416,7 +1426,6 @@ protected:
   Double_t pcal_etottracknorm;
   Double_t phod_beta_ntrk;
   Double_t phod_beta;
-  Double_t phod_gtr_beta;
   Double_t phod_GoodScinHit;
   Double_t pdc_ntrack;
   Double_t pdc_res[dc_PLANES]; 
@@ -1726,8 +1735,8 @@ protected:
   // Quality Check Parameter Values (to be used for storing fit results/write to.csv file)
 
   // coin time [ns]
-  Double_t ctime_mean;                                                                                                                          
-  Double_t ctime_mean_err;
+  Double_t ctime_offset;                                                                                                                          
+  Double_t ctime_offset_err;
   Double_t ctime_sigma;   
   Double_t ctime_sigma_err;
 
