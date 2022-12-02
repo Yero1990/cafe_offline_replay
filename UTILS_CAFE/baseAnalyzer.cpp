@@ -5630,34 +5630,36 @@ void baseAnalyzer::WriteReportSummary()
       out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
     
-
-
-      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin")) {
+    }
+    
+    if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin")) {
 
 	
-	out_file << "run, beam_time, charge, avg_current, total_Yield, total_Yield_err, real_Yield, real_Yield_err, random_Yield, random_Yield_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate,  PS1, PS2, PS3, PS5" << endl;
+      out_file << "run, beam_time, charge, avg_current, total_Yield, total_Yield_err, real_Yield, real_Yield_err, random_Yield, random_Yield_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate,  PS1, PS2, PS3, PS5" << endl;
 	
-	if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){
-	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f" % (run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor )) << endl;
-	  
-	}
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){
+	//out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f, %.3f,%.3f,%.3f,%.3f,%.3f,%.3f || ,%.3f,%.3f,%.3f,%.3f,%.3f,||%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f", (run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,|| S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, ||  TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor )) << endl;
 	
-	else if(analysis_cut=="heep_coin") {
-	  
-	}
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor ) << endl;
+      }
+      
+      else if(analysis_cut=="heep_coin") {
 	
       }
       
+    }
+      
       if(analysis_cut=="heep_singles") {
       }
-
+      
       
       out_file.close();
       in_file.close();
       
-    }
-	
+  
 
+	
+/*
     //Open Report FIle in append mode
     out_file.open(output_SummaryFileName, ios::out | ios::app);
 
@@ -5682,9 +5684,9 @@ void baseAnalyzer::WriteReportSummary()
     }
        
     out_file.close();
-
-  }
+*/
   
+  }
   cout << "Ending WriteReportSummary() . . ." << endl;
   
 } //End WriteReport()
