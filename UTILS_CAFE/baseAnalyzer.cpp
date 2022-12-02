@@ -5629,30 +5629,30 @@ void baseAnalyzer::WriteReportSummary()
       out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
       out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
-
+    
       //original
       //out_file << std::setw(2) << "#! Run[i,0]/" << std::setw(25) << "charge[f,1]/" << std::setw(25) << "avg_current[f,2]/" << std::setw(25)  << "hTrkEff[f,3]/" << std::setw(25) << "hTrkEff_err[f,4]/" << std::setw(25) << "pTrkEff[f,5]/" << std::setw(25) << "pTrkEff_err[f,6]/" << std::setw(25) << "tgt_boil_factor[f,7]/" << std::setw(30) << "tgt_boil_factor_err[f,8]" << std::setw(25) << "hadAbs_factor[f,9]/" << std::setw(30) << "hadAbs_factor_err[f,10]/" << std::setw(25) <<  "cpuLT[f,11]/" << std::setw(25) << "cpuLT_err_Bi[f,12]/" << std::setw(25) << "cpuLT_err_Bay[f,13]/" << std::setw(25) << "tLT[f,14]/" << std::setw(25) << "tLT_err_Bi[f,15]/" << std::setw(25) << "tLT_err_Bay[f,16]/" << std::setw(25) << "S1X_rate[f,17]/" << std::setw(25) << "trig_rate[f,18]/"  << std::setw(25) << "edtm_rate[f,19]/"  << std::setw(25) << "Pre_Scale[f,20]/" << std::setw(25) << "edtm_accp[f,21]/" << std::setw(25) << "edtm_scaler[f,22]/" << std::setw(25) << "trig_accp[f,23]/" << std::setw(25) << "trig_scaler[f,24]/" << endl;
 
 
       if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin")) {
-
-	out_file << "run, beam_time, charge, avg_current, total_Yield, total_Yield_err, real_Yield, real_Yield_err, random_Yield, random_Yield_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate,  PS1, PS2, PS3, PS5, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate" << endl;
+      
+	out_file << "run, beam_time, charge, avg_current, total_Yield, total_Yield_err, real_Yield, real_Yield_err, random_Yield, random_Yield_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate,  PS1, PS2, PS3, PS5" << endl;
 	
 	if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){
-	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f," % (run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err,   )) << endl;
+	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f" % (run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor )) << endl;
 	  
-	  out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << endl;
+	  //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << endl;
 	}
 	
-	if(analysis_cut=="heep_coin") {
+	else if(analysis_cut=="heep_coin") {
 	  
 	}
 	
       }
       
-      if((analysis_cut=="heep_singles") {
-	  out_file << "run, beam_time, charge, avg_current, Yield, Yield_err,  pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate,  PS1, PS2, T1_accp_rate, T2_accp_rate, edtm_rate, " << endl;
-	}
+      if(analysis_cut=="heep_singles") {
+	  //out_file << "run, beam_time, charge, avg_current, Yield, Yield_err,  pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate,  PS1, PS2, T1_accp_rate, T2_accp_rate, edtm_rate, " << endl;
+      }
 
 
 
@@ -5661,12 +5661,14 @@ void baseAnalyzer::WriteReportSummary()
       in_file.close();
     
     }
+	
 
     //Open Report FIle in append mode
     out_file.open(output_SummaryFileName, ios::out | ios::app);
 
-    //original
-    //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
+      //original
+      //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
+
 
 
     out_file.close();
