@@ -699,7 +699,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Output (.txt) File Name Pattern (analysis report is written to this file) -- short report on a per-run basis
       temp = trim(split(FindString("output_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      output_ReportFileName = Form(temp.Data(), replay_type.Data(), run, evtNum);
+      output_ReportFileName = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);
       
     } 
 
@@ -2145,12 +2145,152 @@ void baseAnalyzer::CreateSkimTree()
   // Method to create a skimmed version of the data TTree  
   cout << "Calling Base CreateSkimTree()  " << endl;
 
-  tree_skim = new TTree("TSkim", "Skimmed TTree");
+  tree_skim = new TTree("T", "Skimmed TTree");
   tree_skim->SetDirectory(0);
-  // add branches (assumes the variables already exist, so this method must be called right after
-  // setting the branch addree of the other variables
   
-  tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime, "epCoinTime/D");
+  // add branches (assumes the variables already exist, so this method must be called right after
+  // setting the branch addree of the
+
+  
+  // Global Variables
+  tree_skim->Branch("g.evtyp",&gevtyp);
+  tree_skim->Branch("g.evnum",&gevnum);
+
+  // coin. time
+  tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime);
+
+  //e- 4-vector components
+  tree_skim->Branch(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
+  tree_skim->Branch(Form("%s.kin.primary.p4y", eArm.Data()), &kfy);
+  tree_skim->Branch(Form("%s.kin.primary.p4z", eArm.Data()), &kfz);
+  tree_skim->Branch(Form("%s.kin.primary.p4e", eArm.Data()), &Ef_k);
+
+  // e- (primary) kinematics 
+  tree_skim->Branch(Form("%s.kin.primary.scat_ang_rad", eArm.Data()),&th_e);
+  tree_skim->Branch(Form("%s.kin.primary.W", eArm.Data()),&W);
+  tree_skim->Branch(Form("%s.kin.primary.Q2", eArm.Data()),&Q2);
+  tree_skim->Branch(Form("%s.kin.primary.x_bj", eArm.Data()),&X);
+  tree_skim->Branch(Form("%s.kin.primary.nu", eArm.Data()),&nu);
+  tree_skim->Branch(Form("%s.kin.primary.q3m", eArm.Data()),&q);
+  tree_skim->Branch(Form("%s.kin.primary.q_x", eArm.Data()),&qx);
+  tree_skim->Branch(Form("%s.kin.primary.q_y", eArm.Data()),&qy);
+  tree_skim->Branch(Form("%s.kin.primary.q_z", eArm.Data()),&qz);
+  tree_skim->Branch(Form("%s.kin.primary.th_q", eArm.Data()),&th_q);
+  tree_skim->Branch(Form("%s.kin.primary.ph_q", eArm.Data()),&ph_q);
+
+  //-------------------------------
+  //------PID Leaf Variables-------
+  //-------------------------------
+  
+  //SHMS DETECTORS
+  tree_skim->Branch("P.ngcer.npeSum",       &pngcer_npesum);
+  tree_skim->Branch("P.cal.etotnorm",       &pcal_etotnorm);
+  tree_skim->Branch("P.cal.etottracknorm",  &pcal_etottracknorm);
+  tree_skim->Branch("P.hod.betanotrack",    &phod_beta_ntrk);
+  tree_skim->Branch("P.hod.beta",           &phod_beta);
+  tree_skim->Branch("P.gtr.beta",           &phod_gtr_beta);
+  tree_skim->Branch("P.hod.goodscinhit",    &phod_GoodScinHit);    
+  tree_skim->Branch("P.dc.ntrack",          &pdc_ntrack);
+  
+  //-----------------------------------
+  //-----Acceptance Leaf Variables-----
+  //-----------------------------------
+  
+  //Additional Kinematics (not in primary/secondary modules)
+  tree_skim->Branch(Form("%s.gtr.p",  eArm.Data()), &kf);
+  
+  //----Electron Arm Focal Plane---- 
+  tree_skim->Branch(Form("%s.dc.x_fp",  eArm.Data()), &e_xfp);
+  tree_skim->Branch(Form("%s.dc.xp_fp", eArm.Data()), &e_xpfp);
+  tree_skim->Branch(Form("%s.dc.y_fp",  eArm.Data()), &e_yfp);
+  tree_skim->Branch(Form("%s.dc.yp_fp", eArm.Data()), &e_ypfp);
+  
+  //----Electron Arm Reconstructed----- 
+  tree_skim->Branch(Form("%s.gtr.y",  eArm.Data()), &e_ytar);
+  tree_skim->Branch(Form("%s.gtr.ph", eArm.Data()), &e_yptar);
+  tree_skim->Branch(Form("%s.gtr.th", eArm.Data()), &e_xptar);
+  tree_skim->Branch(Form("%s.gtr.dp", eArm.Data()), &e_delta);
+  
+  //----Target Quantities----
+  //(tarx, tary, tarz) in Hall Coord. System      
+  tree_skim->Branch(Form("%s.react.x", eArm.Data()), &etar_x);
+  tree_skim->Branch(Form("%s.react.y", eArm.Data()), &etar_y);
+  tree_skim->Branch(Form("%s.react.z", eArm.Data()), &etar_z);
+  
+  //----Collimator Quantities-----
+  tree_skim->Branch(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
+  tree_skim->Branch(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
+  
+  //==========================
+  
+  //detected hadron 4-vector components
+  tree_skim->Branch(Form("%s.kin.secondary.p4x", hArm.Data()), &Pfx);
+  tree_skim->Branch(Form("%s.kin.secondary.p4y", hArm.Data()), &Pfy);
+  tree_skim->Branch(Form("%s.kin.secondary.p4z", hArm.Data()), &Pfz);   
+  tree_skim->Branch(Form("%s.kin.secondary.p4e", hArm.Data()), &Ef_p); // hadron energy
+
+  // hadron / missing system kinematic variables
+  tree_skim->Branch(Form("%s.kin.secondary.emiss", hArm.Data()),&Em);
+  tree_skim->Branch(Form("%s.kin.secondary.emiss_nuc", hArm.Data()),&Em_nuc);     
+  tree_skim->Branch(Form("%s.kin.secondary.pmiss", hArm.Data()),&Pm);
+  tree_skim->Branch(Form("%s.kin.secondary.Prec_x", hArm.Data()),&Pmx_lab);       
+  tree_skim->Branch(Form("%s.kin.secondary.Prec_y", hArm.Data()),&Pmy_lab);   
+  tree_skim->Branch(Form("%s.kin.secondary.Prec_z", hArm.Data()),&Pmz_lab);   
+  tree_skim->Branch(Form("%s.kin.secondary.pmiss_x", hArm.Data()),&Pmx_q);        
+  tree_skim->Branch(Form("%s.kin.secondary.pmiss_y", hArm.Data()),&Pmy_q);   
+  tree_skim->Branch(Form("%s.kin.secondary.pmiss_z", hArm.Data()),&Pmz_q);   
+  tree_skim->Branch(Form("%s.kin.secondary.tx", hArm.Data()),&Tx);                 
+  tree_skim->Branch(Form("%s.kin.secondary.tb", hArm.Data()),&Tr);                 
+  tree_skim->Branch(Form("%s.kin.secondary.Mrecoil", hArm.Data()),&MM);      
+  tree_skim->Branch(Form("%s.kin.secondary.th_xq", hArm.Data()),&th_xq);            
+  tree_skim->Branch(Form("%s.kin.secondary.th_bq", hArm.Data()),&th_rq);            
+  tree_skim->Branch(Form("%s.kin.secondary.ph_xq", hArm.Data()),&ph_xq);                           
+  tree_skim->Branch(Form("%s.kin.secondary.ph_bq", hArm.Data()),&ph_rq);                            
+  tree_skim->Branch(Form("%s.kin.secondary.xangle", hArm.Data()),&xangle);
+  
+  //-------------------------------
+  //------PID Leaf Variables-------
+  //-------------------------------
+  
+  //HMS DETECTORS
+  tree_skim->Branch("H.cer.npeSum",         &hcer_npesum);
+  tree_skim->Branch("H.cal.etot",           &hcal_etot);
+  tree_skim->Branch("H.cal.etotnorm",       &hcal_etotnorm);
+  tree_skim->Branch("H.cal.etottracknorm",  &hcal_etottracknorm);
+  tree_skim->Branch("H.hod.betanotrack",    &hhod_beta_ntrk);
+  tree_skim->Branch("H.hod.beta",           &hhod_beta);
+  tree_skim->Branch("H.gtr.beta",           &hhod_gtr_beta);
+  tree_skim->Branch("H.hod.goodscinhit",    &hhod_GoodScinHit);    
+  tree_skim->Branch("H.dc.ntrack",          &hdc_ntrack);
+	  
+  //-----------------------------------
+  //-----Acceptance Leaf Variables-----
+  //-----------------------------------
+
+  //Additional Kinematics (not in primary/secondary modules)
+  tree_skim->Branch(Form("%s.gtr.p",  hArm.Data()), &Pf);
+  
+  //----Hadron Arm Focal Plane----- 
+  tree_skim->Branch(Form("%s.dc.x_fp",  hArm.Data()), &h_xfp);
+  tree_skim->Branch(Form("%s.dc.xp_fp", hArm.Data()), &h_xpfp);
+  tree_skim->Branch(Form("%s.dc.y_fp",  hArm.Data()), &h_yfp);
+  tree_skim->Branch(Form("%s.dc.yp_fp", hArm.Data()), &h_ypfp);
+  
+  //----Hadron Arm Reconstructed-----
+  tree_skim->Branch(Form("%s.gtr.y",  hArm.Data()), &h_ytar);
+  tree_skim->Branch(Form("%s.gtr.ph", hArm.Data()), &h_yptar);
+  tree_skim->Branch(Form("%s.gtr.th", hArm.Data()), &h_xptar);
+  tree_skim->Branch(Form("%s.gtr.dp", hArm.Data()), &h_delta);
+  
+  //----Target Quantities (as determined from hadron arm)----
+  //(tarx, tary, tarz) in Hall Coord. System
+  tree_skim->Branch(Form("%s.react.x", hArm.Data()), &htar_x);
+  tree_skim->Branch(Form("%s.react.y", hArm.Data()), &htar_y);
+  tree_skim->Branch(Form("%s.react.z", hArm.Data()), &htar_z);
+  
+  //---- Collimator Quantities (as determined from hadron arm)-----
+  tree_skim->Branch(Form("%s.extcor.xsieve", hArm.Data()),&hXColl);
+  tree_skim->Branch(Form("%s.extcor.ysieve", hArm.Data()),&hYColl);
 
 }
 
@@ -2213,6 +2353,11 @@ void baseAnalyzer::ReadTree()
 	//-----Kinematics Leaf Variables------
 	//------------------------------------
 	//Primary Kinematics (electron kinematics)
+	tree->SetBranchAddress(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
+	tree->SetBranchAddress(Form("%s.kin.primary.p4y", eArm.Data()), &kfy);
+	tree->SetBranchAddress(Form("%s.kin.primary.p4z", eArm.Data()), &kfz);
+	tree->SetBranchAddress(Form("%s.kin.primary.p4e", eArm.Data()), &Ef_k);
+
 	tree->SetBranchAddress(Form("%s.kin.primary.scat_ang_rad", eArm.Data()),&th_e);
 	tree->SetBranchAddress(Form("%s.kin.primary.W", eArm.Data()),&W);
 	tree->SetBranchAddress(Form("%s.kin.primary.W2", eArm.Data()),&W2);
@@ -2228,6 +2373,11 @@ void baseAnalyzer::ReadTree()
 	tree->SetBranchAddress(Form("%s.kin.primary.epsilon", eArm.Data()),&epsilon);
 	
 	//Secondary Kinematics (hadron kinematics)
+	tree->SetBranchAddress(Form("%s.kin.secondary.p4x", hArm.Data()),&Pfx);
+	tree->SetBranchAddress(Form("%s.kin.secondary.p4y", hArm.Data()),&Pfy);
+	tree->SetBranchAddress(Form("%s.kin.secondary.p4z", hArm.Data()),&Pfz);
+	tree->SetBranchAddress(Form("%s.kin.secondary.p4e", hArm.Data()),&Ef_p);
+
 	tree->SetBranchAddress(Form("%s.kin.secondary.emiss", hArm.Data()),&Em);
 	tree->SetBranchAddress(Form("%s.kin.secondary.emiss_nuc", hArm.Data()),&Em_nuc);     
 	tree->SetBranchAddress(Form("%s.kin.secondary.pmiss", hArm.Data()),&Pm);
@@ -2439,12 +2589,13 @@ void baseAnalyzer::ReadTree()
 	  tree->SetBranchAddress(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
 	  
 	}
-
+      
       // Call function to create skimmed version of data tree
       CreateSkimTree();
 
     } //END DATA SET BRANCH ADDRESS
 
+  
   else if(analysis_type=="simc")
     {
 
@@ -4109,32 +4260,18 @@ void baseAnalyzer::CalcEff()
   if(Ps5_factor==-1) { cpuLT_trig5 = -1.0, tLT_trig5 = -1.0; }
   if(Ps6_factor==-1) { cpuLT_trig6 = -1.0, tLT_trig6 = -1.0; }
   
-  //Choose what trigger type to use in correction factor (see set_basic_cuts.inp)
-  //---- will need to thing about removing the lines below, and just require a Ps_singles and Ps_coin factors, to be applied in the full weight, since every trigger info is already wirtten
-  // to a report file, there is no need to be selective, except on pre-scale factor that goes in weight
 
-  
-  if(trig_type_single=="trig1") { trig_rate = TRIG1scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig1, cpuLT_trig_err_Bi = cpuLT_trig1_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig1_err_Bay, tLT_trig = tLT_trig1, tLT_trig_err_Bi = tLT_trig1_err_Bi, tLT_trig_err_Bay = tLT_trig1_err_Bay, Ps_factor_single = Ps1_factor, total_trig_scaler_bcm_cut = total_trig1_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig1_accp_bcm_cut; }
-  if(trig_type_single=="trig2") { trig_rate = TRIG2scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig2, cpuLT_trig_err_Bi = cpuLT_trig2_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig2_err_Bay, tLT_trig = tLT_trig2, tLT_trig_err_Bi = tLT_trig2_err_Bi, tLT_trig_err_Bay = tLT_trig2_err_Bay, Ps_factor_single = Ps2_factor, total_trig_scaler_bcm_cut = total_trig2_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig2_accp_bcm_cut; }
-  if(trig_type_single=="trig3") { trig_rate = TRIG3scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig3, cpuLT_trig_err_Bi = cpuLT_trig3_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig3_err_Bay, tLT_trig = tLT_trig3, tLT_trig_err_Bi = tLT_trig3_err_Bi, tLT_trig_err_Bay = tLT_trig3_err_Bay, Ps_factor_single = Ps3_factor, total_trig_scaler_bcm_cut = total_trig3_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig3_accp_bcm_cut; }
-  if(trig_type_single=="trig4") { trig_rate = TRIG4scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig4, cpuLT_trig_err_Bi = cpuLT_trig4_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig4_err_Bay, tLT_trig = tLT_trig4, tLT_trig_err_Bi = tLT_trig4_err_Bi, tLT_trig_err_Bay = tLT_trig4_err_Bay, Ps_factor_single = Ps4_factor, total_trig_scaler_bcm_cut = total_trig4_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig4_accp_bcm_cut; }
-
-
-  if(trig_type_coin=="trig5") { trig_rate = TRIG5scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig5, cpuLT_trig_err_Bi = cpuLT_trig5_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig5_err_Bay, tLT_trig = tLT_trig5, tLT_trig_err_Bi = tLT_trig5_err_Bi, tLT_trig_err_Bay = tLT_trig5_err_Bay, Ps_factor_coin = Ps5_factor, total_trig_scaler_bcm_cut = total_trig5_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig5_accp_bcm_cut; }
-  if(trig_type_coin=="trig6") { trig_rate = TRIG6scalerRate_bcm_cut, cpuLT_trig = cpuLT_trig6, cpuLT_trig_err_Bi = cpuLT_trig6_err_Bi, cpuLT_trig_err_Bay = cpuLT_trig6_err_Bay, tLT_trig = tLT_trig6, tLT_trig_err_Bi = tLT_trig6_err_Bi, tLT_trig_err_Bay = tLT_trig6_err_Bay, Ps_factor_coin = Ps6_factor, total_trig_scaler_bcm_cut = total_trig6_scaler_bcm_cut, total_trig_accp_bcm_cut = total_trig6_accp_bcm_cut; }
-  
-  
-  /*
   // select which pre-scale factors to apply in the weight (depend if looking at singles or coin)
-  if(trig_type_single=="trig1") { Ps_factor_single = Ps1_factor; }
-  if(trig_type_single=="trig2") { Ps_factor_single = Ps2_factor; }
-  if(trig_type_single=="trig3") { Ps_factor_single = Ps3_factor; }
-  if(trig_type_single=="trig4") { Ps_factor_single = Ps4_factor; }
-  
+  if(trig_type_single=="trig1") { trig_rate_single = TRIG1scalerRate_bcm_cut, cpuLT_trig_single = cpuLT_trig1, cpuLT_trig_err_Bi_single = cpuLT_trig1_err_Bi, cpuLT_trig_err_Bay_single = cpuLT_trig1_err_Bay, tLT_trig_single = tLT_trig1, tLT_trig_err_Bi_single = tLT_trig1_err_Bi, tLT_trig_err_Bay_single = tLT_trig1_err_Bay, Ps_factor_single = Ps1_factor, total_trig_scaler_bcm_cut_single = total_trig1_scaler_bcm_cut, total_trig_accp_bcm_cut_single = total_trig1_accp_bcm_cut; }
+  if(trig_type_single=="trig2") { trig_rate_single = TRIG2scalerRate_bcm_cut, cpuLT_trig_single = cpuLT_trig2, cpuLT_trig_err_Bi_single = cpuLT_trig2_err_Bi, cpuLT_trig_err_Bay_single = cpuLT_trig2_err_Bay, tLT_trig_single = tLT_trig2, tLT_trig_err_Bi_single = tLT_trig2_err_Bi, tLT_trig_err_Bay_single = tLT_trig2_err_Bay, Ps_factor_single = Ps2_factor, total_trig_scaler_bcm_cut_single = total_trig2_scaler_bcm_cut, total_trig_accp_bcm_cut_single = total_trig2_accp_bcm_cut; }
+  if(trig_type_single=="trig3") { trig_rate_single = TRIG3scalerRate_bcm_cut, cpuLT_trig_single = cpuLT_trig3, cpuLT_trig_err_Bi_single = cpuLT_trig3_err_Bi, cpuLT_trig_err_Bay_single = cpuLT_trig3_err_Bay, tLT_trig_single = tLT_trig3, tLT_trig_err_Bi_single = tLT_trig3_err_Bi, tLT_trig_err_Bay_single = tLT_trig3_err_Bay, Ps_factor_single = Ps3_factor, total_trig_scaler_bcm_cut_single = total_trig3_scaler_bcm_cut, total_trig_accp_bcm_cut_single = total_trig3_accp_bcm_cut; }
+  if(trig_type_single=="trig4") { trig_rate_single = TRIG4scalerRate_bcm_cut, cpuLT_trig_single = cpuLT_trig4, cpuLT_trig_err_Bi_single = cpuLT_trig4_err_Bi, cpuLT_trig_err_Bay_single = cpuLT_trig4_err_Bay, tLT_trig_single = tLT_trig4, tLT_trig_err_Bi_single = tLT_trig4_err_Bi, tLT_trig_err_Bay_single = tLT_trig4_err_Bay, Ps_factor_single = Ps4_factor, total_trig_scaler_bcm_cut_single = total_trig4_scaler_bcm_cut, total_trig_accp_bcm_cut_single = total_trig4_accp_bcm_cut; }
 
-  if(trig_type_coin=="trig5") { Ps_factor_coin = Ps5_factor; }
-  if(trig_type_coin=="trig6") { Ps_factor_coin = Ps6_factor; }
-  */
+
+  if(trig_type_coin=="trig5") { trig_rate_coin = TRIG5scalerRate_bcm_cut, cpuLT_trig_coin = cpuLT_trig5, cpuLT_trig_err_Bi_coin = cpuLT_trig5_err_Bi, cpuLT_trig_err_Bay_coin = cpuLT_trig5_err_Bay, tLT_trig_coin = tLT_trig5, tLT_trig_err_Bi_coin = tLT_trig5_err_Bi, tLT_trig_err_Bay_coin = tLT_trig5_err_Bay, Ps_factor_coin = Ps5_factor, total_trig_scaler_bcm_cut_coin = total_trig5_scaler_bcm_cut, total_trig_accp_bcm_cut_coin = total_trig5_accp_bcm_cut; }
+  if(trig_type_coin=="trig6") { trig_rate_coin = TRIG6scalerRate_bcm_cut, cpuLT_trig_coin = cpuLT_trig6, cpuLT_trig_err_Bi_coin = cpuLT_trig6_err_Bi, cpuLT_trig_err_Bay_coin = cpuLT_trig6_err_Bay, tLT_trig_coin = tLT_trig6, tLT_trig_err_Bi_coin = tLT_trig6_err_Bi, tLT_trig_err_Bay_coin = tLT_trig6_err_Bay, Ps_factor_coin = Ps6_factor, total_trig_scaler_bcm_cut_coin = total_trig6_scaler_bcm_cut, total_trig_accp_bcm_cut_coin = total_trig6_accp_bcm_cut; }
+  
+  
   
   //Calculate HMS Tracking Efficiency                                                                                                                 
   hTrkEff = h_did / h_should;                                                                                                                  
@@ -4144,7 +4281,38 @@ void baseAnalyzer::CalcEff()
   pTrkEff = p_did / p_should; 
   pTrkEff_err = sqrt(p_should-p_did) / p_should;                                                            
 
+
+  //Write additional variables for skimmed TTree (for users to use, or compare to their own calculations)
+  tree_skim->Branch("avg_beam_current_uA",  &avg_current_bcm_cut);
+  tree_skim->Branch("charge_bcm1_mC", total_charge_bcm1_cut);
+  tree_skim->Branch("charge_bcm2_mC", total_charge_bcm2_cut);
+  tree_skim->Branch("charge_bcm4a_mC", total_charge_bcm4a_cut);
+  tree_skim->Branch("charge_bcm4b_mC", total_charge_bcm4b_cut);
+  tree_skim->Branch("charge_bcm4c_mC", total_charge_bcm4c_cut);
+
+  tree_skim->Branch("hms_did",       &h_did);
+  tree_skim->Branch("hms_should",    &h_should);
+  tree_skim->Branch("hms_track_eff", &hTrkEff);
+  tree_skim->Branch("shms_did",      &p_did);
+  tree_skim->Branch("shms_should",   &p_should);
+  tree_skim->Branch("shms_track_eff",&pTrkEff);
   
+  tree_skim->Branch("edtm_accp",       &total_edtm_accp_bcm_cut);
+  tree_skim->Branch("edtm_scaler",     &total_edtm_scaler_bcm_cut);
+
+  tree_skim->Branch("T1_edtm_live_time",    &tLT_trig1);
+  tree_skim->Branch("T2_edtm_live_time",    &tLT_trig2);
+  tree_skim->Branch("T3_edtm_live_time",    &tLT_trig3);
+  tree_skim->Branch("T5_edtm_live_time",    &tLT_trig5);
+
+  tree_skim->Branch("T1_PS_factor",      &Ps1_factor);
+  tree_skim->Branch("T2_PS_factor",      &Ps2_factor);
+  tree_skim->Branch("T3_PS_factor",      &Ps3_factor);
+  tree_skim->Branch("T5_PS_factor",      &Ps5_factor);
+  
+  tree_skim->Fill();
+  tree_skim->SaveAs( data_OutputFileName_skim.Data() );
+
   
     
 }
@@ -4251,25 +4419,25 @@ void baseAnalyzer::ApplyWeight()
   // assuming these options are used on SHMS singles with EL-REAL trigger
   if((analysis_cut=="heep_singles") || (analysis_cut=="optics") || (analysis_cut=="lumi") || (analysis_cut=="bcm_calib")){ // For CaFe, PS2_factor is pre-scale factor for SHMS EL-REAL
 
-    FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig);    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
+    FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig_single);    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
 
     cout << "Ps_factor_single = " << Ps_factor_single << endl;
     cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
     cout << "e- trk eff = " << pTrkEff  << endl;
-    cout << "total_LT = " << tLT_trig << endl;
-    cout << "FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig) = " <<  FullWeight << endl;
+    cout << "total_LT_single = " << tLT_trig_single << endl;
+    cout << "FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig_single) = " <<  FullWeight << endl;
     
   }
 
   else{ // else use pre-scale factor determined from trig_type input parameter (pre-scale factor for coincidence trigger, determined from input param)
 
-    //FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ); 
+    FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ); 
     cout << "Ps_factor_coin = " << Ps_factor_coin << endl;
     cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
     cout << "e- trk eff = " << pTrkEff  << endl;
     cout << "h trk eff = " << hTrkEff  << endl;
-    cout << "total_LT = " << tLT_trig << endl;
-    cout << "FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig ) = " << FullWeight << endl;
+    cout << "total_LT_coin = " << tLT_trig_coin << endl;
+    cout << "FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ) = " << FullWeight << endl;
     
   }
   //Scale Data Histograms by Full Weight (Each run for a particular kinematics can then be combined, once they are scaled by the FullWeight)
@@ -4370,7 +4538,7 @@ void baseAnalyzer::ApplyWeight()
   }//end loop over accp_HList
   
 
-  //Call the randoms subtraction method, provided there was a coin. time cut flag  (after scaling all histograms above)
+  //Call the randoms subtraction method (after histos have been scaled by charge, etc), provided there was a coin. time cut flag  (after scaling all histograms above)
   RandSub();
  
 }
@@ -5083,30 +5251,11 @@ void baseAnalyzer::WriteOfflineReport()
     out_file.open(output_ReportFileName);
     out_file << Form("# Run %d Offline Data Analysis Report", run)<< endl;
     out_file << "                                     " << endl;
-    out_file << "#//////////////////////////////////////////" << endl; 
-    out_file << "                                         //" << endl;  
-    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
-    out_file << "# ! ! !  OFFLINE MAIN REPORT   ! ! !     //" << endl;
-    out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //" << endl;
-    out_file << "                                         //" << endl;
-    out_file << Form("Current [uA]        : %.3f          ", avg_current_bcm_cut) << endl;
-    out_file << Form("Charge [mC]         : %.3f          ", total_charge_bcm_cut) << endl;
-    out_file << Form("Beam-on-Target [sec]: %.3f          ", total_time_bcm_cut) << endl;
-    out_file << "                                         " << endl;
-    if(analysis_cut=="heep_singles"){
-      out_file << Form("heep_counts : %.3f ", W_total) << endl;
-    }
-    if(analysis_cut=="heep_coin"){
-      out_file << Form("heep_counts : %.3f ", W_real) << endl;
-    }
-    if(analysis_cut=="MF"){
-      out_file << Form("MF_counts : %.3f", Pm_real )  << endl;
-    }
-    if(analysis_cut=="SRC"){
-      out_file << Form("SRC_counts : %.3f", Pm_real)  << endl;
-    }
-    out_file << "#                                        //" << endl;
-    out_file << "#//////////////////////////////////////////" << endl;
+    out_file << "#///////////////////////////////////////////" << endl; 
+    out_file << "#                                         //" << endl;  
+    out_file << Form("# Run %d Offline Data Analysis Report", run)<< endl;
+    out_file << "#                                         //" << endl;
+    out_file << "#///////////////////////////////////////////" << endl;
     out_file << "                                     " << endl;    
     out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
     out_file << "# General Run Configuration                              " << endl;
@@ -5125,6 +5274,7 @@ void baseAnalyzer::WriteOfflineReport()
     else if(analysis_cut=="bcm_calib"){
       out_file << Form("events_replayed: %.0f              ", Scal_evNum ) << endl;
     }
+    
     out_file << "" << endl;
     out_file << Form("beam_energy [GeV]: %.4f          ", beam_energy ) << endl;          
     out_file << Form("target_name: %s                       ", tgt_type.Data() ) << endl;
@@ -5141,13 +5291,14 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
-    out_file << Form("BCMi_Charge [mC]: %.3f ", total_charge_bcm_cut ) << endl;
+    out_file << Form("%s_Charge [mC]: %.3f ", bcm_type.Data(), total_charge_bcm_cut ) << endl;
     out_file << "" << endl;
     out_file << Form("BCM1_Charge [mC]: %.3f ", total_charge_bcm1_cut ) << endl;
     out_file << Form("BCM2_Charge [mC]: %.3f ", total_charge_bcm2_cut ) << endl;
     out_file << Form("BCM4A_Charge [mC]: %.3f ", total_charge_bcm4a_cut ) << endl;
     out_file << Form("BCM4B_Charge [mC]: %.3f ", total_charge_bcm4b_cut ) << endl;
     out_file << Form("BCM4C_Charge [mC]: %.3f ", total_charge_bcm4c_cut ) << endl;
+
     if(analysis_cut=="bcm_calib"){
       out_file << "" << endl;
       out_file << "# pre-trigger scalers                 " << endl;
@@ -5159,68 +5310,82 @@ void baseAnalyzer::WriteOfflineReport()
       out_file << Form("T5_scaler:  %.3f [ %.3f kHz ] ",  total_trig5_scaler_bcm_cut,  TRIG5scalerRate_bcm_cut) << endl;
       out_file << Form("T6_scaler:  %.3f [ %.3f kHz ] ",  total_trig6_scaler_bcm_cut,  TRIG6scalerRate_bcm_cut) << endl;
     }
+
+    
     if(analysis_cut=="heep_singles")
       {
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-	out_file << "# CaFe H(e,e')p  Singles Counts    " << endl;
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-    
-	out_file << Form("heep_total_singles_counts  : %.3f ", W_total) << endl;
-	out_file << Form("heep_total_singles_rate [Hz]  : %.3f ", W_total_rate) << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe H(e,e')p  Singles Normalized Counts     "  << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
 	out_file << "" << endl;
-	
-	// check if shms angle is within 0.1 deg of nominal
-	out_file << "" << endl;
-	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
-	out_file << Form("data_lumiNorm_counts [fb]: %.3f", W_total/GetLuminosity("data_lumi") ) << endl;
-	out_file << "" << endl;
-	
-      }
-
-    if(analysis_cut=="heep_coin")
-      {
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-	out_file << "# CaFe H(e,e')p Coincidence Counts  " << endl;
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-    	out_file << "                                     " << endl;
-	out_file << Form("heep_total_counts    : %.3f", W_total) << endl;
-	out_file << Form("heep_real_counts     : %.3f", W_real)  << endl;
-	out_file << Form("heep_random_counts   : %.3f", W_rand)  << endl;
+	out_file << "# Yield = Counts * pre-scale_factor / (Q * e-_track_eff * total_live_time)" << endl;
+	out_file << "# Counts : Inegrated Invariant Mass W peak" << endl;
+	out_file << Form("# pre-scale_factor: %f", Ps_factor_single)   << endl;
+	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
+        out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
+	out_file << Form("# total_live_time     : %.3f", tLT_trig_single) << endl;
+	out_file << "#-----------------------------" << endl;
+	out_file << Form("Yield  : %.3f ", W_total) << endl;
 	out_file << "                                     " << endl;
-	out_file << Form("heep_real_rate [Hz]  : %.3f", W_real_rate)  << endl;
-	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
-	out_file << Form("data_lumiNorm_counts [fb]: %.3f", W_real/GetLuminosity("data_lumi") ) << endl;
-	out_file << "" << endl;
+																			      
+      }
+     if(analysis_cut=="heep_coin")
+      {
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+        out_file << "# CaFe H(e,e')p Coincidence Normalized Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+    	out_file << "                                     " << endl;
+	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
+	out_file << "# Counts : Inegrated Invariant Mass W peak " << endl;
+	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
+	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
+	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
+        out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
+	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
+	out_file << "#-----------------------------" << endl;
+	out_file << Form("total_Yield    : %.3f", W_total) << endl;
+	out_file << Form("random_Yield   : %.3f", W_rand)  << endl;
+	out_file << Form("real_Yield     : %.3f", W_real)  << endl;
+	out_file << "                                     " << endl;
       }
     
     if(analysis_cut=="MF")
       {
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-	out_file << "# CaFe A(e,e')p Mean-Field (MF) Counts  " << endl;
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe A(e,e')p Mean-Field (MF) Normalized Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
 	out_file << "                                     " << endl;
-	out_file << Form("MF_total_counts    : %.3f", Pm_total) << endl;
-	out_file << Form("MF_real_counts     : %.3f", Pm_real )  << endl;
-	out_file << Form("MF_random_counts   : %.3f", Pm_rand )  << endl;
-	out_file << "                                     " << endl;
-	out_file << Form("MF_real_rate [Hz]  : %.3f", Pm_real_rate)  << endl;
-	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
-	out_file << Form("data_lumiNorm_counts [fb]: %.3f", Pm_real/GetLuminosity("data_lumi") ) << endl;
+	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
+	out_file << "# Counts : Inegrated Missing Momentum (Pm)  " << endl;
+	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
+	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
+	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
+        out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
+	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
+	out_file << "#-----------------------------" << endl;
+	out_file << Form("total_Yield    : %.3f", Pm_total) << endl;
+	out_file << Form("random_Yield   : %.3f", Pm_rand )  << endl;
+	out_file << Form("real_Yield     : %.3f", Pm_real )  << endl;
 	out_file << "                                     " << endl;
       }
     if(analysis_cut=="SRC")
       {
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
-	out_file << "# CaFe A(e,e')p Short-Range Correlated (SRC) Counts  " << endl;
-	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
+	out_file << "# CaFe A(e,e')p Short-Range Correlated (SRC) Normalized Counts  " << endl;
+	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
 	out_file << "                                     " << endl;
-	out_file << Form("SRC_total_counts    : %.3f", Pm_total) << endl;
-	out_file << Form("SRC_real_counts     : %.3f", Pm_real)  << endl;
-	out_file << Form("SRC_random_counts   : %.3f", Pm_rand)  << endl;
+	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
+	out_file << "# Counts : Inegrated Missing Momentum (Pm)  " << endl;
+	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
+	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
+	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
+        out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
+	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
+	out_file << "#-----------------------------" << endl;
+	out_file << Form("total_Yield    : %.3f", Pm_total) << endl;
+	out_file << Form("random_Yield   : %.3f", Pm_rand)  << endl;
+	out_file << Form("real_Yield     : %.3f", Pm_real)  << endl;
 	out_file << "                                     " << endl;
-	out_file << Form("SRC_real_rate [Hz]  : %.3f", Pm_real_rate)  << endl;
-	out_file << Form("data_integrated_luminosity [fb^-1]: %.3f", GetLuminosity("data_lumi")) << endl;
-	out_file << Form("data_lumiNorm_counts [fb]: %.3f", Pm_real/GetLuminosity("data_lumi") ) << endl;
 	out_file << "" << endl;
       }
 
@@ -5468,8 +5633,30 @@ void baseAnalyzer::WriteReportSummary()
       //original
       //out_file << std::setw(2) << "#! Run[i,0]/" << std::setw(25) << "charge[f,1]/" << std::setw(25) << "avg_current[f,2]/" << std::setw(25)  << "hTrkEff[f,3]/" << std::setw(25) << "hTrkEff_err[f,4]/" << std::setw(25) << "pTrkEff[f,5]/" << std::setw(25) << "pTrkEff_err[f,6]/" << std::setw(25) << "tgt_boil_factor[f,7]/" << std::setw(30) << "tgt_boil_factor_err[f,8]" << std::setw(25) << "hadAbs_factor[f,9]/" << std::setw(30) << "hadAbs_factor_err[f,10]/" << std::setw(25) <<  "cpuLT[f,11]/" << std::setw(25) << "cpuLT_err_Bi[f,12]/" << std::setw(25) << "cpuLT_err_Bay[f,13]/" << std::setw(25) << "tLT[f,14]/" << std::setw(25) << "tLT_err_Bi[f,15]/" << std::setw(25) << "tLT_err_Bay[f,16]/" << std::setw(25) << "S1X_rate[f,17]/" << std::setw(25) << "trig_rate[f,18]/"  << std::setw(25) << "edtm_rate[f,19]/"  << std::setw(25) << "Pre_Scale[f,20]/" << std::setw(25) << "edtm_accp[f,21]/" << std::setw(25) << "edtm_scaler[f,22]/" << std::setw(25) << "trig_accp[f,23]/" << std::setw(25) << "trig_scaler[f,24]/" << endl;
 
-      out_file << "run, beam_time, charge, avg_current, W_counts, Pm_counts, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate,  PS1, PS2, PS3, PS5, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate, " << endl;
 
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin")) {
+
+	out_file << "run, beam_time, charge, avg_current, total_Yield, total_Yield_err, real_Yield, real_Yield_err, random_Yield, random_Yield_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate, T3_scl_rate, T5_scl_rate,  PS1, PS2, PS3, PS5, T1_accp_rate, T2_accp_rate, T3_accp_rate, T5_accp_rate, edtm_rate" << endl;
+	
+	if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){
+	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f," % (run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err,   )) << endl;
+	  
+	  out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << endl;
+	}
+	
+	if(analysis_cut=="heep_coin") {
+	  
+	}
+	
+      }
+      
+      if((analysis_cut=="heep_singles") {
+	  out_file << "run, beam_time, charge, avg_current, Yield, Yield_err,  pTrkEff, pTrkEff_err, cpuLT, cpuLT_err_Bi, tLT, tLT_err_Bi, S1X_rate, T1_scl_rate, T2_scl_rate,  PS1, PS2, T1_accp_rate, T2_accp_rate, edtm_rate, " << endl;
+	}
+
+
+
+      
       out_file.close();
       in_file.close();
     
@@ -5481,7 +5668,6 @@ void baseAnalyzer::WriteReportSummary()
     //original
     //out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << tgtBoil_corr << std::setw(25) << tgtBoil_corr_err << std::setw(25) << hadAbs_corr << std::setw(25) << hadAbs_corr_err << std::setw(25) << cpuLT_trig << std::setw(25) << cpuLT_trig_err_Bi << std::setw(25) << cpuLT_trig_err_Bay << std::setw(25) << tLT_trig << std::setw(25) << tLT_trig_err_Bi << std::setw(25) << tLT_trig_err_Bay << std::setw(25) << S1XscalerRate_bcm_cut << std::setw(25) << trig_rate << std::setw(25) << EDTMscalerRate_bcm_cut << std::setw(25) << Ps_factor << std::setw(25) << total_edtm_accp_bcm_cut << std::setw(25) << (total_edtm_scaler_bcm_cut / Ps_factor) << std::setw(25) << total_trig_accp_bcm_cut << std::setw(25) << (total_trig_scaler_bcm_cut / Ps_factor) << endl;
 
-    out_file << std::setw(7) << run  << std::setw(25) << total_charge_bcm_cut << std::setw(25) << avg_current_bcm_cut << std::setw(25) << hTrkEff << std::setw(25) << hTrkEff_err << std::setw(25) << pTrkEff << std::setw(25) << pTrkEff_err << std::setw(25) << endl;
 
     out_file.close();
   }

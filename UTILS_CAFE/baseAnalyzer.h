@@ -1018,7 +1018,8 @@ protected:
   Double_t total_trig5_accp_bcm_cut = 0;
   Double_t total_trig6_accp_bcm_cut = 0;
   Double_t total_edtm_accp_bcm_cut = 0;
-  Double_t total_trig_accp_bcm_cut; //generic acc. trig
+  Double_t total_trig_accp_bcm_cut_single; //generic acc. trig
+  Double_t total_trig_accp_bcm_cut_coin; //generic acc. trig
 
   //Tracking Efficiency Counter / Live Time (passed bcm cuts)
   //HMS
@@ -1034,10 +1035,17 @@ protected:
   Double_t pTrkEff_err;
 
   //Computer Live Time 
-  Double_t cpuLT_trig;       //generic computer live time
-  Double_t cpuLT_trig_err_Bi;  //generic cpu live time error (using binomial statistics)
-  Double_t cpuLT_trig_err_Bay;  //generic cpu live time error (using bayesian statistics)
-   
+  Double_t cpuLT_trig_single;       //generic computer live time
+  Double_t cpuLT_trig_coin;       //generic computer live time
+
+  Double_t cpuLT_trig_err_Bi_single;  //generic cpu live time error (using binomial statistics)
+  Double_t cpuLT_trig_err_Bi_coin;  //generic cpu live time error (using binomial statistics)
+
+  Double_t cpuLT_trig_err_Bay_single;  //generic cpu live time error (using bayesian statistics)
+  Double_t cpuLT_trig_err_Bay_coin;  //generic cpu live time error (using bayesian statistics)
+
+
+  
   Double_t cpuLT_trig1, cpuLT_trig1_err_Bi, cpuLT_trig1_err_Bay;
   Double_t cpuLT_trig2, cpuLT_trig2_err_Bi, cpuLT_trig2_err_Bay;
   Double_t cpuLT_trig3, cpuLT_trig3_err_Bi, cpuLT_trig3_err_Bay;
@@ -1048,9 +1056,15 @@ protected:
   //Total Live Time (EDTM)
   Double_t tLT_corr_factor;
 
-  Double_t tLT_trig; //generic total live time 
-  Double_t tLT_trig_err_Bi;  //generic total live time error (using binomial statistics)
-  Double_t tLT_trig_err_Bay;  //generic total live time error (using bayesian statistics)
+  Double_t tLT_trig_single; //generic total live time 
+  Double_t tLT_trig_coin; //generic total live time 
+
+  
+  Double_t tLT_trig_err_Bi_single;  //generic total live time error (using binomial statistics)
+  Double_t tLT_trig_err_Bi_coin;  //generic total live time error (using binomial statistics)
+
+  Double_t tLT_trig_err_Bay_single;  //generic total live time error (using bayesian statistics)
+  Double_t tLT_trig_err_Bay_coin;  //generic total live time error (using bayesian statistics)
 
   Double_t tLT_trig1, tLT_trig1_err_Bi, tLT_trig1_err_Bay;
   Double_t tLT_trig2, tLT_trig2_err_Bi, tLT_trig2_err_Bay;
@@ -1357,6 +1371,10 @@ protected:
   
   //-------------TTREE LEAF VARIABLE NAMES (DATA or SIMC)--------------
 
+  //hadron / electron 4-vector components (px,py,pz,E)
+  Double_t Pfx, Pfy, Pfz, Ef_p; // hadron
+  Double_t kfx, kfy, kfz, Ef_k; // e-
+  
   //Trigger Detector / Global Variables
   Double_t gevtyp;  //global event type
   Double_t gevnum;
@@ -1620,7 +1638,8 @@ protected:
   Double_t total_trig5_scaler_bcm_cut = 0;
   Double_t total_trig6_scaler_bcm_cut = 0;
   Double_t total_edtm_scaler_bcm_cut = 0;
-  Double_t total_trig_scaler_bcm_cut; //generic trig scaler count
+  Double_t total_trig_scaler_bcm_cut_single; //generic trig scaler count
+  Double_t total_trig_scaler_bcm_cut_coin; //generic trig scaler count
 
   //Store Scaler Rates if current cut passed
   Double_t S1XscalerRate_bcm_cut;
@@ -1641,7 +1660,8 @@ protected:
   Double_t TRIG6accpRate_bcm_cut;
   Double_t EDTMaccpRate_bcm_cut;
   
-  Double_t trig_rate; //generic trigger rate
+  Double_t trig_rate_single; //generic single trigger rate 
+  Double_t trig_rate_coin; //generic coin trigger rate
   
   //Store Average BCM Current
   Double_t  avg_current_bcm_cut;
