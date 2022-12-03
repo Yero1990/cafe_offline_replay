@@ -32,7 +32,7 @@ c_hnpeSum_max = 0.5
 # HMS Calorimeter Total Energy / Spec. Central Momentum (search "etotnorm" in /hcana/src/THcShower.cxx)
 hetotnorm_cut_flag = 1
 c_hetotnorm_min = 0.
-c_hetotnorm_max = 0.7
+c_hetotnorm_max = 0.6
 
 # HMS Beta (p/E) Calculated from Scintillator Hits (without using Tracking Info) (search "betanotrack" in /hcana/src/THcHodoscope.cxx)
 hBeta_notrk_cut_flag = 1
@@ -56,7 +56,7 @@ c_pdc_ntrk_min = 1
 pScinGood_cut_flag = 1
 
 # SHMS Noble Gas Cherenkov Total Number of Photo-Electrons (search "npeSum" in /hcana/src/THcCherenkov.cxx)
-pngcer_cut_flag = 1
+pngcer_cut_flag = 0
 c_pngcer_npeSum_min = 0.5
 c_pngcer_npeSum_max = 100.
 
@@ -67,8 +67,8 @@ c_phgcer_npeSum_max = 1.5
 
 # SHMS Calorimeter Total Energy / Spec. Central Momentum (search "etotnorm" in /hcana/src/THcShower.cxx)
 petotnorm_cut_flag = 1
-c_petotnorm_min = 0.7
-c_petotnorm_max = 1.1
+c_petotnorm_min = 0.9
+c_petotnorm_max = 1.3
 
 # SHMS Beta (p/E) Calculated from Scintillator Hits (without using Tracking Info) (search "betanotrack" in /hcana/src/THcHodoscope.cxx)
 pBeta_notrk_cut_flag = 1
@@ -88,7 +88,7 @@ c_pBetaNtrk_max = 1.5
 #---- Coincidence Time Cut -----
 
 # electron-Proton main coincidence time cut [ns] 
-ePctime_cut_flag = 0
+ePctime_cut_flag = 1
 ePctime_cut_min = -3.0
 ePctime_cut_max = 3.0
 
@@ -104,9 +104,9 @@ ePctime_cut_max_L = -10.0
 #------PID Cuts------
 
 # (SHMS PID) Calorimeter Total Energy Normalized By Track Momentum
-petot_trkNorm_pidCut_flag = 0
-cpid_petot_trkNorm_min = 0.6
-cpid_petot_trkNorm_max = 1.2
+petot_trkNorm_pidCut_flag = 1
+cpid_petot_trkNorm_min = 0.85
+cpid_petot_trkNorm_max = 1.25
 
 # (SHMS PID) Noble Gas Cherenkov Total Number of Photo-Electrons
 pngcer_pidCut_flag = 0
@@ -132,7 +132,7 @@ cpid_hcer_npeSum_max = 0.5
 #------Acceptance Cuts------
 
 # hadron arm momentum acceptance, Delta [%] 
-hdelta_cut_flag = 0
+hdelta_cut_flag = 1
 c_hdelta_min = -10.
 c_hdelta_max = 10.
 
@@ -147,10 +147,10 @@ c_hyptar_min = -0.035
 c_hyptar_max = 0.035
 
 # HMS colliamtor cut (can be used as alternative to xptar,yptar cuts)
-hmsCollCut_flag = 0
+hmsCollCut_flag = 1
 
 # electron arm momentum acceptance, Delta [%] 
-edelta_cut_flag = 0
+edelta_cut_flag = 1
 c_edelta_min = 0.
 c_edelta_max = 22.
 
@@ -165,7 +165,7 @@ c_eyptar_min = -0.024
 c_eyptar_max = 0.024
 
 # SHMS colliamtor cut (can be used as alternative to xptar,yptar cuts)
-shmsCollCut_flag = 0
+shmsCollCut_flag = 1
 
 # Z-Reaction Vertex Difference, [cm]
 ztarDiff_cut_flag = 0
@@ -198,12 +198,12 @@ c_heep_xbj_max = 1.2
 
 # Missing Energy [GeV]
 # this cut will NOT be activated with analysis_cut=="heep_singles"
-Em_heep_cut_flag = 0
+Em_heep_cut_flag = 1
 c_heep_Em_min = -0.05
 c_heep_Em_max = 0.05
 
 # Invariant Mass, W [GeV]
-W_heep_cut_flag = 0
+W_heep_cut_flag = 1
 c_heep_W_min = 0.85
 c_heep_W_max = 1.05
 

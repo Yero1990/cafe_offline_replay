@@ -657,9 +657,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       
-      //Check if ROOTfile exists
+	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
       if(in_file.fail()){
@@ -671,8 +672,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      
+      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
@@ -2266,7 +2268,8 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("%s.kin.secondary.ph_xq", hArm.Data()),&ph_xq);                           
   tree_skim->Branch(Form("%s.kin.secondary.ph_bq", hArm.Data()),&ph_rq);                            
   tree_skim->Branch(Form("%s.kin.secondary.xangle", hArm.Data()),&xangle);
-  
+  tree_skim->Branch(Form("%s.kin.secondary.scat_ang_rad", hArm.Data()),&th_x);
+
   //-------------------------------
   //------PID Leaf Variables-------
   //-------------------------------
@@ -2309,7 +2312,11 @@ void baseAnalyzer::CreateSkimTree()
   //---- Collimator Quantities (as determined from hadron arm)-----
   tree_skim->Branch(Form("%s.extcor.xsieve", hArm.Data()),&hXColl);
   tree_skim->Branch(Form("%s.extcor.ysieve", hArm.Data()),&hYColl);
+  tree_skim->Branch("hms_collimator_cut_flag", &hms_coll_cut_bool);
+  tree_skim->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
 
+  
+  
 }
 
 //_______________________________________________________________________________
@@ -2748,20 +2755,6 @@ void baseAnalyzer::GetPeak()
   cout << "Calling GetPeak() . . . " <<  endl;
 
 
-
-  
-
-  // coin. time offset param (i.e., coin time peak value)
-  Double_t ctime_offset_val = 0.0;
-
-  // hodoscope beta peak value
-  Double_t hms_beta_val = 0.0;
-  Double_t shms_beta_val = 0.0;
-  
-  // calorimeter etottracknorm
-  Double_t shms_ecal_val = 0.0;
-
-    
   // declare histogram to fill sample coin. time 
   TH1F *ctime_peak = new TH1F("ctime_peak", "Coin. Time Peak ", 200,-100,100);
 
@@ -2796,10 +2789,10 @@ void baseAnalyzer::GetPeak()
   double xmax_hbeta = hms_beta_peak->GetXaxis()->GetBinCenter(binmax_hbeta);
   double xmax_pecal = shms_ecal_peak->GetXaxis()->GetBinCenter(binmax_pecal);
 
-  ctime_offset_val  = xmax_ctime;      
-  hms_beta_val  = xmax_hbeta;
-  shms_beta_val = xmax_pbeta;
-  shms_ecal_val = xmax_pecal;
+  ctime_offset_peak_val  = xmax_ctime;      
+  hms_beta_peak_val  = xmax_hbeta;
+  shms_beta_peak_val = xmax_pbeta;
+  shms_ecal_peak_val = xmax_pecal;
   
 
   //=====================================================================================================
@@ -2840,16 +2833,16 @@ void baseAnalyzer::GetPeak()
 	pdc_nhit[6]==1&&pdc_nhit[7]==1&&pdc_nhit[8]==1&&pdc_nhit[9]==1&&pdc_nhit[10]==1&&pdc_nhit[11]==1;
       
       // Require beta (no track info, to not bias residuals) cut around peak (e- or proton)
-      hbeta_cut = abs(hhod_beta_ntrk-hms_beta_val)<0.1;
-      pbeta_cut = abs(phod_beta_ntrk-shms_beta_val)<0.1;
+      hbeta_cut = abs(hhod_beta_ntrk-hms_beta_peak_val)<0.1;
+      pbeta_cut = abs(phod_beta_ntrk-shms_beta_peak_val)<0.1;
       
       // Require hms/shms calorimeter  total energy >0.1 (clean up background)
       hcal_etot_cut = hcal_etotnorm<0.6; // assumes hms are hadrons
-      pcal_etot_cut = abs(pcal_etotnorm-shms_ecal_val)<0.2;
+      pcal_etot_cut = abs(pcal_etotnorm-shms_ecal_peak_val)<0.2;
       
       
       // Fill sample histos (to be fitted later)
-      H_ctime_fit->Fill(epCoinTime-ctime_offset_val);	  	  
+      H_ctime_fit->Fill(epCoinTime-ctime_offset_peak_val);	  	  
       H_pbeta_fit->Fill(phod_beta);
       H_hbeta_fit->Fill(hhod_beta);	
       H_pcal_fit->Fill(pcal_etottracknorm);
@@ -3016,7 +3009,7 @@ void baseAnalyzer::EventLoop()
     {
 
       
-      // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals 
+      // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
       GetPeak();
 
 
@@ -3150,11 +3143,11 @@ void baseAnalyzer::EventLoop()
 	  if(ePctime_cut_flag) {
 
 	    // main coincidence time window cut
-	    eP_ctime_cut = (epCoinTime-ctime_offset) >= ePctime_cut_min && (epCoinTime-ctime_offset) <= ePctime_cut_max;
+	    eP_ctime_cut = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max;
 
 	    // accidental coincidence (left/right of main coin. peak selected) as samples
-	    eP_ctime_cut_rand_L = (epCoinTime-ctime_offset) >= ePctime_cut_max_L && (epCoinTime-ctime_offset) <= ePctime_cut_min_L ;
-	    eP_ctime_cut_rand_R = (epCoinTime-ctime_offset) >= ePctime_cut_min_R && (epCoinTime-ctime_offset) <= ePctime_cut_max_R ;	    
+	    eP_ctime_cut_rand_L = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_max_L && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_min_L ;
+	    eP_ctime_cut_rand_R = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min_R && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max_R ;	    
 	    
 	    eP_ctime_cut_rand =  eP_ctime_cut_rand_L || eP_ctime_cut_rand_R;
 
@@ -3405,8 +3398,15 @@ void baseAnalyzer::EventLoop()
 		  //----------------------Fill DATA Histograms-----------------------
 
 		  // Fill Skimmed Tree (no cuts except edtm_cut and bcm_cut applied, so user will need to implement their own cuts)
+		  //==========================================================================
+		  hms_coll_cut_bool  = false;
+		  shms_coll_cut_bool = false;
+		  if( hms_Coll_gCut->IsInside(hYColl, hXColl) )  { hms_coll_cut_bool=true; }
+		  if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
 		  tree_skim->Fill();
-	      
+		  //==========================================================================
+
+
 
 		  //2D Kin plots to help clean out online Em data
 		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
@@ -3416,7 +3416,7 @@ void baseAnalyzer::EventLoop()
 		  
 		  
 		  // NO CUTS HISTOS (for checking)
-		  H_ep_ctime_total_noCUT->Fill(epCoinTime-ctime_offset);
+		  H_ep_ctime_total_noCUT->Fill(epCoinTime-ctime_offset_peak_val);
 		  H_hXColl_vs_hYColl_noCUT  ->Fill(hYColl, hXColl);
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
@@ -3427,7 +3427,7 @@ void baseAnalyzer::EventLoop()
 		    
 		    
 		    // full coin. time spectrum with all other cuts  
-		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset); 
+		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
 		  
 		    
 		    // select "TRUE COINCIDENCE " (electron-proton from same "beam bunch" form a coincidence)
@@ -3439,7 +3439,7 @@ void baseAnalyzer::EventLoop()
 			//--------------------------------------------------------------------
 			
 			//Coincidence Time		      
-			H_ep_ctime->Fill(epCoinTime-ctime_offset); // fill coin. time and apply the offset
+			H_ep_ctime->Fill(epCoinTime-ctime_offset_peak_val); // fill coin. time and apply the offset
 			
 			//Fill HMS Detectors
 			H_hCerNpeSum->Fill(hcer_npesum);
@@ -3592,7 +3592,7 @@ void baseAnalyzer::EventLoop()
 		      {
 			// Only histograms of selected variables of interest will be filled with background
 			
-			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset );
+			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset_peak_val );
 			H_W_rand       ->  Fill (W);       
 			H_Q2_rand      ->  Fill (Q2);      
 			H_xbj_rand     ->  Fill (X);     
@@ -3639,7 +3639,8 @@ void baseAnalyzer::EventLoop()
 
       //Save Skimmed Tree
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );
-      
+      delete tree_skim;
+
     }//END DATA ANALYSIS
 
 
@@ -4041,9 +4042,6 @@ void baseAnalyzer::RandSub()
   W_total = H_W          ->IntegralAndError(1, total_bins, W_total_err);
   W_real  = H_W_rand_sub ->IntegralAndError(1, total_bins, W_real_err);
   W_rand  = H_W_rand     ->IntegralAndError(1, total_bins, W_rand_err);
-  cout << Form("W_total = %.3f", W_total) << endl;
-  cout << Form("W_real = %.3f", W_real) << endl;
-  cout << Form("W_rand = %.3f", W_rand) << endl;
 
   W_total_rate = W_total / total_time_bcm_cut;  // # good elastic proton event rate
   W_real_rate = W_real / total_time_bcm_cut;
@@ -4247,46 +4245,171 @@ void baseAnalyzer::CalcEff()
   pTrkEff = p_did / p_should; 
   pTrkEff_err = sqrt(p_should-p_did) / p_should;                                                            
 
-
-  //Write additional variables for skimmed TTree (for users to use, or compare to their own calculations)
-  tree_skim->Branch("avg_beam_current_uA",  &avg_current_bcm_cut);
-  tree_skim->Branch("charge_bcm1_mC", &total_charge_bcm1_cut);
-  tree_skim->Branch("charge_bcm2_mC", &total_charge_bcm2_cut);
-  tree_skim->Branch("charge_bcm4a_mC",&total_charge_bcm4a_cut);
-  tree_skim->Branch("charge_bcm4b_mC", &total_charge_bcm4b_cut);
-  tree_skim->Branch("charge_bcm4c_mC", &total_charge_bcm4c_cut);
-
-  tree_skim->Branch("hms_did",       &h_did);
-  tree_skim->Branch("hms_should",    &h_should);
-  tree_skim->Branch("hms_track_eff", &hTrkEff);
-  tree_skim->Branch("shms_did",      &p_did);
-  tree_skim->Branch("shms_should",   &p_should);
-  tree_skim->Branch("shms_track_eff",&pTrkEff);
   
-  tree_skim->Branch("edtm_accp",       &total_edtm_accp_bcm_cut);
-  tree_skim->Branch("edtm_scaler",     &total_edtm_scaler_bcm_cut);
-
-  tree_skim->Branch("T1_edtm_live_time",    &tLT_trig1);
-  tree_skim->Branch("T2_edtm_live_time",    &tLT_trig2);
-  tree_skim->Branch("T3_edtm_live_time",    &tLT_trig3);
-  tree_skim->Branch("T5_edtm_live_time",    &tLT_trig5);
-
-  tree_skim->Branch("T1_PS_factor",      &Ps1_factor);
-  tree_skim->Branch("T2_PS_factor",      &Ps2_factor);
-  tree_skim->Branch("T3_PS_factor",      &Ps3_factor);
-  tree_skim->Branch("T5_PS_factor",      &Ps5_factor);
-
-  tree_skim->Fill();
-
-  tree_skim->SaveAs( data_OutputFileName_skim.Data() );
-
-  //open skim output ROOTfile to write run constants
+  
+  //========================================================
+  //
+  //open skim output ROOTfile to write run run constants
+  //
+  //========================================================
+  
   outROOT = new TFile( data_OutputFileName_skim.Data(), "UPDATE");
-  outROOT->cd();
+  
+  outROOT->mkdir("beam_charge");
+  outROOT->mkdir("prescale_factors_and_triggers");
+  outROOT->mkdir("live_time");
+  outROOT->mkdir("track_efficiency");
 
-  TVectorT<double> total_charge(1);
-  total_charge = total_charge_bcm1_cut;
-  total_charge.Write("total_charge");
+  
+  outROOT->cd("beam_charge");
+  // Write Beam Charge / Current Objects
+  TVectorT<double> charge_bcm1(1);
+  charge_bcm1 = total_charge_bcm1_cut;
+  charge_bcm1.Write("total_charge_bcm1_mC");
+
+  TVectorT<double> charge_bcm2(1);
+  charge_bcm2 = total_charge_bcm2_cut;
+  charge_bcm2.Write("total_charge_bcm2_mC");
+  
+  TVectorT<double> charge_bcm4a(1);
+  charge_bcm4a = total_charge_bcm4a_cut;
+  charge_bcm4a.Write("total_charge_bcm4a_mC");
+  
+  TVectorT<double> charge_bcm4b(1);
+  charge_bcm4b = total_charge_bcm4b_cut;
+  charge_bcm4b.Write("total_charge_bcm4b_mC");
+
+  TVectorT<double> charge_bcm4c(1);
+  charge_bcm4c = total_charge_bcm4c_cut;
+  charge_bcm4c.Write("total_charge_bcm4c_mC");
+  
+  TVectorT<double> current(1);
+  current = avg_current_bcm_cut;
+  current.Write( Form("avg_beam_current_%s_uA", bcm_type.Data()) );
+
+  outROOT->cd("track_efficiency");
+  // Write HMS/SHMS Tracking Efficiency Objects
+  TVectorT<double> hms_did(1);
+  hms_did = h_did;
+  hms_did.Write("hms_did");
+
+  TVectorT<double> hms_should(1);
+  hms_should = h_should;
+  hms_should.Write("hms_should");
+
+  TVectorT<double> hms_track_eff(2);
+  hms_track_eff[0] = hTrkEff;
+  hms_track_eff[1] = hTrkEff_err;
+  hms_track_eff.Write("hms_track_eff");
+
+  TVectorT<double> shms_did(1);
+  shms_did = p_did;
+  shms_did.Write("shms_did");
+
+  TVectorT<double> shms_should(1);
+  shms_should = p_should;
+  shms_should.Write("shms_should");
+
+  TVectorT<double> shms_track_eff(2);
+  shms_track_eff[0] = pTrkEff;
+  shms_track_eff[1] = pTrkEff_err;
+  shms_track_eff.Write("shms_track_eff");
+  
+  outROOT->cd("prescale_factors_and_triggers");
+  // pre-scale factors
+  TVectorT<double> prescale_factor_T1(1);
+  TVectorT<double> prescale_factor_T2(1);
+  TVectorT<double> prescale_factor_T3(1);
+  TVectorT<double> prescale_factor_T4(1);
+  TVectorT<double> prescale_factor_T5(1);
+  TVectorT<double> prescale_factor_T6(1);
+
+  prescale_factor_T1 = Ps1_factor;
+  prescale_factor_T2 = Ps2_factor;
+  prescale_factor_T3 = Ps3_factor;
+  prescale_factor_T4 = Ps4_factor;
+  prescale_factor_T5 = Ps5_factor;
+  prescale_factor_T6 = Ps6_factor;
+  prescale_factor_T1.Write("prescale_factor_T1");
+  prescale_factor_T2.Write("prescale_factor_T2");
+  prescale_factor_T3.Write("prescale_factor_T3");
+  prescale_factor_T4.Write("prescale_factor_T4");
+  prescale_factor_T5.Write("prescale_factor_T5");
+  prescale_factor_T6.Write("prescale_factor_T6");
+  
+  //Write Trigger Scalers (already have EDTM subtracted)
+  TVectorT<double> T1_scalers(1);
+  TVectorT<double> T2_scalers(1);
+  TVectorT<double> T3_scalers(1);
+  TVectorT<double> T4_scalers(1);
+  TVectorT<double> T5_scalers(1);
+  TVectorT<double> T6_scalers(1);
+  T1_scalers = total_trig1_scaler_bcm_cut;
+  T2_scalers = total_trig2_scaler_bcm_cut;
+  T3_scalers = total_trig3_scaler_bcm_cut;
+  T4_scalers = total_trig4_scaler_bcm_cut;
+  T5_scalers = total_trig5_scaler_bcm_cut;
+  T6_scalers = total_trig6_scaler_bcm_cut;
+  T1_scalers.Write("T1_scalers");
+  T2_scalers.Write("T2_scalers");
+  T3_scalers.Write("T3_scalers");
+  T4_scalers.Write("T4_scalers");
+  T5_scalers.Write("T5_scalers");
+  T6_scalers.Write("T6_scalers");
+
+  //Write Accepted Triggers
+  TVectorT<double> T1_accepted(1);
+  TVectorT<double> T2_accepted(1);
+  TVectorT<double> T3_accepted(1);
+  TVectorT<double> T4_accepted(1);
+  TVectorT<double> T5_accepted(1);
+  TVectorT<double> T6_accepted(1);
+  T1_accepted = total_trig1_accp_bcm_cut;
+  T2_accepted = total_trig2_accp_bcm_cut;
+  T3_accepted = total_trig3_accp_bcm_cut;
+  T4_accepted = total_trig4_accp_bcm_cut;
+  T5_accepted = total_trig5_accp_bcm_cut;
+  T6_accepted = total_trig6_accp_bcm_cut;
+  T1_accepted.Write("T1_accepted");
+  T2_accepted.Write("T2_accepted");
+  T3_accepted.Write("T3_accepted");
+  T4_accepted.Write("T4_accepted");
+  T5_accepted.Write("T5_accepted");
+  T6_accepted.Write("T6_accepted");
+
+  
+  TVectorT<double> edtm_scalers;
+  edtm_scalers = total_edtm_scaler_bcm_cut;
+  edtm_scalers.Write("edtm_scalers");
+
+  TVectorT<double> edtm_accepted;
+  edtm_accepted = total_edtm_accp_bcm_cut;
+  edtm_accepted.Write("edtm_accepted");
+
+  //Write Total EDTM Live Time
+  outROOT->cd("live_time");
+  TVectorT<double> tLT_singles(2);
+  tLT_singles[0] = tLT_trig_single;
+  tLT_singles[1] = tLT_trig_err_Bi_single;
+  tLT_singles.Write("total_live_time_singles");
+
+  TVectorT<double> tLT_coin(2);
+  tLT_coin[0] = tLT_trig_coin;
+  tLT_coin[1] = tLT_trig_err_Bi_coin;
+  tLT_coin.Write("total_live_time_coin");
+  
+  //Write Computer Live Time
+  TVectorT<double> cpuLT_singles(2);
+  cpuLT_singles[0] = cpuLT_trig_single;
+  cpuLT_singles[1] = cpuLT_trig_err_Bi_single;
+  cpuLT_singles.Write("computer_live_time_singles");
+
+  TVectorT<double> cpuLT_coin(2);
+  cpuLT_coin[0] = cpuLT_trig_coin;
+  cpuLT_coin[1] = cpuLT_trig_err_Bi_coin;
+  cpuLT_coin.Write("computer_live_time_coin");
+
+
   outROOT->Close();
   
 }
@@ -5564,20 +5687,53 @@ void baseAnalyzer::WriteReportSummary()
   //  on a run-by-run basis, and self-updating file, meaning, each run that is replayed will be appended into the file.    
 
   // Nov 27, 2022
-  // Updating this method is work in progress, to make it into a .csv format for easy plottinh via python
-  // also still need to add certain quality-monitoring numerical peak values from a fit (e.g., beta peak, cal E/p peak, dc residuals, for quality monitoring) 
+  // Updating this method is work in progress, to make it into a .csv format for easy plotting via python
   
   cout << "Calling WriteReportSummary() . . ." << endl;
 
   
   if(analysis_type=="data"){
 
-    //---------------------------------------------------------
-
-    
     //Check if file already exists
     in_file.open(output_SummaryFileName.Data());
     
+    //---------------
+    // APPEND MODE
+    //---------------
+    //---------------------------------------------------------
+    if(!in_file.fail()){
+      
+      cout << "Summary File already exists, will append to it . . . " << endl;
+      
+      //Open Report FIle in append mode
+      
+      out_file.open(output_SummaryFileName, ios::out | ios::app);
+      
+      
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){  
+	
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11]) << endl;
+	
+      }
+      
+      else if(analysis_cut=="heep_coin") {
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11] ) << endl;	  
+	
+      }
+      
+      else if(analysis_cut=="heep_singles") {
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11] ) << endl;	
+      }
+      
+      out_file.close();
+    
+    } // end check file exists      
+    //---------------------------------------------------------
+
+    //---------------------
+    // CRETAE SUMMARY FILE
+    //--------------------
+    //---------------------------------------------------------
     if(in_file.fail()){
       
       cout << "Report File does NOT exist, will create one . . . " << endl;
@@ -5591,35 +5747,36 @@ void baseAnalyzer::WriteReportSummary()
       out_file << Form("# target_name: %s        kin_type:  %s            ", tgt_type.Data(), analysis_cut.Data() ) << endl;
       out_file << Form("# target_amu: %.6f                 ", tgt_mass        ) << endl;   
       out_file << Form("# beam_energy [GeV]: %.4f          ", beam_energy ) << endl;            
-      out_file << "" << endl;      
+      out_file << "#" << endl;      
       out_file << Form("# hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
       out_file << Form("# hms_h_momentum [GeV/c]: %.4f             ",  hms_p ) << endl;
       out_file << Form("# hms_h_angle [deg]: %.4f                  ",  hms_angle ) << endl;          
-      out_file << "" << endl;      
+      out_file << "#" << endl;      
       out_file << Form("# shms_e_particle_mass [GeV]: %.6f          ",  shms_part_mass ) << endl;          
       out_file << Form("# shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
       out_file << Form("# shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
-      out_file << "" << endl;      
+      out_file << "#" << endl;      
       out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
       out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
     
     
-      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin")) {
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
 	
 	// set appropiate heders for coincidence data
 	out_file << "run,beam_time,charge,avg_current,total_Yield,total_Yield_err,real_Yield,real_Yield_err,random_Yield,random_Yield_err,hTrkEff,hTrkEff_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_rate,PS1,PS2,PS3,PS5,ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc1u1_res,hdc1u2_res,hdc1x1_res,hdc1x2_res,hdc1v2_res,hdc1v1_res,hdc2v1_res,hdc2v2_res,hdc2x2_res,hdc2x1_res,hdc2u2_res,hdc2u1_res,hdc1u1_res_err,hdc1u2_res_err,hdc1x1_res_err,hdc1x2_res_err,hdc1v2_res_err,hdc1v1_res_err,hdc2v1_res_err,hdc2v2_res_err,hdc2x2_res_err,hdc2x1_res_err,hdc2u2_res_err,hdc2u1_res_err,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err" << endl;
-
-	  
+	
+	
 	if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){  
+	  
 	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11]) << endl;
+	
 	}
 	
 	else if(analysis_cut=="heep_coin") {
 	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11] ) << endl;	  
 	}
-
-
+     
 	
       } // end coin data requirement
       
@@ -5634,30 +5791,13 @@ void baseAnalyzer::WriteReportSummary()
       
       out_file.close();
       in_file.close();
-      
-    } // end file check
-    
+
+
+    } // end file check for 1st run
+  
       //-------------------------------------------
     
-      //Open Report FIle in append mode
-    out_file.open(output_SummaryFileName, ios::out | ios::app);
-    
-      
-    if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){  
-      out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11]) << endl;
 
-    }
-	
-    else if(analysis_cut=="heep_coin") {
-      out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11] ) << endl;	  
-
-    }
-     
-    if(analysis_cut=="heep_singles") {
-      out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%f,%f,%f,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11] ) << endl;	
-    }
-    
-    out_file.close();
     
     
   } // end "data" requirement

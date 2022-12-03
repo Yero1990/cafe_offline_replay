@@ -99,7 +99,7 @@ if [ "${ana_type}" = "data" ]; then
 	
 	
 	# check if event number is specified
-	if [ -z $evt ]; then
+	if [ -z "$evt" ]; then
 	    evt=-1
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
@@ -154,8 +154,8 @@ if [ "${ana_type}" = "data" ]; then
 	evt=$3
 	
 	# check if event number is specified
-	if [ -z $evt ]; then
-	    $evt=-1
+	if [ -z "$evt" ]; then
+	    evt=-1
 	    echo "No event number spedified, defaulting to evt=${evt} (all events)"
 	fi
 	

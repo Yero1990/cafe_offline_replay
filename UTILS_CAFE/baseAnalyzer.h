@@ -1347,6 +1347,9 @@ protected:
   TCutG *hms_Coll_gCut;   //HMS Collimator Graphical Cut
   TCutG *shms_Coll_gCut;  //SHMS Collimator Graphical Cut
 
+  Bool_t hms_coll_cut_bool=0;  //boolean to be saved to skimmed rootfile,so that users may be able to make cut 
+  Bool_t shms_coll_cut_bool=0;
+
   //HMS Octagonal Collimator Size (Each of the octagonal points is a multiple of 1 or 1/2 of these values)
   Double_t hms_hsize = 4.575;  //cm
   Double_t hms_vsize = 11.646;
@@ -1733,7 +1736,14 @@ protected:
   //-----------------------------------------------------------------------------------------
 
   // Quality Check Parameter Values (to be used for storing fit results/write to.csv file)
-
+  
+  
+  // define peak values (max bin content x-value)
+  Double_t ctime_offset_peak_val = 0.0;
+  Double_t hms_beta_peak_val = 0.0;
+  Double_t shms_beta_peak_val = 0.0;
+  Double_t shms_ecal_peak_val = 0.0;
+    
   // coin time [ns]
   Double_t ctime_offset;                                                                                                                          
   Double_t ctime_offset_err;
