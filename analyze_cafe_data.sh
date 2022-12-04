@@ -112,7 +112,7 @@ if [ "${ana_type}" = "data" ]; then
 	bcm_thrs=5             # beam current threhsold cut > bcm_thrs [uA]
 	trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
 	trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
-	combine_runs=0
+	combine_runs=1
 	
 	# cafe analysis script
 	prod_script="UTILS_CAFE/main_analysis.cpp"
