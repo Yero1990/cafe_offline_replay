@@ -753,6 +753,9 @@ protected:
   // Detector Histograms (DATA ONLY): PID / TRACKING EFFICIENCY 
   //----------------------------------------------------------------
 
+  // keep track of total charge
+  TH1F *H_total_charge;
+  
   // no cuts
   TH1F *H_ep_ctime_total_noCUT;
 
@@ -1792,7 +1795,7 @@ protected:
   TList * randSub_HList;  // store random-subtracted variables of selected histograms
 
   TList * quality_HList; // store quality-check histos (will NOT be weighted or summed over all runs)
-  
+  TList * charge_HList;
   //---------------------------------------------
 
 

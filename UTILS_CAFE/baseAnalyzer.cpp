@@ -111,6 +111,7 @@ void baseAnalyzer::Init(){
   accp_HList = NULL;
   rand_HList = NULL;
   randSub_HList = NULL;
+  charge_HList = NULL;
   
   //-----Initialize Histogram Pointers-----
 
@@ -131,6 +132,8 @@ void baseAnalyzer::Init(){
   H_ep_ctime_total_noCUT  = NULL;
   H_ep_ctime_total  = NULL;
   H_ep_ctime  = NULL;
+
+  H_total_charge = NULL;
   
   //-HMS-
   H_hCerNpeSum      = NULL;  
@@ -374,7 +377,7 @@ baseAnalyzer::~baseAnalyzer()
   delete accp_HList;    accp_HList = NULL;
   delete rand_HList;    rand_HList = NULL;
   delete randSub_HList; randSub_HList = NULL;
-  
+  delete charge_HList;  charge_HList = NULL;
   //-----------------------------
   // Detector Histogram Pointers
   //-----------------------------
@@ -384,6 +387,9 @@ baseAnalyzer::~baseAnalyzer()
   delete H_ep_ctime_total; H_ep_ctime_total   = NULL;
   delete H_ep_ctime; H_ep_ctime   = NULL;
 
+  //-TOTAL CHARGE-
+  delete H_total_charge; H_total_charge = NULL;
+ 
   //-HMS-
   delete H_hCerNpeSum;      H_hCerNpeSum      = NULL;  
   delete H_hCalEtotNorm;    H_hCalEtotNorm    = NULL;
@@ -1521,7 +1527,7 @@ void baseAnalyzer::CreateHist()
   randSub_HList = new TList();
 
   quality_HList = new TList();
-  
+  charge_HList = new TList();
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
   h_total = new TH1F();         //dummy histo to store hsitogram sum
@@ -1542,7 +1548,9 @@ void baseAnalyzer::CreateHist()
   H_ep_ctime_total   = new TH1F("H_ep_ctime_total", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
   H_ep_ctime_total_noCUT   = new TH1F("H_ep_ctime_total_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
 
-
+  //Total Charge
+  H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-50,50);
+  
   //HMS DETECTORS HISTOS
   H_hCerNpeSum      = new TH1F("H_hCerNpeSum", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
   H_hCalEtotNorm    = new TH1F("H_hCalEtotNorm", "HMS Calorimeter Normalized Total Energy; E_{tot} / P_{cent}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
@@ -1572,6 +1580,7 @@ void baseAnalyzer::CreateHist()
   pid_HList->Add(H_ep_ctime_total_noCUT);
   pid_HList->Add(H_ep_ctime_total);
   pid_HList->Add(H_ep_ctime);
+  
   pid_HList->Add(H_hCerNpeSum);
   pid_HList->Add(H_hCalEtotNorm);
   pid_HList->Add(H_hCalEtotTrkNorm);
@@ -1910,7 +1919,7 @@ void baseAnalyzer::CreateHist()
   //-----------------------------------------------------
   //---------HISTOGRAM CATEGORY: QUALITY CHECK-----------
   //-----------------------------------------------------
-
+  
   H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
   H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
   H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
@@ -1919,7 +1928,6 @@ void baseAnalyzer::CreateHist()
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
-  
   quality_HList->Add(H_hbeta_fit);
   quality_HList->Add(H_pbeta_fit);
   quality_HList->Add(H_ctime_fit);
@@ -1930,7 +1938,9 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add(H_hdcRes_fit[npl]);
       quality_HList->Add(H_pdcRes_fit[npl]);
     }
-  
+
+  //total charge
+  charge_HList->Add(H_total_charge); 
 }
 //_______________________________________________________________________________
 void baseAnalyzer::ReadScalerTree()
@@ -3426,6 +3436,13 @@ void baseAnalyzer::EventLoop()
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
        
+		  //------------DEBUG CHECK Dec 05 2022 CY---------------
+
+		  //  need to check how does filling coin time histo and doing coin time subtraction
+		  // FIRST (before any cuts applied) affects the end result (pm histogram)
+		  // It should not affect, but worth checking . . . later
+		  
+		  //-----------------------------------------------------
 		  
 
 		  if(c_baseCuts){
@@ -3595,7 +3612,7 @@ void baseAnalyzer::EventLoop()
 		    if(ePctime_cut_flag && eP_ctime_cut_rand)
 		      
 		      {
-			// Only histograms of selected variables of interest will be filled with background
+			// Only histograms of selected variables of interest will be filled with coincidence accidantal background
 			
 			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset_peak_val );
 			H_W_rand       ->  Fill (W);       
@@ -4145,6 +4162,8 @@ void baseAnalyzer::CalcEff()
   total_charge_bcm4b_cut = total_charge_bcm4b_cut / 1000.; 
   total_charge_bcm4c_cut = total_charge_bcm4c_cut / 1000.; 
 
+  H_total_charge->SetBinContent(50, total_charge_bcm_cut);
+  
   //Convert Scaler Trigger/EDTM Rates from Hz to kHz 
   S1XscalerRate_bcm_cut   = S1XscalerRate_bcm_cut   / 1000.;
   TRIG1scalerRate_bcm_cut = TRIG1scalerRate_bcm_cut / 1000.;
@@ -4851,6 +4870,9 @@ void baseAnalyzer::WriteHist()
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
       quality_HList->Write();
+
+      outROOT->cd("total_charge");
+      charge_HList->Write();
       
       //Close File
       outROOT->Close();
@@ -5865,7 +5887,8 @@ void baseAnalyzer::CombineHistos()
     outROOT->mkdir("pid_plots");
     outROOT->mkdir("kin_plots");
     outROOT->mkdir("accp_plots");
-
+    outROOT->mkdir("total_charge");
+    
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
       outROOT->mkdir("rand_plots");
       outROOT->mkdir("randSub_plots");
@@ -5882,6 +5905,9 @@ void baseAnalyzer::CombineHistos()
     //Write Acceptance histos to accp_plots directory
     outROOT->cd("accp_plots");
     accp_HList->Write();
+
+    outROOT->cd("total_charge");
+    charge_HList->Write();
 
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
 
@@ -6029,7 +6055,34 @@ void baseAnalyzer::CombineHistos()
     //--------------------------------------------------------------------------------------------
 
 
+    //------------------------------------------
+    //Lopp over charge_HList of histogram objects
+    //------------------------------------------
+    for(int i=0; i<charge_HList->GetEntries(); i++)
+      {
+	cout << "Looping over charge_HList objects: " << i << " / " << charge_HList->GetEntries() << endl;   
 
+	//Determine object data type (as of now, either TH1F or TH2F are possible)
+	class_name = charge_HList->At(i)->ClassName();
+	
+	//Read ith histograms in the list from current run
+	if(class_name=="TH1F") {
+	  //Get histogram from current run
+	  h_i = (TH1F *)charge_HList->At(i);  
+	  hist_name = h_i->GetName();
+	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
+	  hist_dir = "total_charge/" + hist_name;  
+	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
+	  outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("total_charge"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       	   
+	  
+	}
+	
+	
+      }//end loop over accp_HList
+
+    //--------------------------------------------------------------------------------------------
+    
+    
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
 
       //------------------------------------------
