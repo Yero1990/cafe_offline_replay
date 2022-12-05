@@ -14,7 +14,7 @@ echo "Running as ${USER}"
 targ=$1
 ana_cut=$2
 RunList="${targ}_${ana_cut}.txt"
-
+echo "RunList: ${RunList}"
 inputFile="/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/UTILS_CAFE/runlist/"
 
 if [[ -z "$1" ]]; then
@@ -36,7 +36,7 @@ if [[ -z "$1" ]]; then
     exit 2
 fi
 # Check if an argument was provided, if not assume -1, if yes, this is max events
-if [[ $2 -eq "" ]]; then
+if [[ $3 -eq "" ]]; then
     MAXEVENTS=-1
 else
     MAXEVENTS=$3
@@ -102,7 +102,7 @@ while true; do
                     elif [[ $TapeFileSize -ge 45 ]]; then
 			echo "MEMORY: 4000 MB" >> ${batch}
                     fi
-		    echo "CPU: 2" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
+		    echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 		    #echo "INPUT_FILES: ${tape_file}" >> ${batch}
                     #echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/replay_cafe_prod.sh ${runNum} ${MAXEVENTS}"  >> ${batch} ### Insert your script at end!
 		    echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/analyze_cafe_data.sh ${runNum} ${ana_cut} ${MAXEVENTS}"  >> ${batch}

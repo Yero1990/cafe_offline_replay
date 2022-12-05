@@ -56,8 +56,8 @@ c_pdc_ntrk_min = 1
 pScinGood_cut_flag = 1
 
 # SHMS Noble Gas Cherenkov Total Number of Photo-Electrons (search "npeSum" in /hcana/src/THcCherenkov.cxx)
-pngcer_cut_flag = 0
-c_pngcer_npeSum_min = 0.5
+pngcer_cut_flag = 1
+c_pngcer_npeSum_min = 1.0
 c_pngcer_npeSum_max = 100.
 
 # SHMS Heavy Gas Cherenkov (will NOT be used by CaFe experiment)
