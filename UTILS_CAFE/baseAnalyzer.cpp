@@ -1519,6 +1519,8 @@ void baseAnalyzer::CreateHist()
 
   rand_HList = new TList();
   randSub_HList = new TList();
+
+  quality_HList = new TList();
   
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
@@ -1548,11 +1550,7 @@ void baseAnalyzer::CreateHist()
   H_hHodBetaNtrk    = new TH1F("H_hHodBetaNtrk", "HMS Hodo #beta (no track); #beta (no track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
   H_hHodBetaTrk     = new TH1F("H_hHodBetaTrk", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
 
-  //quality check histos
-  H_ctime_fit  = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
-  H_hbeta_fit  = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
-  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
-  
+
   //SHMS DETECTORS HISTOS
   H_pNGCerNpeSum    = new TH1F("H_pNGCerNpeSum", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
   H_pHGCerNpeSum    = new TH1F("H_pHGCerNpeSum", "SHMS Heavy Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", phgcer_nbins, phgcer_xmin, phgcer_xmax);
@@ -1560,11 +1558,6 @@ void baseAnalyzer::CreateHist()
   H_pCalEtotTrkNorm = new TH1F("H_pCalEtotTrkNorm", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
   H_pHodBetaNtrk    = new TH1F("H_pBetaNtrk", "SHMS Hodo #beta (no track); #beta (no track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
   H_pHodBetaTrk     = new TH1F("H_pBetaTrk", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
-
-  //quality check histos
-  H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
-  H_pcal_fit   = new TH1F("H_shms_cal_fit", "SHMS Calorimeter E/p-track ", pcal_nbins, pcal_xmin, pcal_xmax);
-  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
   //HMS 2D PID               
   H_hcal_vs_hcer     = new TH2F("H_hcal_vs_hcer", "HMS: Calorimeter vs. Cherenkov; Calorimeter E_{tot}/P_{trk}; Cherenkov NPE Sum", hcal_nbins, hcal_xmin, hcal_xmax, hcer_nbins, hcer_xmin, hcer_xmax);     
@@ -1590,18 +1583,6 @@ void baseAnalyzer::CreateHist()
   pid_HList->Add(H_pCalEtotTrkNorm);
   pid_HList->Add(H_pHodBetaNtrk);
   pid_HList->Add(H_pHodBetaTrk);
-
-  // quality check plots
-  pid_HList->Add(H_hbeta_fit);
-  pid_HList->Add(H_pbeta_fit);
-  pid_HList->Add(H_ctime_fit);
-  pid_HList->Add(H_pcal_fit);
-  
-  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
-    {
-      pid_HList->Add(H_hdcRes_fit[npl]);
-      pid_HList->Add(H_pdcRes_fit[npl]);
-    }
   
   //Add 2D PID
   pid_HList->Add(H_hcal_vs_hcer);  
@@ -1925,6 +1906,30 @@ void baseAnalyzer::CreateHist()
   randSub_HList->Add( H_thxq_rand_sub     );
   randSub_HList->Add( H_thrq_rand_sub     );
 
+
+  //-----------------------------------------------------
+  //---------HISTOGRAM CATEGORY: QUALITY CHECK-----------
+  //-----------------------------------------------------
+
+  H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
+  H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pcal_fit   = new TH1F("H_shms_cal_fit", "SHMS Calorimeter E/p-track ", pcal_nbins, pcal_xmin, pcal_xmax);
+
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
+
+  
+  quality_HList->Add(H_hbeta_fit);
+  quality_HList->Add(H_pbeta_fit);
+  quality_HList->Add(H_ctime_fit);
+  quality_HList->Add(H_pcal_fit);
+  
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ )
+    {
+      quality_HList->Add(H_hdcRes_fit[npl]);
+      quality_HList->Add(H_pdcRes_fit[npl]);
+    }
   
 }
 //_______________________________________________________________________________
@@ -3987,7 +3992,7 @@ void baseAnalyzer::RandSub()
     from real coincidences (within coin peak selected) for various histograms 
   */
 
-  // Scale Down (If necessary) the randoms before subtracting it from the reals
+  // Scale Down (If necessary) the randoms before subtracting it from the total to get the real coincidences
   // NOTE: the accidentals selected to the left/right of main coin. peak have a window width of dt_acc_L and dt_acc_R
   // and therefore the relevant histograms with accidentals selection  must be properly scaled down to the main coin. peak window
   // as follows:  scale_factor = dt_coin_peak / ( dt_acc_L + dt_acc_R ) --> ratio of main coin. time window width to (sum of accidental window width left/right of main peak)
@@ -4007,33 +4012,33 @@ void baseAnalyzer::RandSub()
 
 
   //----Scale Down the random coincidences histograms-----
-  // ----(other than the coin. histograms themselves)----
-
-  H_W_rand       ->  Scale( P_scale_factor );
-  H_Q2_rand      ->  Scale( P_scale_factor );
-  H_xbj_rand     ->  Scale( P_scale_factor );
-  H_nu_rand      ->  Scale( P_scale_factor );
-  H_q_rand       ->  Scale( P_scale_factor );
-  H_Em_rand      ->  Scale( P_scale_factor );
-  H_Em_nuc_rand  ->  Scale( P_scale_factor );
-  H_Pm_rand      ->  Scale( P_scale_factor );
-  H_MM_rand      ->  Scale( P_scale_factor );
-  H_thxq_rand    ->  Scale( P_scale_factor );
-  H_thrq_rand    ->  Scale( P_scale_factor );
+  H_ep_ctime_rand ->  Scale( P_scale_factor );
+  H_W_rand        ->  Scale( P_scale_factor );
+  H_Q2_rand       ->  Scale( P_scale_factor );
+  H_xbj_rand      ->  Scale( P_scale_factor );
+  H_nu_rand       ->  Scale( P_scale_factor );
+  H_q_rand        ->  Scale( P_scale_factor );
+  H_Em_rand       ->  Scale( P_scale_factor );
+  H_Em_nuc_rand   ->  Scale( P_scale_factor );
+  H_Pm_rand       ->  Scale( P_scale_factor );
+  H_MM_rand       ->  Scale( P_scale_factor );
+  H_thxq_rand     ->  Scale( P_scale_factor );
+  H_thrq_rand     ->  Scale( P_scale_factor );
 
   
   // -----Carry out the randoms subtraction------
-  H_W_rand_sub       -> Add(H_W      ,H_W_rand      , 1, -1);
-  H_Q2_rand_sub      -> Add(H_Q2     ,H_Q2_rand     , 1, -1);
-  H_xbj_rand_sub     -> Add(H_xbj    ,H_xbj_rand    , 1, -1);
-  H_nu_rand_sub      -> Add(H_nu     ,H_nu_rand     , 1, -1);
-  H_q_rand_sub       -> Add(H_q      ,H_q_rand      , 1, -1);
-  H_Em_rand_sub      -> Add(H_Em     ,H_Em_rand     , 1, -1);
-  H_Em_nuc_rand_sub  -> Add(H_Em_nuc ,H_Em_nuc_rand , 1, -1);
-  H_Pm_rand_sub      -> Add(H_Pm     ,H_Pm_rand     , 1, -1);
-  H_MM_rand_sub      -> Add(H_MM     ,H_MM_rand     , 1, -1);
-  H_thxq_rand_sub    -> Add(H_thxq   ,H_thxq_rand   , 1, -1);
-  H_thrq_rand_sub    -> Add(H_thrq   ,H_thrq_rand   , 1, -1);  
+  H_ep_ctime_rand_sub ->Add(H_ep_ctime  ,H_ep_ctime_rand , 1, -1);
+  H_W_rand_sub       -> Add(H_W         ,H_W_rand        , 1, -1);
+  H_Q2_rand_sub      -> Add(H_Q2        ,H_Q2_rand       , 1, -1);
+  H_xbj_rand_sub     -> Add(H_xbj       ,H_xbj_rand      , 1, -1);
+  H_nu_rand_sub      -> Add(H_nu        ,H_nu_rand       , 1, -1);
+  H_q_rand_sub       -> Add(H_q         ,H_q_rand        , 1, -1);
+  H_Em_rand_sub      -> Add(H_Em        ,H_Em_rand       , 1, -1);
+  H_Em_nuc_rand_sub  -> Add(H_Em_nuc    ,H_Em_nuc_rand   , 1, -1);
+  H_Pm_rand_sub      -> Add(H_Pm        ,H_Pm_rand       , 1, -1);
+  H_MM_rand_sub      -> Add(H_MM        ,H_MM_rand       , 1, -1);
+  H_thxq_rand_sub    -> Add(H_thxq      ,H_thxq_rand     , 1, -1);
+  H_thrq_rand_sub    -> Add(H_thrq      ,H_thrq_rand     , 1, -1);  
 
       
   // Get Counts of "good events for saving to CaFe Report File"
@@ -4751,6 +4756,7 @@ void baseAnalyzer::ScaleSIMC(TString target="")
   //Close File
   outROOT->Close();
 
+  
   //==============================================
   // REVERT (UNDO) SCALING FACTOR FOR USE WITH NEXT 
   // TARGET WHEN THIS FUNCTION GETS CALLED AGAIN
@@ -4819,6 +4825,9 @@ void baseAnalyzer::WriteHist()
       outROOT->mkdir("rand_plots");
       outROOT->mkdir("randSub_plots");
 
+      outROOT->mkdir("quality_plots");
+
+      
       //Write PID histos to pid_plots directory
       outROOT->cd("pid_plots");
       pid_HList->Write();
@@ -4838,6 +4847,10 @@ void baseAnalyzer::WriteHist()
       //Write selected Random-Subtracted histos to randSub_plots directory
       outROOT->cd("randSub_plots");
       randSub_HList->Write();
+
+      //Write calibration quality check histos to quality_plots directory
+      outROOT->cd("quality_plots");
+      quality_HList->Write();
       
       //Close File
       outROOT->Close();
@@ -6096,7 +6109,7 @@ void baseAnalyzer::CombineHistos()
       
       //--------------------------------------------------------------------------------------------
 
-    }    
+    } // end MF, SRC, heep_coin requirement (for summing over random, and random-subtracted histos)    
     
     outROOT->Close();
     

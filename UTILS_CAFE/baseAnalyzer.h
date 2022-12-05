@@ -1790,6 +1790,8 @@ protected:
 
   TList * rand_HList;  // store random coin. background of selected histograms
   TList * randSub_HList;  // store random-subtracted variables of selected histograms
+
+  TList * quality_HList; // store quality-check histos (will NOT be weighted or summed over all runs)
   
   //---------------------------------------------
 

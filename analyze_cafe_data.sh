@@ -112,7 +112,7 @@ if [ "${ana_type}" = "data" ]; then
 	bcm_thrs=5             # beam current threhsold cut > bcm_thrs [uA]
 	trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
 	trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
-	combine_runs=1
+	combine_runs=0
 	
 	# cafe analysis script
 	prod_script="UTILS_CAFE/main_analysis.cpp"
@@ -145,8 +145,7 @@ if [ "${ana_type}" = "data" ]; then
 	    exit 0  
 	}
 	
-    else
-	
+    elif [[ -n ${run//[0-9]/} ]]; then
 	# if no run-number is detected order of arguments now is as follows: target, kin, evt (run number excluded)
 	# read 1st and 2nd arguments
 	target=$1
