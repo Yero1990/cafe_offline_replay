@@ -14,6 +14,7 @@ echo "Running as ${USER}"
 targ=$1
 ana_cut=$2
 RunList="${targ}_${ana_cut}.txt"
+
 echo "RunList: ${RunList}"
 inputFile="/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/UTILS_CAFE/runlist/"
 
@@ -22,11 +23,13 @@ if [[ -z "$1" ]]; then
     echo "-----------------------------------------------------"
     echo ""
     echo "Usage: "
-    echo "./run_batch_template.sh runlist.txt MAXEVENTS"
+    echo "./run_batch_template.sh <targ> <ana_cut> MAXEVENTS"
     echo ""
-    echo "runlist.txt : a simple text file with a list of "
-    echo "run numbers (one run per line), assumed to be on:"
-    echo "${inputFile}"
+    echo "<targ> : target type (h2, d2, be9, b10, b11, c12, ca40, ca48, fe54) "
+    echo "<ana_cut> : analysis type cut (heep_coin, heep_singles, MF, SRC, optics)"
+    echo ""
+    echo "A runlist will be read, based on the input, from the directory located at: "
+    echo "${inputFile}<targ>_<ana_cut>.txt"
     echo ""
     echo "MAXEVENTS : maximum number of events to be replayed"
     echo "defaults to all events (-1) if no argumnet provided "
@@ -96,11 +99,11 @@ while true; do
                     echo "JOBNAME: cafe_${runNum}_${RunList}" >> ${batch} ## Change to be more specific if you want
 		    # Request double the tape file size in space, for trunctuated replays edit down as needed
 		    # Note, unless this is set typically replays will produce broken root files
-		    echo "DISK_SPACE: "$(( $TapeFileSize * 2 ))" GB" >> ${batch}
+		    echo "DISK_SPACE: "$(( $TapeFileSize * 3 ))" GB" >> ${batch}
 		    if [[ $TapeFileSize -le 45 ]]; then # Assign memory based on size of tape file, should keep this as low as possible!
-			echo "MEMORY: 3000 MB" >> ${batch}
-                    elif [[ $TapeFileSize -ge 45 ]]; then
 			echo "MEMORY: 4000 MB" >> ${batch}
+                    elif [[ $TapeFileSize -ge 45 ]]; then
+			echo "MEMORY: 5000 MB" >> ${batch}
                     fi
 		    echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 		    #echo "INPUT_FILES: ${tape_file}" >> ${batch}
