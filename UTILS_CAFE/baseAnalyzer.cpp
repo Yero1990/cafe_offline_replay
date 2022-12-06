@@ -2980,6 +2980,7 @@ void baseAnalyzer::GetPeak()
 	pdc_res_sigma[npl]     = pdc_res_fit->GetParameter(2)*1e4;
 	pdc_res_sigma_err[npl] = pdc_res_fit->GetParError(2)*1e4;
 
+	
 	cout << Form("hdc_res_sigma[%i] = %.3f", npl,  hdc_res_sigma[npl]) << endl;
 	cout << Form("hdc_res_sigma_err[%i] = %.3f", npl,  hdc_res_sigma_err[npl]) << endl;
        
