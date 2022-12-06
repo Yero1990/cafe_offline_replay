@@ -1,0 +1,7 @@
+Summary of junk runs determined from pass1 analysis
+(C. Yero,  Dec 06, 2022)
+
+b11_MF:
+16987  --> fADC mode 10 run, (few evetns, empty histograms, unprescaled T2,T3) 
+16988  --> fADC mode 10 run, (few events, empty histogrmas)
+16990   --> T2 pre-scale=1 (unprescaled) caused edtm live time to be ~0.063 (edtm accp=101, edtm scl=1610)

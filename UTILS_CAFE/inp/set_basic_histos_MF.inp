@@ -94,8 +94,8 @@ Q2_xmax = 3.
 
 # Bjorken-X
 X_nbins = 100
-X_xmin = 0.7
-X_xmax = 1.2
+X_xmin = 0.1
+X_xmax = 2.5
 
 # energy transfer
 nu_nbins = 100

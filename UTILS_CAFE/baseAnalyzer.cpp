@@ -1549,7 +1549,7 @@ void baseAnalyzer::CreateHist()
   H_ep_ctime_total_noCUT   = new TH1F("H_ep_ctime_total_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
 
   //Total Charge
-  H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-50,50);
+  H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-4.5,5.5);
   
   //HMS DETECTORS HISTOS
   H_hCerNpeSum      = new TH1F("H_hCerNpeSum", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
@@ -1920,6 +1920,9 @@ void baseAnalyzer::CreateHist()
   //---------HISTOGRAM CATEGORY: QUALITY CHECK-----------
   //-----------------------------------------------------
   
+  //total charge
+  quality_HList->Add(H_total_charge);  
+ 
   H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
   H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
   H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
@@ -1939,8 +1942,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add(H_pdcRes_fit[npl]);
     }
 
-  //total charge
-  charge_HList->Add(H_total_charge); 
+ 
 }
 //_______________________________________________________________________________
 void baseAnalyzer::ReadScalerTree()
@@ -4162,7 +4164,7 @@ void baseAnalyzer::CalcEff()
   total_charge_bcm4b_cut = total_charge_bcm4b_cut / 1000.; 
   total_charge_bcm4c_cut = total_charge_bcm4c_cut / 1000.; 
 
-  H_total_charge->SetBinContent(50, total_charge_bcm_cut);
+  H_total_charge->SetBinContent(46 ,total_charge_bcm_cut);
   
   //Convert Scaler Trigger/EDTM Rates from Hz to kHz 
   S1XscalerRate_bcm_cut   = S1XscalerRate_bcm_cut   / 1000.;
@@ -4534,35 +4536,37 @@ void baseAnalyzer::ApplyWeight()
   //Full Weight
   //FullWeight = 1. / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig * tgtBoil_corr * hadAbs_corr);
 
-  //default
+  // FOR CAFE: Scaling by charge, inefficiencies, etc. should be done after histogram objects are saved,
+  // since each of these values are stored on a run-by-run basis, they can be applied later on.
   FullWeight = 1.; 
 
+  /*
   // assuming these options are used on SHMS singles with EL-REAL trigger
   if((analysis_cut=="heep_singles") || (analysis_cut=="optics") || (analysis_cut=="lumi") || (analysis_cut=="bcm_calib")){ // For CaFe, PS2_factor is pre-scale factor for SHMS EL-REAL
 
-    FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig_single);    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
+    FullWeight = Ps_factor_single;    // if accepted trigger pre-scaled, scale by pre-scale factor to recover events
 
     cout << "Ps_factor_single = " << Ps_factor_single << endl;
     cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
     cout << "e- trk eff = " << pTrkEff  << endl;
     cout << "total_LT_single = " << tLT_trig_single << endl;
-    cout << "FullWeight = Ps_factor_single / (total_charge_bcm_cut * pTrkEff * tLT_trig_single) = " <<  FullWeight << endl;
+    cout << "FullWeight = Ps_factor_single" << endl; // / (total_charge_bcm_cut * pTrkEff * tLT_trig_single) = " <<  FullWeight << endl;
     
   }
 
   else{ // else use pre-scale factor determined from trig_type input parameter (pre-scale factor for coincidence trigger, determined from input param)
 
-    FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ); 
+    //FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ); 
     cout << "Ps_factor_coin = " << Ps_factor_coin << endl;
     cout << "total_charge [mC] = " << total_charge_bcm_cut << endl;
     cout << "e- trk eff = " << pTrkEff  << endl;
     cout << "h trk eff = " << hTrkEff  << endl;
     cout << "total_LT_coin = " << tLT_trig_coin << endl;
-    cout << "FullWeight = Ps_factor_coin / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ) = " << FullWeight << endl;
-    
+    cout << "FullWeight = Ps_factor_coin" << endl; // / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig_coin ) = " << FullWeight << endl;
+         
   }
   //Scale Data Histograms by Full Weight (Each run for a particular kinematics can then be combined, once they are scaled by the FullWeight)
-
+  
 
   
   //----SCALE HISTOGRAMS BY LOOPING OVER LISTS----
@@ -4657,7 +4661,7 @@ void baseAnalyzer::ApplyWeight()
       h2_i = (TH2F *)randSub_HList->At(i); h2_i->Scale(FullWeight);
     }   
   }//end loop over accp_HList
-  
+  */
 
   //Call the randoms subtraction method (after histos have been scaled by charge, etc), provided there was a coin. time cut flag  (after scaling all histograms above)
   RandSub();
@@ -4870,9 +4874,6 @@ void baseAnalyzer::WriteHist()
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
       quality_HList->Write();
-
-      outROOT->cd("total_charge");
-      charge_HList->Write();
       
       //Close File
       outROOT->Close();
@@ -5430,7 +5431,7 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("BCM4A_Charge [mC]: %.3f ", total_charge_bcm4a_cut ) << endl;
     out_file << Form("BCM4B_Charge [mC]: %.3f ", total_charge_bcm4b_cut ) << endl;
     out_file << Form("BCM4C_Charge [mC]: %.3f ", total_charge_bcm4c_cut ) << endl;
-
+    out_file << "" << endl;  
     if(analysis_cut=="bcm_calib"){
       out_file << "" << endl;
       out_file << "# pre-trigger scalers                 " << endl;
@@ -5457,7 +5458,7 @@ void baseAnalyzer::WriteOfflineReport()
         out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
 	out_file << Form("# total_live_time     : %.3f", tLT_trig_single) << endl;
 	out_file << "#-----------------------------" << endl;
-	out_file << Form("Yield  : %.3f ", W_total) << endl;
+	out_file << Form("Counts  : %.3f ", W_total) << endl;
 	out_file << "                                     " << endl;
 																			      
       }
@@ -5468,16 +5469,16 @@ void baseAnalyzer::WriteOfflineReport()
 	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
     	out_file << "                                     " << endl;
 	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
-	out_file << "# Counts : Inegrated Invariant Mass W peak " << endl;
+	out_file << Form("# Counts : Inegrated Invariant Mass W peak : %.3f -> %.3f [GeV]", c_heep_W_min, c_heep_W_max) << endl;
 	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
 	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
 	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
         out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
 	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
 	out_file << "#-----------------------------" << endl;
-	out_file << Form("total_Yield    : %.3f", W_total) << endl;
-	out_file << Form("random_Yield   : %.3f", W_rand)  << endl;
-	out_file << Form("real_Yield     : %.3f", W_real)  << endl;
+	out_file << Form("total_Counts    : %.3f", W_total) << endl;
+	out_file << Form("random_Counts   : %.3f", W_rand)  << endl;
+	out_file << Form("real_Counts     : %.3f", W_real)  << endl;
 	out_file << "                                     " << endl;
       }
     
@@ -5487,17 +5488,17 @@ void baseAnalyzer::WriteOfflineReport()
 	out_file << "# CaFe A(e,e')p Mean-Field (MF) Normalized Counts  " << endl;
 	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
 	out_file << "                                     " << endl;
-	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
-	out_file << "# Counts : Inegrated Missing Momentum (Pm)  " << endl;
+	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl; 
+	out_file << Form("# Counts : Inegrated Missing Momentum (Pm) : %.3f -> %.3f [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;
 	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
 	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
 	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
         out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
 	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
 	out_file << "#-----------------------------" << endl;
-	out_file << Form("total_Yield    : %.3f", Pm_total) << endl;
-	out_file << Form("random_Yield   : %.3f", Pm_rand )  << endl;
-	out_file << Form("real_Yield     : %.3f", Pm_real )  << endl;
+	out_file << Form("total_Counts    : %.3f", Pm_total) << endl;
+	out_file << Form("random_Counts   : %.3f", Pm_rand )  << endl;
+	out_file << Form("real_Counts     : %.3f", Pm_real )  << endl;
 	out_file << "                                     " << endl;
       }
     if(analysis_cut=="SRC")
@@ -5507,16 +5508,16 @@ void baseAnalyzer::WriteOfflineReport()
 	out_file << "# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:" << endl;
 	out_file << "                                     " << endl;
 	out_file << "# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)" << endl;
-	out_file << "# Counts : Inegrated Missing Momentum (Pm)  " << endl;
+	out_file << Form("# Counts : Inegrated Missing Momentum (Pm) : %.3f -> %.3f [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;  
 	out_file << Form("# pre-scale_factor: %f", Ps_factor_coin)   << endl;
 	out_file << Form("# %s Q [mC]     : %.3f", bcm_type.Data(), total_charge_bcm_cut) << endl;
 	out_file << Form("# h_track_eff  : %.3f",  hTrkEff) << endl;
         out_file << Form("# e-_track_eff  : %.3f", pTrkEff) << endl;
 	out_file << Form("# total_live_time     : %.3f", tLT_trig_coin) << endl;
 	out_file << "#-----------------------------" << endl;
-	out_file << Form("total_Yield    : %.3f", Pm_total) << endl;
-	out_file << Form("random_Yield   : %.3f", Pm_rand)  << endl;
-	out_file << Form("real_Yield     : %.3f", Pm_real)  << endl;
+	out_file << Form("total_Counts    : %.3f", Pm_total) << endl;
+	out_file << Form("random_Counts   : %.3f", Pm_rand)  << endl;
+	out_file << Form("real_Counts     : %.3f", Pm_real)  << endl;
 	out_file << "                                     " << endl;
 	out_file << "" << endl;
       }
@@ -5609,19 +5610,19 @@ void baseAnalyzer::WriteOfflineReport()
       {
 	if(hdc_ntrk_cut_flag)    {out_file << Form("# (did) HMS min. number of tracks (H.dc.ntrack): >= %.1f", c_hdc_ntrk_min) << endl;}
 	if(hScinGood_cut_flag)   {out_file <<      "# (should) HMS good (fiducial) scintillator hit (H.hod.goodscinhit): true"  << endl;}
-	if(hcer_cut_flag)        {out_file << Form("# (should) HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.1f, %.1f)", c_hnpeSum_min, c_hnpeSum_max) << endl;}
-	if(hetotnorm_cut_flag)   {out_file << Form("# (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (%.1f, %.1f)", c_hetotnorm_min, c_hetotnorm_max) << endl;}
-	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.1f. %.1f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
+	if(hcer_cut_flag)        {out_file << Form("# (should) HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.3f, %.3f)", c_hnpeSum_min, c_hnpeSum_max) << endl;}
+	if(hetotnorm_cut_flag)   {out_file << Form("# (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (%.3f, %.3f)", c_hetotnorm_min, c_hetotnorm_max) << endl;}
+	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.3f. %.3f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
       }
     if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
       {
 	out_file << "                                   " << endl;
 	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): >= %.1f", c_pdc_ntrk_min) << endl;}
 	if(pScinGood_cut_flag)   {out_file <<      "# (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true"  << endl;}
-	if(pngcer_cut_flag)      {out_file << Form("# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.1f, %.1f)", c_pngcer_npeSum_min, c_pngcer_npeSum_max) << endl;}
-	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.1f, %.1f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
-	if(petotnorm_cut_flag)   {out_file << Form("# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (%.1f, %.1f)", c_petotnorm_min, c_petotnorm_max) << endl;}
-	if(pBeta_notrk_cut_flag) {out_file << Form("# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (%.1f. %.1f)", c_pBetaNtrk_min, c_pBetaNtrk_max) << endl;}
+	if(pngcer_cut_flag)      {out_file << Form("# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.3f, %.3f)", c_pngcer_npeSum_min, c_pngcer_npeSum_max) << endl;}
+	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
+	if(petotnorm_cut_flag)   {out_file << Form("# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (%.3f, %.3f)", c_petotnorm_min, c_petotnorm_max) << endl;}
+	if(pBeta_notrk_cut_flag) {out_file << Form("# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (%.3f. %.3f)", c_pBetaNtrk_min, c_pBetaNtrk_max) << endl;}
       }
     out_file << "                                   " << endl;
       if(ePctime_cut_flag && ((analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") ))     {
@@ -5660,14 +5661,14 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << "#---Particle Identification (PID) Cuts--- " << endl;
     if((analysis_cut=="heep_coin")  ||  (analysis_cut=="MF") || (analysis_cut=="SRC"))
       {    
-	if(hetot_trkNorm_pidCut_flag) {out_file << Form("# HMS calorimeter total energy / track momentum (H.cal.etottracknorm): (%.1f, %.1f)", cpid_hetot_trkNorm_min, cpid_hetot_trkNorm_max) << endl;}
-	if(hcer_pidCut_flag)          {out_file << Form("# HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.1f, %.1f)", cpid_hcer_npeSum_min, cpid_hcer_npeSum_max) << endl;}
+	if(hetot_trkNorm_pidCut_flag) {out_file << Form("# HMS calorimeter total energy / track momentum (H.cal.etottracknorm): (%.3f, %.3f)", cpid_hetot_trkNorm_min, cpid_hetot_trkNorm_max) << endl;}
+	if(hcer_pidCut_flag)          {out_file << Form("# HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.3f, %.3f)", cpid_hcer_npeSum_min, cpid_hcer_npeSum_max) << endl;}
       }
       if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ||  (analysis_cut=="MF") || (analysis_cut=="SRC"))
       {
-	if(petot_trkNorm_pidCut_flag)  {out_file << Form("# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (%.1f, %.1f)",cpid_petot_trkNorm_min, cpid_petot_trkNorm_max) << endl;}
-	if(pngcer_pidCut_flag)        {out_file << Form("# SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.1f, %.1f)",cpid_pngcer_npeSum_min,cpid_pngcer_npeSum_max) << endl;}
-	if(phgcer_pidCut_flag)        {out_file << Form("# SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.1f, %.1f)",cpid_phgcer_npeSum_min,cpid_phgcer_npeSum_max) << endl;}
+	if(petot_trkNorm_pidCut_flag)  {out_file << Form("# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (%.3f, %.3f)",cpid_petot_trkNorm_min, cpid_petot_trkNorm_max) << endl;}
+	if(pngcer_pidCut_flag)        {out_file << Form("# SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.3f, %.3f)",cpid_pngcer_npeSum_min,cpid_pngcer_npeSum_max) << endl;}
+	if(phgcer_pidCut_flag)        {out_file << Form("# SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)",cpid_phgcer_npeSum_min,cpid_phgcer_npeSum_max) << endl;}
       }
     out_file << "#                       " << endl;
     out_file << "#---Kinematics Cuts--- " << endl;
@@ -5766,7 +5767,7 @@ void baseAnalyzer::WriteReportSummary()
     //---------------------------------------------------------
 
     //---------------------
-    // CRETAE SUMMARY FILE
+    // CREATE SUMMARY FILE
     //--------------------
     //---------------------------------------------------------
     if(in_file.fail()){
@@ -6339,7 +6340,8 @@ void baseAnalyzer::run_data_analysis()
   //WriteOnlineReport();
   
   WriteReportSummary();
-  CombineHistos();
+  
+  //CombineHistos(); // this can be done post-analysis
   
   //MakePlots();
   
