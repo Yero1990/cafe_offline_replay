@@ -1,7 +1,12 @@
 Summary of junk runs determined from pass1 analysis
 (C. Yero,  Dec 06, 2022)
 
-b11_MF:
-16987  --> fADC mode 10 run, (few evetns, empty histograms, unprescaled T2,T3) 
-16988  --> fADC mode 10 run, (few events, empty histogrmas)
-16990   --> T2 pre-scale=1 (unprescaled) caused edtm live time to be ~0.063 (edtm accp=101, edtm scl=1610)
+
+16987  --> b11_MF | fADC mode 10 run, (few evetns, empty histograms, unprescaled T2,T3) 
+16988  --> b11_MF | fADC mode 10 run, (few events, empty histogrmas)
+16990  --> b11_MF |T2 pre-scale=1 (unprescaled) caused edtm live time to be ~0.063 (edtm accp=101, edtm scl=1610)
+17026  --> Ca40 SRC | junk (too few events) 
+17066  --> Fe54 SRC | junk (unprescaled T2 yielded ~99 % dead time and ~10M events TOO MANY) 
+
+17051 -->  Ca48 SRC 
+16981 -->  Fe54 MF

@@ -47,7 +47,7 @@ fi
 
 # 15/02/22 - SJDK - Added the swif2 workflow as a variable you can specify here
 #Workflow="cafe_aug08_${USER}" # Change this as desired
-Workflow="cafe_official_${USER}" # Change this as desired
+Workflow="cafe_analysis_${USER}" # Change this as desired
 
 # Input run numbers, this just points to a file which is a list of run numbers, one number per line
 inputFile="${inputFile}${RunList}"
@@ -67,6 +67,7 @@ while true; do
                     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
                     echo "Run number read from file: $line"
                     echo ""
+		    case "$line" in \#*) continue ;; esac
                     # Each line is just a run number, set the variable to be the content of the line
                     runNum=$line
 		    # Tape stub, you can point directly to a taped file and the farm job will do the jgetting for you, don't call it in your script! 
@@ -101,11 +102,13 @@ while true; do
 		    # Note, unless this is set typically replays will produce broken root files
 		    echo "DISK_SPACE: "$(( $TapeFileSize * 3 ))" GB" >> ${batch}
 		    if [[ $TapeFileSize -le 45 ]]; then # Assign memory based on size of tape file, should keep this as low as possible!
-			echo "MEMORY: 4000 MB" >> ${batch}
+			#echo "MEMORY: 4000 MB" >> ${batch}
+			echo "MEMORY: 8000 MB" >> ${batch}
                     elif [[ $TapeFileSize -ge 45 ]]; then
-			echo "MEMORY: 5000 MB" >> ${batch}
+			#echo "MEMORY: 5000 MB" >> ${batch}
+			echo "MEMORY: 10000 MB" >> ${batch} 
                     fi
-		    echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
+		    echo "CPU: 4" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 		    #echo "INPUT_FILES: ${tape_file}" >> ${batch}
                     #echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/replay_cafe_prod.sh ${runNum} ${MAXEVENTS}"  >> ${batch} ### Insert your script at end!
 		    echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/analyze_cafe_data.sh ${runNum} ${ana_cut} ${MAXEVENTS}"  >> ${batch}

@@ -3430,7 +3430,8 @@ void baseAnalyzer::EventLoop()
 
 
 
-		  //2D Kin plots to help clean out online Em data
+		  //2D Kin plots to help clean out online Em data //why we lose ~98% of events when doing kin cuts
+		  // (check this histogram with every cut)
 		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
 		    H_Em_nuc_vs_Pm ->Fill(Pm, Em_nuc);
 		    H_Em_src_vs_Pm ->Fill(Pm, Em_src);
