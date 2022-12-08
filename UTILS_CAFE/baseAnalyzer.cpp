@@ -3033,6 +3033,8 @@ void baseAnalyzer::EventLoop()
       
       // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
       GetPeak();
+     
+      
 
 
       cout << "Analyzing DATA Events | nentries -->  " << nentries << endl;
@@ -3425,7 +3427,11 @@ void baseAnalyzer::EventLoop()
 		  shms_coll_cut_bool = false;
 		  if( hms_Coll_gCut->IsInside(hYColl, hXColl) )  { hms_coll_cut_bool=true; }
 		  if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
-		  tree_skim->Fill();
+		  
+		  // loose cut on coin time window
+		  if ( abs(epCoinTime-ctime_offset_peak_val) < 50. ) {
+		    tree_skim->Fill();
+		  }
 		  //==========================================================================
 
 
@@ -3669,7 +3675,7 @@ void baseAnalyzer::EventLoop()
 
       //Save Skimmed Tree
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );
-      delete tree_skim;
+      //delete tree_skim;
 
     }//END DATA ANALYSIS
 
@@ -6336,17 +6342,16 @@ void baseAnalyzer::run_data_analysis()
   ReadTree();
   EventLoop();
 
+ 
   CalcEff();
   ApplyWeight();
 
   WriteHist();
   WriteOfflineReport();
+  WriteReportSummary();   
+  
 
-  
-  //WriteOnlineReport();
-  
-  WriteReportSummary();
-  
+  //WriteOnlineReport();  
   //CombineHistos(); // this can be done post-analysis
   
   //MakePlots();
