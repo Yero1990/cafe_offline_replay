@@ -111,7 +111,6 @@ void baseAnalyzer::Init(){
   accp_HList = NULL;
   rand_HList = NULL;
   randSub_HList = NULL;
-  charge_HList = NULL;
   
   //-----Initialize Histogram Pointers-----
 
@@ -129,9 +128,8 @@ void baseAnalyzer::Init(){
   //---------------------------------------------------------------
   
   //Coincidence Time
-  H_ep_ctime_total_noCUT  = NULL;
   H_ep_ctime_total  = NULL;
-  H_ep_ctime  = NULL;
+  H_ep_ctime_real  = NULL;
 
   H_total_charge = NULL;
   
@@ -237,10 +235,7 @@ void baseAnalyzer::Init(){
   H_sphi_xq_cm  = NULL;	 
   H_sphi_rq_cm  = NULL;  
 
-  // 2D Kinematics Histos
-  H_Em_nuc_vs_Pm = NULL;
-  H_Em_src_vs_Pm = NULL;
-  
+
   //-------------------------
   //  Acceptance Histograms
   //-------------------------
@@ -287,10 +282,6 @@ void baseAnalyzer::Init(){
   H_eYColl    = NULL;  
   
   //--2D Acceptance Histos--
-
-  //Collimator Shape
-  H_hXColl_vs_hYColl_noCUT    = NULL;
-  H_eXColl_vs_eYColl_noCUT    = NULL;
 
   H_hXColl_vs_hYColl    = NULL;
   H_eXColl_vs_eYColl    = NULL;
@@ -343,7 +334,8 @@ void baseAnalyzer::Init(){
   H_thrq_rand_sub = NULL;     	
 
   
-  //Quality check histograms  plots (will be fitte from small event sample, and written to .csv file)
+  //Quality check histograms  plots (will be fitted from small event sample, and written to .csv file)
+  
   H_hbeta_fit = NULL;
   H_pbeta_fit = NULL;
   H_ctime_fit = NULL;
@@ -355,7 +347,19 @@ void baseAnalyzer::Init(){
       H_hdcRes_fit[npl] = NULL;
       H_pdcRes_fit[npl] = NULL;
     }
+
+  // cuts quality check plots
+
+  // cuts: accp+pid+ctime
+  H_Em_nuc_vs_Pm = NULL;
+  H_Em_src_vs_Pm = NULL;
+  H_Q2_vs_xbj    = NULL;
   
+  //NO CUTS
+  H_ep_ctime_total_noCUT  = NULL;
+  H_hXColl_vs_hYColl_noCUT    = NULL;
+  H_eXColl_vs_eYColl_noCUT    = NULL;
+
 }
 
 //_______________________________________________________________________________
@@ -377,15 +381,14 @@ baseAnalyzer::~baseAnalyzer()
   delete accp_HList;    accp_HList = NULL;
   delete rand_HList;    rand_HList = NULL;
   delete randSub_HList; randSub_HList = NULL;
-  delete charge_HList;  charge_HList = NULL;
+
   //-----------------------------
   // Detector Histogram Pointers
   //-----------------------------
 
   //-Coin. Time-
-  delete H_ep_ctime_total_noCUT; H_ep_ctime_total_noCUT   = NULL;
   delete H_ep_ctime_total; H_ep_ctime_total   = NULL;
-  delete H_ep_ctime; H_ep_ctime   = NULL;
+  delete H_ep_ctime_real; H_ep_ctime_real   = NULL;
 
   //-TOTAL CHARGE-
   delete H_total_charge; H_total_charge = NULL;
@@ -492,10 +495,7 @@ baseAnalyzer::~baseAnalyzer()
   delete H_sphi_xq_cm;	    H_sphi_xq_cm  = NULL;	 
   delete H_sphi_rq_cm;	    H_sphi_rq_cm  = NULL;  
 
-  // 2D Kinematics Histos
-  delete H_Em_nuc_vs_Pm;    H_Em_nuc_vs_Pm = NULL;
-  delete H_Em_src_vs_Pm;    H_Em_src_vs_Pm = NULL;
-  
+
   //------------------------------------------------
   
   //-----------------------------
@@ -546,9 +546,6 @@ baseAnalyzer::~baseAnalyzer()
   //--2D Acceptance Histos--
 
   //Collimator Shape
-  delete H_hXColl_vs_hYColl_noCUT;    H_hXColl_vs_hYColl_noCUT    = NULL;
-  delete H_eXColl_vs_eYColl_noCUT;    H_eXColl_vs_eYColl_noCUT    = NULL;
-
   delete H_hXColl_vs_hYColl;    H_hXColl_vs_hYColl    = NULL;
   delete H_eXColl_vs_eYColl;    H_eXColl_vs_eYColl    = NULL;
   //Hour-Glass Shape
@@ -609,8 +606,17 @@ baseAnalyzer::~baseAnalyzer()
       delete H_hdcRes_fit[npl];             H_hdcRes_fit[npl] = NULL;
       delete H_pdcRes_fit[npl];             H_pdcRes_fit[npl] = NULL;
     }
-  
-  
+
+  // Cuts Quality Check
+  // NO CUTS
+  delete H_ep_ctime_total_noCUT;      H_ep_ctime_total_noCUT   = NULL;
+  delete H_hXColl_vs_hYColl_noCUT;    H_hXColl_vs_hYColl_noCUT    = NULL;
+  delete H_eXColl_vs_eYColl_noCUT;    H_eXColl_vs_eYColl_noCUT    = NULL;
+
+  // CUTS: accp+pid+ctime
+  delete H_Em_nuc_vs_Pm;    H_Em_nuc_vs_Pm = NULL;
+  delete H_Em_src_vs_Pm;    H_Em_src_vs_Pm = NULL;
+  delete H_Q2_vs_xbj;       H_Q2_vs_xbj    = NULL;
 }
 
 //_______________________________________________________________________________
@@ -1527,7 +1533,7 @@ void baseAnalyzer::CreateHist()
   randSub_HList = new TList();
 
   quality_HList = new TList();
-  charge_HList = new TList();
+
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
   h_total = new TH1F();         //dummy histo to store hsitogram sum
@@ -1542,11 +1548,10 @@ void baseAnalyzer::CreateHist()
   //--------------------------------------------------------------------
   
   //Coincidence HISTOS
-  H_ep_ctime   = new TH1F("H_ep_ctime", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_ep_ctime->Sumw2(); //Apply sum of weight squared to this histogram ABOVE.
-  H_ep_ctime->SetDefaultSumw2(kTRUE);  //Generalize sum weights squared to all histograms  (ROOT 6 has this by default. ROOT 5 does NOT)
+  H_ep_ctime_real   = new TH1F("H_ep_ctime_real", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_ep_ctime_real->Sumw2(); //Apply sum of weight squared to this histogram ABOVE.
+  H_ep_ctime_real->SetDefaultSumw2(kTRUE);  //Generalize sum weights squared to all histograms  (ROOT 6 has this by default. ROOT 5 does NOT)
   H_ep_ctime_total   = new TH1F("H_ep_ctime_total", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_ep_ctime_total_noCUT   = new TH1F("H_ep_ctime_total_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
 
   //Total Charge
   H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-4.5,5.5);
@@ -1577,9 +1582,8 @@ void baseAnalyzer::CreateHist()
   
   
   //Add PID Histos to TList
-  pid_HList->Add(H_ep_ctime_total_noCUT);
   pid_HList->Add(H_ep_ctime_total);
-  pid_HList->Add(H_ep_ctime);
+  pid_HList->Add(H_ep_ctime_real);
   
   pid_HList->Add(H_hCerNpeSum);
   pid_HList->Add(H_hCalEtotNorm);
@@ -1673,10 +1677,6 @@ void baseAnalyzer::CreateHist()
   H_sphi_xq_cm = new TH1F("H_sphi_xq_cm", "sin(#phi_{pq,cm})", phxq_cm_nbins, -1, 1);
   H_sphi_rq_cm = new TH1F("H_sphi_rq_cm", "sin(#phi_{rq,cm})", phrq_cm_nbins, -1, 1);
 
-  // 2d kin histos
-  H_Em_nuc_vs_Pm = new TH2F("H_Em_nuc_vs_Pm", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_vs_Pm = new TH2F("H_Em_src_vs_Pm", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  
   //Add Kin Histos to TList
 
   //Add Primary Kin Histos
@@ -1747,10 +1747,7 @@ void baseAnalyzer::CreateHist()
   kin_HList->Add( H_sphi_xq_cm );
   kin_HList->Add( H_sphi_rq_cm );
 
-  // 2d kin histos
-  kin_HList->Add( H_Em_nuc_vs_Pm );
-  kin_HList->Add( H_Em_src_vs_Pm );
-  
+
   //----------------------------------------------------------------------
   //---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
   //----------------------------------------------------------------------
@@ -1799,9 +1796,6 @@ void baseAnalyzer::CreateHist()
   H_eYColl = new TH1F("H_eYColl", Form("%s Y Collimator; Y-Collimator [cm]; Counts ", e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax);        
 
   //2D Collimator Histos
-  H_hXColl_vs_hYColl_noCUT = new TH2F("H_hXColl_vs_hYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-  H_eXColl_vs_eYColl_noCUT = new TH2F("H_eXColl_vs_eYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-  
   H_hXColl_vs_hYColl = new TH2F("H_hXColl_vs_hYColl", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
   H_eXColl_vs_eYColl = new TH2F("H_eXColl_vs_eYColl", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
   
@@ -1844,9 +1838,6 @@ void baseAnalyzer::CreateHist()
   accp_HList->Add( H_eXColl      );
   accp_HList->Add( H_eYColl      );
   
-  accp_HList->Add( H_hXColl_vs_hYColl_noCUT  );
-  accp_HList->Add( H_eXColl_vs_eYColl_noCUT  );
-
   accp_HList->Add( H_hXColl_vs_hYColl  );
   accp_HList->Add( H_eXColl_vs_eYColl  );
   
@@ -1920,9 +1911,8 @@ void baseAnalyzer::CreateHist()
   //---------HISTOGRAM CATEGORY: QUALITY CHECK-----------
   //-----------------------------------------------------
   
-  //total charge
-  quality_HList->Add(H_total_charge);  
- 
+
+  // calibration fits
   H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
   H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
   H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
@@ -1931,10 +1921,6 @@ void baseAnalyzer::CreateHist()
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
-  quality_HList->Add(H_hbeta_fit);
-  quality_HList->Add(H_pbeta_fit);
-  quality_HList->Add(H_ctime_fit);
-  quality_HList->Add(H_pcal_fit);
   
   for (Int_t npl = 0; npl < dc_PLANES; npl++ )
     {
@@ -1942,7 +1928,35 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add(H_pdcRes_fit[npl]);
     }
 
- 
+
+  // CUTS Quality Checks
+
+  //---Accp+pid+ctime_CUTS---
+  H_Em_nuc_vs_Pm = new TH2F("H_Em_nuc_vs_Pm", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm = new TH2F("H_Em_src_vs_Pm", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj    = new TH2F("H_Q2_vs_xbj",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  
+  //---NO_CUTS----
+  H_ep_ctime_total_noCUT   = new TH1F("H_ep_ctime_total_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_hXColl_vs_hYColl_noCUT = new TH2F("H_hXColl_vs_hYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_noCUT = new TH2F("H_eXColl_vs_eYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+
+  
+  quality_HList->Add(H_total_charge);  
+
+  quality_HList->Add(H_hbeta_fit);
+  quality_HList->Add(H_pbeta_fit);
+  quality_HList->Add(H_ctime_fit);
+  quality_HList->Add(H_pcal_fit);
+  
+  quality_HList->Add( H_Em_nuc_vs_Pm );
+  quality_HList->Add( H_Em_src_vs_Pm );
+  quality_HList->Add( H_Q2_vs_xbj    ); 
+  quality_HList->Add(H_ep_ctime_total_noCUT);
+  quality_HList->Add( H_hXColl_vs_hYColl_noCUT  );
+  quality_HList->Add( H_eXColl_vs_eYColl_noCUT  );
+
+  
 }
 //_______________________________________________________________________________
 void baseAnalyzer::ReadScalerTree()
@@ -2197,6 +2211,8 @@ void baseAnalyzer::CreateSkimTree()
 
   // coin. time
   tree_skim->Branch("CTime.epCoinTime_ROC2", &epCoinTime);
+  tree_skim->Branch("CTime.epCoinTime_ROC2_center", &epCoinTime_center);
+
 
   //e- 4-vector components
   tree_skim->Branch(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
@@ -2269,7 +2285,8 @@ void baseAnalyzer::CreateSkimTree()
 
   // hadron / missing system kinematic variables
   tree_skim->Branch(Form("%s.kin.secondary.emiss", hArm.Data()),&Em);
-  tree_skim->Branch(Form("%s.kin.secondary.emiss_nuc", hArm.Data()),&Em_nuc);     
+  tree_skim->Branch(Form("%s.kin.secondary.emiss_nuc", hArm.Data()),&Em_nuc);
+  tree_skim->Branch(Form("%s.kin.secondary.emiss_src", hArm.Data()),&Em_src);     
   tree_skim->Branch(Form("%s.kin.secondary.pmiss", hArm.Data()),&Pm);
   tree_skim->Branch(Form("%s.kin.secondary.Prec_x", hArm.Data()),&Pmx_lab);       
   tree_skim->Branch(Form("%s.kin.secondary.Prec_y", hArm.Data()),&Pmy_lab);   
@@ -2824,7 +2841,7 @@ void baseAnalyzer::GetPeak()
 
   //---------------------------------------
   // Define Minimal Cuts for Quality Check
-    //---------------------------------------
+  //---------------------------------------
   Bool_t hnhit = false;
   Bool_t pnhit = false;
   Bool_t hbeta_cut = false;
@@ -3054,6 +3071,7 @@ void baseAnalyzer::EventLoop()
 	    MM_red = MM - ((tgt_mass - MH_amu)* amu2GeV);
 	    MM = MM_red;
 	  }
+
 	  
 	  // Calculate special missing energy to cut on background @ SRC kinematics (only for online analysis) Em = nu - Tp - T_n (for A>2 nuclei)	 
 	  Em_src = nu - Tx - (sqrt(MN*MN + Pm*Pm) - MN); // assume kinetic energy of recoil system is that of a spectator SRC nucleon 
@@ -3062,6 +3080,8 @@ void baseAnalyzer::EventLoop()
 	  //cout << "Tx = " << Tx << endl;
 	  //cout << "Pm = " << Pm << endl;
 	  //cout << "MN = " << MN << endl;
+
+	  epCoinTime_center = epCoinTime-ctime_offset_peak_val;
 	  
 	  //--------------DEFINE CUTS--------------------
 	  
@@ -3428,41 +3448,35 @@ void baseAnalyzer::EventLoop()
 		  if( hms_Coll_gCut->IsInside(hYColl, hXColl) )  { hms_coll_cut_bool=true; }
 		  if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
 		  
-		  // loose cut on coin time window
+		  // apply the following to the skimmed ttree:
+		  // 1_ loose cut on coin time window
+
 		  if ( abs(epCoinTime-ctime_offset_peak_val) < 50. ) {
+
 		    tree_skim->Fill();
+
 		  }
 		  //==========================================================================
 
-
-
-		  //2D Kin plots to help clean out online Em data //why we lose ~98% of events when doing kin cuts
-		  // (check this histogram with every cut)
-		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
-		    H_Em_nuc_vs_Pm ->Fill(Pm, Em_nuc);
-		    H_Em_src_vs_Pm ->Fill(Pm, Em_src);
-		  }
 		  
-		  
-		  // NO CUTS HISTOS (for checking)
+		  // NO CUTS HISTOS
 		  H_ep_ctime_total_noCUT->Fill(epCoinTime-ctime_offset_peak_val);
 		  H_hXColl_vs_hYColl_noCUT  ->Fill(hYColl, hXColl);
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
-       
-		  //------------DEBUG CHECK Dec 05 2022 CY---------------
-
-		  //  need to check how does filling coin time histo and doing coin time subtraction
-		  // FIRST (before any cuts applied) affects the end result (pm histogram)
-		  // It should not affect, but worth checking . . . later
+		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
+		    H_Em_nuc_vs_Pm ->Fill(Pm, Em_nuc);
+		    H_Em_src_vs_Pm ->Fill(Pm, Em_src);
+		    H_Q2_vs_xbj    ->Fill(X, Q2);
+		  }
 		  
-		  //-----------------------------------------------------
+   
 		  
-
+		  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  if(c_baseCuts){
 		    
 		    
-		    // full coin. time spectrum with all other cuts  
+		    // full (reals + accidentals) coin. time spectrum with all other cuts   
 		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
 		  
 		    
@@ -3475,7 +3489,7 @@ void baseAnalyzer::EventLoop()
 			//--------------------------------------------------------------------
 			
 			//Coincidence Time		      
-			H_ep_ctime->Fill(epCoinTime-ctime_offset_peak_val); // fill coin. time and apply the offset
+			H_ep_ctime_real->Fill(epCoinTime-ctime_offset_peak_val); // fill coin. time and apply the offset
 			
 			//Fill HMS Detectors
 			H_hCerNpeSum->Fill(hcer_npesum);
@@ -3618,6 +3632,7 @@ void baseAnalyzer::EventLoop()
 			
 			
 		      } // end TRUE COINCIDENCE time cut
+
 		    
 		    
 		    // select "ACCIDENTAL COINCIDENCE BACKGROUND" left/right of main coin. peak as a sample to estimate background underneath main coin. peak
@@ -3626,7 +3641,7 @@ void baseAnalyzer::EventLoop()
 		    if(ePctime_cut_flag && eP_ctime_cut_rand)
 		      
 		      {
-			// Only histograms of selected variables of interest will be filled with coincidence accidantal background
+			// Only histograms of selected variables of interest will be filled with coincidence accidantal background (for background subtraction)
 			
 			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset_peak_val );
 			H_W_rand       ->  Fill (W);       
@@ -3643,7 +3658,10 @@ void baseAnalyzer::EventLoop()
 				       	
 		      }  		    		   
 		    
-		   
+
+
+
+		    
 		    
 		  }  //----------------------END: Fill DATA Histograms-----------------------		  		 		  
 		  
@@ -3675,7 +3693,7 @@ void baseAnalyzer::EventLoop()
 
       //Save Skimmed Tree
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );
-      //delete tree_skim;
+      delete tree_skim;
 
     }//END DATA ANALYSIS
 
@@ -4058,7 +4076,7 @@ void baseAnalyzer::RandSub()
 
   
   // -----Carry out the randoms subtraction------
-  H_ep_ctime_rand_sub ->Add(H_ep_ctime  ,H_ep_ctime_rand , 1, -1);
+  H_ep_ctime_rand_sub ->Add(H_ep_ctime_real  ,H_ep_ctime_rand , 1, -1);
   H_W_rand_sub       -> Add(H_W         ,H_W_rand        , 1, -1);
   H_Q2_rand_sub      -> Add(H_Q2        ,H_Q2_rand       , 1, -1);
   H_xbj_rand_sub     -> Add(H_xbj       ,H_xbj_rand      , 1, -1);
@@ -4861,7 +4879,6 @@ void baseAnalyzer::WriteHist()
       outROOT->mkdir("randSub_plots");
 
       outROOT->mkdir("quality_plots");
-
       
       //Write PID histos to pid_plots directory
       outROOT->cd("pid_plots");
@@ -5900,7 +5917,6 @@ void baseAnalyzer::CombineHistos()
     outROOT->mkdir("pid_plots");
     outROOT->mkdir("kin_plots");
     outROOT->mkdir("accp_plots");
-    outROOT->mkdir("total_charge");
     
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
       outROOT->mkdir("rand_plots");
@@ -5918,9 +5934,6 @@ void baseAnalyzer::CombineHistos()
     //Write Acceptance histos to accp_plots directory
     outROOT->cd("accp_plots");
     accp_HList->Write();
-
-    outROOT->cd("total_charge");
-    charge_HList->Write();
 
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
 
@@ -6065,33 +6078,6 @@ void baseAnalyzer::CombineHistos()
 	
       }//end loop over accp_HList
 
-    //--------------------------------------------------------------------------------------------
-
-
-    //------------------------------------------
-    //Lopp over charge_HList of histogram objects
-    //------------------------------------------
-    for(int i=0; i<charge_HList->GetEntries(); i++)
-      {
-	cout << "Looping over charge_HList objects: " << i << " / " << charge_HList->GetEntries() << endl;   
-
-	//Determine object data type (as of now, either TH1F or TH2F are possible)
-	class_name = charge_HList->At(i)->ClassName();
-	
-	//Read ith histograms in the list from current run
-	if(class_name=="TH1F") {
-	  //Get histogram from current run
-	  h_i = (TH1F *)charge_HList->At(i);  
-	  hist_name = h_i->GetName();
-	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
-	  hist_dir = "total_charge/" + hist_name;  
-	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
-	  outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("total_charge"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       	   
-	  
-	}
-	
-	
-      }//end loop over accp_HList
 
     //--------------------------------------------------------------------------------------------
     
@@ -6349,11 +6335,11 @@ void baseAnalyzer::run_data_analysis()
   WriteHist();
   WriteOfflineReport();
   WriteReportSummary();   
+  CombineHistos();
   
 
-  //WriteOnlineReport();  
-  //CombineHistos(); // this can be done post-analysis
-  
+  // --- online methods ---
+  //WriteOnlineReport();    
   //MakePlots();
   
   //------------------

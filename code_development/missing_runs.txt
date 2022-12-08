@@ -26,23 +26,13 @@ junk runs found:
 
 
 
---MUST----
-apply a general loose coin time window cut to reduce event counts and filesize of skimmed files
-
-
 --SHOULD----
-Plot Q2 vs x_bj (only time cuts, accp cuts)
 * do in order:
 1) acceptance cuts
 2) pid
 3) coin time cuts
 4) kin. cuts
 
-WANT
-* select more random coincidences to the right to reduce unc. in random subtraction
-
-
-** modify code to enable CombineHistos() again
 
 
 ----------------------------------

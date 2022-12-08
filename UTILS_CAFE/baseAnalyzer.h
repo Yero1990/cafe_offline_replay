@@ -755,18 +755,23 @@ protected:
 
   // keep track of total charge
   TH1F *H_total_charge;
-  
-  // no cuts
-  TH1F *H_ep_ctime_total_noCUT;
 
-  //Collimator Shape
+  // ------ Cuts Quality Check Histos ----
+  // NO CUTS HISTOS
+  TH1F *H_ep_ctime_total_noCUT;
   TH2F *H_hXColl_vs_hYColl_noCUT;
   TH2F *H_eXColl_vs_eYColl_noCUT;
 
-
+  
+  // CUTS: accp+pid+ctime
+  TH2F *H_Em_nuc_vs_Pm;
+  TH2F *H_Em_src_vs_Pm;
+  TH2F *H_Q2_vs_xbj;
+  
+  //------------------------------------
   //Coin. Time
   TH1F *H_ep_ctime_total;
-  TH1F *H_ep_ctime;
+  TH1F *H_ep_ctime_real;
 
   //HMS
   TH1F *H_hCerNpeSum;  
@@ -886,9 +891,6 @@ protected:
   TH1F *H_sphi_xq_cm;
   TH1F *H_sphi_rq_cm;
 
-  // 2D Kinematics Histos
-  TH2F *H_Em_nuc_vs_Pm;
-  TH2F *H_Em_src_vs_Pm;
   
   //------------------------------------------------
   
@@ -1411,6 +1413,7 @@ protected:
   Double_t eKCoinTime;
   Double_t ePiCoinTime;
 
+  Double_t epCoinTime_center;
 
   //HMS DETECTORS
   Double_t hcer_npesum;
