@@ -41,21 +41,33 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
             plt.ylim(y_lo, y_hi)
 
             if(plt_err_flg == False):
-                plt.plot(x_data, y_data, marker='o', color='b', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                plt.plot(x_data, y_data, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
             if(plt_err_flg == True):
-                plt.errorbar(x_data, y_data, y_data_err, marker=kmarker[jdx], color=tcolor[idx], linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                plt.errorbar(x_data, y_data, y_data_err, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 
+            plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
             plt.legend()
+
+    plt.figure(1)
     plt.show()
 
-    #df = pd.read_csv(filename, comment='#')
 
-    #key_data = df[key]
-    #return key_data
+#--------------------------
+# plot quality-check data
+#--------------------------
 
-#plot_data(xkey='run', ykey='hTrkEff', ykey_err='hTrkEff_err', target=['LD2', 'Be9', 'B10', 'B11', 'C12'], tcolor=['c', 'm', 'r', 'g', 'b'], kin=['SRC'], kmarker=['o'])
 
-plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0, yhi=1, target=['LD2', 'Be9', 'B10', 'B11', 'C12'], tcolor=['c', 'm', 'r', 'g', 'b'], kin=['MF'], kmarker=['o'])
+# total live time
+plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+
+# hms tracking efficiency
+plot_data(xkey='run', ykey='hTrkEff', ykey_err='hTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+
+# shms tracking efficiency
+plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=-0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+
+
+
 
 #get_data('run', 'Be9', 'SRC')
 

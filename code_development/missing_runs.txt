@@ -1,0 +1,48 @@
+still need to be replayed:
+17118 b11_SRC  -->  DONE
+
+17051 ca48_SRC 
+
+16981 fe54_MF
+  
+
+-------------
+heep_singles analyzed
+-------------
+16026  --> 
+
+16028  -->
+
+16036   --> 
+
+  
+16968 --> on-going submission to ifarm
+
+
+
+junk runs found:
+17026 -- junk (too few events) Ca40 SRC
+17066 -- junk (unprescaled T2 yielded ~99 % dead time and 10M events) fe54_SRC
+
+
+
+--MUST----
+apply a general loose coin time window cut to reduce event counts and filesize of skimmed files
+
+
+--SHOULD----
+Plot Q2 vs x_bj (only time cuts, accp cuts)
+* do in order:
+1) acceptance cuts
+2) pid
+3) coin time cuts
+4) kin. cuts
+
+WANT
+* select more random coincidences to the right to reduce unc. in random subtraction
+
+
+** modify code to enable CombineHistos() again
+
+
+----------------------------------
