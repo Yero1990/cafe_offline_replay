@@ -669,8 +669,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -684,8 +684,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -5356,23 +5356,23 @@ void baseAnalyzer::WriteOnlineReport()
      if(analysis_cut=="heep_coin")
        {
 	 if(MM_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Mass, MM (H.kin.secondary.Mrecoil): (%.3f, %.3f) [GeV]", c_heep_MM_min, c_heep_MM_max) << endl;}
-	 if(Em_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Energy, Em=nu-Ep (H.kin.secondary.Em): (%.3f, %.3f) [GeV]", c_heep_Em_min, c_heep_Em_max) << endl;}
+	 if(Em_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Energy, Em=nu-Ep (H.kin.secondary.emiss): (%.3f, %.3f) [GeV]", c_heep_Em_min, c_heep_Em_max) << endl;}
        }
      if(analysis_cut=="MF")
        {
 	 if(Q2_MF_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_MF_Q2_min, c_MF_Q2_max) << endl;}
-	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
-	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
-	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
+	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
+	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
 
        }
      if(analysis_cut=="SRC")
        {
 	 if(Q2_SRC_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_SRC_Q2_min, c_SRC_Q2_max) << endl;}
-	 if(Pm_SRC_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;}
+	 if(Pm_SRC_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;}
 	 if(Xbj_SRC_cut_flag) {out_file << Form("# A(e,e'p) x-Bjorken, Xbj (P.kin.primary.x_bj): (%.3f, %.3f)", c_SRC_Xbj_min, c_SRC_Xbj_max) << endl;}
 	 if(thrq_SRC_cut_flag) {out_file << Form("# A(e,e'p) theta_rq  (H.kin.secondary.th_bq): (%.3f, %.3f) [deg]", c_SRC_thrq_min, c_SRC_thrq_max) << endl;}	 
-	 if(Em_d2SRC_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_d2SRC_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
 	 if(Em_SRC_cut_flag && tgt_type!="LD2") {out_file << "# A(e,e'p) Dynamic Missing Energy (A>2 nuclei), Em_src = nu - Tp - (sqrt(MN*MN + Pm*Pm) - MN) | see definition in baseAnalyzer.cpp" << endl;}
 
        }
@@ -5710,23 +5710,23 @@ void baseAnalyzer::WriteOfflineReport()
      if(analysis_cut=="heep_coin")
        {
 	 if(MM_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Mass, MM (H.kin.secondary.Mrecoil): (%.3f, %.3f) [GeV]", c_heep_MM_min, c_heep_MM_max) << endl;}
-	 if(Em_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Energy, Em=nu-Ep (H.kin.secondary.Em): (%.3f, %.3f) [GeV]", c_heep_Em_min, c_heep_Em_max) << endl;}
+	 if(Em_heep_cut_flag)  {out_file << Form("# H(e,e'p) Missing Energy, Em=nu-Ep (H.kin.secondary.emiss): (%.3f, %.3f) [GeV]", c_heep_Em_min, c_heep_Em_max) << endl;}
        }
      if(analysis_cut=="MF")
        {
 	 if(Q2_MF_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_MF_Q2_min, c_MF_Q2_max) << endl;}
-	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
-	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
-	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
+	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
+	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
 
        }
      if(analysis_cut=="SRC")
        {
 	 if(Q2_SRC_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_SRC_Q2_min, c_SRC_Q2_max) << endl;}
-	 if(Pm_SRC_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.Pm): (%.3f, %.3f) [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;}
+	 if(Pm_SRC_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_SRC_Pm_min, c_SRC_Pm_max) << endl;}
 	 if(Xbj_SRC_cut_flag) {out_file << Form("# A(e,e'p) x-Bjorken, Xbj (P.kin.primary.x_bj): (%.3f, %.3f)", c_SRC_Xbj_min, c_SRC_Xbj_max) << endl;}
 	 if(thrq_SRC_cut_flag) {out_file << Form("# A(e,e'p) theta_rq  (H.kin.secondary.th_bq): (%.3f, %.3f) [deg]", c_SRC_thrq_min, c_SRC_thrq_max) << endl;}	 
-	 if(Em_d2SRC_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.Em_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
+	 if(Em_d2SRC_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
 	 if(Em_SRC_cut_flag && tgt_type!="LD2") {out_file << "# A(e,e'p) Dynamic Missing Energy (A>2 nuclei), Em_src = nu - Tp - (sqrt(MN*MN + Pm*Pm) - MN) | see definition in baseAnalyzer.cpp" << endl;}
 
        }
