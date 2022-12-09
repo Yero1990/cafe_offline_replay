@@ -8,5 +8,5 @@ Summary of junk runs determined from pass1 analysis
 17026  --> Ca40 SRC | junk (too few events) 
 17066  --> Fe54 SRC | junk (unprescaled T2 yielded ~99 % dead time and ~10M events TOO MANY) 
 
-17051 -->  Ca48 SRC 
-16981 -->  Fe54 MF
+17077 --> C12 SRC | only 30 sec of beam time (too low stats)
+17137 --> Fe54 SRC | only 50 sec of beam time (too low stats)
