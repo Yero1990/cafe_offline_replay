@@ -750,25 +750,322 @@ protected:
   TH2F* h2_i = 0;       //dummy histo to store ith histogram from list
 
   //----------------------------------------------------------------
-  // Detector Histograms (DATA ONLY): PID / TRACKING EFFICIENCY 
+  // DATA QUALITY CHECK / CUTS STUDY Histograms
   //----------------------------------------------------------------
 
   // keep track of total charge
   TH1F *H_total_charge;
 
+
+  //HMS quality check histos
+  TH1F *H_hdcRes_fit[dc_PLANES];
+  TH1F *H_hbeta_fit;
+
+  //SHMS quality check histos
+  TH1F *H_pdcRes_fit[dc_PLANES];
+  TH1F *H_pbeta_fit;
+  TH1F *H_pcal_fit;
+
+  // coin time quality check
+  TH1F *H_ctime_fit;
+  
   // ------ Cuts Quality Check Histos ----
-  // NO CUTS HISTOS
-  TH1F *H_ep_ctime_total_noCUT;
+  
+  // -- NO CUTS HISTOS --
+  // kin
+  TH1F *H_ep_ctime_noCUT;
+  TH1F *H_the_noCUT;
+  TH1F *H_W_noCUT;
+  TH1F *H_Q2_noCUT;
+  TH1F *H_xbj_noCUT;
+  TH1F *H_nu_noCUT;
+  TH1F *H_q_noCUT;
+  TH1F *H_thq_noCUT;
+  TH1F *H_Em_nuc_noCUT;
+  TH1F *H_Em_src_noCUT;
+  TH1F *H_MM_noCUT;
+  TH1F *H_Pm_noCUT;
+  TH1F *H_thxq_noCUT;
+  TH1F *H_thrq_noCUT;
+  TH1F *H_kf_noCUT;
+  TH1F *H_Pf_noCUT;
+  TH1F *H_thx_noCUT;
+
+  // recon.
+  TH1F *H_eytar_noCUT;  
+  TH1F *H_eyptar_noCUT; 
+  TH1F *H_exptar_noCUT; 
+  TH1F *H_edelta_noCUT;
+  TH1F *H_hytar_noCUT;  
+  TH1F *H_hyptar_noCUT; 
+  TH1F *H_hxptar_noCUT; 
+  TH1F *H_hdelta_noCUT;
+
+  // detector
+  TH1F *H_pCalEtotTrkNorm_noCUT;
+  TH1F *H_pHodBetaTrk_noCUT;
+  TH1F *H_pNGCerNpeSum_noCUT;
+  TH1F *H_hCalEtotTrkNorm_noCUT;
+  TH1F *H_hHodBetaTrk_noCUT;
+  TH1F *H_hCerNpeSum_noCUT;  
+
+  // 2d histos
+  TH2F *H_hxfp_vs_hyfp_noCUT;
+  TH2F *H_exfp_vs_eyfp_noCUT;  
   TH2F *H_hXColl_vs_hYColl_noCUT;
   TH2F *H_eXColl_vs_eYColl_noCUT;
+  TH2F *H_Em_nuc_vs_Pm_noCUT;
+  TH2F *H_Em_src_vs_Pm_noCUT;
+  TH2F *H_Q2_vs_xbj_noCUT;
 
   
-  // CUTS: accp+pid+ctime
-  TH2F *H_Em_nuc_vs_Pm;
-  TH2F *H_Em_src_vs_Pm;
-  TH2F *H_Q2_vs_xbj;
+  // -- CUTS: ACCEPTANCE CUTS ONLY --
+  // kin
+  TH1F *H_ep_ctime_ACCP;
+  TH1F *H_the_ACCP;
+  TH1F *H_W_ACCP;
+  TH1F *H_Q2_ACCP;
+  TH1F *H_xbj_ACCP;
+  TH1F *H_nu_ACCP;
+  TH1F *H_q_ACCP;
+  TH1F *H_thq_ACCP;
+  TH1F *H_Em_nuc_ACCP;
+  TH1F *H_Em_src_ACCP;
+  TH1F *H_MM_ACCP;
+  TH1F *H_Pm_ACCP;
+  TH1F *H_thxq_ACCP;
+  TH1F *H_thrq_ACCP;
+  TH1F *H_kf_ACCP;
+  TH1F *H_Pf_ACCP;
+  TH1F *H_thx_ACCP;
+
+  // recon.
+  TH1F *H_eytar_ACCP;  
+  TH1F *H_eyptar_ACCP; 
+  TH1F *H_exptar_ACCP; 
+  TH1F *H_edelta_ACCP;
+  TH1F *H_hytar_ACCP;  
+  TH1F *H_hyptar_ACCP; 
+  TH1F *H_hxptar_ACCP; 
+  TH1F *H_hdelta_ACCP;
+
+  // detector
+  TH1F *H_pCalEtotTrkNorm_ACCP;
+  TH1F *H_pHodBetaTrk_ACCP;
+  TH1F *H_pNGCerNpeSum_ACCP;
+  TH1F *H_hCalEtotTrkNorm_ACCP;
+  TH1F *H_hHodBetaTrk_ACCP;
+  TH1F *H_hCerNpeSum_ACCP;  
+
+  // 2d histos
+  TH2F *H_hxfp_vs_hyfp_ACCP;
+  TH2F *H_exfp_vs_eyfp_ACCP;  
+  TH2F *H_hXColl_vs_hYColl_ACCP;
+  TH2F *H_eXColl_vs_eYColl_ACCP;
+  TH2F *H_Em_nuc_vs_Pm_ACCP;
+  TH2F *H_Em_src_vs_Pm_ACCP;
+  TH2F *H_Q2_vs_xbj_ACCP;
+
+    // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
+  // kin
+  TH1F *H_ep_ctime_ACCP_PID;
+  TH1F *H_the_ACCP_PID;
+  TH1F *H_W_ACCP_PID;
+  TH1F *H_Q2_ACCP_PID;
+  TH1F *H_xbj_ACCP_PID;
+  TH1F *H_nu_ACCP_PID;
+  TH1F *H_q_ACCP_PID;
+  TH1F *H_thq_ACCP_PID;
+  TH1F *H_Em_nuc_ACCP_PID;
+  TH1F *H_Em_src_ACCP_PID;
+  TH1F *H_MM_ACCP_PID;
+  TH1F *H_Pm_ACCP_PID;
+  TH1F *H_thxq_ACCP_PID;
+  TH1F *H_thrq_ACCP_PID;
+  TH1F *H_kf_ACCP_PID;
+  TH1F *H_Pf_ACCP_PID;
+  TH1F *H_thx_ACCP_PID;
+
+  // recon.
+  TH1F *H_eytar_ACCP_PID;  
+  TH1F *H_eyptar_ACCP_PID; 
+  TH1F *H_exptar_ACCP_PID; 
+  TH1F *H_edelta_ACCP_PID;
+  TH1F *H_hytar_ACCP_PID;  
+  TH1F *H_hyptar_ACCP_PID; 
+  TH1F *H_hxptar_ACCP_PID; 
+  TH1F *H_hdelta_ACCP_PID;
+
+  // detector
+  TH1F *H_pCalEtotTrkNorm_ACCP_PID;
+  TH1F *H_pHodBetaTrk_ACCP_PID;
+  TH1F *H_pNGCerNpeSum_ACCP_PID;
+  TH1F *H_hCalEtotTrkNorm_ACCP_PID;
+  TH1F *H_hHodBetaTrk_ACCP_PID;
+  TH1F *H_hCerNpeSum_ACCP_PID;  
+
+  // 2d histos
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID;
+  TH2F *H_Q2_vs_xbj_ACCP_PID;
+
+
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --
+  // kin
+  TH1F *H_ep_ctime_ACCP_PID_CTIME;
+  TH1F *H_the_ACCP_PID_CTIME;
+  TH1F *H_W_ACCP_PID_CTIME;
+  TH1F *H_Q2_ACCP_PID_CTIME;
+  TH1F *H_xbj_ACCP_PID_CTIME;
+  TH1F *H_nu_ACCP_PID_CTIME;
+  TH1F *H_q_ACCP_PID_CTIME;
+  TH1F *H_thq_ACCP_PID_CTIME;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME;
+  TH1F *H_Em_src_ACCP_PID_CTIME;
+  TH1F *H_MM_ACCP_PID_CTIME;
+  TH1F *H_Pm_ACCP_PID_CTIME;
+  TH1F *H_thxq_ACCP_PID_CTIME;
+  TH1F *H_thrq_ACCP_PID_CTIME;
+  TH1F *H_kf_ACCP_PID_CTIME;
+  TH1F *H_Pf_ACCP_PID_CTIME;
+  TH1F *H_thx_ACCP_PID_CTIME;
+
+  // recon.
+  TH1F *H_eytar_ACCP_PID_CTIME;  
+  TH1F *H_eyptar_ACCP_PID_CTIME; 
+  TH1F *H_exptar_ACCP_PID_CTIME; 
+  TH1F *H_edelta_ACCP_PID_CTIME;
+  TH1F *H_hytar_ACCP_PID_CTIME;  
+  TH1F *H_hyptar_ACCP_PID_CTIME; 
+  TH1F *H_hxptar_ACCP_PID_CTIME; 
+  TH1F *H_hdelta_ACCP_PID_CTIME;
+
+  // detector
+  TH1F *H_pCalEtotTrkNorm_ACCP_PID_CTIME;
+  TH1F *H_pHodBetaTrk_ACCP_PID_CTIME;
+  TH1F *H_pNGCerNpeSum_ACCP_PID_CTIME;
+  TH1F *H_hCalEtotTrkNorm_ACCP_PID_CTIME;
+  TH1F *H_hHodBetaTrk_ACCP_PID_CTIME;
+  TH1F *H_hCerNpeSum_ACCP_PID_CTIME;  
+
+  // 2d histos
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME;
+
+
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2;
+
+
+  //  require MF flag
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em;
+
+  //  require MF flag
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm;
   
+  
+  //  require SRC flag
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj;
+
+  //  require SRC flag
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq;
+
+   //  require SRC flag
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
+  TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_thrq_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;  
+  TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+
+
   //------------------------------------
+
+  //----------------------------------------------------------------
+  // Detector Histograms (DATA ONLY): PID / TRACKING EFFICIENCY 
+  //----------------------------------------------------------------
+
   //Coin. Time
   TH1F *H_ep_ctime_total;
   TH1F *H_ep_ctime_real;
@@ -780,10 +1077,7 @@ protected:
   TH1F *H_hHodBetaNtrk;   
   TH1F *H_hHodBetaTrk;
   
-  //HMS quality check histos
-  TH1F *H_hdcRes_fit[dc_PLANES];
-  TH1F *H_hbeta_fit;
-  
+
   //SHMS	       
   TH1F *H_pNGCerNpeSum;
   TH1F *H_pHGCerNpeSum;
@@ -792,13 +1086,7 @@ protected:
   TH1F *H_pHodBetaNtrk;   
   TH1F *H_pHodBetaTrk;   
 
-  //SHMS quality check histos
-  TH1F *H_pdcRes_fit[dc_PLANES];
-  TH1F *H_pbeta_fit;
-  TH1F *H_pcal_fit;
 
-  // coin time quality check
-  TH1F *H_ctime_fit;
   
   
   //-------Define 2D PID Histograms (correlations between pid detectors)-------

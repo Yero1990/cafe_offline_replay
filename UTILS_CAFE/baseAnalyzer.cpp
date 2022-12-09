@@ -130,8 +130,6 @@ void baseAnalyzer::Init(){
   //Coincidence Time
   H_ep_ctime_total  = NULL;
   H_ep_ctime_real  = NULL;
-
-  H_total_charge = NULL;
   
   //-HMS-
   H_hCerNpeSum      = NULL;  
@@ -333,9 +331,14 @@ void baseAnalyzer::Init(){
   H_thrq_rand  =  NULL;	       	
   H_thrq_rand_sub = NULL;     	
 
-  
-  //Quality check histograms  plots (will be fitted from small event sample, and written to .csv file)
-  
+  //----------------------------------------------------------------
+  // DATA QUALITY CHECK / CUTS STUDY Histograms
+  //----------------------------------------------------------------
+
+  // keep track of total charge
+  H_total_charge = NULL;
+
+  // quality check histos (will be fitted)
   H_hbeta_fit = NULL;
   H_pbeta_fit = NULL;
   H_ctime_fit = NULL;
@@ -348,18 +351,323 @@ void baseAnalyzer::Init(){
       H_pdcRes_fit[npl] = NULL;
     }
 
-  // cuts quality check plots
-
-  // cuts: accp+pid+ctime
-  H_Em_nuc_vs_Pm = NULL;
-  H_Em_src_vs_Pm = NULL;
-  H_Q2_vs_xbj    = NULL;
+  // ------ Cuts Quality Check Histos ----
   
-  //NO CUTS
-  H_ep_ctime_total_noCUT  = NULL;
-  H_hXColl_vs_hYColl_noCUT    = NULL;
-  H_eXColl_vs_eYColl_noCUT    = NULL;
+  // -- NO CUTS HISTOS --
+  // kin
+  H_ep_ctime_noCUT = NULL;
+  H_the_noCUT = NULL;
+  H_W_noCUT = NULL;	
+  H_Q2_noCUT = NULL;	
+  H_xbj_noCUT = NULL;	
+  H_nu_noCUT = NULL;	
+  H_q_noCUT = NULL;	
+  H_thq_noCUT = NULL;	
+  H_Em_nuc_noCUT = NULL;
+  H_Em_src_noCUT = NULL;
+  H_MM_noCUT = NULL;	
+  H_Pm_noCUT = NULL;	
+  H_thxq_noCUT = NULL;	
+  H_thrq_noCUT = NULL;	
+  H_kf_noCUT = NULL;	
+  H_Pf_noCUT = NULL;	
+  H_thx_noCUT = NULL;	
 
+  // recon.
+  H_eytar_noCUT  = NULL;  
+  H_eyptar_noCUT = NULL; 
+  H_exptar_noCUT = NULL; 
+  H_edelta_noCUT = NULL;
+  H_hytar_noCUT  = NULL;  
+  H_hyptar_noCUT = NULL; 
+  H_hxptar_noCUT = NULL; 
+  H_hdelta_noCUT = NULL;
+
+  // detector
+  H_pCalEtotTrkNorm_noCUT = NULL;
+  H_pHodBetaTrk_noCUT = NULL;
+  H_pNGCerNpeSum_noCUT = NULL;
+  H_hCalEtotTrkNorm_noCUT = NULL;
+  H_hHodBetaTrk_noCUT = NULL;
+  H_hCerNpeSum_noCUT = NULL;  
+
+  // 2d histos
+  H_hxfp_vs_hyfp_noCUT = NULL;
+  H_exfp_vs_eyfp_noCUT = NULL;  
+  H_hXColl_vs_hYColl_noCUT = NULL;
+  H_eXColl_vs_eYColl_noCUT = NULL;
+  H_Em_nuc_vs_Pm_noCUT = NULL;
+  H_Em_src_vs_Pm_noCUT = NULL;
+  H_Q2_vs_xbj_noCUT = NULL;
+
+  
+  // -- CUTS: ACCEPTANCE CUTS ONLY --
+  // kin
+  H_ep_ctime_ACCP = NULL;
+  H_the_ACCP = NULL;
+  H_W_ACCP = NULL;
+  H_Q2_ACCP = NULL;
+  H_xbj_ACCP = NULL;
+  H_nu_ACCP = NULL;
+  H_q_ACCP = NULL;
+  H_thq_ACCP = NULL;
+  H_Em_nuc_ACCP = NULL;
+  H_Em_src_ACCP = NULL;
+  H_MM_ACCP = NULL;
+  H_Pm_ACCP = NULL;
+  H_thxq_ACCP = NULL;
+  H_thrq_ACCP = NULL;
+  H_kf_ACCP = NULL;
+  H_Pf_ACCP = NULL;
+  H_thx_ACCP = NULL;
+
+  // recon.
+  H_eytar_ACCP = NULL;  
+  H_eyptar_ACCP = NULL; 
+  H_exptar_ACCP = NULL; 
+  H_edelta_ACCP = NULL;
+  H_hytar_ACCP = NULL;  
+  H_hyptar_ACCP = NULL; 
+  H_hxptar_ACCP = NULL; 
+  H_hdelta_ACCP = NULL;
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP = NULL;
+  H_pHodBetaTrk_ACCP = NULL;
+  H_pNGCerNpeSum_ACCP = NULL;
+  H_hCalEtotTrkNorm_ACCP = NULL;
+  H_hHodBetaTrk_ACCP = NULL;
+  H_hCerNpeSum_ACCP = NULL;  
+
+  // 2d histos
+  H_hxfp_vs_hyfp_ACCP = NULL;
+  H_exfp_vs_eyfp_ACCP = NULL;  
+  H_hXColl_vs_hYColl_ACCP = NULL;
+  H_eXColl_vs_eYColl_ACCP = NULL;
+  H_Em_nuc_vs_Pm_ACCP = NULL;
+  H_Em_src_vs_Pm_ACCP = NULL;
+  H_Q2_vs_xbj_ACCP = NULL;
+
+    // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
+  // kin
+  H_ep_ctime_ACCP_PID = NULL;
+  H_the_ACCP_PID = NULL;
+  H_W_ACCP_PID = NULL;
+  H_Q2_ACCP_PID = NULL;
+  H_xbj_ACCP_PID = NULL;
+  H_nu_ACCP_PID = NULL;
+  H_q_ACCP_PID = NULL;
+  H_thq_ACCP_PID = NULL;
+  H_Em_nuc_ACCP_PID = NULL;
+  H_Em_src_ACCP_PID = NULL;
+  H_MM_ACCP_PID = NULL;
+  H_Pm_ACCP_PID = NULL;
+  H_thxq_ACCP_PID = NULL;
+  H_thrq_ACCP_PID = NULL;
+  H_kf_ACCP_PID = NULL;
+  H_Pf_ACCP_PID = NULL;
+  H_thx_ACCP_PID = NULL;
+
+  // recon.
+  H_eytar_ACCP_PID = NULL;  
+  H_eyptar_ACCP_PID = NULL; 
+  H_exptar_ACCP_PID = NULL; 
+  H_edelta_ACCP_PID = NULL;
+  H_hytar_ACCP_PID = NULL;  
+  H_hyptar_ACCP_PID = NULL; 
+  H_hxptar_ACCP_PID = NULL; 
+  H_hdelta_ACCP_PID = NULL;
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP_PID = NULL;
+  H_pHodBetaTrk_ACCP_PID = NULL;
+  H_pNGCerNpeSum_ACCP_PID = NULL;
+  H_hCalEtotTrkNorm_ACCP_PID = NULL;
+  H_hHodBetaTrk_ACCP_PID = NULL;
+  H_hCerNpeSum_ACCP_PID = NULL;  
+
+  // 2d histos
+  H_hxfp_vs_hyfp_ACCP_PID = NULL;
+  H_exfp_vs_eyfp_ACCP_PID = NULL;  
+  H_hXColl_vs_hYColl_ACCP_PID = NULL;
+  H_eXColl_vs_eYColl_ACCP_PID = NULL;
+  H_Em_nuc_vs_Pm_ACCP_PID = NULL;
+  H_Em_src_vs_Pm_ACCP_PID = NULL;
+  H_Q2_vs_xbj_ACCP_PID = NULL;
+
+
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --
+  // kin
+  H_ep_ctime_ACCP_PID_CTIME = NULL;
+  H_the_ACCP_PID_CTIME = NULL;
+  H_W_ACCP_PID_CTIME = NULL;
+  H_Q2_ACCP_PID_CTIME = NULL;
+  H_xbj_ACCP_PID_CTIME = NULL;
+  H_nu_ACCP_PID_CTIME = NULL;
+  H_q_ACCP_PID_CTIME = NULL;
+  H_thq_ACCP_PID_CTIME = NULL;
+  H_Em_nuc_ACCP_PID_CTIME = NULL;
+  H_Em_src_ACCP_PID_CTIME = NULL;
+  H_MM_ACCP_PID_CTIME = NULL;
+  H_Pm_ACCP_PID_CTIME = NULL;
+  H_thxq_ACCP_PID_CTIME = NULL;
+  H_thrq_ACCP_PID_CTIME = NULL;
+  H_kf_ACCP_PID_CTIME = NULL;
+  H_Pf_ACCP_PID_CTIME = NULL;
+  H_thx_ACCP_PID_CTIME = NULL;
+
+  // recon.
+  H_eytar_ACCP_PID_CTIME = NULL;  
+  H_eyptar_ACCP_PID_CTIME = NULL; 
+  H_exptar_ACCP_PID_CTIME = NULL; 
+  H_edelta_ACCP_PID_CTIME = NULL;
+  H_hytar_ACCP_PID_CTIME = NULL;  
+  H_hyptar_ACCP_PID_CTIME = NULL; 
+  H_hxptar_ACCP_PID_CTIME = NULL; 
+  H_hdelta_ACCP_PID_CTIME = NULL;
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP_PID_CTIME = NULL;
+  H_pHodBetaTrk_ACCP_PID_CTIME = NULL;
+  H_pNGCerNpeSum_ACCP_PID_CTIME = NULL;
+  H_hCalEtotTrkNorm_ACCP_PID_CTIME = NULL;
+  H_hHodBetaTrk_ACCP_PID_CTIME = NULL;
+  H_hCerNpeSum_ACCP_PID_CTIME = NULL;  
+
+  // 2d histos
+  H_hxfp_vs_hyfp_ACCP_PID_CTIME = NULL;
+  H_exfp_vs_eyfp_ACCP_PID_CTIME = NULL;  
+  H_hXColl_vs_hYColl_ACCP_PID_CTIME = NULL;
+  H_eXColl_vs_eYColl_ACCP_PID_CTIME = NULL;
+  H_Em_nuc_vs_Pm_ACCP_PID_CTIME = NULL;
+  H_Em_src_vs_Pm_ACCP_PID_CTIME = NULL;
+  H_Q2_vs_xbj_ACCP_PID_CTIME = NULL;
+
+
+  if(analysis_cut=="MF") {
+
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+    H_Q2_ACCP_PID_CTIME_Q2 = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2 = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2 = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;
+  
+    //  require MF flag
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
+    H_Q2_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em = NULL;
+    
+    //  require MF flag
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
+    H_Q2_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+  }
+  
+  if(analysis_cut=="SRC") {
+
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+    H_Q2_ACCP_PID_CTIME_Q2 = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2 = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2 = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;
+  
+    //  require SRC flag
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
+    H_Q2_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    
+    //  require SRC flag
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
+    H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    
+    //  require SRC flag
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
+    H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_thrq_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+
+  }
+  
+  //------------------------------------
+
+
+
+
+  
+  
 }
 
 //_______________________________________________________________________________
@@ -390,8 +698,6 @@ baseAnalyzer::~baseAnalyzer()
   delete H_ep_ctime_total; H_ep_ctime_total   = NULL;
   delete H_ep_ctime_real; H_ep_ctime_real   = NULL;
 
-  //-TOTAL CHARGE-
-  delete H_total_charge; H_total_charge = NULL;
  
   //-HMS-
   delete H_hCerNpeSum;      H_hCerNpeSum      = NULL;  
@@ -593,7 +899,14 @@ baseAnalyzer::~baseAnalyzer()
   delete H_thrq_rand;	       	  H_thrq_rand  =  NULL;	       	
   delete H_thrq_rand_sub;     	  H_thrq_rand_sub = NULL;     	
 
+  
+  //----------------------------------------------------------------
+  // DATA QUALITY CHECK / CUTS STUDY Histograms
+  //----------------------------------------------------------------
 
+  //-TOTAL CHARGE-
+  delete H_total_charge; H_total_charge = NULL;
+ 
   //quality histos
   delete H_hbeta_fit;   H_hbeta_fit = NULL;
   delete H_pbeta_fit;	H_pbeta_fit = NULL;
@@ -607,16 +920,319 @@ baseAnalyzer::~baseAnalyzer()
       delete H_pdcRes_fit[npl];             H_pdcRes_fit[npl] = NULL;
     }
 
-  // Cuts Quality Check
-  // NO CUTS
-  delete H_ep_ctime_total_noCUT;      H_ep_ctime_total_noCUT   = NULL;
-  delete H_hXColl_vs_hYColl_noCUT;    H_hXColl_vs_hYColl_noCUT    = NULL;
-  delete H_eXColl_vs_eYColl_noCUT;    H_eXColl_vs_eYColl_noCUT    = NULL;
 
-  // CUTS: accp+pid+ctime
-  delete H_Em_nuc_vs_Pm;    H_Em_nuc_vs_Pm = NULL;
-  delete H_Em_src_vs_Pm;    H_Em_src_vs_Pm = NULL;
-  delete H_Q2_vs_xbj;       H_Q2_vs_xbj    = NULL;
+  // ------ Cuts Quality Check Histos ----                                                     
+  // -- NO CUTS HISTOS --								     
+  // kin							          			     
+  delete H_ep_ctime_noCUT;			                           H_ep_ctime_noCUT = NULL;			        		    			     
+  delete H_the_noCUT;				     		   H_the_noCUT = NULL;				     			     
+  delete H_W_noCUT;				     		   H_W_noCUT = NULL;				     			     
+  delete H_Q2_noCUT;				     		   H_Q2_noCUT = NULL;				     			     
+  delete H_xbj_noCUT;				     		   H_xbj_noCUT = NULL;				     			     
+  delete H_nu_noCUT;				     		   H_nu_noCUT = NULL;				     			     
+  delete H_q_noCUT;				     		   H_q_noCUT = NULL;				     			     
+  delete H_thq_noCUT;				     		   H_thq_noCUT = NULL;				     			     
+  delete H_Em_nuc_noCUT;				     		   H_Em_nuc_noCUT = NULL;				     		     
+  delete H_Em_src_noCUT;				     		   H_Em_src_noCUT = NULL;				     		     
+  delete H_MM_noCUT;				     		   H_MM_noCUT = NULL;				     			     
+  delete H_Pm_noCUT;				     		   H_Pm_noCUT = NULL;				     			     
+  delete H_thxq_noCUT;				     		   H_thxq_noCUT = NULL;				     			     
+  delete H_thrq_noCUT;				     		   H_thrq_noCUT = NULL;				     			     
+  delete H_kf_noCUT;				     		   H_kf_noCUT = NULL;				     			     
+  delete H_Pf_noCUT;				     		   H_Pf_noCUT = NULL;				     			     
+  delete H_thx_noCUT;				     		   H_thx_noCUT = NULL;				     			     
+                                                                                                                                                 
+  // recon.						     		   					     		     
+  delete H_eytar_noCUT;  			     		   H_eytar_noCUT = NULL;  			     			     
+  delete H_eyptar_noCUT; 			     		   H_eyptar_noCUT = NULL; 			     			     
+  delete H_exptar_noCUT; 			     		   H_exptar_noCUT = NULL; 			     			     
+  delete H_edelta_noCUT;				     		   H_edelta_noCUT = NULL;				     		     
+  delete H_hytar_noCUT;  			     		   H_hytar_noCUT = NULL;  			     			     
+  delete H_hyptar_noCUT; 			     		   H_hyptar_noCUT = NULL; 			     			     
+  delete H_hxptar_noCUT; 			     		   H_hxptar_noCUT = NULL; 			     			     
+  delete H_hdelta_noCUT;				     		   H_hdelta_noCUT = NULL;				     		     
+                                                                                                                                                 
+  // detector						     		   					     		     
+  delete H_pCalEtotTrkNorm_noCUT;		     		   H_pCalEtotTrkNorm_noCUT = NULL;		     			     
+  delete H_pHodBetaTrk_noCUT;			     		   H_pHodBetaTrk_noCUT = NULL;			     			     
+  delete H_pNGCerNpeSum_noCUT;			     		   H_pNGCerNpeSum_noCUT = NULL;			     			     
+  delete H_hCalEtotTrkNorm_noCUT;		     		   H_hCalEtotTrkNorm_noCUT = NULL;		     			     
+  delete H_hHodBetaTrk_noCUT;			     		   H_hHodBetaTrk_noCUT = NULL;			     			     
+  delete H_hCerNpeSum_noCUT;  			     		   H_hCerNpeSum_noCUT = NULL;  			     			     
+                                                                                                                                                 
+  // 2d histos						     		   						     		     
+  delete H_hxfp_vs_hyfp_noCUT;			     		   H_hxfp_vs_hyfp_noCUT = NULL;			     			     
+  delete H_exfp_vs_eyfp_noCUT;  			     		   H_exfp_vs_eyfp_noCUT = NULL;  			     		     
+  delete H_hXColl_vs_hYColl_noCUT;		     		   H_hXColl_vs_hYColl_noCUT = NULL;		     			     
+  delete H_eXColl_vs_eYColl_noCUT;		     		   H_eXColl_vs_eYColl_noCUT = NULL;		     			     
+  delete H_Em_nuc_vs_Pm_noCUT;			     		   H_Em_nuc_vs_Pm_noCUT = NULL;			     			     
+  delete H_Em_src_vs_Pm_noCUT;			     		   H_Em_src_vs_Pm_noCUT = NULL;			     			     
+  delete H_Q2_vs_xbj_noCUT;			     		   H_Q2_vs_xbj_noCUT = NULL;			     			     
+                                                                                                                                                 
+  	 						     		   						     		     
+  // -- CUTS: ACCEPTANCE CUTS ONLY --			     		  		     		     
+  // kin 						     		   						     		     
+  delete H_ep_ctime_ACCP;			     		   H_ep_ctime_ACCP = NULL;			     			     
+  delete H_the_ACCP;				     		   H_the_ACCP = NULL;				     			     
+  delete H_W_ACCP;				     		   H_W_ACCP = NULL;				     			     
+  delete H_Q2_ACCP;				     		   H_Q2_ACCP = NULL;				     			     
+  delete H_xbj_ACCP;				     		   H_xbj_ACCP = NULL;				     			     
+  delete H_nu_ACCP;				     		   H_nu_ACCP = NULL;				     			     
+  delete H_q_ACCP;				     		   H_q_ACCP = NULL;				     			     
+  delete H_thq_ACCP;				     		   H_thq_ACCP = NULL;				     			     
+  delete H_Em_nuc_ACCP;				     		   H_Em_nuc_ACCP = NULL;				     			     
+  delete H_Em_src_ACCP;				     		   H_Em_src_ACCP = NULL;				     			     
+  delete H_MM_ACCP;				     		   H_MM_ACCP = NULL;				     			     
+  delete H_Pm_ACCP;				     		   H_Pm_ACCP = NULL;				     			     
+  delete H_thxq_ACCP;				     		   H_thxq_ACCP = NULL;				     			     
+  delete H_thrq_ACCP;				     		   H_thrq_ACCP = NULL;				     			     
+  delete H_kf_ACCP;				     		   H_kf_ACCP = NULL;				     			     
+  delete H_Pf_ACCP;				     		   H_Pf_ACCP = NULL;				     			     
+  delete H_thx_ACCP;				     		   H_thx_ACCP = NULL;				     			     
+                                                                                                                                                
+  // recon.						     		   					     		     
+  delete H_eytar_ACCP;  				     		   H_eytar_ACCP = NULL;  				     		     
+  delete H_eyptar_ACCP; 				     		   H_eyptar_ACCP = NULL; 				     		     
+  delete H_exptar_ACCP; 				     		   H_exptar_ACCP = NULL; 				     		     
+  delete H_edelta_ACCP;				     		   H_edelta_ACCP = NULL;				     			     
+  delete H_hytar_ACCP;  				     		   H_hytar_ACCP = NULL;  				     		     
+  delete H_hyptar_ACCP; 				     		   H_hyptar_ACCP = NULL; 				     		     
+  delete H_hxptar_ACCP; 				     		   H_hxptar_ACCP = NULL; 				     		     
+  delete H_hdelta_ACCP;				     		   H_hdelta_ACCP = NULL;				     			     
+                                                                                                                                                 
+  // detector						     		  					     		     
+  delete H_pCalEtotTrkNorm_ACCP;			     		   H_pCalEtotTrkNorm_ACCP = NULL;			     		     
+  delete H_pHodBetaTrk_ACCP;			     		   H_pHodBetaTrk_ACCP = NULL;			     			     
+  delete H_pNGCerNpeSum_ACCP;			     		   H_pNGCerNpeSum_ACCP = NULL;			     			     
+  delete H_hCalEtotTrkNorm_ACCP;			     		   H_hCalEtotTrkNorm_ACCP = NULL;			     		     
+  delete H_hHodBetaTrk_ACCP;			     		   H_hHodBetaTrk_ACCP = NULL;			     			     
+  delete H_hCerNpeSum_ACCP;  			     		   H_hCerNpeSum_ACCP = NULL;  			     			     
+                                                                                                                                                 
+  // 2d histos						     		   						     		     
+  delete H_hxfp_vs_hyfp_ACCP;			     		   H_hxfp_vs_hyfp_ACCP = NULL;			     			     
+  delete H_exfp_vs_eyfp_ACCP;  			     		   H_exfp_vs_eyfp_ACCP = NULL;  			     			     
+  delete H_hXColl_vs_hYColl_ACCP;		     		   H_hXColl_vs_hYColl_ACCP = NULL;		     			     
+  delete H_eXColl_vs_eYColl_ACCP;		     		   H_eXColl_vs_eYColl_ACCP = NULL;		     			     
+  delete H_Em_nuc_vs_Pm_ACCP;			     		   H_Em_nuc_vs_Pm_ACCP = NULL;			     			     
+  delete H_Em_src_vs_Pm_ACCP;			     		   H_Em_src_vs_Pm_ACCP = NULL;			     			     
+  delete H_Q2_vs_xbj_ACCP;			     		   H_Q2_vs_xbj_ACCP = NULL;			     			     
+                                                                                                                                                 
+    // -- CUTS: ACCEPTANCE + PID CUTS ONLY --		     		    CUTS: ACCEPTANCE + PID CUTS ONLY --		     		     
+  // kin 						     		   						     		     
+  delete H_ep_ctime_ACCP_PID;			     		   H_ep_ctime_ACCP_PID = NULL;			     			     
+  delete H_the_ACCP_PID;				     		   H_the_ACCP_PID = NULL;				     		     
+  delete H_W_ACCP_PID;				     		   H_W_ACCP_PID = NULL;				     			     
+  delete H_Q2_ACCP_PID;				     		   H_Q2_ACCP_PID = NULL;				     			     
+  delete H_xbj_ACCP_PID;				     		   H_xbj_ACCP_PID = NULL;				     		     
+  delete H_nu_ACCP_PID;				     		   H_nu_ACCP_PID = NULL;				     			     
+  delete H_q_ACCP_PID;				     		   H_q_ACCP_PID = NULL;				     			     
+  delete H_thq_ACCP_PID;				     		   H_thq_ACCP_PID = NULL;				     		     
+  delete H_Em_nuc_ACCP_PID;			     		   H_Em_nuc_ACCP_PID = NULL;			     			     
+  delete H_Em_src_ACCP_PID;			     		   H_Em_src_ACCP_PID = NULL;			     			     
+  delete H_MM_ACCP_PID;				     		   H_MM_ACCP_PID = NULL;				     			     
+  delete H_Pm_ACCP_PID;				     		   H_Pm_ACCP_PID = NULL;				     			     
+  delete H_thxq_ACCP_PID;			     		   H_thxq_ACCP_PID = NULL;			     			     
+  delete H_thrq_ACCP_PID;			     		   H_thrq_ACCP_PID = NULL;			     			     
+  delete H_kf_ACCP_PID;				     		   H_kf_ACCP_PID = NULL;				     			     
+  delete H_Pf_ACCP_PID;				     		   H_Pf_ACCP_PID = NULL;				     			     
+  delete H_thx_ACCP_PID;				     		   H_thx_ACCP_PID = NULL;				     		     
+                                                                                                                                                 
+  // recon.						     		   					     		     
+  delete H_eytar_ACCP_PID;  			     		   H_eytar_ACCP_PID = NULL;  			     			     
+  delete H_eyptar_ACCP_PID; 			     		   H_eyptar_ACCP_PID = NULL; 			     			     
+  delete H_exptar_ACCP_PID; 			     		   H_exptar_ACCP_PID = NULL; 			     			     
+  delete H_edelta_ACCP_PID;			     		   H_edelta_ACCP_PID = NULL;			     			     
+  delete H_hytar_ACCP_PID;  			     		   H_hytar_ACCP_PID = NULL;  			     			     
+  delete H_hyptar_ACCP_PID; 			     		   H_hyptar_ACCP_PID = NULL; 			     			     
+  delete H_hxptar_ACCP_PID; 			     		   H_hxptar_ACCP_PID = NULL; 			     			     
+  delete H_hdelta_ACCP_PID;			     		   H_hdelta_ACCP_PID = NULL;			     			     
+                                                                                                                                                 
+  // detector						     		  					     		     
+  delete H_pCalEtotTrkNorm_ACCP_PID;		     		   H_pCalEtotTrkNorm_ACCP_PID = NULL;		     			     
+  delete H_pHodBetaTrk_ACCP_PID;			     		   H_pHodBetaTrk_ACCP_PID = NULL;			     		     
+  delete H_pNGCerNpeSum_ACCP_PID;		     		   H_pNGCerNpeSum_ACCP_PID = NULL;		     			     
+  delete H_hCalEtotTrkNorm_ACCP_PID;		     		   H_hCalEtotTrkNorm_ACCP_PID = NULL;		     			     
+  delete H_hHodBetaTrk_ACCP_PID;			     		   H_hHodBetaTrk_ACCP_PID = NULL;			     		     
+  delete H_hCerNpeSum_ACCP_PID;  		     		   H_hCerNpeSum_ACCP_PID = NULL;  		     			     
+                                                                                                                                                 
+  // 2d histos						     		  						     		     
+  delete H_hxfp_vs_hyfp_ACCP_PID;		     		   H_hxfp_vs_hyfp_ACCP_PID = NULL;		     			     
+  delete H_exfp_vs_eyfp_ACCP_PID;  		     		   H_exfp_vs_eyfp_ACCP_PID = NULL;  		     			     
+  delete H_hXColl_vs_hYColl_ACCP_PID;		     		   H_hXColl_vs_hYColl_ACCP_PID = NULL;		     			     
+  delete H_eXColl_vs_eYColl_ACCP_PID;		     		   H_eXColl_vs_eYColl_ACCP_PID = NULL;		     			     
+  delete H_Em_nuc_vs_Pm_ACCP_PID;		     		   H_Em_nuc_vs_Pm_ACCP_PID = NULL;		     			     
+  delete H_Em_src_vs_Pm_ACCP_PID;		     		   H_Em_src_vs_Pm_ACCP_PID = NULL;		     			     
+  delete H_Q2_vs_xbj_ACCP_PID;			     		   H_Q2_vs_xbj_ACCP_PID = NULL;			     			     
+                                                                                                                                                 
+                                                                                                                                                 
+  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --	     		   UTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --	     		     
+  // kin 						     		   						     		     
+  delete H_ep_ctime_ACCP_PID_CTIME;		     		   H_ep_ctime_ACCP_PID_CTIME = NULL;		     			     
+  delete H_the_ACCP_PID_CTIME;			     		   H_the_ACCP_PID_CTIME = NULL;			     			     
+  delete H_W_ACCP_PID_CTIME;			     		   H_W_ACCP_PID_CTIME = NULL;			     			     
+  delete H_Q2_ACCP_PID_CTIME;			     		   H_Q2_ACCP_PID_CTIME = NULL;			     			     
+  delete H_xbj_ACCP_PID_CTIME;			     		   H_xbj_ACCP_PID_CTIME = NULL;			     			     
+  delete H_nu_ACCP_PID_CTIME;			     		   H_nu_ACCP_PID_CTIME = NULL;			     			     
+  delete H_q_ACCP_PID_CTIME;			     		   H_q_ACCP_PID_CTIME = NULL;			     			     
+  delete H_thq_ACCP_PID_CTIME;			     		   H_thq_ACCP_PID_CTIME = NULL;			     			     
+  delete H_Em_nuc_ACCP_PID_CTIME;		     		   H_Em_nuc_ACCP_PID_CTIME = NULL;		     			     
+  delete H_Em_src_ACCP_PID_CTIME;		     		   H_Em_src_ACCP_PID_CTIME = NULL;		     			     
+  delete H_MM_ACCP_PID_CTIME;			     		   H_MM_ACCP_PID_CTIME = NULL;			     			     
+  delete H_Pm_ACCP_PID_CTIME;			     		   H_Pm_ACCP_PID_CTIME = NULL;			     			     
+  delete H_thxq_ACCP_PID_CTIME;			     		   H_thxq_ACCP_PID_CTIME = NULL;			     			     
+  delete H_thrq_ACCP_PID_CTIME;			     		   H_thrq_ACCP_PID_CTIME = NULL;			     			     
+  delete H_kf_ACCP_PID_CTIME;			     		   H_kf_ACCP_PID_CTIME = NULL;			     			     
+  delete H_Pf_ACCP_PID_CTIME;			     		   H_Pf_ACCP_PID_CTIME = NULL;			     			     
+  delete H_thx_ACCP_PID_CTIME;			     		   H_thx_ACCP_PID_CTIME = NULL;			     			     
+                                                                                                                                                 
+  // recon.						     		   						     		     
+  delete H_eytar_ACCP_PID_CTIME;  		     		   H_eytar_ACCP_PID_CTIME = NULL;  		     			     
+  delete H_eyptar_ACCP_PID_CTIME; 		     		   H_eyptar_ACCP_PID_CTIME = NULL; 		     			     
+  delete H_exptar_ACCP_PID_CTIME; 		     		   H_exptar_ACCP_PID_CTIME = NULL; 		     			     
+  delete H_edelta_ACCP_PID_CTIME;		     		   H_edelta_ACCP_PID_CTIME = NULL;		     			     
+  delete H_hytar_ACCP_PID_CTIME;  		     		   H_hytar_ACCP_PID_CTIME = NULL;  		     			     
+  delete H_hyptar_ACCP_PID_CTIME; 		     		   H_hyptar_ACCP_PID_CTIME = NULL; 		     			     
+  delete H_hxptar_ACCP_PID_CTIME; 		     		   H_hxptar_ACCP_PID_CTIME = NULL; 		     			     
+  delete H_hdelta_ACCP_PID_CTIME;		     		   H_hdelta_ACCP_PID_CTIME = NULL;		     			     
+                                                                                                                                                 
+  // detector						     		   						     		     
+  delete H_pCalEtotTrkNorm_ACCP_PID_CTIME;	     		   H_pCalEtotTrkNorm_ACCP_PID_CTIME = NULL;	     			     
+  delete H_pHodBetaTrk_ACCP_PID_CTIME;		     		   H_pHodBetaTrk_ACCP_PID_CTIME = NULL;		     			     
+  delete H_pNGCerNpeSum_ACCP_PID_CTIME;		     		   H_pNGCerNpeSum_ACCP_PID_CTIME = NULL;		     			     
+  delete H_hCalEtotTrkNorm_ACCP_PID_CTIME;	     		   H_hCalEtotTrkNorm_ACCP_PID_CTIME = NULL;	     			     
+  delete H_hHodBetaTrk_ACCP_PID_CTIME;		     		   H_hHodBetaTrk_ACCP_PID_CTIME = NULL;		     			     
+  delete H_hCerNpeSum_ACCP_PID_CTIME;  		     		   H_hCerNpeSum_ACCP_PID_CTIME = NULL;  		     			     
+                                                                                                                                                 
+  // 2d histos						     		   						     		     
+  delete H_hxfp_vs_hyfp_ACCP_PID_CTIME;		     		   H_hxfp_vs_hyfp_ACCP_PID_CTIME = NULL;		     			     
+  delete H_exfp_vs_eyfp_ACCP_PID_CTIME;  	     		   H_exfp_vs_eyfp_ACCP_PID_CTIME = NULL;  	     			     
+  delete H_hXColl_vs_hYColl_ACCP_PID_CTIME;	     		   H_hXColl_vs_hYColl_ACCP_PID_CTIME = NULL;	     			     
+  delete H_eXColl_vs_eYColl_ACCP_PID_CTIME;	     		   H_eXColl_vs_eYColl_ACCP_PID_CTIME = NULL;	     			     
+  delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME;		     		   H_Em_nuc_vs_Pm_ACCP_PID_CTIME = NULL;		     			     
+  delete H_Em_src_vs_Pm_ACCP_PID_CTIME;		     		   H_Em_src_vs_Pm_ACCP_PID_CTIME = NULL;		     			     
+  delete H_Q2_vs_xbj_ACCP_PID_CTIME;		     		   H_Q2_vs_xbj_ACCP_PID_CTIME = NULL;		     			     
+                                                                                             
+                                                                                             
+  if(analysis_cut=="MF") {								     
+                                                                                             
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --			     
+    delete H_Q2_ACCP_PID_CTIME_Q2               ;		H_Q2_ACCP_PID_CTIME_Q2               = NULL;					     
+    delete H_xbj_ACCP_PID_CTIME_Q2              ;		H_xbj_ACCP_PID_CTIME_Q2              = NULL;					     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2           ;		H_Em_nuc_ACCP_PID_CTIME_Q2           = NULL;					     
+    delete H_Em_src_ACCP_PID_CTIME_Q2           ;		H_Em_src_ACCP_PID_CTIME_Q2           = NULL;					     
+    delete H_Pm_ACCP_PID_CTIME_Q2               ;		H_Pm_ACCP_PID_CTIME_Q2               = NULL;					     
+    delete H_thrq_ACCP_PID_CTIME_Q2             ;		H_thrq_ACCP_PID_CTIME_Q2             = NULL;					     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     ;		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = NULL;				     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     ;  	        H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = NULL;					     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 ;		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;			     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 ;		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;			     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     ;		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = NULL;				     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     ;		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = NULL;				     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = NULL;				     
+  											     
+    //  require MF flag									     
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --		     
+    delete H_Q2_ACCP_PID_CTIME_Q2_Em  ;		   		H_Q2_ACCP_PID_CTIME_Q2_Em  = NULL;		   			     
+    delete H_xbj_ACCP_PID_CTIME_Q2_Em ;		   		H_xbj_ACCP_PID_CTIME_Q2_Em = NULL;		   			     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2_Em ;	   		H_Em_nuc_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_Em_src_ACCP_PID_CTIME_Q2_Em ;	   		H_Em_src_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_Pm_ACCP_PID_CTIME_Q2_Em ;		   		H_Pm_ACCP_PID_CTIME_Q2_Em = NULL;		   			     
+    delete H_thrq_ACCP_PID_CTIME_Q2_Em ;		   	H_thrq_ACCP_PID_CTIME_Q2_Em = NULL;		   			     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em ;	   	H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em ;     		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em = NULL;     			     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em ; 		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = NULL; 			     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em ; 		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em = NULL; 			     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em ;	   	H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em ;	   	H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em ;	   		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    											     
+    //  require MF flag									     
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --	     
+    delete H_Q2_ACCP_PID_CTIME_Q2_Em_Pm ;		      		H_Q2_ACCP_PID_CTIME_Q2_Em_Pm = NULL;		      		     
+    delete H_xbj_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;		      		H_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;		      		     
+    delete H_thrq_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_thrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm ; 		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL; 			     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm ; 		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL; 			     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm ;	      		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+  }											     
+  											     
+  if(analysis_cut=="SRC") {								     
+                                                                                             
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --			     
+    delete H_Q2_ACCP_PID_CTIME_Q2 ;			H_Q2_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_xbj_ACCP_PID_CTIME_Q2 ;			H_xbj_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2 ;			H_Em_nuc_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_Em_src_ACCP_PID_CTIME_Q2 ;			H_Em_src_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_Pm_ACCP_PID_CTIME_Q2 ;			H_Pm_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_thrq_ACCP_PID_CTIME_Q2 ;			H_thrq_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 ;		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;					     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 ;  		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  					     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 ;	H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;				     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 ;	H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;				     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 ;		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;					     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 ;		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;					     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;					     
+  											     
+    //  require SRC flag								     
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --		     
+    delete H_Q2_ACCP_PID_CTIME_Q2_Xbj ;		   	H_Q2_ACCP_PID_CTIME_Q2_Xbj = NULL;		   				     
+    delete H_xbj_ACCP_PID_CTIME_Q2_Xbj ;		H_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;		   				     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj = NULL;	   				     
+    delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Em_src_ACCP_PID_CTIME_Q2_Xbj = NULL;	   				     
+    delete H_Pm_ACCP_PID_CTIME_Q2_Xbj ;		   	H_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;		   				     
+    delete H_thrq_ACCP_PID_CTIME_Q2_Xbj ;		H_thrq_ACCP_PID_CTIME_Q2_Xbj = NULL;		   			     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj ;	H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj ;    	H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;    				     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj ;	H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;				     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj ;	H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;				     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj ;	H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj ;	H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;	   				     
+    											     
+    //  require SRC flag								     
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --	     
+    delete H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq ;     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;  					     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq ; H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;				     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq ; H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;				     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
+    											     
+    //  require SRC flag								     
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --  
+    delete H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;		      H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;		   				     
+    delete H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;		   				     
+    delete H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+    delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+    delete H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;		      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;		   				     
+    delete H_thrq_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_thrq_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+    delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
+    delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;    				     
+    delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ; H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;				     
+    delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ; H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;				     
+    delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
+    delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+                                                                                             
+  }											     
+  											     
+  //------------------------------------						     
+  
+
 }
 
 //_______________________________________________________________________________
@@ -1553,8 +2169,6 @@ void baseAnalyzer::CreateHist()
   H_ep_ctime_real->SetDefaultSumw2(kTRUE);  //Generalize sum weights squared to all histograms  (ROOT 6 has this by default. ROOT 5 does NOT)
   H_ep_ctime_total   = new TH1F("H_ep_ctime_total", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
 
-  //Total Charge
-  H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-4.5,5.5);
   
   //HMS DETECTORS HISTOS
   H_hCerNpeSum      = new TH1F("H_hCerNpeSum", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
@@ -1911,7 +2525,9 @@ void baseAnalyzer::CreateHist()
   //---------HISTOGRAM CATEGORY: QUALITY CHECK-----------
   //-----------------------------------------------------
   
-
+  // total charge
+  H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-4.5,5.5);
+   
   // calibration fits
   H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
   H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
@@ -1921,7 +2537,14 @@ void baseAnalyzer::CreateHist()
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
   for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
-  
+  // Add to TList
+  quality_HList->Add(H_total_charge);  
+
+  quality_HList->Add(H_hbeta_fit);
+  quality_HList->Add(H_pbeta_fit);
+  quality_HList->Add(H_ctime_fit);
+  quality_HList->Add(H_pcal_fit);
+
   for (Int_t npl = 0; npl < dc_PLANES; npl++ )
     {
       quality_HList->Add(H_hdcRes_fit[npl]);
@@ -1929,33 +2552,445 @@ void baseAnalyzer::CreateHist()
     }
 
 
-  // CUTS Quality Checks
-
-  //---Accp+pid+ctime_CUTS---
-  H_Em_nuc_vs_Pm = new TH2F("H_Em_nuc_vs_Pm", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_vs_Pm = new TH2F("H_Em_src_vs_Pm", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Q2_vs_xbj    = new TH2F("H_Q2_vs_xbj",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
   
-  //---NO_CUTS----
-  H_ep_ctime_total_noCUT   = new TH1F("H_ep_ctime_total_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  // ------ Cuts Quality Check Histos ----
+
+  // -- NO CUTS HISTOS --
+  // kin
+  H_ep_ctime_noCUT = new TH1F("H_ep_ctime_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_noCUT      = new TH1F("H_the_noCUT", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_noCUT        = new TH1F("H_W_noCUT", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_noCUT       = new TH1F("H_Q2_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_noCUT      = new TH1F("H_xbj_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_noCUT       = new TH1F("H_nu_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_noCUT        = new TH1F("H_q_noCUT", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_noCUT      = new TH1F("H_thq_noCUT", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_noCUT   = new TH1F("H_Em_nuc_noCUT","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_noCUT   = new TH1F("H_Em_src_noCUT","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_noCUT       = new TH1F("H_MM_noCUT","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_noCUT       = new TH1F("H_Pm_noCUT","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_noCUT     = new TH1F("H_thxq_noCUT", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_noCUT     = new TH1F("H_thrq_noCUT", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_noCUT       = new TH1F("H_kf_noCUT", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_noCUT       = new TH1F("H_Pf_noCUT", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_noCUT      = new TH1F("H_thx_noCUT", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+
+  // recon.
+  H_eytar_noCUT  = new TH1F("H_eytar_noCUT", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_noCUT = new TH1F("H_exptar_noCUT", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_noCUT = new TH1F("H_eyptar_noCUT", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_noCUT = new TH1F("H_edelta_noCUT", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_noCUT  = new TH1F("H_hytar_noCUT", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_noCUT = new TH1F("H_hxptar_noCUT", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_noCUT = new TH1F("H_hyptar_noCUT", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_noCUT = new TH1F("H_hdelta_noCUT", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+
+  // detector
+  H_pCalEtotTrkNorm_noCUT = new TH1F("H_pCalEtotTrkNorm_noCUT", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_noCUT     = new TH1F("H_pBetaTrk_noCUT", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_noCUT    = new TH1F("H_pNGCerNpeSum_noCUT", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_noCUT = new TH1F("H_hCalEtotTrkNorm_noCUT", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_noCUT     = new TH1F("H_hHodBetaTrk_noCUT", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_noCUT      = new TH1F("H_hCerNpeSum_noCUT", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+
+  // 2d
+  H_hxfp_vs_hyfp_noCUT     = new TH2F("H_hxfp_vs_hyfp_noCUT", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_noCUT     = new TH2F("H_exfp_vs_eyfp_noCUT", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
   H_hXColl_vs_hYColl_noCUT = new TH2F("H_hXColl_vs_hYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
   H_eXColl_vs_eYColl_noCUT = new TH2F("H_eXColl_vs_eYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-
+  H_Em_nuc_vs_Pm_noCUT     = new TH2F("H_Em_nuc_vs_Pm_noCUT", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_noCUT     = new TH2F("H_Em_src_vs_Pm_noCUT", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_noCUT        = new TH2F("H_Q2_vs_xbj_noCUT",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
   
-  quality_HList->Add(H_total_charge);  
 
-  quality_HList->Add(H_hbeta_fit);
-  quality_HList->Add(H_pbeta_fit);
-  quality_HList->Add(H_ctime_fit);
-  quality_HList->Add(H_pcal_fit);
+  quality_HList->Add( H_ep_ctime_noCUT  );
+  quality_HList->Add( H_the_noCUT       );
+  quality_HList->Add( H_W_noCUT         );
+  quality_HList->Add( H_Q2_noCUT        );
+  quality_HList->Add( H_xbj_noCUT       );
+  quality_HList->Add( H_nu_noCUT        );
+  quality_HList->Add( H_q_noCUT         );
+  quality_HList->Add( H_thq_noCUT       );
+  quality_HList->Add( H_Em_nuc_noCUT    );
+  quality_HList->Add( H_Em_src_noCUT    );
+  quality_HList->Add( H_MM_noCUT        );
+  quality_HList->Add( H_Pm_noCUT        );
+  quality_HList->Add( H_thxq_noCUT      );
+  quality_HList->Add( H_thrq_noCUT      );
+  quality_HList->Add( H_kf_noCUT        );
+  quality_HList->Add( H_Pf_noCUT        );
+  quality_HList->Add( H_thx_noCUT       );
+
+  quality_HList->Add( H_eytar_noCUT   );
+  quality_HList->Add( H_eyptar_noCUT  );
+  quality_HList->Add( H_exptar_noCUT  );
+  quality_HList->Add( H_edelta_noCUT  );
+  quality_HList->Add( H_hytar_noCUT   );
+  quality_HList->Add( H_hyptar_noCUT  );
+  quality_HList->Add( H_hxptar_noCUT  );
+  quality_HList->Add( H_hdelta_noCUT  );
+
+  quality_HList->Add( H_pCalEtotTrkNorm_noCUT );
+  quality_HList->Add( H_pHodBetaTrk_noCUT     );
+  quality_HList->Add( H_pNGCerNpeSum_noCUT    );
+  quality_HList->Add( H_hCalEtotTrkNorm_noCUT );
+  quality_HList->Add( H_hHodBetaTrk_noCUT     );
+  quality_HList->Add( H_hCerNpeSum_noCUT      );
+
+  quality_HList->Add( H_hxfp_vs_hyfp_noCUT     );
+  quality_HList->Add( H_exfp_vs_eyfp_noCUT     );
+  quality_HList->Add( H_hXColl_vs_hYColl_noCUT );
+  quality_HList->Add( H_eXColl_vs_eYColl_noCUT );
+  quality_HList->Add( H_Em_nuc_vs_Pm_noCUT     );
+  quality_HList->Add( H_Em_src_vs_Pm_noCUT     );
+  quality_HList->Add( H_Q2_vs_xbj_noCUT        );
+
+
+
+  // -- CUTS: ACCEPTANCE CUTS ONLY --
   
-  quality_HList->Add( H_Em_nuc_vs_Pm );
-  quality_HList->Add( H_Em_src_vs_Pm );
-  quality_HList->Add( H_Q2_vs_xbj    ); 
-  quality_HList->Add(H_ep_ctime_total_noCUT);
-  quality_HList->Add( H_hXColl_vs_hYColl_noCUT  );
-  quality_HList->Add( H_eXColl_vs_eYColl_noCUT  );
+  // kin
+  H_ep_ctime_ACCP = new TH1F("H_ep_ctime_ACCP", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP      = new TH1F("H_the_ACCP", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP        = new TH1F("H_W_ACCP", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP       = new TH1F("H_Q2_ACCP","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP      = new TH1F("H_xbj_ACCP", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP       = new TH1F("H_nu_ACCP","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP        = new TH1F("H_q_ACCP", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP      = new TH1F("H_thq_ACCP", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP   = new TH1F("H_Em_nuc_ACCP","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP   = new TH1F("H_Em_src_ACCP","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP       = new TH1F("H_MM_ACCP","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP       = new TH1F("H_Pm_ACCP","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP     = new TH1F("H_thxq_ACCP", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP     = new TH1F("H_thrq_ACCP", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP       = new TH1F("H_kf_ACCP", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP       = new TH1F("H_Pf_ACCP", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP      = new TH1F("H_thx_ACCP", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
 
+  // recon.
+  H_eytar_ACCP  = new TH1F("H_eytar_ACCP", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP = new TH1F("H_exptar_ACCP", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP = new TH1F("H_eyptar_ACCP", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP = new TH1F("H_edelta_ACCP", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP  = new TH1F("H_hytar_ACCP", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP = new TH1F("H_hxptar_ACCP", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP = new TH1F("H_hyptar_ACCP", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP = new TH1F("H_hdelta_ACCP", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP = new TH1F("H_pCalEtotTrkNorm_ACCP", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP     = new TH1F("H_pBetaTrk_ACCP", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP    = new TH1F("H_pNGCerNpeSum_ACCP", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP = new TH1F("H_hCalEtotTrkNorm_ACCP", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP     = new TH1F("H_hHodBetaTrk_ACCP", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP      = new TH1F("H_hCerNpeSum_ACCP", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+
+  // 2d
+  H_hxfp_vs_hyfp_ACCP     = new TH2F("H_hxfp_vs_hyfp_ACCP", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP     = new TH2F("H_exfp_vs_eyfp_ACCP", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP = new TH2F("H_hXColl_vs_hYColl_ACCP", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP = new TH2F("H_eXColl_vs_eYColl_ACCP", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP     = new TH2F("H_Em_nuc_vs_Pm_ACCP", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP     = new TH2F("H_Em_src_vs_Pm_ACCP", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP        = new TH2F("H_Q2_vs_xbj_ACCP",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  
+
+  quality_HList->Add( H_ep_ctime_ACCP  );
+  quality_HList->Add( H_the_ACCP       );
+  quality_HList->Add( H_W_ACCP         );
+  quality_HList->Add( H_Q2_ACCP        );
+  quality_HList->Add( H_xbj_ACCP       );
+  quality_HList->Add( H_nu_ACCP        );
+  quality_HList->Add( H_q_ACCP         );
+  quality_HList->Add( H_thq_ACCP       );
+  quality_HList->Add( H_Em_nuc_ACCP    );
+  quality_HList->Add( H_Em_src_ACCP    );
+  quality_HList->Add( H_MM_ACCP        );
+  quality_HList->Add( H_Pm_ACCP        );
+  quality_HList->Add( H_thxq_ACCP      );
+  quality_HList->Add( H_thrq_ACCP      );
+  quality_HList->Add( H_kf_ACCP        );
+  quality_HList->Add( H_Pf_ACCP        );
+  quality_HList->Add( H_thx_ACCP       );
+
+  quality_HList->Add( H_eytar_ACCP   );
+  quality_HList->Add( H_eyptar_ACCP  );
+  quality_HList->Add( H_exptar_ACCP  );
+  quality_HList->Add( H_edelta_ACCP  );
+  quality_HList->Add( H_hytar_ACCP   );
+  quality_HList->Add( H_hyptar_ACCP  );
+  quality_HList->Add( H_hxptar_ACCP  );
+  quality_HList->Add( H_hdelta_ACCP  );
+
+  quality_HList->Add( H_pCalEtotTrkNorm_ACCP );
+  quality_HList->Add( H_pHodBetaTrk_ACCP     );
+  quality_HList->Add( H_pNGCerNpeSum_ACCP    );
+  quality_HList->Add( H_hCalEtotTrkNorm_ACCP );
+  quality_HList->Add( H_hHodBetaTrk_ACCP     );
+  quality_HList->Add( H_hCerNpeSum_ACCP      );
+
+  quality_HList->Add( H_hxfp_vs_hyfp_ACCP     );
+  quality_HList->Add( H_exfp_vs_eyfp_ACCP     );
+  quality_HList->Add( H_hXColl_vs_hYColl_ACCP );
+  quality_HList->Add( H_eXColl_vs_eYColl_ACCP );
+  quality_HList->Add( H_Em_nuc_vs_Pm_ACCP     );
+  quality_HList->Add( H_Em_src_vs_Pm_ACCP     );
+  quality_HList->Add( H_Q2_vs_xbj_ACCP        );
+
+
+  // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
+  
+  // kin
+  H_ep_ctime_ACCP_PID = new TH1F("H_ep_ctime_ACCP_PID", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP_PID      = new TH1F("H_the_ACCP_PID", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP_PID        = new TH1F("H_W_ACCP_PID", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP_PID       = new TH1F("H_Q2_ACCP_PID","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP_PID      = new TH1F("H_xbj_ACCP_PID", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP_PID       = new TH1F("H_nu_ACCP_PID","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP_PID        = new TH1F("H_q_ACCP_PID", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP_PID      = new TH1F("H_thq_ACCP_PID", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP_PID   = new TH1F("H_Em_nuc_ACCP_PID","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP_PID   = new TH1F("H_Em_src_ACCP_PID","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP_PID       = new TH1F("H_MM_ACCP_PID","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP_PID       = new TH1F("H_Pm_ACCP_PID","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP_PID     = new TH1F("H_thxq_ACCP_PID", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP_PID     = new TH1F("H_thrq_ACCP_PID", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP_PID       = new TH1F("H_kf_ACCP_PID", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP_PID       = new TH1F("H_Pf_ACCP_PID", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP_PID      = new TH1F("H_thx_ACCP_PID", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+
+  // recon.
+  H_eytar_ACCP_PID  = new TH1F("H_eytar_ACCP_PID", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP_PID = new TH1F("H_exptar_ACCP_PID", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP_PID = new TH1F("H_eyptar_ACCP_PID", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP_PID = new TH1F("H_edelta_ACCP_PID", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP_PID  = new TH1F("H_hytar_ACCP_PID", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP_PID = new TH1F("H_hxptar_ACCP_PID", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP_PID = new TH1F("H_hyptar_ACCP_PID", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP_PID = new TH1F("H_hdelta_ACCP_PID", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP_PID = new TH1F("H_pCalEtotTrkNorm_ACCP_PID", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP_PID     = new TH1F("H_pBetaTrk_ACCP_PID", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP_PID    = new TH1F("H_pNGCerNpeSum_ACCP_PID", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP_PID = new TH1F("H_hCalEtotTrkNorm_ACCP_PID", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP_PID     = new TH1F("H_hHodBetaTrk_ACCP_PID", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP_PID      = new TH1F("H_hCerNpeSum_ACCP_PID", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+
+  // 2d
+  H_hxfp_vs_hyfp_ACCP_PID     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP_PID     = new TH2F("H_exfp_vs_eyfp_ACCP_PID", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP_PID = new TH2F("H_hXColl_vs_hYColl_ACCP_PID", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP_PID = new TH2F("H_eXColl_vs_eYColl_ACCP_PID", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP_PID     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP_PID     = new TH2F("H_Em_src_vs_Pm_ACCP_PID", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP_PID        = new TH2F("H_Q2_vs_xbj_ACCP_PID",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  
+
+  quality_HList->Add( H_ep_ctime_ACCP_PID  );
+  quality_HList->Add( H_the_ACCP_PID       );
+  quality_HList->Add( H_W_ACCP_PID         );
+  quality_HList->Add( H_Q2_ACCP_PID        );
+  quality_HList->Add( H_xbj_ACCP_PID       );
+  quality_HList->Add( H_nu_ACCP_PID        );
+  quality_HList->Add( H_q_ACCP_PID         );
+  quality_HList->Add( H_thq_ACCP_PID       );
+  quality_HList->Add( H_Em_nuc_ACCP_PID    );
+  quality_HList->Add( H_Em_src_ACCP_PID    );
+  quality_HList->Add( H_MM_ACCP_PID        );
+  quality_HList->Add( H_Pm_ACCP_PID        );
+  quality_HList->Add( H_thxq_ACCP_PID      );
+  quality_HList->Add( H_thrq_ACCP_PID      );
+  quality_HList->Add( H_kf_ACCP_PID        );
+  quality_HList->Add( H_Pf_ACCP_PID        );
+  quality_HList->Add( H_thx_ACCP_PID       );
+
+  quality_HList->Add( H_eytar_ACCP_PID   );
+  quality_HList->Add( H_eyptar_ACCP_PID  );
+  quality_HList->Add( H_exptar_ACCP_PID  );
+  quality_HList->Add( H_edelta_ACCP_PID  );
+  quality_HList->Add( H_hytar_ACCP_PID   );
+  quality_HList->Add( H_hyptar_ACCP_PID  );
+  quality_HList->Add( H_hxptar_ACCP_PID  );
+  quality_HList->Add( H_hdelta_ACCP_PID  );
+
+  quality_HList->Add( H_pCalEtotTrkNorm_ACCP_PID );
+  quality_HList->Add( H_pHodBetaTrk_ACCP_PID     );
+  quality_HList->Add( H_pNGCerNpeSum_ACCP_PID    );
+  quality_HList->Add( H_hCalEtotTrkNorm_ACCP_PID );
+  quality_HList->Add( H_hHodBetaTrk_ACCP_PID     );
+  quality_HList->Add( H_hCerNpeSum_ACCP_PID      );
+
+  quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID     );
+  quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID     );
+  quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID );
+  quality_HList->Add( H_eXColl_vs_eYColl_ACCP_PID );
+  quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID     );
+  quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID     );
+  quality_HList->Add( H_Q2_vs_xbj_ACCP_PID        );
+
+
+
+
+
+  // -- CUTS: ACCEPTANCE + PID + COIN.TIME CUT ONLY --
+  
+  // kin
+  H_ep_ctime_ACCP_PID_CTIME = new TH1F("H_ep_ctime_ACCP_PID_CTIME", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP_PID_CTIME      = new TH1F("H_the_ACCP_PID_CTIME", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP_PID_CTIME        = new TH1F("H_W_ACCP_PID_CTIME", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP_PID_CTIME       = new TH1F("H_Q2_ACCP_PID_CTIME","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP_PID_CTIME      = new TH1F("H_xbj_ACCP_PID_CTIME", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP_PID_CTIME       = new TH1F("H_nu_ACCP_PID_CTIME","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP_PID_CTIME        = new TH1F("H_q_ACCP_PID_CTIME", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP_PID_CTIME      = new TH1F("H_thq_ACCP_PID_CTIME", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP_PID_CTIME   = new TH1F("H_Em_nuc_ACCP_PID_CTIME","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP_PID_CTIME   = new TH1F("H_Em_src_ACCP_PID_CTIME","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP_PID_CTIME       = new TH1F("H_MM_ACCP_PID_CTIME","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP_PID_CTIME       = new TH1F("H_Pm_ACCP_PID_CTIME","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP_PID_CTIME     = new TH1F("H_thxq_ACCP_PID_CTIME", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP_PID_CTIME     = new TH1F("H_thrq_ACCP_PID_CTIME", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP_PID_CTIME       = new TH1F("H_kf_ACCP_PID_CTIME", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP_PID_CTIME       = new TH1F("H_Pf_ACCP_PID_CTIME", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP_PID_CTIME      = new TH1F("H_thx_ACCP_PID_CTIME", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+
+  // recon.
+  H_eytar_ACCP_PID_CTIME  = new TH1F("H_eytar_ACCP_PID_CTIME", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP_PID_CTIME = new TH1F("H_exptar_ACCP_PID_CTIME", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP_PID_CTIME = new TH1F("H_eyptar_ACCP_PID_CTIME", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP_PID_CTIME = new TH1F("H_edelta_ACCP_PID_CTIME", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP_PID_CTIME  = new TH1F("H_hytar_ACCP_PID_CTIME", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP_PID_CTIME = new TH1F("H_hxptar_ACCP_PID_CTIME", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP_PID_CTIME = new TH1F("H_hyptar_ACCP_PID_CTIME", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP_PID_CTIME = new TH1F("H_hdelta_ACCP_PID_CTIME", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+
+  // detector
+  H_pCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_pCalEtotTrkNorm_ACCP_PID_CTIME", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_pBetaTrk_ACCP_PID_CTIME", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP_PID_CTIME    = new TH1F("H_pNGCerNpeSum_ACCP_PID_CTIME", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_hCalEtotTrkNorm_ACCP_PID_CTIME", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_hHodBetaTrk_ACCP_PID_CTIME", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP_PID_CTIME      = new TH1F("H_hCerNpeSum_ACCP_PID_CTIME", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+
+  // 2d
+  H_hxfp_vs_hyfp_ACCP_PID_CTIME     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP_PID_CTIME     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP_PID_CTIME = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP_PID_CTIME = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP_PID_CTIME        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  
+
+  quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME  );
+  quality_HList->Add( H_the_ACCP_PID_CTIME       );
+  quality_HList->Add( H_W_ACCP_PID_CTIME         );
+  quality_HList->Add( H_Q2_ACCP_PID_CTIME        );
+  quality_HList->Add( H_xbj_ACCP_PID_CTIME       );
+  quality_HList->Add( H_nu_ACCP_PID_CTIME        );
+  quality_HList->Add( H_q_ACCP_PID_CTIME         );
+  quality_HList->Add( H_thq_ACCP_PID_CTIME       );
+  quality_HList->Add( H_Em_nuc_ACCP_PID_CTIME    );
+  quality_HList->Add( H_Em_src_ACCP_PID_CTIME    );
+  quality_HList->Add( H_MM_ACCP_PID_CTIME        );
+  quality_HList->Add( H_Pm_ACCP_PID_CTIME        );
+  quality_HList->Add( H_thxq_ACCP_PID_CTIME      );
+  quality_HList->Add( H_thrq_ACCP_PID_CTIME      );
+  quality_HList->Add( H_kf_ACCP_PID_CTIME        );
+  quality_HList->Add( H_Pf_ACCP_PID_CTIME        );
+  quality_HList->Add( H_thx_ACCP_PID_CTIME       );
+
+  quality_HList->Add( H_eytar_ACCP_PID_CTIME   );
+  quality_HList->Add( H_eyptar_ACCP_PID_CTIME  );
+  quality_HList->Add( H_exptar_ACCP_PID_CTIME  );
+  quality_HList->Add( H_edelta_ACCP_PID_CTIME  );
+  quality_HList->Add( H_hytar_ACCP_PID_CTIME   );
+  quality_HList->Add( H_hyptar_ACCP_PID_CTIME  );
+  quality_HList->Add( H_hxptar_ACCP_PID_CTIME  );
+  quality_HList->Add( H_hdelta_ACCP_PID_CTIME  );
+
+  quality_HList->Add( H_pCalEtotTrkNorm_ACCP_PID_CTIME );
+  quality_HList->Add( H_pHodBetaTrk_ACCP_PID_CTIME     );
+  quality_HList->Add( H_pNGCerNpeSum_ACCP_PID_CTIME    );
+  quality_HList->Add( H_hCalEtotTrkNorm_ACCP_PID_CTIME );
+  quality_HList->Add( H_hHodBetaTrk_ACCP_PID_CTIME     );
+  quality_HList->Add( H_hCerNpeSum_ACCP_PID_CTIME      );
+
+  quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME     );
+  quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME     );
+  quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME );
+  quality_HList->Add( H_eXColl_vs_eYColl_ACCP_PID_CTIME );
+  quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME     );
+  quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME     );
+  quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME        );
+  
+
+  if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
+    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+    H_Q2_ACCP_PID_CTIME_Q2               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+    H_xbj_ACCP_PID_CTIME_Q2              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+    H_Em_nuc_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Em_src_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+    H_Pm_ACCP_PID_CTIME_Q2               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+    H_thrq_ACCP_PID_CTIME_Q2             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+    
+    
+    quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2               );
+    quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2              );
+    quality_HList->Add( H_Em_nuc_ACCP_PID_CTIME_Q2           );
+    quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2           );
+    quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2               );
+    quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2             );
+    quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     );
+    quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     );
+    quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 );
+    quality_HList->Add( H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 );
+    quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     );
+    quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     );
+    quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        );
+  }
+
+
+    if( (analysis_cut=="MF") ) {
+      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY --
+      H_Q2_ACCP_PID_CTIME_Q2               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      
+      
+      quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2               );
+      quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2              );
+      quality_HList->Add( H_Em_nuc_ACCP_PID_CTIME_Q2           );
+      quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2           );
+      quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2               );
+      quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2             );
+      quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     );
+      quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     );
+      quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 );
+      quality_HList->Add( H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 );
+      quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     );
+      quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     );
+      quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        );
+    }
+  
   
 }
 //_______________________________________________________________________________
@@ -3458,19 +4493,88 @@ void baseAnalyzer::EventLoop()
 		  }
 		  //==========================================================================
 
+
 		  
-		  // NO CUTS HISTOS
-		  H_ep_ctime_total_noCUT->Fill(epCoinTime-ctime_offset_peak_val);
+		  
+		  // -- NO CUTS HISTOS --
+		  H_ep_ctime_noCUT->Fill(epCoinTime-ctime_offset_peak_val);
 		  H_hXColl_vs_hYColl_noCUT  ->Fill(hYColl, hXColl);
 		  H_eXColl_vs_eYColl_noCUT  ->Fill(eYColl, eXColl);
 
+
+
+
+		  // -- CUTS: ACCEPTANCE CUTS ONLY --
+		  if(c_accpCuts) {
+
+		  }
+
+		  // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
+		  if(c_accpCuts && c_pidCuts){
+
+		  }
+
+		  // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --
 		  if(c_accpCuts && c_pidCuts && eP_ctime_cut){
-		    H_Em_nuc_vs_Pm ->Fill(Pm, Em_nuc);
-		    H_Em_src_vs_Pm ->Fill(Pm, Em_src);
-		    H_Q2_vs_xbj    ->Fill(X, Q2);
+		    H_Em_nuc_vs_Pm_ACCP_PID_CTIME ->Fill(Pm, Em_nuc);
+		    H_Em_src_vs_Pm_ACCP_PID_CTIME ->Fill(Pm, Em_src);
+		    H_Q2_vs_xbj_ACCP_PID_CTIME    ->Fill(X, Q2);
 		  }
 		  
-   
+
+		  if(analysis_cut=="MF") {
+		    
+		    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+		    if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_MF_Q2){
+		      
+		    }
+		    
+		    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --		 
+		    if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_MF_Q2 && c_d2MF_Em && c_MF_Em){
+		      
+		    }
+		    
+		    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
+		    if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_MF_Q2 && c_d2MF_Em && c_MF_Em && c_MF_Pm){
+		      
+		    }
+		    
+		  }
+
+		    if(analysis_cut=="SRC") {
+		    
+		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+		      if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_SRC_Q2){
+			
+		      }
+		      
+		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
+		      if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_SRC_Q2 && c_SRC_Xbj){
+			
+		      }
+
+		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
+		      if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_SRC_Q2 && c_SRC_Xbj && c_SRC_thrq){
+			
+		      }
+
+		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
+		      if(c_accpCuts && c_pidCuts && eP_ctime_cut && c_SRC_Q2 && c_SRC_Xbj && c_SRC_thrq && c_SRC_Pm){
+			
+		      }
+
+		      
+		    }
+
+
+
+
+
+
+		  
+		  
+		  
+		  //=============================================================================
 		  
 		  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  if(c_baseCuts){

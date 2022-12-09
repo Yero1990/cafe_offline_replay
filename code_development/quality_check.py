@@ -8,7 +8,7 @@ import sys
 #target=sys.argv[1]  # LH2, LD2,Be9, B10, B11, C12, Ca40, Ca48, Fe54
 #kin=sys.argv[2]     # MF, SRC heep_coin, heep_singles, optics
 
-def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[], kin=[], kmarker=[]):
+def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[], kin=[], kmarker=[], calc_ratio=False):
 
     plt_err_flg = False
     if len(ykey_err)>0:
@@ -23,13 +23,35 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
 
             df = pd.read_csv(filename, comment='#')
 
+            
+            # get any to column
             x_data = df[xkey]
             y_data = df[ykey]
 
+            run = df['run']
+            
+            # assumes that ykey is the numerator and xkey is denominator (from the user input)
+            if(calc_ratio == True):                
+                ratio = y_data / x_data
+
+                # will need to put a requirement here (only applies to yield/mC)
+                if( (kin[jdx] == "MF") and (target[idx] == "LD2") ):
+                    ratio = ratio / 1000.
+                if( (kin[jdx] == "MF") and (target[idx] != "LD2") ):
+                    ratio = ratio / 100.
+                
             if(plt_err_flg == True):
                 y_data_err = df[ykey_err]
-                print(y_data_err)
+                
+                if(calc_ratio == True):                    
+                    ratio_err =  y_data_err / x_data
 
+
+                    if( (kin[jdx] == "MF") and (target[idx] == "LD2") ):
+                        ratio_err = ratio_err / 1000.
+                    if( (kin[jdx] == "MF") and (target[idx] != "LD2") ):
+                        ratio_err = ratio_err / 100.
+                    
             if(ylo==0 and yhi==0):
                 print('No y-range provided, will set to default')
                 # set y-axis range
@@ -40,12 +62,27 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
                 y_hi = yhi
             plt.ylim(y_lo, y_hi)
 
-            if(plt_err_flg == False):
-                plt.plot(x_data, y_data, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
-            if(plt_err_flg == True):
-                plt.errorbar(x_data, y_data, y_data_err, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 
-            plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
+
+            # plot the data
+            if(calc_ratio == False):
+                
+                if(plt_err_flg == False):
+                    plt.plot(x_data, y_data, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                if(plt_err_flg == True):
+                    plt.errorbar(x_data, y_data, y_data_err, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+
+                plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
+
+            elif(calc_ratio == True):
+
+                if(plt_err_flg == False):
+                    plt.plot(run, ratio, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                if(plt_err_flg == True):
+                    plt.grid(True)
+                    plt.errorbar(run, ratio, ratio_err, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                    
+
             plt.legend()
 
     plt.figure(1)
@@ -56,7 +93,7 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
 # plot quality-check data
 #--------------------------
 
-
+'''
 # total live time
 plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
 
@@ -64,7 +101,23 @@ plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0.96, yhi=1.05, tar
 plot_data(xkey='run', ykey='hTrkEff', ykey_err='hTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
 
 # shms tracking efficiency
-plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=-0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+'''
+
+#--------------------------
+# plot quality-check data
+#--------------------------
+plot_data(xkey='charge', ykey='real_Yield', ykey_err='real_Yield_err', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+
+
+
+
+
+
+
+
+
+
 
 
 
