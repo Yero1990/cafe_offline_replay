@@ -963,6 +963,7 @@ protected:
 
 
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2;
@@ -980,6 +981,7 @@ protected:
 
   //  require MF flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Em;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2_Em;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2_Em;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Em;
@@ -996,6 +998,7 @@ protected:
 
   //  require MF flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2_Em_Pm;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2_Em_Pm;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm;
@@ -1013,6 +1016,7 @@ protected:
   
   //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj;
@@ -1029,6 +1033,7 @@ protected:
 
   //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq;
@@ -1045,12 +1050,13 @@ protected:
 
    //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
+  TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
-  TH1F *H_thrq_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
