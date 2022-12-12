@@ -6412,6 +6412,7 @@ void baseAnalyzer::WriteHist()
 
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
+      outROOT->mkdir("FITS");
       outROOT->mkdir("NOCUTS");
       outROOT->mkdir("ACCP_CUTS");
       outROOT->mkdir("ACCP+PID_CUTS");
@@ -6447,6 +6448,16 @@ void baseAnalyzer::WriteHist()
 	    // get histo name
 	    h_i = (TH1F *)quality_HList->At(i);
 	    hist_name = h_i->GetName();
+
+	    // check if histo name is "_charge"
+	    if( hist_name.find("_charge") != std::string::npos ){
+	      h_i->Write(); 	      
+	    }
+	    
+	    // check if histo name is "_fit"
+	    if( hist_name.find("_fit") != std::string::npos ){
+	      outROOT->cd("FITS"); h_i->Write(); 	      
+	    }
 	    
 	    // check if histo name is "_noCUT"
 	    if( hist_name.find("_noCUT") != std::string::npos ){
@@ -6565,10 +6576,7 @@ void baseAnalyzer::WriteHist()
 	      } // end SRC requirement
 	      
 	    } // end MF or SRC requirement
-
-
-	    
-
+	  
 	  } //end TH2F check
 
 	  
@@ -7472,6 +7480,8 @@ void baseAnalyzer::WriteReportSummary()
     //--------------------
     //---------------------------------------------------------
     if(in_file.fail()){
+
+      tgt_areal_density =  tgt_density *  tgt_thickness;
       
       cout << "Report File does NOT exist, will create one . . . " << endl;
       
@@ -7482,7 +7492,11 @@ void baseAnalyzer::WriteReportSummary()
       out_file << "#                                     " << endl;
       out_file << "#                                     " << endl;      
       out_file << Form("# target_name: %s        kin_type:  %s            ", tgt_type.Data(), analysis_cut.Data() ) << endl;
-      out_file << Form("# target_amu: %.6f                 ", tgt_mass        ) << endl;   
+      out_file << Form("# target_amu: %.6f                 ", tgt_mass        ) << endl;
+      out_file << Form("# target_density [g/cm3]: %.4f     ", tgt_density     ) << endl;
+      out_file << Form("# target_thickness [cm]: %.4f      ", tgt_thickness     ) << endl;
+      out_file << Form("# target_areal_density [g/cm2]: %.4f",  tgt_areal_density    ) << endl;
+      out_file << "#" << endl;
       out_file << Form("# beam_energy [GeV]: %.4f          ", beam_energy ) << endl;            
       out_file << "#" << endl;      
       out_file << Form("# hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
@@ -7591,11 +7605,17 @@ void baseAnalyzer::CombineHistos()
     outROOT->mkdir("pid_plots");
     outROOT->mkdir("kin_plots");
     outROOT->mkdir("accp_plots");
+    outROOT->mkdir("quality_plots");
     
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
       outROOT->mkdir("rand_plots");
       outROOT->mkdir("randSub_plots");
     }
+
+
+    // ---- add total charge ----
+    outROOT->cd("quality_plots");
+    H_total_charge->Write();
     
     //Write PID histos to pid_plots directory
     outROOT->cd("pid_plots");
@@ -7641,6 +7661,30 @@ void baseAnalyzer::CombineHistos()
     outROOT = new TFile(data_OutputFileName_combined.Data(), "READ");  
 
     cout << "ROOTfile (opened in READ mode): " << data_OutputFileName_combined.Data() << endl;
+
+    // ---- add total charge ----
+
+    string hname; 
+    for(int i=0; i<quality_HList->GetEntries(); i++)
+      {	 
+	class_name = quality_HList->At(i)->ClassName();		    
+	//check if its a TH1F
+	if(class_name=="TH1F") {
+	  // get histo name
+	  h_i = (TH1F *)quality_HList->At(i);
+	  hname = h_i->GetName();
+	  hist_dir = Form("quality_plots/%s", hname.c_str());
+	  
+	  // check if histo name is "_charge"
+	  if( hname.find("_charge") != std::string::npos ){
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	
+	    
+	  }
+	}
+      }
+    
+    //---------------------------------
+    
     //------------------------------------------
     //Lopp over pid_HList of histogram objects
     //------------------------------------------
@@ -7714,7 +7758,9 @@ void baseAnalyzer::CombineHistos()
 	}
 	
       }//end loop over kin_HList
+  
 
+    
     //--------------------------------------------------------------------------------------------
 
     //------------------------------------------

@@ -1,0 +1,17 @@
+For analysis checks:
+---------------------
+Data / SIMC comparisons for  H(e,e'p) 
+Data / SIMC comparisons for  d(e,e'p)
+Data / SIMC comparisons for  C(e,e'p)
+
+
+For the Hall C Winter Meeting and SRC Workshop:
+--------------------------------------------------
+Plot missing momentum distributions per target for MF, SRC independently:
+
+(TARGET, KIN):
+Pmiss_counts / ( Q * track_eff * live_time * tgt_thickness) -> dsitribution (not just integrate counts)
+
+
+For SRC:
+Take ratio of  Pmiss_counts_A / Pmiss_counts_C12
