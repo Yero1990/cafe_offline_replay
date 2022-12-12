@@ -7597,6 +7597,12 @@ void baseAnalyzer::CombineHistos()
   //Decide whether to combine all histograms or NOT. 
   //If the list of runs correspond to different kinematics, then they should NOT be combined (combine_runs_flag=0)
   if(combine_runs_flag==0) return;   //exit this function if combine_runs_flag == 0; 
+
+
+  // if doing heep_singles or heep_coin, do not combined (heep checks are done on separate runs, no need to combien runs, as each kinematic is different and/or there
+  // are sufficient statistics in each indificual heep run
+  if( (analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") ) return;
+  
   
   cout << "combine runs flag -->  " << combine_runs_flag << endl;
  
