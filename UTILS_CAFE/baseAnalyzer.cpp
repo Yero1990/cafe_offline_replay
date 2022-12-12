@@ -5536,6 +5536,7 @@ void baseAnalyzer::RandSub()
 {
   cout << "Calling RandSub() " << endl;
 
+  
   /*
     Brief: This methods carries out the subtraction of random coincidences (outside coin peak selection) 
     from real coincidences (within coin peak selected) for various histograms 
@@ -5559,7 +5560,9 @@ void baseAnalyzer::RandSub()
   cout << "accidental_width_RIGHT [ns] = " << dt_acc_R << endl;  
   cout << "P_scale_factor = "         << P_scale_factor << endl;
 
-
+  // if doing heep singles, scale randoms to zero (even though we take singles, there may still be events that sneak into the coin histograms)
+  if(analysis_cut=="heep_singles") {P_scale_factor = 0;}
+     
   //----Scale Down the random coincidences histograms-----
   H_ep_ctime_rand ->  Scale( P_scale_factor );
   H_W_rand        ->  Scale( P_scale_factor );
