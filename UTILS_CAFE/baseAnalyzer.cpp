@@ -1299,8 +1299,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1314,8 +1314,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -6364,7 +6364,13 @@ void baseAnalyzer::WriteHist()
 
   cout << "Calling WriteHist() . . ." << endl;
 
+  //determine what class types are in the list
+  TString class_name;
   
+  //Set up histogram names/locations to find
+  string hist_name;
+  TString hist_dir;
+    
   //Write Data Histograms
   if(analysis_type=="data")
     {
@@ -6406,7 +6412,76 @@ void baseAnalyzer::WriteHist()
 
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
-      quality_HList->Write();
+      outROOT->mkdir("NOCUTS");
+      outROOT->mkdir("ACCP_CUTS");
+      outROOT->mkdir("ACCP+PID_CUTS");
+      outROOT->mkdir("ACCP+PID+CTIME_CUTS");
+
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+
+	outROOT->mkdir("ACCP+PID+CTIME+Q2_CUTS");
+
+	if(analysis_cut=="MF"){
+	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Em_CUTS");
+	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Em+Pm_CUTS");
+	}
+	if(analysis_cut=="SRC"){
+	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj_CUTS");
+	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS");
+	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS");
+	}
+	
+      }
+      
+      cout << "quality_HList->GetEntries() -> " << quality_HList->GetEntries() << endl;
+      // loop over each quality_plots histos
+      for(int i=0; i<quality_HList->GetEntries(); i++)
+	{
+
+	  class_name = quality_HList->At(i)->ClassName();
+
+		    
+	  //check if its a TH1F
+	  if(class_name=="TH1F") {
+
+	    // get histo name
+	    h_i = (TH1F *)quality_HList->At(i);
+	    hist_name = h_i->GetName();
+	    
+	    // check if histo name is "_noCUT"
+	    if( hist_name.find("_noCUT") != std::string::npos ){
+	      outROOT->cd("NOCUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( hist_name.find("_ACCP") != std::string::npos ){
+	      outROOT->cd("ACCP_CUTS"); h_i->Write(); 	      
+	    }
+	    
+
+
+	  } //end TH1F check
+
+	   //check if its a TH1F
+	  if(class_name=="TH2F") {
+	    h2_i = (TH2F *)quality_HList->At(i); 
+	    hist_name = h_i->GetName();
+	    
+	    if( hist_name.find("_noCUT") != std::string::npos ){
+	      outROOT->cd("NOCUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( hist_name.find("_ACCP") != std::string::npos ){
+	      outROOT->cd("ACCP_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+
+
+	  } //end TH2F check
+
+	  
+	} // end loop over list
+      
+      //quality_HList->Write();
       
       //Close File
       outROOT->Close();
