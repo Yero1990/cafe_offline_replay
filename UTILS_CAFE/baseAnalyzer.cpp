@@ -6456,14 +6456,60 @@ void baseAnalyzer::WriteHist()
 	    if( hist_name.find("_ACCP") != std::string::npos ){
 	      outROOT->cd("ACCP_CUTS"); h_i->Write(); 	      
 	    }
+	    
+	    if( hist_name.find("_ACCP_PID") != std::string::npos ){
+	      outROOT->cd("ACCP+PID_CUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( hist_name.find("_ACCP_PID_CTIME") != std::string::npos ){
+	      outROOT->cd("ACCP+PID+CTIME_CUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	      
+	      
+	      if( hist_name.find("_ACCP_PID_CTIME_Q2") != std::string::npos ){
+		outROOT->cd("ACCP+PID+CTIME+Q2_CUTS"); h_i->Write(); 	      
+	      }
+	      
+	      if(analysis_cut=="MF"){
+
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Em_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h_i->Write(); 	      
+		}
+
+	      } // end MF requirement
+	      
+	      if(analysis_cut=="SRC"){
+
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h_i->Write(); 	      
+		}
+		
+	      } // end SRC requirement
+	    
+	    } // end MF or SRC requirement
+	    
 	  } //end TH1F check
 
 	  //---------------------------------------
 	  
-	   //check if its a TH2F
-
+	  //check if its a TH2F
+	  
 	  if(class_name=="TH2F") {
-
+	    
 	    h2_i = (TH2F *)quality_HList->At(i); 
 	    hist_name = h2_i->GetName();
 	    
@@ -6475,7 +6521,53 @@ void baseAnalyzer::WriteHist()
 	      outROOT->cd("ACCP_CUTS"); h2_i->Write(); 	      
 	    }
 	    
+	    if( hist_name.find("_ACCP_PID") != std::string::npos ){
+	      outROOT->cd("ACCP+PID_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( hist_name.find("_ACCP_PID_CTIME") != std::string::npos ){
+	      outROOT->cd("ACCP+PID+CTIME_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	      
+	      
+	      if( hist_name.find("_ACCP_PID_CTIME_Q2") != std::string::npos ){
+		outROOT->cd("ACCP+PID+CTIME+Q2_CUTS"); h2_i->Write(); 	      
+	      }
+	      
+	      if(analysis_cut=="MF"){
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Em_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h2_i->Write(); 	      
+		}
+		
+	      } // end MF requirement
+	      
+	      if(analysis_cut=="SRC"){
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm") != std::string::npos ){
+		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h2_i->Write(); 	      
+		}
+		
+	      } // end SRC requirement
+	      
+	    } // end MF or SRC requirement
 
+
+	    
 
 	  } //end TH2F check
 
