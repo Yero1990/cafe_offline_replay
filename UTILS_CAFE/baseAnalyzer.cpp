@@ -1299,8 +1299,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1314,8 +1314,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -2548,8 +2548,8 @@ void baseAnalyzer::CreateHist()
   H_pbeta_fit  = new TH1F("H_shms_beta_fit", "SHMS Hodoscope Beta ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
   H_pcal_fit   = new TH1F("H_shms_cal_fit", "SHMS Calorimeter E/p-track ", pcal_nbins, pcal_xmin, pcal_xmax);
 
-  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
-  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_hdcRes_fit[npl] = new TH1F(Form("H_hDC_%s_DriftResiduals_fit", hdc_pl_names[npl].c_str()), Form("HMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", hdc_pl_names[npl].c_str()), hdcRes_nbins, hdcRes_xmin, hdcRes_xmax); }
+  for (Int_t npl = 0; npl < dc_PLANES; npl++ ) {  H_pdcRes_fit[npl] = new TH1F(Form("H_pDC_%s_DriftResiduals_fit", pdc_pl_names[npl].c_str()), Form("SHMS DC Residuals, Plane %s; Drift Residuals [cm]; Counts", pdc_pl_names[npl].c_str()), pdcRes_nbins, pdcRes_xmin, pdcRes_xmax); }
 
   // Add to TList
   quality_HList->Add(H_total_charge);  
@@ -2664,50 +2664,50 @@ void baseAnalyzer::CreateHist()
   // -- CUTS: ACCEPTANCE CUTS ONLY --
   
   // kin
-  H_ep_ctime_ACCP = new TH1F("H_ep_ctime_ACCP", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_the_ACCP      = new TH1F("H_the_ACCP", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
-  H_W_ACCP        = new TH1F("H_W_ACCP", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
-  H_Q2_ACCP       = new TH1F("H_Q2_ACCP","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-  H_xbj_ACCP      = new TH1F("H_xbj_ACCP", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-  H_nu_ACCP       = new TH1F("H_nu_ACCP","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
-  H_q_ACCP        = new TH1F("H_q_ACCP", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
-  H_thq_ACCP      = new TH1F("H_thq_ACCP", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
-  H_Em_nuc_ACCP   = new TH1F("H_Em_nuc_ACCP","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_ACCP   = new TH1F("H_Em_src_ACCP","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-  H_MM_ACCP       = new TH1F("H_MM_ACCP","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
-  H_Pm_ACCP       = new TH1F("H_Pm_ACCP","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-  H_thxq_ACCP     = new TH1F("H_thxq_ACCP", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
-  H_thrq_ACCP     = new TH1F("H_thrq_ACCP", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-  H_kf_ACCP       = new TH1F("H_kf_ACCP", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
-  H_Pf_ACCP       = new TH1F("H_Pf_ACCP", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
-  H_thx_ACCP      = new TH1F("H_thx_ACCP", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+  H_ep_ctime_ACCP = new TH1F("H_ep_ctime_ACCP_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP      = new TH1F("H_the_ACCP_CUTS", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP        = new TH1F("H_W_ACCP_CUTS", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP       = new TH1F("H_Q2_ACCP_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP      = new TH1F("H_xbj_ACCP_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP       = new TH1F("H_nu_ACCP_CUTS","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP        = new TH1F("H_q_ACCP_CUTS", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP      = new TH1F("H_thq_ACCP_CUTS", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP   = new TH1F("H_Em_nuc_ACCP_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP   = new TH1F("H_Em_src_ACCP_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP       = new TH1F("H_MM_ACCP_CUTS","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP       = new TH1F("H_Pm_ACCP_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP     = new TH1F("H_thxq_ACCP_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP     = new TH1F("H_thrq_ACCP_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP       = new TH1F("H_kf_ACCP_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP       = new TH1F("H_Pf_ACCP_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP      = new TH1F("H_thx_ACCP_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
 
   // recon.
-  H_eytar_ACCP  = new TH1F("H_eytar_ACCP", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
-  H_eyptar_ACCP = new TH1F("H_exptar_ACCP", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
-  H_exptar_ACCP = new TH1F("H_eyptar_ACCP", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
-  H_edelta_ACCP = new TH1F("H_edelta_ACCP", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
-  H_hytar_ACCP  = new TH1F("H_hytar_ACCP", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
-  H_hyptar_ACCP = new TH1F("H_hxptar_ACCP", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
-  H_hxptar_ACCP = new TH1F("H_hyptar_ACCP", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
-  H_hdelta_ACCP = new TH1F("H_hdelta_ACCP", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+  H_eytar_ACCP  = new TH1F("H_eytar_ACCP_CUTS", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP = new TH1F("H_exptar_ACCP_CUTS", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP = new TH1F("H_eyptar_ACCP_CUTS", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP = new TH1F("H_edelta_ACCP_CUTS", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP  = new TH1F("H_hytar_ACCP_CUTS", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP = new TH1F("H_hxptar_ACCP_CUTS", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP = new TH1F("H_hyptar_ACCP_CUTS", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP = new TH1F("H_hdelta_ACCP_CUTS", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
   // detector
-  H_pCalEtotTrkNorm_ACCP = new TH1F("H_pCalEtotTrkNorm_ACCP", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
-  H_pHodBetaTrk_ACCP     = new TH1F("H_pBetaTrk_ACCP", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
-  H_pNGCerNpeSum_ACCP    = new TH1F("H_pNGCerNpeSum_ACCP", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
-  H_hCalEtotTrkNorm_ACCP = new TH1F("H_hCalEtotTrkNorm_ACCP", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
-  H_hHodBetaTrk_ACCP     = new TH1F("H_hHodBetaTrk_ACCP", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
-  H_hCerNpeSum_ACCP      = new TH1F("H_hCerNpeSum_ACCP", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+  H_pCalEtotTrkNorm_ACCP = new TH1F("H_pCalEtotTrkNorm_ACCP_CUTS", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP     = new TH1F("H_pBetaTrk_ACCP_CUTS", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP    = new TH1F("H_pNGCerNpeSum_ACCP_CUTS", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP = new TH1F("H_hCalEtotTrkNorm_ACCP_CUTS", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP     = new TH1F("H_hHodBetaTrk_ACCP_CUTS", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP      = new TH1F("H_hCerNpeSum_ACCP_CUTS", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
 
   // 2d
-  H_hxfp_vs_hyfp_ACCP     = new TH2F("H_hxfp_vs_hyfp_ACCP", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-  H_exfp_vs_eyfp_ACCP     = new TH2F("H_exfp_vs_eyfp_ACCP", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-  H_hXColl_vs_hYColl_ACCP = new TH2F("H_hXColl_vs_hYColl_ACCP", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-  H_eXColl_vs_eYColl_ACCP = new TH2F("H_eXColl_vs_eYColl_ACCP", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-  H_Em_nuc_vs_Pm_ACCP     = new TH2F("H_Em_nuc_vs_Pm_ACCP", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_vs_Pm_ACCP     = new TH2F("H_Em_src_vs_Pm_ACCP", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Q2_vs_xbj_ACCP        = new TH2F("H_Q2_vs_xbj_ACCP",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_hxfp_vs_hyfp_ACCP     = new TH2F("H_hxfp_vs_hyfp_ACCP_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP     = new TH2F("H_exfp_vs_eyfp_ACCP_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP = new TH2F("H_hXColl_vs_hYColl_ACCP_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP = new TH2F("H_eXColl_vs_eYColl_ACCP_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP     = new TH2F("H_Em_nuc_vs_Pm_ACCP_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP     = new TH2F("H_Em_src_vs_Pm_ACCP_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP        = new TH2F("H_Q2_vs_xbj_ACCP_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
   
 
   quality_HList->Add( H_ep_ctime_ACCP  );
@@ -2756,50 +2756,50 @@ void baseAnalyzer::CreateHist()
   // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
   
   // kin
-  H_ep_ctime_ACCP_PID = new TH1F("H_ep_ctime_ACCP_PID", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_the_ACCP_PID      = new TH1F("H_the_ACCP_PID", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
-  H_W_ACCP_PID        = new TH1F("H_W_ACCP_PID", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
-  H_Q2_ACCP_PID       = new TH1F("H_Q2_ACCP_PID","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-  H_xbj_ACCP_PID      = new TH1F("H_xbj_ACCP_PID", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-  H_nu_ACCP_PID       = new TH1F("H_nu_ACCP_PID","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
-  H_q_ACCP_PID        = new TH1F("H_q_ACCP_PID", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
-  H_thq_ACCP_PID      = new TH1F("H_thq_ACCP_PID", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
-  H_Em_nuc_ACCP_PID   = new TH1F("H_Em_nuc_ACCP_PID","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_ACCP_PID   = new TH1F("H_Em_src_ACCP_PID","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-  H_MM_ACCP_PID       = new TH1F("H_MM_ACCP_PID","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
-  H_Pm_ACCP_PID       = new TH1F("H_Pm_ACCP_PID","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-  H_thxq_ACCP_PID     = new TH1F("H_thxq_ACCP_PID", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
-  H_thrq_ACCP_PID     = new TH1F("H_thrq_ACCP_PID", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-  H_kf_ACCP_PID       = new TH1F("H_kf_ACCP_PID", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
-  H_Pf_ACCP_PID       = new TH1F("H_Pf_ACCP_PID", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
-  H_thx_ACCP_PID      = new TH1F("H_thx_ACCP_PID", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+  H_ep_ctime_ACCP_PID = new TH1F("H_ep_ctime_ACCP_PID_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP_PID      = new TH1F("H_the_ACCP_PID_CUTS", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP_PID        = new TH1F("H_W_ACCP_PID_CUTS", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP_PID       = new TH1F("H_Q2_ACCP_PID_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP_PID      = new TH1F("H_xbj_ACCP_PID_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP_PID       = new TH1F("H_nu_ACCP_PID_CUTS","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP_PID        = new TH1F("H_q_ACCP_PID_CUTS", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP_PID      = new TH1F("H_thq_ACCP_PID_CUTS", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP_PID   = new TH1F("H_Em_nuc_ACCP_PID_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP_PID   = new TH1F("H_Em_src_ACCP_PID_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP_PID       = new TH1F("H_MM_ACCP_PID_CUTS","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP_PID       = new TH1F("H_Pm_ACCP_PID_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP_PID     = new TH1F("H_thxq_ACCP_PID_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP_PID     = new TH1F("H_thrq_ACCP_PID_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP_PID       = new TH1F("H_kf_ACCP_PID_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP_PID       = new TH1F("H_Pf_ACCP_PID_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP_PID      = new TH1F("H_thx_ACCP_PID_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
 
   // recon.
-  H_eytar_ACCP_PID  = new TH1F("H_eytar_ACCP_PID", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
-  H_eyptar_ACCP_PID = new TH1F("H_exptar_ACCP_PID", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
-  H_exptar_ACCP_PID = new TH1F("H_eyptar_ACCP_PID", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
-  H_edelta_ACCP_PID = new TH1F("H_edelta_ACCP_PID", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
-  H_hytar_ACCP_PID  = new TH1F("H_hytar_ACCP_PID", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
-  H_hyptar_ACCP_PID = new TH1F("H_hxptar_ACCP_PID", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
-  H_hxptar_ACCP_PID = new TH1F("H_hyptar_ACCP_PID", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
-  H_hdelta_ACCP_PID = new TH1F("H_hdelta_ACCP_PID", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+  H_eytar_ACCP_PID  = new TH1F("H_eytar_ACCP_PID_CUTS", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP_PID = new TH1F("H_exptar_ACCP_PID_CUTS", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP_PID = new TH1F("H_eyptar_ACCP_PID_CUTS", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP_PID = new TH1F("H_edelta_ACCP_PID_CUTS", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP_PID  = new TH1F("H_hytar_ACCP_PID_CUTS", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP_PID = new TH1F("H_hxptar_ACCP_PID_CUTS", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP_PID = new TH1F("H_hyptar_ACCP_PID_CUTS", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP_PID = new TH1F("H_hdelta_ACCP_PID_CUTS", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
   // detector
-  H_pCalEtotTrkNorm_ACCP_PID = new TH1F("H_pCalEtotTrkNorm_ACCP_PID", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
-  H_pHodBetaTrk_ACCP_PID     = new TH1F("H_pBetaTrk_ACCP_PID", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
-  H_pNGCerNpeSum_ACCP_PID    = new TH1F("H_pNGCerNpeSum_ACCP_PID", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
-  H_hCalEtotTrkNorm_ACCP_PID = new TH1F("H_hCalEtotTrkNorm_ACCP_PID", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
-  H_hHodBetaTrk_ACCP_PID     = new TH1F("H_hHodBetaTrk_ACCP_PID", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
-  H_hCerNpeSum_ACCP_PID      = new TH1F("H_hCerNpeSum_ACCP_PID", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+  H_pCalEtotTrkNorm_ACCP_PID = new TH1F("H_pCalEtotTrkNorm_ACCP_PID_CUTS", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP_PID     = new TH1F("H_pBetaTrk_ACCP_PID_CUTS", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP_PID    = new TH1F("H_pNGCerNpeSum_ACCP_PID_CUTS", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP_PID = new TH1F("H_hCalEtotTrkNorm_ACCP_PID_CUTS", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP_PID     = new TH1F("H_hHodBetaTrk_ACCP_PID_CUTS", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP_PID      = new TH1F("H_hCerNpeSum_ACCP_PID_CUTS", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
 
   // 2d
-  H_hxfp_vs_hyfp_ACCP_PID     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-  H_exfp_vs_eyfp_ACCP_PID     = new TH2F("H_exfp_vs_eyfp_ACCP_PID", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-  H_hXColl_vs_hYColl_ACCP_PID = new TH2F("H_hXColl_vs_hYColl_ACCP_PID", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-  H_eXColl_vs_eYColl_ACCP_PID = new TH2F("H_eXColl_vs_eYColl_ACCP_PID", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-  H_Em_nuc_vs_Pm_ACCP_PID     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_vs_Pm_ACCP_PID     = new TH2F("H_Em_src_vs_Pm_ACCP_PID", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Q2_vs_xbj_ACCP_PID        = new TH2F("H_Q2_vs_xbj_ACCP_PID",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_hxfp_vs_hyfp_ACCP_PID     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP_PID     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP_PID = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP_PID = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP_PID     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP_PID     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP_PID        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
   
 
   quality_HList->Add( H_ep_ctime_ACCP_PID  );
@@ -2851,50 +2851,50 @@ void baseAnalyzer::CreateHist()
   // -- CUTS: ACCEPTANCE + PID + COIN.TIME CUT ONLY --
   
   // kin
-  H_ep_ctime_ACCP_PID_CTIME = new TH1F("H_ep_ctime_ACCP_PID_CTIME", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_the_ACCP_PID_CTIME      = new TH1F("H_the_ACCP_PID_CTIME", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
-  H_W_ACCP_PID_CTIME        = new TH1F("H_W_ACCP_PID_CTIME", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
-  H_Q2_ACCP_PID_CTIME       = new TH1F("H_Q2_ACCP_PID_CTIME","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-  H_xbj_ACCP_PID_CTIME      = new TH1F("H_xbj_ACCP_PID_CTIME", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-  H_nu_ACCP_PID_CTIME       = new TH1F("H_nu_ACCP_PID_CTIME","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
-  H_q_ACCP_PID_CTIME        = new TH1F("H_q_ACCP_PID_CTIME", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
-  H_thq_ACCP_PID_CTIME      = new TH1F("H_thq_ACCP_PID_CTIME", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
-  H_Em_nuc_ACCP_PID_CTIME   = new TH1F("H_Em_nuc_ACCP_PID_CTIME","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_ACCP_PID_CTIME   = new TH1F("H_Em_src_ACCP_PID_CTIME","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-  H_MM_ACCP_PID_CTIME       = new TH1F("H_MM_ACCP_PID_CTIME","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
-  H_Pm_ACCP_PID_CTIME       = new TH1F("H_Pm_ACCP_PID_CTIME","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-  H_thxq_ACCP_PID_CTIME     = new TH1F("H_thxq_ACCP_PID_CTIME", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
-  H_thrq_ACCP_PID_CTIME     = new TH1F("H_thrq_ACCP_PID_CTIME", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-  H_kf_ACCP_PID_CTIME       = new TH1F("H_kf_ACCP_PID_CTIME", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
-  H_Pf_ACCP_PID_CTIME       = new TH1F("H_Pf_ACCP_PID_CTIME", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
-  H_thx_ACCP_PID_CTIME      = new TH1F("H_thx_ACCP_PID_CTIME", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
+  H_ep_ctime_ACCP_PID_CTIME = new TH1F("H_ep_ctime_ACCP_PID_CTIME_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_the_ACCP_PID_CTIME      = new TH1F("H_the_ACCP_PID_CTIME_CUTS", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
+  H_W_ACCP_PID_CTIME        = new TH1F("H_W_ACCP_PID_CTIME_CUTS", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
+  H_Q2_ACCP_PID_CTIME       = new TH1F("H_Q2_ACCP_PID_CTIME_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_ACCP_PID_CTIME      = new TH1F("H_xbj_ACCP_PID_CTIME_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_nu_ACCP_PID_CTIME       = new TH1F("H_nu_ACCP_PID_CTIME_CUTS","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_q_ACCP_PID_CTIME        = new TH1F("H_q_ACCP_PID_CTIME_CUTS", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
+  H_thq_ACCP_PID_CTIME      = new TH1F("H_thq_ACCP_PID_CTIME_CUTS", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
+  H_Em_nuc_ACCP_PID_CTIME   = new TH1F("H_Em_nuc_ACCP_PID_CTIME_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_ACCP_PID_CTIME   = new TH1F("H_Em_src_ACCP_PID_CTIME_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+  H_MM_ACCP_PID_CTIME       = new TH1F("H_MM_ACCP_PID_CTIME_CUTS","Missing Mass, M_{miss}", MM_nbins, MM_xmin, MM_xmax);        
+  H_Pm_ACCP_PID_CTIME       = new TH1F("H_Pm_ACCP_PID_CTIME_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+  H_thxq_ACCP_PID_CTIME     = new TH1F("H_thxq_ACCP_PID_CTIME_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
+  H_thrq_ACCP_PID_CTIME     = new TH1F("H_thrq_ACCP_PID_CTIME_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_kf_ACCP_PID_CTIME       = new TH1F("H_kf_ACCP_PID_CTIME_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
+  H_Pf_ACCP_PID_CTIME       = new TH1F("H_Pf_ACCP_PID_CTIME_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
+  H_thx_ACCP_PID_CTIME      = new TH1F("H_thx_ACCP_PID_CTIME_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
 
   // recon.
-  H_eytar_ACCP_PID_CTIME  = new TH1F("H_eytar_ACCP_PID_CTIME", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
-  H_eyptar_ACCP_PID_CTIME = new TH1F("H_exptar_ACCP_PID_CTIME", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
-  H_exptar_ACCP_PID_CTIME = new TH1F("H_eyptar_ACCP_PID_CTIME", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
-  H_edelta_ACCP_PID_CTIME = new TH1F("H_edelta_ACCP_PID_CTIME", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
-  H_hytar_ACCP_PID_CTIME  = new TH1F("H_hytar_ACCP_PID_CTIME", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
-  H_hyptar_ACCP_PID_CTIME = new TH1F("H_hxptar_ACCP_PID_CTIME", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
-  H_hxptar_ACCP_PID_CTIME = new TH1F("H_hyptar_ACCP_PID_CTIME", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
-  H_hdelta_ACCP_PID_CTIME = new TH1F("H_hdelta_ACCP_PID_CTIME", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
+  H_eytar_ACCP_PID_CTIME  = new TH1F("H_eytar_ACCP_PID_CTIME_CUTS", Form("%s Y_{tar}; Y_{tar} [cm]; Counts ", e_arm_name.Data()), eytar_nbins, eytar_xmin, eytar_xmax);
+  H_eyptar_ACCP_PID_CTIME = new TH1F("H_exptar_ACCP_PID_CTIME_CUTS", Form("%s X'_{tar}; X'_{tar} [rad]; Counts ", e_arm_name.Data()), exptar_nbins, exptar_xmin, exptar_xmax);
+  H_exptar_ACCP_PID_CTIME = new TH1F("H_eyptar_ACCP_PID_CTIME_CUTS", Form("%s Y'_{tar}; Y'_{tar} [rad]; Counts ", e_arm_name.Data()), eyptar_nbins, eyptar_xmin, eyptar_xmax);
+  H_edelta_ACCP_PID_CTIME = new TH1F("H_edelta_ACCP_PID_CTIME_CUTS", Form("%s Momentum Acceptance, #delta; #delta [%%]; Counts ", e_arm_name.Data()), edelta_nbins, edelta_xmin, edelta_xmax);
+  H_hytar_ACCP_PID_CTIME  = new TH1F("H_hytar_ACCP_PID_CTIME_CUTS", Form("%s  Y_{tar}; Y_{tar} [cm]; Counts ", h_arm_name.Data()), hytar_nbins, hytar_xmin, hytar_xmax);
+  H_hyptar_ACCP_PID_CTIME = new TH1F("H_hxptar_ACCP_PID_CTIME_CUTS", Form("%s  X'_{tar}; X'_{tar} [rad]; Counts ", h_arm_name.Data()), hxptar_nbins, hxptar_xmin, hxptar_xmax);
+  H_hxptar_ACCP_PID_CTIME = new TH1F("H_hyptar_ACCP_PID_CTIME_CUTS", Form("%s  Y'_{tar}; Y'_{tar} [rad]; Counts ", h_arm_name.Data()), hyptar_nbins, hyptar_xmin, hyptar_xmax );
+  H_hdelta_ACCP_PID_CTIME = new TH1F("H_hdelta_ACCP_PID_CTIME_CUTS", Form("%s  Momentum Acceptance, #delta; #delta [%%]; Counts ", h_arm_name.Data()), hdelta_nbins, hdelta_xmin, hdelta_xmax);
 
   // detector
-  H_pCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_pCalEtotTrkNorm_ACCP_PID_CTIME", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
-  H_pHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_pBetaTrk_ACCP_PID_CTIME", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
-  H_pNGCerNpeSum_ACCP_PID_CTIME    = new TH1F("H_pNGCerNpeSum_ACCP_PID_CTIME", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
-  H_hCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_hCalEtotTrkNorm_ACCP_PID_CTIME", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
-  H_hHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_hHodBetaTrk_ACCP_PID_CTIME", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
-  H_hCerNpeSum_ACCP_PID_CTIME      = new TH1F("H_hCerNpeSum_ACCP_PID_CTIME", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
+  H_pCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_pCalEtotTrkNorm_ACCP_PID_CTIME_CUTS", "SHMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);
+  H_pHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_pBetaTrk_ACCP_PID_CTIME_CUTS", "SHMS Hodo #beta (golden track); #beta (golden track); Counts ", pbeta_nbins, pbeta_xmin, pbeta_xmax);
+  H_pNGCerNpeSum_ACCP_PID_CTIME    = new TH1F("H_pNGCerNpeSum_ACCP_PID_CTIME_CUTS", "SHMS Noble Gas Cherenkov NPE Sum; Cherenkov NPE Sum; Counts  ", pngcer_nbins, pngcer_xmin, pngcer_xmax);
+  H_hCalEtotTrkNorm_ACCP_PID_CTIME = new TH1F("H_hCalEtotTrkNorm_ACCP_PID_CTIME_CUTS", "HMS Calorimeter Total Normalized Track Energy; E_{tot} / P_{trk}; Counts ", hcal_nbins, hcal_xmin, hcal_xmax);
+  H_hHodBetaTrk_ACCP_PID_CTIME     = new TH1F("H_hHodBetaTrk_ACCP_PID_CTIME_CUTS", "HMS Hodo #beta (golden track); #beta (golden track); Counts ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
+  H_hCerNpeSum_ACCP_PID_CTIME      = new TH1F("H_hCerNpeSum_ACCP_PID_CTIME_CUTS", "HMS Cherenkov NPE Sum; Cherenkov NPE Sum; Counts ", hcer_nbins, hcer_xmin, hcer_xmax);
 
   // 2d
-  H_hxfp_vs_hyfp_ACCP_PID_CTIME     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-  H_exfp_vs_eyfp_ACCP_PID_CTIME     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-  H_hXColl_vs_hYColl_ACCP_PID_CTIME = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-  H_eXColl_vs_eYColl_ACCP_PID_CTIME = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-  H_Em_nuc_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Em_src_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Q2_vs_xbj_ACCP_PID_CTIME        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_hxfp_vs_hyfp_ACCP_PID_CTIME     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+  H_exfp_vs_eyfp_ACCP_PID_CTIME     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+  H_hXColl_vs_hYColl_ACCP_PID_CTIME = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+  H_eXColl_vs_eYColl_ACCP_PID_CTIME = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+  H_Em_nuc_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Em_src_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+  H_Q2_vs_xbj_ACCP_PID_CTIME        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
   
 
   quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME  );
@@ -2942,20 +2942,20 @@ void baseAnalyzer::CreateHist()
 
   if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
-    H_ep_ctime_ACCP_PID_CTIME_Q2         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-    H_Q2_ACCP_PID_CTIME_Q2               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-    H_xbj_ACCP_PID_CTIME_Q2              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-    H_Em_nuc_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-    H_Em_src_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-    H_Pm_ACCP_PID_CTIME_Q2               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-    H_thrq_ACCP_PID_CTIME_Q2             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+    H_ep_ctime_ACCP_PID_CTIME_Q2         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+    H_Q2_ACCP_PID_CTIME_Q2               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+    H_xbj_ACCP_PID_CTIME_Q2              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+    H_Em_nuc_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Em_src_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+    H_Pm_ACCP_PID_CTIME_Q2               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+    H_thrq_ACCP_PID_CTIME_Q2             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+    H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+    H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+    H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+    H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+    H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+    H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
     
     quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2         );
     quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2               );
@@ -2977,20 +2977,20 @@ void baseAnalyzer::CreateHist()
     if( (analysis_cut=="MF") ) {
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY --
-      H_ep_ctime_ACCP_PID_CTIME_Q2_Em         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Em", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-      H_Q2_ACCP_PID_CTIME_Q2_Em               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Em","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-      H_xbj_ACCP_PID_CTIME_Q2_Em              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Em", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-      H_Em_nuc_ACCP_PID_CTIME_Q2_Em           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Em","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_ACCP_PID_CTIME_Q2_Em           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-      H_Pm_ACCP_PID_CTIME_Q2_Em               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-      H_thrq_ACCP_PID_CTIME_Q2_Em             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      H_ep_ctime_ACCP_PID_CTIME_Q2_Em         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Em_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+      H_Q2_ACCP_PID_CTIME_Q2_Em               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Em_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2_Em              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Em_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2_Em           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Em_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2_Em           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2_Em               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2_Em             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
       
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Em         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Em               );
@@ -3008,20 +3008,20 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em        );
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY --
-      H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-      H_Q2_ACCP_PID_CTIME_Q2_Em_Pm               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Em_Pm","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-      H_xbj_ACCP_PID_CTIME_Q2_Em_Pm              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Em_Pm", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-      H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-      H_Pm_ACCP_PID_CTIME_Q2_Em_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em_Pm","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-      H_thrq_ACCP_PID_CTIME_Q2_Em_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em_Pm", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+      H_Q2_ACCP_PID_CTIME_Q2_Em_Pm               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2_Em_Pm              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2_Em_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2_Em_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
       
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Em_Pm               );
@@ -3047,20 +3047,20 @@ void baseAnalyzer::CreateHist()
     if( (analysis_cut=="SRC") ) {
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY --
-      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-      H_Q2_ACCP_PID_CTIME_Q2_Xbj               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-      H_xbj_ACCP_PID_CTIME_Q2_Xbj              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_ACCP_PID_CTIME_Q2_Xbj           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-      H_Pm_ACCP_PID_CTIME_Q2_Xbj               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-      H_thrq_ACCP_PID_CTIME_Q2_Xbj             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+      H_Q2_ACCP_PID_CTIME_Q2_Xbj               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2_Xbj              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2_Xbj           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2_Xbj               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2_Xbj             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
       
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj               );
@@ -3078,20 +3078,20 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj        );
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + thrq CUT ONLY --
-      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-      H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-      H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+      H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
       
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq               );
@@ -3111,20 +3111,20 @@ void baseAnalyzer::CreateHist()
 
 
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + thrq +Pm CUT ONLY --
-      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-      H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-      H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
-      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
-      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
-      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
-      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
-      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
-      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
-      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
-      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+      H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+      H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               = new TH1F("H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+      H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm              = new TH1F("H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+      H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           = new TH1F("H_Em_nuc_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
+      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
+      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
+      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
+      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
+      H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = new TH2F("H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
+      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
+      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
       
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               );
@@ -6068,7 +6068,7 @@ void baseAnalyzer::ApplyWeight()
   
   
   //Full Weight
-  //FullWeight = 1. / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig * tgtBoil_corr * hadAbs_corr);
+  //FullWeight = pre-scale factor / (total_charge_bcm_cut * hTrkEff * pTrkEff * tLT_trig * tgtBoil_corr * hadAbs_corr);
 
   // FOR CAFE: Scaling by charge, inefficiencies, etc. should be done after histogram objects are saved,
   // since each of these values are stored on a run-by-run basis, they can be applied later on.
@@ -6381,6 +6381,7 @@ void baseAnalyzer::WriteHist()
       outROOT = new TFile(data_OutputFileName, "RECREATE");
 
       //Make directories to store histograms based on category
+      outROOT->mkdir("quality_plots");
       outROOT->mkdir("pid_plots");
       outROOT->mkdir("kin_plots");
       outROOT->mkdir("accp_plots");
@@ -6388,7 +6389,6 @@ void baseAnalyzer::WriteHist()
       outROOT->mkdir("rand_plots");
       outROOT->mkdir("randSub_plots");
 
-      outROOT->mkdir("quality_plots");
       
       //Write PID histos to pid_plots directory
       outROOT->cd("pid_plots");
@@ -6412,24 +6412,24 @@ void baseAnalyzer::WriteHist()
 
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
-      outROOT->mkdir("FITS");
-      outROOT->mkdir("NOCUTS");
-      outROOT->mkdir("ACCP_CUTS");
-      outROOT->mkdir("ACCP+PID_CUTS");
-      outROOT->mkdir("ACCP+PID+CTIME_CUTS");
+      outROOT->mkdir("quality_plots/FITS");
+      outROOT->mkdir("quality_plots/NOCUTS");
+      outROOT->mkdir("quality_plots/ACCP_CUTS");
+      outROOT->mkdir("quality_plots/ACCP+PID_CUTS");
+      outROOT->mkdir("quality_plots/ACCP+PID+CTIME_CUTS");
 
       if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
 
-	outROOT->mkdir("ACCP+PID+CTIME+Q2_CUTS");
+	outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2_CUTS");
 
 	if(analysis_cut=="MF"){
-	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Em_CUTS");
-	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Em+Pm_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS");
 	}
 	if(analysis_cut=="SRC"){
-	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj_CUTS");
-	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS");
-	  outROOT->mkdir("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS");
 	}
 	
       }
@@ -6456,57 +6456,57 @@ void baseAnalyzer::WriteHist()
 	    
 	    // check if histo name is "_fit"
 	    if( hist_name.find("_fit") != std::string::npos ){
-	      outROOT->cd("FITS"); h_i->Write(); 	      
+	      outROOT->cd("quality_plots/FITS"); h_i->Write(); 	      
 	    }
 	    
 	    // check if histo name is "_noCUT"
 	    if( hist_name.find("_noCUT") != std::string::npos ){
-	      outROOT->cd("NOCUTS"); h_i->Write(); 	      
+	      outROOT->cd("quality_plots/NOCUTS"); h_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP") != std::string::npos ){
-	      outROOT->cd("ACCP_CUTS"); h_i->Write(); 	      
+	    if( hist_name.find("_ACCP_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP_CUTS"); h_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP_PID") != std::string::npos ){
-	      outROOT->cd("ACCP+PID_CUTS"); h_i->Write(); 	      
+	    if( hist_name.find("_ACCP_PID_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID_CUTS"); h_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP_PID_CTIME") != std::string::npos ){
-	      outROOT->cd("ACCP+PID+CTIME_CUTS"); h_i->Write(); 	      
+	    if( hist_name.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h_i->Write(); 	      
 	    }
 	    
 	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
 	      
 	      
-	      if( hist_name.find("_ACCP_PID_CTIME_Q2") != std::string::npos ){
-		outROOT->cd("ACCP+PID+CTIME+Q2_CUTS"); h_i->Write(); 	      
+	      if( hist_name.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+		outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h_i->Write(); 	      
 	      }
 	      
 	      if(analysis_cut=="MF"){
 
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Em_CUTS"); h_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h_i->Write(); 	      
 		}
 
 	      } // end MF requirement
 	      
 	      if(analysis_cut=="SRC"){
 
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj_CUTS"); h_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h_i->Write(); 	      
 		}
 		
 	      } // end SRC requirement
@@ -6525,52 +6525,52 @@ void baseAnalyzer::WriteHist()
 	    hist_name = h2_i->GetName();
 	    
 	    if( hist_name.find("_noCUT") != std::string::npos ){
-	      outROOT->cd("NOCUTS"); h2_i->Write(); 	      
+	      outROOT->cd("quality_plots/NOCUTS"); h2_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP") != std::string::npos ){
-	      outROOT->cd("ACCP_CUTS"); h2_i->Write(); 	      
+	    if( hist_name.find("_ACCP_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP_CUTS"); h2_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP_PID") != std::string::npos ){
-	      outROOT->cd("ACCP+PID_CUTS"); h2_i->Write(); 	      
+	    if( hist_name.find("_ACCP_PID_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID_CUTS"); h2_i->Write(); 	      
 	    }
 	    
-	    if( hist_name.find("_ACCP_PID_CTIME") != std::string::npos ){
-	      outROOT->cd("ACCP+PID+CTIME_CUTS"); h2_i->Write(); 	      
+	    if( hist_name.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h2_i->Write(); 	      
 	    }
 	    
 	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
 	      
 	      
-	      if( hist_name.find("_ACCP_PID_CTIME_Q2") != std::string::npos ){
-		outROOT->cd("ACCP+PID+CTIME+Q2_CUTS"); h2_i->Write(); 	      
+	      if( hist_name.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+		outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h2_i->Write(); 	      
 	      }
 	      
 	      if(analysis_cut=="MF"){
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Em_CUTS"); h2_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h2_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h2_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h2_i->Write(); 	      
 		}
 		
 	      } // end MF requirement
 	      
 	      if(analysis_cut=="SRC"){
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj_CUTS"); h2_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h2_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h2_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h2_i->Write(); 	      
 		}
 		
-		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm") != std::string::npos ){
-		  outROOT->cd("ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h2_i->Write(); 	      
+		if( hist_name.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h2_i->Write(); 	      
 		}
 		
 	      } // end SRC requirement
@@ -7602,10 +7602,10 @@ void baseAnalyzer::CombineHistos()
     outROOT = new TFile(data_OutputFileName_combined, "RECREATE");
     
     //Make directories to store histograms based on category
+    outROOT->mkdir("quality_plots");
     outROOT->mkdir("pid_plots");
     outROOT->mkdir("kin_plots");
     outROOT->mkdir("accp_plots");
-    outROOT->mkdir("quality_plots");
     
     if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
       outROOT->mkdir("rand_plots");
