@@ -5812,7 +5812,17 @@ void baseAnalyzer::CalcEff()
   //open skim output ROOTfile to write run run constants
   //
   //========================================================
-  
+
+  /*
+    // Example of how to read a TVectorT object 
+    
+    _file0->ls()              // list objects in directory (optional, but helps)
+    
+    // need to put path to where object is
+    TVectorT<double> *charge_bcm1 = (TVectorT<double>*)_file0->Get("beam_charge/total_charge_bcm1_mC") 
+    double charge = (*charge_bcm1)[0];
+  */
+ 
   outROOT = new TFile( data_OutputFileName_skim.Data(), "UPDATE");
   
   outROOT->mkdir("beam_charge");
