@@ -14,7 +14,9 @@ Data / SIMC comparisons for  C(e,e'p)
 
 
 Plot kinematics varaible (run-by-run) with all cuts and normalized by luminosity (Q*targ_thick) ):  xbj, Q2, Pm, Emiss  
-* For each kin. variable [xbj, Q2, Pm, Emiss], overlay light nuclei (be9, b10, b11, c12) for MF, and SRC separately --> 2 plots (MF, SRC) / kin. var,  4 targets overlayed / plot
+* For each kin. variable [xbj, Q2, Pm, Emiss],
+* overlay light nuclei (be9, b10, b11, c12) for MF, and SRC separately
+* --> 2 plots (MF, SRC) / kin. var,  4 targets overlayed / plot
 
 (Carlos will plot it run-by-run)
 (Dien will plot it for combined runs using the skimmed files)

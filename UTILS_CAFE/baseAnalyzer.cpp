@@ -7100,6 +7100,8 @@ void baseAnalyzer::WriteOfflineReport()
       cout << "Report File does NOT exist, will create one . . . " << endl;
     }
 
+    tgt_areal_density =  tgt_density *  tgt_thickness;
+    
     out_file.open(output_ReportFileName);
     out_file << Form("# Run %d Offline Data Analysis Report", run)<< endl;
     out_file << "                                     " << endl;
@@ -7130,7 +7132,10 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << "" << endl;
     out_file << Form("beam_energy [GeV]: %.4f          ", beam_energy ) << endl;          
     out_file << Form("target_name: %s                       ", tgt_type.Data() ) << endl;
-    out_file << Form("target_amu: %.6f                 ", tgt_mass        ) << endl;      
+    out_file << Form("target_amu: %.6f                 ", tgt_mass        ) << endl;
+    out_file << Form("target_density [g/cm3]: %.4f                 ", tgt_density  ) << endl;
+    out_file << Form("target_thickness [cm]: %.4f                  ", tgt_thickness  ) << endl;
+    out_file << Form("target_areal_density [g/cm2]: %.4f           ", tgt_areal_density  ) << endl;
     out_file << "" << endl;      
     out_file << Form("hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
     out_file << Form("hms_h_momentum [GeV/c]: %.4f             ",  hms_p ) << endl;
@@ -7139,7 +7144,8 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("shms_e_particle_mass [GeV]: %.6f          ",  shms_part_mass ) << endl;          
     out_file << Form("shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
     out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
-    out_file << "" << endl;      
+    out_file << "" << endl;
+    out_file << Form("# BCM used in analysis: %s " , bcm_type.Data()) << endl;
     out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
