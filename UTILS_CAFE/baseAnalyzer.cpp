@@ -6456,15 +6456,16 @@ void baseAnalyzer::WriteHist()
 	    if( hist_name.find("_ACCP") != std::string::npos ){
 	      outROOT->cd("ACCP_CUTS"); h_i->Write(); 	      
 	    }
-	    
-
-
 	  } //end TH1F check
 
-	   //check if its a TH1F
+	  //---------------------------------------
+	  
+	   //check if its a TH2F
+
 	  if(class_name=="TH2F") {
+
 	    h2_i = (TH2F *)quality_HList->At(i); 
-	    hist_name = h_i->GetName();
+	    hist_name = h2_i->GetName();
 	    
 	    if( hist_name.find("_noCUT") != std::string::npos ){
 	      outROOT->cd("NOCUTS"); h2_i->Write(); 	      
