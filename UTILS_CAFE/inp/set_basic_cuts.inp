@@ -237,7 +237,7 @@ c_d2MF_Em_max = 0.1
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied ONLY for A>2 nuclei)
 Em_MF_cut_flag = 1
 c_MF_Em_min = -0.02
-c_MF_Em_max = 0.180
+c_MF_Em_max = 0.1
 
 #---- CaFe-Specific A(e,e'p) SRC Kinematics Cuts -----
 
