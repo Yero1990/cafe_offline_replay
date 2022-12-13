@@ -32,3 +32,9 @@ Double ratios (Carlos):
 (integrated missing momentum normalized by charge using the .csv file)
 (SRC_A / SRC_C12) / (MF_A / MF_C12) vs.  N/Z 
 
+
+
+* SRC Weekly meeting:
+1) show sequence of cuts slides
+2) show missing energy vs. missing momentum for all nuclei (MF and SRC)
+

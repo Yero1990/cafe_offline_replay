@@ -7638,9 +7638,11 @@ void baseAnalyzer::CombineHistos()
     }
 
 
+    /*
     // ---- add total charge ----
     outROOT->cd("quality_plots");
     H_total_charge->Write();
+    */
     
     //Write PID histos to pid_plots directory
     outROOT->cd("pid_plots");
@@ -7687,6 +7689,7 @@ void baseAnalyzer::CombineHistos()
 
     cout << "ROOTfile (opened in READ mode): " << data_OutputFileName_combined.Data() << endl;
 
+    /*
     // ---- add total charge ----
 
     string hname; 
@@ -7709,6 +7712,7 @@ void baseAnalyzer::CombineHistos()
       }
     
     //---------------------------------
+    */
     
     //------------------------------------------
     //Lopp over pid_HList of histogram objects

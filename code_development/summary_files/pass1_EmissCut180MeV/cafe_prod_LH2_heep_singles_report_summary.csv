@@ -1,0 +1,23 @@
+#-------------------------------------
+#        Data Analysis Summary        
+#-------------------------------------
+#                                     
+#                                     
+# target_name: LH2        kin_type:  heep_singles            
+# target_amu: 1.007940                 
+# beam_energy [GeV]: 10.5494          
+#
+# hms_h_particle_mass [GeV]: 0.938272          
+# hms_h_momentum [GeV/c]: 1.8200             
+# hms_h_angle [deg]: -48.3000                  
+#
+# shms_e_particle_mass [GeV]: 0.000511          
+# shms_e_momentum [GeV/c]: 8.5500             
+# shms_e_angle [deg]: 8.3000                  
+#
+# BCM1_Current_Threshold [uA]: >5.00 
+# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       
+#                       
+run,beam_time,charge,avg_current,total_Yield,total_Yield_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err
+16967,214.509,2.155,10.044,42113.000,205.215,0.996,0.000,1.012,0.001,0.943,0.060,130.250,37.369,29.303,0.578,0.198,3.309,3.294,0.025,0.023,2138.000,224.000,513.0,9.0,-1.0,-1.0,0.992,0.051,1.001,0.032,227.281,226.270,227.094,217.949,246.888,248.396,226.188,227.828,213.626,216.092,220.935,227.848,1.420,1.547,1.552,1.586,1.657,1.696,1.463,1.450,1.520,1.557,1.450,1.590
+16966,164.765,2.123,12.885,19844.000,140.869,0.994,0.000,0.927,0.002,0.962,0.097,166.588,49.077,37.959,0.739,0.256,2.086,2.069,0.016,0.014,1643.000,93.000,513.0,17.0,-1.0,-1.0,0.993,0.052,1.010,0.035,237.012,235.397,238.923,228.005,254.956,256.863,228.935,231.644,214.072,222.870,221.512,228.500,1.751,1.681,1.707,1.760,1.820,1.823,1.604,1.532,1.644,1.812,1.614,1.719
