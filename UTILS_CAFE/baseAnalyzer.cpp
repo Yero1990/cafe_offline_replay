@@ -7638,11 +7638,10 @@ void baseAnalyzer::CombineHistos()
     }
 
 
-    /*
-    // ---- add total charge ----
+   
+    // ---- Write Quality hsitos to directory ----
     outROOT->cd("quality_plots");
-    H_total_charge->Write();
-    */
+    quality_HList->Write(); 
     
     //Write PID histos to pid_plots directory
     outROOT->cd("pid_plots");
@@ -7689,30 +7688,47 @@ void baseAnalyzer::CombineHistos()
 
     cout << "ROOTfile (opened in READ mode): " << data_OutputFileName_combined.Data() << endl;
 
-    /*
-    // ---- add total charge ----
 
-    string hname; 
+
+
+    //------------------------------------------
+    //Lopp over quality_HList of histogram objects
+    //------------------------------------------
     for(int i=0; i<quality_HList->GetEntries(); i++)
-      {	 
-	class_name = quality_HList->At(i)->ClassName();		    
-	//check if its a TH1F
+      {
+	
+	//Determine object data type (as of now, either TH1F or TH2F are possible)
+	class_name = quality_HList->At(i)->ClassName();
+	
+	cout << "Looping over quality_HList objects: " << i << " / " << quality_HList->GetEntries() << endl;
+	
+	//Read ith histograms in the list from current run
 	if(class_name=="TH1F") {
-	  // get histo name
+	  //Get histogram from current run
 	  h_i = (TH1F *)quality_HList->At(i);
-	  hname = h_i->GetName();
-	  hist_dir = Form("quality_plots/%s", hname.c_str());
+	  hist_name = h_i->GetName();
+	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
+	  hist_dir = "quality_plots/" + hist_name;  
+	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
+	  outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       	   
 	  
-	  // check if histo name is "_charge"
-	  if( hname.find("_charge") != std::string::npos ){
-	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	
-	    
-	  }
 	}
-      }
-    
-    //---------------------------------
-    */
+	
+	if(class_name=="TH2F") {
+	  //Get histogram from current run
+	  h2_i = (TH2F *)quality_HList->At(i);  
+	  hist_name = h2_i->GetName();
+	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
+	  hist_dir = "quality_plots/" + hist_name;  
+	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
+	  outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       
+	  
+	}
+	
+      }//end loop over quality_HList
+
+    //--------------------------------------------------------------------------------------------
+
     
     //------------------------------------------
     //Lopp over pid_HList of histogram objects
