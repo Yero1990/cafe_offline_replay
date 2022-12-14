@@ -1299,8 +1299,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1314,8 +1314,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -1682,60 +1682,104 @@ void baseAnalyzer::ReadReport()
   if(abs(temp_var-MH_amu)<=max_diff){
     tgt_type = "LH2";
     tgt_mass = MH_amu; tgt_density = rho_H; tgt_thickness = thick_H;
-
+    N = 0;
+    Z = 1;
+    A = N+Z;
+    T = T_H;
     
   }
   
   else if(abs(temp_var-MD_amu)<=max_diff){
     tgt_type = "LD2";
     tgt_mass = MD_amu; tgt_density = rho_D; tgt_thickness = thick_D;
+    N = 1;
+    Z = 1;
+    A = N+Z;
+    T = T_D;
 
   }
   
   else if(abs(temp_var-MBe9_amu)<=max_diff){
     tgt_type = "Be9";
-    tgt_mass = MBe9_amu; tgt_density = rho_Be9; tgt_thickness = thick_Be9;    
+    tgt_mass = MBe9_amu; tgt_density = rho_Be9; tgt_thickness = thick_Be9;
+    N = 5;
+    Z = 4;
+    A = N+Z;
+    T = T_Be9;
+
   }
   
   else if(abs(temp_var-MB10_amu)<=max_diff){
     tgt_type = "B10";
     tgt_mass = MB10_amu; tgt_density = rho_B10; tgt_thickness = thick_B10;
+    N = 5;
+    Z = 5;
+    A = N+Z;
+    T = T_B10;
+
   }
   
   else if(abs(temp_var-MB11_amu)<=max_diff){
     tgt_type = "B11";
     tgt_mass = MB11_amu; tgt_density = rho_B11; tgt_thickness = thick_B11;
+    N = 6;
+    Z = 5;
+    A = N+Z;
+    T = T_B11;
   }
  
   else if(abs(temp_var-MC12_amu)<=max_diff){    
     if(analysis_cut=="optics") {tgt_type = "C12_optics";}
     else{tgt_type = "C12";}
     tgt_mass = MC12_amu; tgt_density = rho_C12; tgt_thickness = thick_C12;
+    N = 6;
+    Z = 6;
+    A = N+Z;
+    T = T_C12;
   }
   
   else if(abs(temp_var-MAl27_amu)<=max_diff){ 
     tgt_type = "Al27";
     tgt_mass = MAl27_amu;  tgt_density = rho_Al27; tgt_thickness = thick_Al27;
+    N = 14;
+    Z = 13;
+    A = N+Z;
+    
   }
 
   else if(abs(temp_var-MCa40_amu)<=max_diff){
     tgt_type = "Ca40";
     tgt_mass = MCa40_amu; tgt_density = rho_Ca40; tgt_thickness = thick_Ca40;
+    N = 20;
+    Z = 20;
+    A = N+Z;
+    T = T_Ca40;
   }
 
   else if(abs(temp_var-MCa48_amu)<=max_diff){
     tgt_type = "Ca48";
     tgt_mass = MCa48_amu; tgt_density = rho_Ca48; tgt_thickness = thick_Ca48;
+    N = 28;
+    Z = 20;
+    A = N+Z;
+    T = T_Ca48;
   }
 
   else if(abs(temp_var-MFe54_amu)<=max_diff){
     tgt_type = "Fe54"; 
     tgt_mass = MFe54_amu; tgt_density = rho_Fe54; tgt_thickness = thick_Fe54;
+    N = 28;
+    Z = 26;
+    A = N+Z;
+    T = T_Fe54;
   }
 
   else if(abs(temp_var-MTi48_amu)<=max_diff){
     tgt_type = "Ti48";
     tgt_mass = MTi48_amu; tgt_density = rho_Ti48; tgt_thickness = thick_Ti48;
+    N = 26;
+    Z = 22;
+    A = N+Z;
   }
   
   else{
@@ -6239,23 +6283,23 @@ void baseAnalyzer::ScaleSIMC(TString target="")
   Double_t scale_factor;
 
   // determine scale factors for various targets (scale c12 MF simulation by other targets)
-  if(target=="Be9" && analysis_cut=="MF")  scale_factor = ( T("Be9") / T("C12") ) * ( sig_A("Be9") / sig_A("C12") ) ;
-  if(target=="B10" && analysis_cut=="MF")  scale_factor = ( T("B10") / T("C12") ) * ( sig_A("B10") / sig_A("C12") ) ;
-  if(target=="B11" && analysis_cut=="MF")  scale_factor = ( T("B11") / T("C12") ) * ( sig_A("B11") / sig_A("C12") ) ;
+  if(target=="Be9" && analysis_cut=="MF")  scale_factor = ( Transparency("Be9") / Transparency("C12") ) * ( sig_A("Be9") / sig_A("C12") ) ;
+  if(target=="B10" && analysis_cut=="MF")  scale_factor = ( Transparency("B10") / Transparency("C12") ) * ( sig_A("B10") / sig_A("C12") ) ;
+  if(target=="B11" && analysis_cut=="MF")  scale_factor = ( Transparency("B11") / Transparency("C12") ) * ( sig_A("B11") / sig_A("C12") ) ;
 
-  if(target=="Ca40" && analysis_cut=="MF")  scale_factor = ( T("Ca40") / T("C12") ) * ( sig_A("Ca40") / sig_A("C12") ) ;
-  if(target=="Ca48" && analysis_cut=="MF")  scale_factor = ( T("Ca48") / T("C12") ) * ( sig_A("Ca48") / sig_A("C12") ) ;
-  if(target=="Fe54" && analysis_cut=="MF")  scale_factor = ( T("Fe54") / T("C12") ) * ( sig_A("Fe54") / sig_A("C12") ) ;
+  if(target=="Ca40" && analysis_cut=="MF")  scale_factor = ( Transparency("Ca40") / Transparency("C12") ) * ( sig_A("Ca40") / sig_A("C12") ) ;
+  if(target=="Ca48" && analysis_cut=="MF")  scale_factor = ( Transparency("Ca48") / Transparency("C12") ) * ( sig_A("Ca48") / sig_A("C12") ) ;
+  if(target=="Fe54" && analysis_cut=="MF")  scale_factor = ( Transparency("Fe54") / Transparency("C12") ) * ( sig_A("Fe54") / sig_A("C12") ) ;
 
 
   // determine scale factors for various targets (scale deuteron SRC simulation by other targets)
-  if(target=="Be9" && analysis_cut=="SRC") scale_factor = ( T("Be9") / T("LD2") ) * ( sig_A("Be9") / sig_A("LD2") ) * a2("Be9") ;
-  if(target=="B10" && analysis_cut=="SRC") scale_factor = ( T("B10") / T("LD2") ) * ( sig_A("B10") / sig_A("LD2") ) * a2("B10") ;
-  if(target=="B11" && analysis_cut=="SRC") scale_factor = ( T("B11") / T("LD2") ) * ( sig_A("B11") / sig_A("LD2") ) * a2("B11") ;
+  if(target=="Be9" && analysis_cut=="SRC") scale_factor = ( Transparency("Be9") / Transparency("LD2") ) * ( sig_A("Be9") / sig_A("LD2") ) * a2("Be9") ;
+  if(target=="B10" && analysis_cut=="SRC") scale_factor = ( Transparency("B10") / Transparency("LD2") ) * ( sig_A("B10") / sig_A("LD2") ) * a2("B10") ;
+  if(target=="B11" && analysis_cut=="SRC") scale_factor = ( Transparency("B11") / Transparency("LD2") ) * ( sig_A("B11") / sig_A("LD2") ) * a2("B11") ;
 
-  if(target=="Ca40" && analysis_cut=="SRC") scale_factor = ( T("Ca40") / T("LD2") ) * ( sig_A("Ca40") / sig_A("LD2") ) * a2("Ca40") ;
-  if(target=="Ca48" && analysis_cut=="SRC") scale_factor = ( T("Ca48") / T("LD2") ) * ( sig_A("Ca48") / sig_A("LD2") ) * a2("Ca48") ;
-  if(target=="Fe54" && analysis_cut=="SRC") scale_factor = ( T("Fe54") / T("LD2") ) * ( sig_A("Fe54") / sig_A("LD2") ) * a2("Fe54") ;
+  if(target=="Ca40" && analysis_cut=="SRC") scale_factor = ( Transparency("Ca40") / Transparency("LD2") ) * ( sig_A("Ca40") / sig_A("LD2") ) * a2("Ca40") ;
+  if(target=="Ca48" && analysis_cut=="SRC") scale_factor = ( Transparency("Ca48") / Transparency("LD2") ) * ( sig_A("Ca48") / sig_A("LD2") ) * a2("Ca48") ;
+  if(target=="Fe54" && analysis_cut=="SRC") scale_factor = ( Transparency("Fe54") / Transparency("LD2") ) * ( sig_A("Fe54") / sig_A("LD2") ) * a2("Fe54") ;
 
 
   
@@ -6399,9 +6443,12 @@ void baseAnalyzer::WriteHist()
       outROOT->mkdir("kin_plots");
       outROOT->mkdir("accp_plots");
 
-      outROOT->mkdir("rand_plots");
-      outROOT->mkdir("randSub_plots");
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
+	outROOT->mkdir("rand_plots");
+	outROOT->mkdir("randSub_plots");
+      }
 
+      
       
       //Write PID histos to pid_plots directory
       outROOT->cd("pid_plots");
@@ -6414,15 +6461,17 @@ void baseAnalyzer::WriteHist()
       //Write Acceptance histos to accp_plots directory
       outROOT->cd("accp_plots");
       accp_HList->Write();
-      
-      //Write selected Random histos to rand_plots directory
-      outROOT->cd("rand_plots");
-      rand_HList->Write();
-      
-      //Write selected Random-Subtracted histos to randSub_plots directory
-      outROOT->cd("randSub_plots");
-      randSub_HList->Write();
 
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
+	//Write selected Random histos to rand_plots directory
+	outROOT->cd("rand_plots");
+	rand_HList->Write();
+	
+	//Write selected Random-Subtracted histos to randSub_plots directory
+	outROOT->cd("randSub_plots");
+	randSub_HList->Write();
+      }
+      
       //Write calibration quality check histos to quality_plots directory
       outROOT->cd("quality_plots");
       outROOT->mkdir("quality_plots/FITS");
@@ -7139,7 +7188,13 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("target_density [g/cm3]: %.4f                 ", tgt_density  ) << endl;
     out_file << Form("target_thickness [cm]: %.4f                  ", tgt_thickness  ) << endl;
     out_file << Form("target_areal_density [g/cm2]: %.4f           ", tgt_areal_density  ) << endl;
-    out_file << "" << endl;      
+    out_file << "" << endl;
+    out_file << "# Number of Nucleons" << endl;
+    out_file << "N: " << N << endl;
+    out_file << "Z: " << Z << endl;
+    out_file << "A: " << A << endl;
+    out_file << "transparency: " << T << endl;
+    out_file << "" << endl;
     out_file << Form("hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
     out_file << Form("hms_h_momentum [GeV/c]: %.4f             ",  hms_p ) << endl;
     out_file << Form("hms_h_angle [deg]: %.4f                  ",  hms_angle ) << endl;          
@@ -7516,6 +7571,11 @@ void baseAnalyzer::WriteReportSummary()
       out_file << Form("# target_thickness [cm]: %.4f      ", tgt_thickness     ) << endl;
       out_file << Form("# target_areal_density [g/cm2]: %.4f",  tgt_areal_density    ) << endl;
       out_file << "#" << endl;
+      out_file << "# N: " << N << endl;
+      out_file << "# Z: " << Z << endl;
+      out_file << "# A: " << A << endl;
+      out_file << "# transparency: " << T << endl;      
+      out_file << "#" << endl;
       out_file << Form("# beam_energy [GeV]: %.4f          ", beam_energy ) << endl;            
       out_file << "#" << endl;      
       out_file << Form("# hms_h_particle_mass [GeV]: %.6f          ",  hms_part_mass ) << endl;          
@@ -7639,9 +7699,7 @@ void baseAnalyzer::CombineHistos()
 
 
    
-    // ---- Write Quality hsitos to directory ----
-    outROOT->cd("quality_plots");
-    quality_HList->Write(); 
+
     
     //Write PID histos to pid_plots directory
     outROOT->cd("pid_plots");
@@ -7665,7 +7723,187 @@ void baseAnalyzer::CombineHistos()
       outROOT->cd("randSub_plots");
       randSub_HList->Write();
     }
-    
+
+
+      //Write calibration quality check histos to quality_plots directory
+
+    //determine what class types are in the list
+    TString class_name;
+    string hist_name_qual;
+    TString hist_dir;
+
+      outROOT->cd("quality_plots");
+      outROOT->mkdir("quality_plots/FITS");
+      outROOT->mkdir("quality_plots/NOCUTS");
+      outROOT->mkdir("quality_plots/ACCP_CUTS");
+      outROOT->mkdir("quality_plots/ACCP+PID_CUTS");
+      outROOT->mkdir("quality_plots/ACCP+PID+CTIME_CUTS");
+
+      if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	
+	outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2_CUTS");
+	
+	if(analysis_cut=="MF"){
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS");
+	}
+	if(analysis_cut=="SRC"){
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS");
+	  outROOT->mkdir("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS");
+	}
+	
+      }
+
+
+       // loop over each quality_plots histos
+      for(int i=0; i<quality_HList->GetEntries(); i++)
+	{
+
+	  class_name = quality_HList->At(i)->ClassName();
+
+		    
+	  //check if its a TH1F
+	  if(class_name=="TH1F") {
+
+	    // get histo name
+	    h_i = (TH1F *)quality_HList->At(i);
+	    hist_name_qual = h_i->GetName();
+
+	    // check if histo name is "_charge"
+	    if( hist_name_qual.find("_charge") != std::string::npos ){
+	      h_i->Write(); 	      
+	    }
+	    
+	    // check if histo name is "_fit"
+	    if( hist_name_qual.find("_fit") != std::string::npos ){
+	      outROOT->cd("quality_plots/FITS"); h_i->Write(); 	      
+	    }
+	    
+	    // check if histo name is "_noCUT"
+	    if( hist_name_qual.find("_noCUT") != std::string::npos ){
+	      outROOT->cd("quality_plots/NOCUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP_CUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_PID_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID_CUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h_i->Write(); 	      
+	    }
+	    
+	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	      
+	      
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+		outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h_i->Write(); 	      
+	      }
+	      
+	      if(analysis_cut=="MF"){
+
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h_i->Write(); 	      
+		}
+
+	      } // end MF requirement
+	      
+	      if(analysis_cut=="SRC"){
+
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h_i->Write(); 	      
+		}
+		
+	      } // end SRC requirement
+	    
+	    } // end MF or SRC requirement
+	    
+	  } //end TH1F check
+
+	  //---------------------------------------
+	  
+	  //check if its a TH2F
+	  
+	  if(class_name=="TH2F") {
+	    
+	    h2_i = (TH2F *)quality_HList->At(i); 
+	    hist_name_qual = h2_i->GetName();
+	    
+	    if( hist_name_qual.find("_noCUT") != std::string::npos ){
+	      outROOT->cd("quality_plots/NOCUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_PID_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( hist_name_qual.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	      outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h2_i->Write(); 	      
+	    }
+	    
+	    if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	      
+	      
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+		outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h2_i->Write(); 	      
+	      }
+	      
+	      if(analysis_cut=="MF"){
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h2_i->Write(); 	      
+		}
+		
+	      } // end MF requirement
+	      
+	      if(analysis_cut=="SRC"){
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h2_i->Write(); 	      
+		}
+		
+		if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		  outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h2_i->Write(); 	      
+		}
+		
+	      } // end SRC requirement
+	      
+	    } // end MF or SRC requirement
+	  
+	  } //end TH2F check
+
+	  
+	} // end loop over list
+
+      
     outROOT->Close();
     
   }
@@ -7681,13 +7919,13 @@ void baseAnalyzer::CombineHistos()
     
     //Set up histogram names/locations to find
     TString hist_name;
+    string hist_name_qual;
     TString hist_dir;
     
     
     outROOT = new TFile(data_OutputFileName_combined.Data(), "READ");  
 
     cout << "ROOTfile (opened in READ mode): " << data_OutputFileName_combined.Data() << endl;
-
 
 
 
@@ -7704,26 +7942,158 @@ void baseAnalyzer::CombineHistos()
 	
 	//Read ith histograms in the list from current run
 	if(class_name=="TH1F") {
+	  
 	  //Get histogram from current run
 	  h_i = (TH1F *)quality_HList->At(i);
-	  hist_name = h_i->GetName();
-	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
-	  hist_dir = "quality_plots/" + hist_name;  
-	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
-	  outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       	   
+	  hist_name_qual = h_i->GetName();
+
+	  if( hist_name_qual.find("_fit") != std::string::npos ) continue;
 	  
-	}
-	
+	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
+	  hist_dir = Form("quality_plots/%s", hist_name_qual.c_str());  
+
+	  cout << "hist_dir --> " <<  hist_dir.Data() << endl;
+	  
+	  // check if histo name is "_charge"
+	  if( hist_name_qual.find("_charge") != std::string::npos ){
+	    cout << "found _charge " << endl;
+	    cout << "hist_name_qual --> " << hist_name_qual.c_str() << endl;
+	    //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       	   
+	  }
+
+	  // check if histo name is "_noCUT"
+	  if( hist_name_qual.find("_noCUT") != std::string::npos ){
+	    hist_dir = Form("quality_plots/NOCUTS/%s", hist_name_qual.c_str());  
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/NOCUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( hist_name_qual.find("_ACCP_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP_CUTS/%s", hist_name_qual.c_str());  
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( hist_name_qual.find("_ACCP_PID_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP+PID_CUTS/%s", hist_name_qual.c_str());  
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( hist_name_qual.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP+PID+CTIME_CUTS/%s", hist_name_qual.c_str());  
+	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+	  
+	  if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+
+	    if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+	      hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2_CUTS/%s", hist_name_qual.c_str());  
+	      outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	    }
+
+
+	    if(analysis_cut=="MF"){
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	      
+	      }
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		 hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	      
+	      }
+
+	    } // end MF requrement
+
+	    if(analysis_cut=="SRC"){
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		 hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	      		
+	      }
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	      		
+	      }
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS/%s", hist_name_qual.c_str()); 			       
+		outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	      		
+	      }
+	      
+	    } // end only SRC requirement	   	    
+	    
+	  }
+
+	}// end TH1F
+
 	if(class_name=="TH2F") {
+
 	  //Get histogram from current run
 	  h2_i = (TH2F *)quality_HList->At(i);  
-	  hist_name = h2_i->GetName();
-	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
-	  hist_dir = "quality_plots/" + hist_name;  
-	  //Get cumulative histogram object stored in ROOTfile and add the h_i (histogram from ith run) to h_total (cumulative histogram) 
-	  outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       
+	  hist_name_qual = h2_i->GetName();
 	  
-	}
+	  //full path to histogram must be given, otherwise, histogram will NOT be retreived from ROOTfile
+	  hist_dir = Form("quality_plots/%s", hist_name_qual.c_str());  
+
+	  if( hist_name_qual.find("_noCUT") != std::string::npos ){
+	    hist_dir = Form("quality_plots/NOCUTS/%s", hist_name_qual.c_str()); 
+	    outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/NOCUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");	       
+	  }
+
+	  if( hist_name_qual.find("_ACCP_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP_CUTS/%s", hist_name_qual.c_str());
+	    outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( hist_name_qual.find("_ACCP_PID_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP+PID_CUTS/%s", hist_name_qual.c_str()); 
+	    outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( hist_name_qual.find("_ACCP_PID_CTIME_CUTS") != std::string::npos ){
+	    hist_dir = Form("quality_plots/ACCP+PID+CTIME_CUTS/%s", hist_name_qual.c_str());  
+	    outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	  }
+
+	  if( (analysis_cut=="MF") || (analysis_cut=="SRC")  ){
+	    
+	    if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_CUTS") != std::string::npos ){
+	      hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2_CUTS/%s", hist_name_qual.c_str());  
+	      outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	    }
+
+	    if(analysis_cut=="MF"){
+
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS/%s", hist_name_qual.c_str());
+		outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	      }
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Em_Pm_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	      }	      
+
+	    } // end MF requirement
+
+	    if(analysis_cut=="SRC"){
+	      
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	      }
+
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	      }
+
+	      if( hist_name_qual.find("_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS") != std::string::npos ){
+		hist_dir = Form("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS/%s", hist_name_qual.c_str()); 
+		outROOT->GetObject(hist_dir, h2_total); h2_total->Add(h2_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS"); h2_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");
+	      }
+	      
+	    } // end SRC requirement
+
+	  }
+	  
+	} // end TH2F
 	
       }//end loop over quality_HList
 

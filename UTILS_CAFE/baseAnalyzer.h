@@ -118,18 +118,23 @@ protected:
   //target length (thickness) (cm) obtained from D. Meekins table on Hall C 2022 targets
   //https://docs.google.com/spreadsheets/d/1GoHMHbCv3v6CbVybqTQws-4VhQeSifFP/edit#gid=140150071
 
-
+  // # of nucleons
+  Int_t N;  // neutrons
+  Int_t Z;  // protons
+  Int_t A;  // A = N+Z nucleons
+  Double_t T = 0.0 ; //transparency placeholder
+  
   //target density (g/cm^3)
   Double_t tgt_density = 0.0;  // generic variable to hold target density
   Double_t rho_H    = 0.07231;   
   Double_t rho_D    = 0.167;   
-  Double_t rho_Be9  = 1.848; 
-  Double_t rho_B10  = 2.29; 
-  Double_t rho_B11  = 2.52; 
-  Double_t rho_C12  = 1.8; 
-  Double_t rho_Al27 = 2.699;
-  Double_t rho_Ca40 = 1.55;
-  Double_t rho_Ca48 = 1.86;
+  Double_t rho_Be9  = 1.848; //
+  Double_t rho_B10  = 2.352; // 
+  Double_t rho_B11  = 2.434; // 
+  Double_t rho_C12  = 1.8;  //
+  Double_t rho_Al27 = 2.699; //
+  Double_t rho_Ca40 = 1.55; //
+  Double_t rho_Ca48 = 1.86; //
   Double_t rho_Fe54 = 7.87;
   Double_t rho_Ti48 = 4.5;
 
@@ -137,44 +142,45 @@ protected:
   Double_t tgt_thickness = 0.0;  // generic variable to hold target thickness
   Double_t thick_H    = 10.;   
   Double_t thick_D    = 10.;
-  Double_t thick_Be9  = 0.5292;
-  Double_t thick_B10  = 0.2498;
-  Double_t thick_B11  = 0.2516;
-  Double_t thick_C12  = 0.2911;
-  Double_t thick_Al27 = 0.1541;
-  Double_t thick_Ca40 = 0.5161;
-  Double_t thick_Ca48 = 0.4301;
-  Double_t thick_Fe54 = 0.528;
+  Double_t thick_Be9  = 0.5335; //
+  Double_t thick_B10  = 0.245; //
+  Double_t thick_B11  = 0.26; //
+  Double_t thick_C12  = 0.3188; //
+  Double_t thick_Al27 = 0.0889; // 0.0889 (uptream), 0.0874 (downstream) 
+  Double_t thick_Ca40 = 0.5065; //
+  Double_t thick_Ca48 = 0.565; //
+  Double_t thick_Fe54 = 0.04663; // 
   Double_t thick_Ti48 = 0.718;
 
   //target areal density (g/cm^2)
-  Double_t sig_H    = rho_H   * thick_H;
+  Double_t sig_H    = rho_H   * thick_H; 
   Double_t sig_D    = rho_D   * thick_D;
-  Double_t sig_Be9  = rho_Be9 * thick_Be9;
-  Double_t sig_B10  = rho_B10 * thick_B10;
-  Double_t sig_B11  = rho_B11 * thick_B11;
-  Double_t sig_C12  = rho_C12 * thick_C12;
-  Double_t sig_Al27 = rho_Al27 * thick_Al27;
-  Double_t sig_Ca40 = rho_Ca40 * thick_Ca40;
-  Double_t sig_Ca48 = rho_Ca48 * thick_Ca48;
-  Double_t sig_Fe54 = rho_Fe54 * thick_Fe54;
-  Double_t sig_Ti48 = rho_Ti48 * thick_Ti48;
+  Double_t sig_Be9  = rho_Be9 * thick_Be9;   // 0.986
+  Double_t sig_B10  = rho_B10 * thick_B10;   // 0.576
+  Double_t sig_B11  = rho_B11 * thick_B11;   // 0.633
+  Double_t sig_C12  = rho_C12 * thick_C12;   // 0.574
+  Double_t sig_Al27 = rho_Al27 * thick_Al27; // 0.240 (upstream), 0.236 (downstream)
+  Double_t sig_Ca40 = rho_Ca40 * thick_Ca40; // 0.785
+  Double_t sig_Ca48 = rho_Ca48 * thick_Ca48; // 1.051
+  Double_t sig_Fe54 = rho_Fe54 * thick_Fe54; // 0.367
+  Double_t sig_Ti48 = rho_Ti48 * thick_Ti48; // 0.294
 
-  
-  Double_t T(TString target=""){
+  // nuclear transparency factors (prob. that hit proton exits the nucleus)
+  Double_t T_H    = 1.;
+  Double_t T_D    = 1.; 
+  Double_t T_Be9  = 0.6;
+  Double_t T_B10  = 0.6;
+  Double_t T_B11  = 0.6;
+  Double_t T_C12  = 0.6;
+  Double_t T_Ca40 = 0.43;
+  Double_t T_Ca48 = 0.37;
+  Double_t T_Fe54 = 0.36;
+
+  Double_t Transparency(TString target=""){
 
     // helper function to return nuclear transparency of target
     
-    // nuclear transparency factors (prob. that hit proton exits the nucleus)
-    Double_t T_H    = 1.;
-    Double_t T_D    = 1.; 
-    Double_t T_Be9  = 0.6;
-    Double_t T_B10  = 0.6;
-    Double_t T_B11  = 0.6;
-    Double_t T_C12  = 0.56;
-    Double_t T_Ca40 = 0.4;
-    Double_t T_Ca48 = 0.4;
-    Double_t T_Fe54 = 0.4;
+
 
     if(target=="h")         return T_H;
     else if(target=="d2")   return T_D;
