@@ -92,9 +92,9 @@ ePctime_cut_flag = 1
 ePctime_cut_min = -2.5
 ePctime_cut_max = 2.5
 
-# accidental window selection (right of main coin. peak)
+# accidental window selection (right of main coin. peak) choose additional events to the right of accidentals for MF,SRC to lower random stats
 ePctime_cut_min_R = 2.6
-ePctime_cut_max_R = 5.1
+ePctime_cut_max_R = 15.3
 
 # accidental window selection (left of main coin. peak)
 ePctime_cut_min_L = -2.6
