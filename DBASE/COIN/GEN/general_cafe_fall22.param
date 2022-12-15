@@ -35,10 +35,12 @@ cminch=2.54
 ; General SHMS parameter files
 ; Note: shmsflags.param includes spectrometer offsets and options.
 ; Note: pcana includes the spectrometer recon. optics file being used
-#include "PARAM/SHMS/GEN/fall22/pcana_cafe.param"
+;#include "PARAM/SHMS/GEN/fall22/pcana_cafe.param"
+#include "PARAM/SHMS/GEN/fall22/pcana_cafe_optimized.param"
 #include "PARAM/SHMS/GEN/pdebug.param"
 #include "PARAM/SHMS/GEN/p_fadc_debug.param"
-#include "PARAM/SHMS/GEN/fall22/shmsflags_cafe.param"
+;#include "PARAM/SHMS/GEN/fall22/shmsflags_cafe.param"
+#include "PARAM/SHMS/GEN/fall22/shmsflags_cafe_optimized.param" 
 #include "PARAM/SHMS/GEN/fall22/ptracking_cafe.param"
 #include "PARAM/SHMS/GEN/fall22/p_reftime_cut_cafe.param"
 

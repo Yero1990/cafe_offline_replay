@@ -40,7 +40,7 @@ fi
 
 # 15/02/22 - SJDK - Added the swif2 workflow as a variable you can specify here
 #Workflow="cafe_aug08_${USER}" # Change this as desired
-Workflow="cafe_official_${USER}" # Change this as desired
+Workflow="cafe_replay_${USER}" # Change this as desired
 
 # Input run numbers, this just points to a file which is a list of run numbers, one number per line
 inputFile="${inputFile}${RunList}"

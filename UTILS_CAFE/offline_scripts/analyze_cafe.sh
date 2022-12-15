@@ -26,9 +26,9 @@ ana_type=${ana_type%%.sh}
 
 
 # Main User Input
-runNum=$1     # run number
-ana_cut=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC",
-evtNum=$3     # number of events to replay (optional, but will default to all events if none specified)
+# runNum=$1     # run number
+# ana_cut=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC",
+# evtNum=$3     # number of events to replay (optional, but will default to all events if none specified)
 
 printDataHelpMsg(){
     echo "" 
@@ -65,6 +65,11 @@ printSIMCHelpMsg(){
 # DATA Help Message / Usage
 if [ "${ana_type}" = "data" ]; then
     
+    # Main User Input      
+    runNum=$1     # run number  
+    ana_cut=$2   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC", 
+    evtNum=$3     # number of events to replay (optional, but will default to all events if none specified)   
+
     if [ -z "$1" ] || [ -z "$2" ]; then     
 
 	printDataHelpMsg	
@@ -86,20 +91,26 @@ fi
 
 # SIMC Help Message / Usage
 if [ "${ana_type}" = "simc" ]; then
-    
-    if [ -z "$2" ] || [ -z "$3" ]; then     
+
+    # Main User Input    
+    runNum=-1
+    ana_cut=$1   # CaFe kinematics type, set by user:  "heep_singles", "heep_coin",  "MF", "SRC",    
+    evtNum=$2     # number of events to replay (optional, but will default to all events if none specified)    
+
+    if [ -z "$1" ] || [ -z "$2" ]; then     
 	
 	printSIMCHelpMsg	
 	exit 0
 	# fool-proof make sure only options: bcm_calib, lumi, optics, heep_singles, heep_coin, MF, SRC are used
     elif [ [ "$ana_cut" == "heep_singles" ] ||  [ "$ana_cut" == "heep_coin" ] || [ "$ana_cut" == "MF" ] || [ "$ana_cut" == "SRC" ] ]; then 
-	echo "" 
+	echo ""
     else
 	printSIMCHelpMsg	
 	exit 0
     fi
 
-    if [ -z "$3" ]; then 
+    if [ -z "$2" ]; then 
+	echo "defaulting to -1 (all) events . . ."
 	evtNum=-1
     fi
 fi

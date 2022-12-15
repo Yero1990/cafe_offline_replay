@@ -39,6 +39,26 @@ SW_BCM4A_Charge  : {P.BCM4A.scalerChargeCut/1000.:%.3f} mC
 NOTE: Will need to narrow down to specific triggers we will use, once
 we know which ones correspond to: SHMS EL-REAL, HMS 3/4,  and SHMS EL-REAL x HMS 3/4 coincidence
 
+                                 
+-------------------------
+SPECTROMETER MISPOINTING
+-------------------------                                                              
+
+hHMS X Mispointing   : {hmispointing_x} cm               
+hHMS Y Mispointing   : {hmispointing_y} cm                                                                                                                                                               
+pSHMS X Mispointing   : {pmispointing_x} cm           
+pSHMS Y Mispointing   : {pmispointing_y} cm
+
+
+-----------------------------------
+CALIBRATED BEAM POSITIONS @ TARGET
+-----------------------------------
+hHMS X BPM   : {h_XBPM_AVG} cm 
+hHMS Y BPM   : {h_YBPM_AVG} cm 
+
+pSHMS X BPM   : {p_XBPM_AVG} cm  
+pSHMS Y BPM   : {p_YBPM_AVG} cm 
+
 ------------------
 Pre-Scale Factors
 ------------------

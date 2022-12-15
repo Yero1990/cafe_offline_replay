@@ -11,6 +11,7 @@
 echo "Running as ${USER}"
 #RunList=$1
 
+# user input
 targ=$1
 ana_cut=$2
 RunList="${targ}_${ana_cut}.txt"
@@ -66,12 +67,12 @@ cp /dev/null ${batch}
 echo "PROJECT: c-comm2017" >> ${batch} # Or whatever your project is!
 echo "TRACK: analysis" >> ${batch} ## Use this track for production running
 #echo "TRACK: debug" >> ${batch} ### Use this track for testing, higher priority
-echo "JOBNAME: cafe_${runNum}_${RunList}" >> ${batch} ## Change to be more specific if you want
+echo "JOBNAME: cafe_${targ}_${ana_cut}" >> ${batch} ## Change to be more specific if you want
 # Request double the tape file size in space, for trunctuated replays edit down as needed
 # Note, unless this is set typically replays will produce broken root files
 echo "DISK_SPACE: 5 GB" >> ${batch}
 echo "MEMORY: 10000 MB" >> ${batch} 
-echo "CPU: 2" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
+echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/analyze_cafe_data.sh ${targ} ${ana_cut} ${MAXEVENTS}"  >> ${batch}
 # simulation script (will need to make alternate submittion script for simulation)
 #echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/hallc_simulations/simulate.py" >> ${batch}

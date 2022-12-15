@@ -1299,9 +1299,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
-      
+      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
@@ -1314,8 +1315,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -5505,7 +5507,7 @@ void baseAnalyzer::EventLoop()
 	    H_nu     ->Fill(nu, FullWeight);
 	    H_q      ->Fill(q, FullWeight);	  
 	    H_thq    ->Fill(th_q/dtr, FullWeight);
-	    //H_phq    ->Fill(ph_q/dtr, FullWeight);
+	    H_phq    ->Fill(ph_q/dtr, FullWeight);
 	    
 	    //Fill Secondary Kin Histos
 	    H_Em       ->Fill(Em, FullWeight);
@@ -5519,7 +5521,7 @@ void baseAnalyzer::EventLoop()
 	    H_thxq     ->Fill(th_xq/dtr, FullWeight);
 	    H_thrq     ->Fill(th_rq/dtr, FullWeight);
 	    H_phxq     ->Fill(ph_xq/dtr, FullWeight);
-	    // H_phrq     ->Fill(ph_rq/dtr, FullWeight);
+	    H_phrq     ->Fill(ph_rq/dtr, FullWeight);
 
 	    	    
 	    //----------------------------------------------------------------------
