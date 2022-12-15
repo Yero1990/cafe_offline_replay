@@ -176,7 +176,8 @@ if [ "${ana_type}" = "data" ]; then
 	filename="UTILS_CAFE/runlist/${target}_${kin}.txt"
 
 	for run in $(cat $filename) ; do    
-
+	    
+	    
 	    echo "reading run ----> ${run}" 
 	    # Default arguments (not required by user as input, unless the user sets as command-line arguments)
 	    daq_mode="coin"
@@ -199,32 +200,30 @@ if [ "${ana_type}" = "data" ]; then
                                    \\\"${bcm_type}\\\", ${bcm_thrs},
                                    \\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
                      )\""
-	    {
-		echo ""
-		echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-		echo "" 
-		date
-		echo ""
-		echo ""
-		echo "Running CaFe Replay Analysis on the run ${run}:"
-		echo " -> SCRIPT:  ${prod_script}"
-		echo " -> RUN:     ${run}"
-		echo " -> NEVENTS: ${evt}"
-		echo " -> COMMAND: ${run_cafe}"
-		echo ""
-		echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-		
-		sleep 2
-		eval ${run_cafe}
-		 
-	    }
+
+	    echo "---------------- 2nd Line in LOOP ---------------"
+	    echo ""
+	    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+	    echo "" 
+	    date
+	    echo ""
+	    echo ""
+	    echo "Running CaFe Replay Analysis on the run ${run}:"
+	    echo " -> SCRIPT:  ${prod_script}"
+	    echo " -> RUN:     ${run}"
+	    echo " -> NEVENTS: ${evt}"
+	    echo " -> COMMAND: ${run_cafe}"
+	    echo ""
+	    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+	    
+	    sleep 2
+	    eval ${run_cafe}
+	    
+	    
 	    
 	done
-	
     fi
-    
 fi
-
 
 
 
@@ -247,48 +246,48 @@ if [ "${ana_type}" = "simc" ]; then
     if [ -z "$3" ]; then 
 	evtNum=-1
     fi
+
+    # Default arguments (not required by user as input, unless the user sets as command-line arguments)
+    daq_mode="coin"
+    e_arm="SHMS"
+    hel_flag=0
+    bcm_type="BCM1"
+    bcm_thrs=5             # beam current threhsold cut > bcm_thrs [uA]
+    trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
+    trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
+    combine_runs=0
+    
+    # cafe analysis script
+    prod_script="UTILS_CAFE/main_analysis.cpp"
+    
+    # command to run analysis script ( if doing SIMC, all arguments except e_arm, ana_type and ana_cu are irrelevant )
+    run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},           
+            	                           \\\"${daq_mode}\\\",  \\\"${e_arm}\\\",  
+                   	                    \\\"${ana_type}\\\", \\\"${ana_cut}\\\",
+                            	      	        ${hel_flag},                        
+                                   		\\\"${bcm_type}\\\", ${bcm_thrs},
+                                   		\\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
+                     			     )\""
+    
+    # Start data  analysis
+    {
+	
+	echo "" 
+	echo ""
+	echo ""
+	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+	echo ""
+	echo "Running CaFe Data Analysis for replayed run ${runNum}:"
+	echo " -> SCRIPT:  ${prod_script}"
+	echo " -> RUN:     ${runNum}"
+	echo " -> COMMAND: ${run_cafe}"
+	echo ""
+	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+	echo "" 
+	echo ""
+	echo ""
+	eval ${run_cafe}
+	
+    }
+
 fi
-
-
-# Default arguments (not required by user as input, unless the user sets as command-line arguments)
-daq_mode="coin"
-e_arm="SHMS"
-hel_flag=0
-bcm_type="BCM1"
-bcm_thrs=5             # beam current threhsold cut > bcm_thrs [uA]
-trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
-trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
-combine_runs=0
-
-# cafe analysis script
-prod_script="UTILS_CAFE/main_analysis.cpp"
-
-# command to run analysis script ( if doing SIMC, all arguments except e_arm, ana_type and ana_cu are irrelevant )
-run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},           
-                                    \\\"${daq_mode}\\\",  \\\"${e_arm}\\\",  
-                                   \\\"${ana_type}\\\", \\\"${ana_cut}\\\",
-                                    ${hel_flag},                        
-                                   \\\"${bcm_type}\\\", ${bcm_thrs},
-                                   \\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
-                     )\""
-
-# Start data  analysis
-{
-
-    echo "" 
-    echo ""
-    echo ""
-    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-    echo ""
-    echo "Running CaFe Data Analysis for replayed run ${runNum}:"
-    echo " -> SCRIPT:  ${prod_script}"
-    echo " -> RUN:     ${runNum}"
-    echo " -> COMMAND: ${run_cafe}"
-    echo ""
-    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-    echo "" 
-    echo ""
-    echo ""
-    eval ${run_cafe}
-
-}
