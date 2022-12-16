@@ -34,6 +34,8 @@ of the submitted jobs
 #delete workflow
 swif2 cancel -workflow $workflow_name -delete
 
+#cancel a specific job id                                                                                                                                                                     
+swif2 abandon-jobs -workflow $workflow_name $job_id 
 
 #--------------------
 Copying files to cache (and write-through tape) for regular backups
