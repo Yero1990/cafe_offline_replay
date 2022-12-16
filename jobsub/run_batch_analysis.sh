@@ -53,7 +53,12 @@ Workflow="cafe_analysis_${USER}" # Change this as desired
 # Input run numbers, this just points to a file which is a list of run numbers, one number per line
 inputFile="${inputFile}${RunList}"
 
-
+if test -f "$inputFile"; then
+    echo "Reading the input file: ${inputFile}" 
+else
+    echo "${inputFile} does NOT EXIST !"
+    exit 0
+fi
 # Output batch job text file, this is the script that is submitted as part of the job, 
 # change the name of this as you want. Preferably, you should have different script name for each job so that you don't get any overwriting weirdness##
 #batch="${USER}_${runNum}_Job.txt"
