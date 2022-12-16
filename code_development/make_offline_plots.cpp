@@ -36,6 +36,7 @@ void make_offline_plots(int run=0, int evt=0, Bool_t simc_exist=0, TString tgt_t
   //Open SIMC/data ROOT files;
   TFile *simc_file = NULL;
   TFile *data_file = NULL;
+  
   if(simc_exist) simc_file = new TFile(simc_file_path.Data());
   data_file = new TFile(data_file_path.Data());
 
