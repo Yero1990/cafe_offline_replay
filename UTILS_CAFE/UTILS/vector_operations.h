@@ -143,8 +143,8 @@ double vavgw(std::vector<double> v, std::vector<double> v_err, double &err_w){
   // weighted average: v_weighted = sum { v_i * weight_i } / sum { weight_i }
   v_avg = num / den;
   
-  // error of weighted average is: 1. / sum { 1 / v_err^{2} } =  1. / sum { weights }
-  v_avg_err =  1. / vsum( weight) ;
+  // error of weighted average is: sqrt [ 1. / sum { 1 / v_err^{2} } ] =  sqrt [ 1. / sum { weights } ]
+  v_avg_err = sqrt( 1. / vsum( weight) );
   
   err_w =  v_avg_err; // assign the error to the varaible passed by reference by the user
 
