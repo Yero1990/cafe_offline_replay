@@ -9,6 +9,7 @@
    ------------------
 */ 
 
+#include "../../UTILS_CAFE/UTILS/parse_utils.h"
 #include "../../UTILS_CAFE/UTILS/read_csv.h"
 #include "../../UTILS_CAFE/UTILS/vector_operations.h"
 
@@ -133,6 +134,29 @@ double get(string var="", string target="", string kin=""){
 
   
   return 0;
+  
+}
+
+
+double get_param( string var="", string target="", string kin="" ){
+  
+  // brief: function to read parameters from the .csv files
+
+
+  // set generic .csv file name
+  string file_csv = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+
+  // find parameters (commented variables)
+
+  // NOTE:  need to parse string and conver to double
+  //double transparency = FindString("transparency:", file_csv.c_str(), false, -1, true);
+  //double tgt_area_density = FindString("target_areal_density", file_csv.c_str(), false, -1, true);
+
+  //double Z = FindString("Z:", file_csv.c_str(), false, -1, true);
+  //double N = FindString("N:", file_csv.c_str(), false, -1, true);
+  //double A = FindString("A:", file_csv.c_str(), false, -1, true);
+
+
   
 }
 
