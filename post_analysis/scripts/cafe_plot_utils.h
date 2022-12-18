@@ -10,12 +10,13 @@
 
 #include "cafe_summary_files_utils.h"
 
+
 //____________________________________________________________________________________________________
-void compare_histos(
-		    TString file1_path="path/to/file1.root", TString file2_path="path/to/file2.root", 
+void compare_histos( TString file1_path="path/to/file1.root", TString file2_path="path/to/file2.root", 
 		    TString hist1="kin_plots/H_Pm", TString hist2="kin_plots/H_Pm",
 		    TString xlabel="X-label [units]", TString ylabel="Y-label [units]", TString title="title",
-		    TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=true) {
+		    TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=true)
+{
 
   /* brief: generic function to compare (overlay) two 1D histograms from different files (assuming they have same binning)
      
@@ -202,6 +203,7 @@ void compare_histos(
   
 }
 
+
 //____________________________________________________________________________________________________
 void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TString hist_name="",
 		    TString xlabel="X-label [units]", TString ylabel="Y-label [units]", TString title="title"){
@@ -318,79 +320,140 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
 
 
 
-void single_ratios(vector<string> tgt={}, string hist_name="" ){
+TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="", string hist_name="", bool show_histos=false ){
   
-  // brief: calculate single ratios of SRC / MF per target nuclei for a given historam
-  // using the analyzed CaFe *_combined.root files
-
-  // define filename string arrays
-  string fname_MF[tgt.size()];
-  string fname_SRC[tgt.size()];
-
-  string fname_csv_MF[tgt.size()];
-  string fname_csv_SRC[tgt.size()];
+  // brief: calculate single ratios of binned histograms (hist_name) for  target, kinematics): R = tgtA_kinA / tgtB_kinB  
+  // using the analyzed CaFe *_combined.root files .  Example:  Ca48 MF / Ca40 MF,  Fe54 SRC / Ca48 SRC, etc.
   
+ 
+  // define histogram scale variables 
+  double scale_factor_A,  Q_A,  hms_trk_eff_A,  shms_trk_eff_A,  total_LT_A;
+  double scale_factor_B, Q_B, hms_trk_eff_B, shms_trk_eff_B, total_LT_B;
+
+  
+  // get info from summary files (for scaling histograms)
+  Q_A  = get("total_charge", tgtA.c_str(),  kinA.c_str());    
+  Q_B = get("total_charge", tgtB.c_str(),  kinB.c_str());
+  
+  hms_trk_eff_A    = get("hms_trk_eff",  tgtA.c_str(), kinA.c_str() );
+  hms_trk_eff_B   = get("hms_trk_eff",  tgtB.c_str(), kinB.c_str() );    
+  
+  shms_trk_eff_A   = get("shms_trk_eff", tgtA.c_str(), kinA.c_str() );
+  shms_trk_eff_B  = get("shms_trk_eff", tgtB.c_str(), kinB.c_str() );
+  
+  total_LT_A       = get("total_live_time", tgtA.c_str(),  kinA.c_str());
+  total_LT_B      = get("total_live_time", tgtB.c_str(),  kinB.c_str());
+  
+  scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * total_LT_A ) ;
+  scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * total_LT_B ) ;
+  
+  // set .root file names 
+  string fname_A = Form("analyzed_files_combined_pass1/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
+  string fname_B = Form("analyzed_files_combined_pass1/cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
+
   // define TFile
-  TFile *file_MF = NULL;
-  TFile *file_SRC = NULL;
+  TFile *file_A  = NULL;
+  TFile *file_B = NULL;
+    
+  // define histogram object arrays
+  TH1F *H_hist_A  = 0;
+  TH1F *H_hist_B = 0;
+  //TH1F *H_hist_R = 0;
+    
+  // read TFile
+  file_A = new TFile(fname_A.c_str());
+  file_B = new TFile(fname_B.c_str());
 
-  // define histogram objects
-  TH1F *H_hist_MF =0;
-  TH1F *H_hist_SRC =0;
+   
+  // get histogram objects
+  file_A->cd(); 
+  file_A->GetObject(hist_name.c_str(), H_hist_A);
+
+  // scale histogram appropiately
+  H_hist_A->Scale(scale_factor_A);
   
-  // define hsitogram scale variables 
-  double scale_factor_MF,  Q_MF,  hms_trk_eff_MF,  shms_trk_eff_MF,  total_LT_MF;
-  double scale_factor_SRC, Q_SRC, hms_trk_eff_SRC, shms_trk_eff_SRC, total_LT_SRC;
+    
+  file_B->cd();
+  file_B->GetObject(hist_name.c_str(), H_hist_B);
+
+  // scale histogram appropiately
+  H_hist_B->Scale(scale_factor_B);
+  
+
+  // calculate the ratio (A * scale_factor / (B * scale_factor) )
+  TH1F *H_hist_R = (TH1F*)H_hist_A->Clone("H_hist_R");
+  H_hist_R->Divide(H_hist_A, H_hist_B);
+
+  if(show_histos) {
+
+    int font_type = 132;
+    gStyle->SetOptStat(0);
+    gStyle->SetTitleFontSize(0.07);
+    gStyle->SetTitleFont(font_type, "");
+    gStyle->SetLegendBorderSize(0);
+    gStyle->SetLegendFont(font_type);
+    gStyle->SetLegendTextSize(0.05);
+  
+    // set histos aethetics
+  H_hist_A->SetLineColor(kRed);
+  H_hist_A->SetFillColorAlpha(kRed, 0.40);
+  H_hist_A->SetFillStyle(3004);
+
+  H_hist_B->SetLineColor(kBlue);
+  H_hist_B->SetFillColorAlpha(kBlue, 0.40);
+  H_hist_B->SetFillStyle(3005);
+
+  H_hist_R->SetLineColor(kBlack);
+  H_hist_R->SetFillColorAlpha(kBlack, 0.40);
+  H_hist_R->SetFillStyle(3005);
+  
+  // set histogram titles/labels/font
+  H_hist_A->SetTitle(H_hist_A->GetTitle());
+  
+  H_hist_A->GetXaxis()->SetLabelSize(0.04);
+  H_hist_A->GetYaxis()->SetLabelSize(0.04);
+
+  H_hist_A->SetLabelFont(font_type, "XY");
+  
+  H_hist_R->SetLabelFont(font_type, "XY");
+  H_hist_R->GetXaxis()->SetLabelSize(0.04);
+  H_hist_R->GetYaxis()->SetLabelSize(0.04);
+  H_hist_R->SetMarkerStyle(8);
+  H_hist_R->SetMarkerSize(0.8);
+  H_hist_R->SetMarkerColor(kBlack);
+    
+    TCanvas *c = new TCanvas("c", "", 800,1200);
+    c->Divide(1,2);
+
+    c->cd(1);
+    H_hist_A->Draw("histE0");
+    H_hist_B->Draw("samehistE0");
+
+    // create legend ( displays hist legend label and integral counts)
+    TLegend *leg1 = new TLegend(0.14,0.89,0.25,0.65);
+    double h1_I, h2_I;
+    double h1_Ierr, h2_Ierr;
+    double nbins = H_hist_A->GetNbinsX();  //Get total number of bins (excluding overflow)
+    h1_I = H_hist_A->IntegralAndError(1, nbins, h1_Ierr);
+    h2_I = H_hist_B->IntegralAndError(1, nbins, h2_Ierr);
+    
+    leg1->AddEntry(H_hist_A,Form("#splitline{%s %s}{Integral: %.3f #pm %.2f}", tgtA.c_str(), kinA.c_str(), h1_I, h1_Ierr), "f");
+    leg1->AddEntry(H_hist_B,Form("#splitline{%s %s}{Integral: %.3f #pm %.2f}", tgtB.c_str(), kinB.c_str(), h2_I, h2_Ierr), "f");
+    // draw legend
+    leg1->Draw();
 
     
-  // loop over each file name
-  for (int i=0; i<tgt.size(); i++){
+    c->cd(2);
+    H_hist_R->Draw();
 
-
-    // set summary file names (for getting charge, eff, etc to be used in scaling the histos)
-    fname_csv_MF[i]  = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_MF_report_summary.csv", tgt[i].c_str());
-    fname_csv_SRC[i] = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_SRC_report_summary.csv", tgt[i].c_str());
-
-    // get info from summary files (for scaling histograms)
-    Q_MF  = get("total_charge", tgt[i].c_str(),  "MF");    
-    Q_SRC = get("total_charge", tgt[i].c_str(),  "SRC");
-
-    hms_trk_eff_MF    = get("hms_trk_eff",  tgt[i].c_str(),  "MF");
-    hms_trk_eff_SRC   = get("hms_trk_eff",  tgt[i].c_str(),  "SRC");    
-
-    shms_trk_eff_MF   = get("shms_trk_eff", tgt[i].c_str(),  "MF");
-    shms_trk_eff_SRC  = get("shms_trk_eff", tgt[i].c_str(),  "SRC");
-    
-    total_LT_MF       = get("total_live_time", tgt[i].c_str(),  "MF");
-    total_LT_SRC      = get("total_live_time", tgt[i].c_str(),  "SRC");
-
-    scale_factor_MF    = 1. / ( Q_MF *  hms_trk_eff_MF  * shms_trk_eff_MF  * total_LT_MF ) ;
-    scale_factor_SRC   = 1. / ( Q_SRC * hms_trk_eff_SRC * shms_trk_eff_SRC * total_LT_SRC ) ;
-
-    
-    
-    // set .root file names 
-    fname_MF[i] = Form("analyzed_files_combined_pass1/cafe_prod_%s_MF_combined.root", tgt[i].c_str());
-    fname_SRC[i] = Form("analyzed_files_combined_pass1/cafe_prod_%s_SRC_combined.root", tgt[i].c_str());
-
-    cout << fname_MF[i] << endl;
-    cout << fname_SRC[i] << endl;
-    
-    // read TFile
-    file_MF = new TFile(fname_MF[i].c_str());
-    file_SRC = new TFile(fname_SRC[i].c_str());
-
-    // get histogram objects
-    file_MF->cd();
-    file_MF->GetObject(hist_name.c_str(), H_hist_MF);
-
-    file_SRC->cd();
-    file_SRC->GetObject(hist_name.c_str(), H_hist_SRC);
-
-	
     
   }
+  
+  //return H_hist_A;
+  //return H_hist_B;
+  return H_hist_R;
 
+  
 }
 
 
@@ -416,10 +479,14 @@ void cafe_plot_utils(){
 
   
   // select which nuclei to overlay and at which kinematics
-  TString tgt[5] = {"LD2", "Be9", "B10", "B11", "C12"};
-  int clr[5]     = {2, 4, 6, 8, 9}; 
-  overlay_nuclei(5, tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
-  overlay_nuclei(5, tgt, clr, "SRC", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+  //TString tgt[5] = {"LD2", "Be9", "B10", "B11", "C12"};
+  //int clr[5]     = {2, 4, 6, 8, 9}; 
+  //overlay_nuclei(5, tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+  //overlay_nuclei(5, tgt, clr, "SRC", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
 
-    
+  TH1F *h1_Ca48 = 0;
+  
+  h1_Ca48 = single_ratios("Ca48", "MF", "Ca40", "MF",  "kin_plots/H_Pm", true);
+
+  
 }

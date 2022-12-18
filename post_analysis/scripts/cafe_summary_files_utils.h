@@ -138,6 +138,7 @@ double get(string var="", string target="", string kin=""){
 }
 
 
+/*
 double get_param( string var="", string target="", string kin="" ){
   
   // brief: function to read parameters from the .csv files
@@ -157,6 +158,7 @@ double get_param( string var="", string target="", string kin="" ){
   //double A = FindString("A:", file_csv.c_str(), false, -1, true);
 
 
-  
-}
 
+  return
+}
+*/
