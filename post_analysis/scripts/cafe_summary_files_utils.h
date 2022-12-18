@@ -29,7 +29,7 @@ double get(string var="", string target="", string kin=""){
  
   
   // set generic .csv file name
-  string file_csv = Form("../summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+  string file_csv = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
 
  

@@ -8,6 +8,8 @@
    ------------------
 */ 
 
+#include "cafe_summary_files_utils.h"
+
 //____________________________________________________________________________________________________
 void compare_histos(
 		    TString file1_path="path/to/file1.root", TString file2_path="path/to/file2.root", 
@@ -314,6 +316,82 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
 }
 
 
+
+
+void single_ratios(vector<string> tgt={}, string hist_name="" ){
+  
+  // brief: calculate single ratios of SRC / MF per target nuclei for a given historam
+  // using the analyzed CaFe *_combined.root files
+
+  // define filename string arrays
+  string fname_MF[tgt.size()];
+  string fname_SRC[tgt.size()];
+
+  string fname_csv_MF[tgt.size()];
+  string fname_csv_SRC[tgt.size()];
+  
+  // define TFile
+  TFile *file_MF = NULL;
+  TFile *file_SRC = NULL;
+
+  // define histogram objects
+  TH1F *H_hist_MF =0;
+  TH1F *H_hist_SRC =0;
+  
+  // define hsitogram scale variables 
+  double scale_factor_MF,  Q_MF,  hms_trk_eff_MF,  shms_trk_eff_MF,  total_LT_MF;
+  double scale_factor_SRC, Q_SRC, hms_trk_eff_SRC, shms_trk_eff_SRC, total_LT_SRC;
+
+    
+  // loop over each file name
+  for (int i=0; i<tgt.size(); i++){
+
+
+    // set summary file names (for getting charge, eff, etc to be used in scaling the histos)
+    fname_csv_MF[i]  = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_MF_report_summary.csv", tgt[i].c_str());
+    fname_csv_SRC[i] = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_SRC_report_summary.csv", tgt[i].c_str());
+
+    // get info from summary files (for scaling histograms)
+    Q_MF  = get("total_charge", tgt[i].c_str(),  "MF");    
+    Q_SRC = get("total_charge", tgt[i].c_str(),  "SRC");
+
+    hms_trk_eff_MF    = get("hms_trk_eff",  tgt[i].c_str(),  "MF");
+    hms_trk_eff_SRC   = get("hms_trk_eff",  tgt[i].c_str(),  "SRC");    
+
+    shms_trk_eff_MF   = get("shms_trk_eff", tgt[i].c_str(),  "MF");
+    shms_trk_eff_SRC  = get("shms_trk_eff", tgt[i].c_str(),  "SRC");
+    
+    total_LT_MF       = get("total_live_time", tgt[i].c_str(),  "MF");
+    total_LT_SRC      = get("total_live_time", tgt[i].c_str(),  "SRC");
+
+    scale_factor_MF    = 1. / ( Q_MF *  hms_trk_eff_MF  * shms_trk_eff_MF  * total_LT_MF ) ;
+    scale_factor_SRC   = 1. / ( Q_SRC * hms_trk_eff_SRC * shms_trk_eff_SRC * total_LT_SRC ) ;
+
+    
+    
+    // set .root file names 
+    fname_MF[i] = Form("analyzed_files_combined_pass1/cafe_prod_%s_MF_combined.root", tgt[i].c_str());
+    fname_SRC[i] = Form("analyzed_files_combined_pass1/cafe_prod_%s_SRC_combined.root", tgt[i].c_str());
+
+    cout << fname_MF[i] << endl;
+    cout << fname_SRC[i] << endl;
+    
+    // read TFile
+    file_MF = new TFile(fname_MF[i].c_str());
+    file_SRC = new TFile(fname_SRC[i].c_str());
+
+    // get histogram objects
+    file_MF->cd();
+    file_MF->GetObject(hist_name.c_str(), H_hist_MF);
+
+    file_SRC->cd();
+    file_SRC->GetObject(hist_name.c_str(), H_hist_SRC);
+
+	
+    
+  }
+
+}
 
 
 
