@@ -229,6 +229,12 @@ Pm_MF_cut_flag = 1
 c_MF_Pm_min = 0.0
 c_MF_Pm_max = 0.250
 
+# in-plane recoil (undetected) angle, theta_rq [deg]
+thrq_MF_cut_flag = 1
+c_MF_thrq_min = 0.
+c_MF_thrq_max = 60.
+
+
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied IF-AND-ONLY-IF the deuterium target is used)
 Em_d2MF_cut_flag = 1
 c_d2MF_Em_min = -0.02

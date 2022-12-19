@@ -1563,6 +1563,13 @@ protected:
   Bool_t   c_MF_Em;
   Double_t c_MF_Em_min;
   Double_t c_MF_Em_max;
+
+  // in-plane recoil (undetected) angle, theta_rq [deg]
+  Bool_t   thrq_MF_cut_flag;
+  Bool_t   c_MF_thrq;
+  Double_t c_MF_thrq_min;
+  Double_t c_MF_thrq_max;
+  
   
   // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts -----
   Bool_t   Q2_SRC_cut_flag;

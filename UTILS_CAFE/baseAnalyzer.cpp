@@ -1510,6 +1510,15 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     Em_MF_cut_flag = stoi(split(FindString("Em_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
     c_MF_Em_min = stod(split(FindString("c_MF_Em_min", input_CutFileName.Data())[0], '=')[1]);
     c_MF_Em_max = stod(split(FindString("c_MF_Em_max", input_CutFileName.Data())[0], '=')[1]);
+
+    // theta_rq cut [deg] ----- Added this for MF on Dec 19, 2022 (for a study of theta_rq vs Pmiss dependence on ratios)
+    // in-plane recoil (undetected) angle, theta_rq [deg]
+    thrq_MF_cut_flag = stoi(split(FindString("thrq_MF_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_thrq_min = stod(split(FindString("c_MF_thrq_min", input_CutFileName.Data())[0], '=')[1]);
+    c_MF_thrq_max = stod(split(FindString("c_MF_thrq_max", input_CutFileName.Data())[0], '=')[1]);
+    
+    
+
     
     // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts 
     // 4-Momentum Transfers [GeV^2]
@@ -4551,9 +4560,16 @@ void baseAnalyzer::EventLoop()
 	  // Em ( require this cut ONLY for A>2 nuclei)
 	  if(Em_MF_cut_flag && tgt_type!="LD2"){c_MF_Em = Em_nuc >= c_MF_Em_min && Em_nuc <= c_MF_Em_max;}
 	  else{c_MF_Em=1;}
+
+	  // theta_rq
+	  if(thrq_MF_cut_flag){c_MF_thrq = th_rq/dtr >= c_MF_thrq_min && th_rq/dtr <= c_MF_thrq_max;}
+	  else{c_MF_thrq=1;}
+
 	  
-	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em;
-	    
+	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
+
+
+	  
 	  // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts
 
 	  // Q2
@@ -5436,9 +5452,14 @@ void baseAnalyzer::EventLoop()
 	  // Em ( require this cut ONLY for A>2 nuclei)
 	  if(Em_MF_cut_flag){c_MF_Em = Em >= c_MF_Em_min && Em <= c_MF_Em_max;}
 	  else{c_MF_Em=1;}
+
+	  // theta_rq
+	  if(thrq_MF_cut_flag){c_MF_thrq = th_rq/dtr >= c_MF_thrq_min && th_rq/dtr <= c_MF_thrq_max;}
+	  else{c_MF_thrq=1;}
+
 	  
-	  //c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em;
-	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_MF_Em;
+	  //c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
+	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_MF_Em && c_MF_thrq;
 	    
 	  // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts
 
@@ -7105,6 +7126,7 @@ void baseAnalyzer::WriteOnlineReport()
      if(analysis_cut=="MF")
        {
 	 if(Q2_MF_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_MF_Q2_min, c_MF_Q2_max) << endl;}
+	 if(thrq_MF_cut_flag) {out_file << Form("# A(e,e'p) theta_rq  (H.kin.secondary.th_bq): (%.3f, %.3f) [deg]", c_MF_thrq_min, c_MF_thrq_max) << endl;}	 
 	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
 	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
 	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
@@ -7471,6 +7493,7 @@ void baseAnalyzer::WriteOfflineReport()
      if(analysis_cut=="MF")
        {
 	 if(Q2_MF_cut_flag) {out_file << Form("# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (%.3f, %.3f) [GeV2]", c_MF_Q2_min, c_MF_Q2_max) << endl;}
+	 if(thrq_MF_cut_flag) {out_file << Form("# A(e,e'p) theta_rq  (H.kin.secondary.th_bq): (%.3f, %.3f) [deg]", c_MF_thrq_min, c_MF_thrq_max) << endl;}	 
 	 if(Pm_MF_cut_flag) {out_file << Form("# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (%.3f, %.3f) [GeV]", c_MF_Pm_min, c_MF_Pm_max) << endl;}
 	 if(Em_d2MF_cut_flag && tgt_type=="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_d2MF_Em_min, c_d2MF_Em_max) << endl;}
 	 if(Em_MF_cut_flag && tgt_type!="LD2") {out_file << Form("# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (%.3f, %.3f) [GeV]", c_MF_Em_min, c_MF_Em_max) << endl;}
