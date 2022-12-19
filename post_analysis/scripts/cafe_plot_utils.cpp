@@ -17,6 +17,13 @@ void cafe_plot_utils(){
   //=====================
 
 
+  //--------------------------------------------
+  // READ PARAMETERS FROM SUMMARY (.csv) FILES
+  //--------------------------------------------
+  
+
+  // double transparency = get_param("transparency", string target="", string kin="" )
+  
   
   /*
   //-------------------------------
@@ -59,7 +66,7 @@ void cafe_plot_utils(){
   
 
   
-  
+  /*
   //-------------------------
   // HISTOGRAM SINGLE RATIOS
   //-------------------------
@@ -82,7 +89,7 @@ void cafe_plot_utils(){
   TH1F *A = &*hvec[0];  // get histA
   TH1F *B = &*hvec[1];  // get histB
   TH1F *R = &*hvec[2];  // get ratio of two histograms, A/B
-
+  */
   
   /*
   // check that the retrieved histograms are as expected

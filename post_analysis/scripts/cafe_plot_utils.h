@@ -14,9 +14,9 @@
 #include "../../UTILS_CAFE/UTILS/vector_operations.h"
 
 //___________________________________________________________________________
-double get(string header="", string target="", string kin=""){
+double get_header(string header="", string target="", string kin=""){
 
-  /* brief: returns either total or average value for selected data column header from the
+  /* brief: returns either total or average value (depends on column) for selected data column header from the
      cafe summary files.  The summary files are assumed to be in a fixed location and have 
      the generic format: cafe_prod_<target>_<kin>_report_summary.csv 
    
@@ -24,8 +24,9 @@ double get(string header="", string target="", string kin=""){
      ----------
      arguments:
      ----------
-     header: total_charge, real_yield, real_yield_err, hms_trk_eff, hms_trk_eff_err, shms_trk_eff, shms_trk_eff_err
+     header: "total_charge", "real_yield", "real_yield_err", "hms_trk_eff", "hms_trk_eff_err", "shms_trk_eff", "shms_trk_eff_err"
      target: "LD2", "Be9",  "B10",  "B11",  "C12",  "Ca40",  "Ca48",  "Fe54"
+     kin:    "MF", "SRC"
 
    */
  
@@ -138,8 +139,7 @@ double get(string header="", string target="", string kin=""){
   
 }
 
-
-/*
+//__________________________________________________________________
 double get_param( string var="", string target="", string kin="" ){
   
   // brief: function to read parameters from the .csv files
@@ -148,21 +148,32 @@ double get_param( string var="", string target="", string kin="" ){
   // set generic .csv file name
   string file_csv = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
-  // find parameters (commented variables)
+  // find parameters in .csv. files (usually commented lines above header in .csv file)
+  
+  double tgt_area_density = stod(split(FindString("target_areal_density", file_csv.c_str(), false, -1, true)[0], ':')[1]);
+  double transparency     = stod(split(FindString("transparency:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
 
-  // NOTE:  need to parse string and conver to double
-  //double transparency = FindString("transparency:", file_csv.c_str(), false, -1, true);
-  //double tgt_area_density = FindString("target_areal_density", file_csv.c_str(), false, -1, true);
-
+  
+  //cout << Form("transparency = %.3f", transparency) << endl;
+  //cout << Form("tgt_area_density = %.4f",tgt_area_density) << endl;
+  
   //double Z = FindString("Z:", file_csv.c_str(), false, -1, true);
   //double N = FindString("N:", file_csv.c_str(), false, -1, true);
   //double A = FindString("A:", file_csv.c_str(), false, -1, true);
 
+  if( var.compare("tgt_area_density")==0 ){
+    return tgt_area_density;
+  }
+
+  if( var.compare("transparency")==0 ){
+    return transparency;
+  }
 
 
-  return
+  
+  return 0;
 }
-*/
+
 
 //____________________________________________________________________________________________________
 void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm",
@@ -470,8 +481,9 @@ void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", st
 
 
 
-
-vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="", string hist_name="",  bool show_histos=false ){
+//_______________________________________________________________________________________________
+vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="",
+				string hist_name="",  bool show_histos=false ){
   
   // brief: calculate single ratios of binned histograms (hist_name) for  target, kinematics): R = tgtA_kinA / tgtB_kinB  
   // using the analyzed CaFe *_combined.root files .  Example:  Ca48 MF / Ca40 MF,  Fe54 SRC / Ca48 SRC, etc.
@@ -484,17 +496,17 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
 
   
   // get info from summary files (for scaling histograms)
-  Q_A  = get("total_charge", tgtA.c_str(),  kinA.c_str());    
-  Q_B = get("total_charge", tgtB.c_str(),  kinB.c_str());
+  Q_A  = get_header("total_charge", tgtA.c_str(),  kinA.c_str());    
+  Q_B = get_header("total_charge", tgtB.c_str(),  kinB.c_str());
   
-  hms_trk_eff_A    = get("hms_trk_eff",  tgtA.c_str(), kinA.c_str() );
-  hms_trk_eff_B   = get("hms_trk_eff",  tgtB.c_str(), kinB.c_str() );    
+  hms_trk_eff_A    = get_header("hms_trk_eff",  tgtA.c_str(), kinA.c_str() );
+  hms_trk_eff_B   = get_header("hms_trk_eff",  tgtB.c_str(), kinB.c_str() );    
   
-  shms_trk_eff_A   = get("shms_trk_eff", tgtA.c_str(), kinA.c_str() );
-  shms_trk_eff_B  = get("shms_trk_eff", tgtB.c_str(), kinB.c_str() );
+  shms_trk_eff_A   = get_header("shms_trk_eff", tgtA.c_str(), kinA.c_str() );
+  shms_trk_eff_B  = get_header("shms_trk_eff", tgtB.c_str(), kinB.c_str() );
   
-  total_LT_A       = get("total_live_time", tgtA.c_str(),  kinA.c_str());
-  total_LT_B      = get("total_live_time", tgtB.c_str(),  kinB.c_str());
+  total_LT_A       = get_header("total_live_time", tgtA.c_str(),  kinA.c_str());
+  total_LT_B      = get_header("total_live_time", tgtB.c_str(),  kinB.c_str());
   
   scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * total_LT_A ) ;
   scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * total_LT_B ) ;
@@ -609,8 +621,6 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
 
 
   }
- 
-
   
   // save histograms to a vector to be returned to the user
  
