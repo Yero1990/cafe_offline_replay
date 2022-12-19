@@ -6,7 +6,8 @@ output files (.root, .csv) and post-analysis utility scripts for making producti
 
 ### Directory Structure:
 * ` analyzed_files_combined_passN/`<br> 
-This directory contains the analyzed ROOTfiles summed over all runs of a particular (`target`, `kinematics`), with a generic filename: <br>
+
+	This directory contains the analyzed ROOTfiles summed over all runs of a particular (`target`, `kinematics`), with a generic filename: <br>
 
  `cafe_prod_<target>_<kin>_combined.root` <br>
 
