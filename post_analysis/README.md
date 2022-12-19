@@ -9,7 +9,7 @@ output files (.root, .csv) and post-analysis utility scripts for making producti
 
 	This directory contains the analyzed ROOTfiles summed over all runs of a particular (`target`, `kinematics`), with a generic filename: <br>
 
- `cafe_prod_<target>_<kin>_combined.root` <br>
+        `cafe_prod_<target>_<kin>_combined.root` 
 
 	Each combiend ROOTfile consist of sub-directory structure with different levels of histogram categories as follows (and may be subject to new additions):
 	* `quality_plots/`: contains 1) different levels of cuts to study their effects on the yield, and 2) fits to calibration check histograms for quality monitoring 
