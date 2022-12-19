@@ -12,10 +12,10 @@
 
 
 //____________________________________________________________________________________________________
-void compare_histos( TString file1_path="path/to/file1.root", TString file2_path="path/to/file2.root", 
-		    TString hist1="kin_plots/H_Pm", TString hist2="kin_plots/H_Pm",
-		    TString xlabel="X-label [units]", TString ylabel="Y-label [units]", TString title="title",
-		    TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=true)
+void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm",
+		     TString file2_path="path/to/file2.root",   TString hist2="kin_plots/H_Pm",
+		     TString xlabel="X-label [units]",          TString ylabel="Y-label [units]", TString title="title",
+		     TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=true)
 {
 
   /* brief: generic function to compare (overlay) two 1D histograms from different files (assuming they have same binning)
@@ -30,7 +30,6 @@ void compare_histos( TString file1_path="path/to/file1.root", TString file2_path
 
    */
 
-  gStyle->SetOptStat(0);
 
   int font_type = 132;
 
@@ -50,7 +49,7 @@ void compare_histos( TString file1_path="path/to/file1.root", TString file2_path
   file2 = new TFile(file2_path.Data());
 
   // declare 1D histos
-  TH1F *H_hist1 = 0;
+  TH1F *H_hist1 = 0;  
   TH1F *H_hist2 = 0;
 
   // get histogram objects
@@ -199,14 +198,15 @@ void compare_histos(
   leg->AddEntry(H_hist2,Form("%s | Integral: %.3f", hist2_leg.Data(), h2_I));
   // draw legend
   leg->Draw();
-  
+
+  c->Show();
   
 }
 
 
 //____________________________________________________________________________________________________
-void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TString hist_name="",
-		    TString xlabel="X-label [units]", TString ylabel="Y-label [units]", TString title="title"){
+void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", string hist_name="",
+		    string xlabel="X-label [units]", string ylabel="Y-label [units]", string title="title"){
 
   /* 
      brief: cafe-specific plotting utility to overlay n nuclei histograms, assuming a generic filename that varies only with (target, kin)
@@ -215,9 +215,8 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
      -----------
      arguments:
      -----------
-     n : number of nucei to overlay  
-     tgt []: string array to hold target names (must be consistent with target as found in file name)
-     clr[] : integer array to hold plotting colors of each target ( colors represented by integers, see https://root.cern.ch/doc/master/classTColor.html )
+     tgt {}: string vector array to hold target names (must be consistent with target as found in file name)
+     clr {} : integer vector array to hold plotting colors of each target ( colors represented by integers, see https://root.cern.ch/doc/master/classTColor.html )
      kin   : single string to select kinematic setting for specified targets ("MF" or "SRC")
      hist_name : histogram object name (if histogram is in ROOT file sub-directory, then it must also be specified)
      xlabel, ylabel, title : strings to set histogram axis and title labels
@@ -226,10 +225,10 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
      example of code usage:
      -----------------------
 
-     TString tgt[5] = {"LD2", "Be9", "B10", "B11", "C12"};   // create array of targets to plot
-     int clr[5]     = {2, 4, 6, 8, 9};  // 
-     overlay_nuclei(5, tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
-
+     vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
+     vector<int> clr     = {2, 4, 6, 8, 9}; 
+     overlay_nuclei(tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+ 
   */
   
   // dont show stats box
@@ -246,27 +245,28 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
   gStyle->SetLegendTextSize(0.03);
   
   
-  TString fname[n];
-  TCanvas *c = new TCanvas(Form("C_%s", kin.Data()), "", 900, 700);
-  TLegend *leg = new TLegend(0.14,0.89,0.25,0.78);
+  string fname;
+  
+  TCanvas *c = new TCanvas(Form("C_%s", kin.c_str()), "", 900, 700);
+  TLegend *leg = new TLegend(0.14,0.89,0.25,0.70);
 
   // loop over each file name
-  for (int i=0; i<n; i++){
+  for (int i=0; i<tgt.size(); i++){
 
     // generic file name with specific target, kinematic
-    fname[i] = Form("analyzed_files_combined_pass1/cafe_prod_%s_%s_combined.root", tgt[i].Data(), kin.Data());
+    fname = Form("analyzed_files_combined_pass1/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
 
     
-    cout << "fname = " << fname[i] << endl;
+    cout << "fname = " << fname << endl;
     cout << clr[i] << endl;
     // read TFile
     TFile *file = NULL;
-    file = new TFile(fname[i].Data());
+    file = new TFile(fname.c_str());
   
     TH1F *H_hist =0;
     
     file->cd();
-    file->GetObject(hist_name.Data(), H_hist);
+    file->GetObject(hist_name.c_str(), H_hist);
 
     // set histos aethetics
     H_hist->SetLineColor(clr[i]);
@@ -283,13 +283,13 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
     H_hist->GetYaxis()->SetRangeUser(0.1, H_hist->GetMaximum()+0.6*H_hist->GetMaximum());
     
     // set histogram titles/labels/font
-    H_hist->SetTitle(title);
+    H_hist->SetTitle(title.c_str());
     
     H_hist->GetXaxis()->SetLabelSize(0.04);
     H_hist->GetYaxis()->SetLabelSize(0.04);
     
-    H_hist->GetYaxis()->SetTitle(ylabel);
-    H_hist->GetXaxis()->SetTitle(xlabel);
+    H_hist->GetYaxis()->SetTitle(ylabel.c_str());
+    H_hist->GetXaxis()->SetTitle(xlabel.c_str());
     
     H_hist->GetYaxis()->CenterTitle();
     H_hist->GetXaxis()->CenterTitle();
@@ -298,34 +298,33 @@ void overlay_nuclei(const int n, TString tgt[], int clr[], TString kin="", TStri
     H_hist->SetTitleFont(font_type, "XY");
     H_hist->SetTitleSize(0.05, "XY");
     H_hist->SetTitleOffset(1., "XY");
-
+    H_hist->SetStats(0);
     // changed to canvas and draw
     c->cd();
-    if(n==0) { H_hist->DrawNormalized("histE0") ;}
+    if(tgt.size()==1) { H_hist->DrawNormalized("histE0") ;}
     else{
       H_hist->DrawNormalized("sameshistE0");
     }
 
     // add legend entry
-    leg->AddEntry(H_hist,Form("%s %s", tgt[i].Data(), kin.Data()),"f");
+    leg->AddEntry(H_hist,Form("%s %s", tgt[i].c_str(), kin.c_str()),"f");
 
   }
 
-  cout <<"show canvas " << endl;
   leg->Draw();
-  c->Show();
   
 }
 
 
 
 
-TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="", string hist_name="", bool show_histos=false ){
+vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="", string hist_name="",  bool show_histos=false ){
   
   // brief: calculate single ratios of binned histograms (hist_name) for  target, kinematics): R = tgtA_kinA / tgtB_kinB  
   // using the analyzed CaFe *_combined.root files .  Example:  Ca48 MF / Ca40 MF,  Fe54 SRC / Ca48 SRC, etc.
+
+
   
- 
   // define histogram scale variables 
   double scale_factor_A,  Q_A,  hms_trk_eff_A,  shms_trk_eff_A,  total_LT_A;
   double scale_factor_B, Q_B, hms_trk_eff_B, shms_trk_eff_B, total_LT_B;
@@ -355,8 +354,8 @@ TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB
   TFile *file_A  = NULL;
   TFile *file_B = NULL;
     
-  // define histogram object arrays
-  TH1F *H_hist_A  = 0;
+  
+  TH1F *H_hist_A  = 0;  
   TH1F *H_hist_B = 0;
   //TH1F *H_hist_R = 0;
     
@@ -387,7 +386,6 @@ TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB
   if(show_histos) {
 
     int font_type = 132;
-    gStyle->SetOptStat(0);
     gStyle->SetTitleFontSize(0.07);
     gStyle->SetTitleFont(font_type, "");
     gStyle->SetLegendBorderSize(0);
@@ -421,14 +419,22 @@ TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB
   H_hist_R->SetMarkerStyle(8);
   H_hist_R->SetMarkerSize(0.8);
   H_hist_R->SetMarkerColor(kBlack);
-    
+
+  // set histos proper names
+  H_hist_A->SetName(Form("%s_%s", tgtA.c_str(), kinA.c_str()));
+  H_hist_B->SetName(Form("%s_%s", tgtB.c_str(), kinB.c_str()));
+  H_hist_R->SetName(Form("Ratio %s%s/%s%s", tgtA.c_str(), kinA.c_str(), tgtB.c_str(), kinB.c_str()));
+
+     
     TCanvas *c = new TCanvas("c", "", 800,1200);
     c->Divide(1,2);
 
     c->cd(1);
+    H_hist_A->SetStats(0);
+    H_hist_B->SetStats(0);
     H_hist_A->Draw("histE0");
-    H_hist_B->Draw("samehistE0");
-
+    H_hist_B->Draw("sameshistE0");
+  
     // create legend ( displays hist legend label and integral counts)
     TLegend *leg1 = new TLegend(0.14,0.89,0.25,0.65);
     double h1_I, h2_I;
@@ -442,16 +448,28 @@ TH1F* single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB
     // draw legend
     leg1->Draw();
 
-    
     c->cd(2);
+
+
+    H_hist_R->SetStats("n");
     H_hist_R->Draw();
 
-    
+
   }
+ 
+
   
-  //return H_hist_A;
-  //return H_hist_B;
-  return H_hist_R;
+  // save histograms to a vector to be returned to the user
+ 
+  vector<TH1F*> hvec;
+  
+
+  hvec.push_back(H_hist_A);
+  hvec.push_back(H_hist_B);
+  hvec.push_back(H_hist_R);
+
+  
+  return hvec;
 
   
 }
@@ -469,24 +487,88 @@ void cafe_plot_utils(){
   cout << "Please call a plotting utility \nfunction from this script " << endl;
   cout << "--------------------------------" << endl;
 
+
+  //=====================
+  // EXAMPLES FOR USERS
+  //=====================
+
+
+  /*
+
+  //-------------------------------
+  // COMPARE (OVERLAY) HISTOGRAMS
+  //-------------------------------
+  // brief: this function returns an overlay of any two histogram objects from any two files (or histograms) input by the user
+  //        the user also provides labels, titles and legend text (this is basically a quick way to make quality plot comparisons, without the
+  //        hassle of dealing with ROOT ), there is also an optional flag ( bool norm ) to draw normalized histograms to an areal of 1.
   
-  //  compare_histos("kin_plots/H_Pm", "kin_plots/H_Pm", "X-label [units]", "Y-label [units]", "title",
+  // version 1: input file path and histogram objects by user
+  //compare_histos("path/to/file1.root", "kin_plots/H_Pm", "path/to/file2.root", "kin_plots/H_Pm", "X-label [units]", "Y-label [units]", "title",
   //		 "hist1_legend_title", "hist2_legend_title", true);
 
-  /* root cern color code;
-     2 : red,  4: blue, 6: magenta, 8: green, 9: purple
-   */
+  // version 2: input histogram objects by user (assumed that two histograms have the same binning)
+  // example: use dummy histograms to test
+  TH1F *h1_test = new TH1F("h1_test", "hist 1", 100,-5,5);
+  TH1F *h2_test = new TH1F("h2_test", "hist 2", 100,-5,5);
+  h1_test->FillRandom("gaus"); h2_test->FillRandom("landau");
+  
+  compare_histos(h1_test, h2_test, "X-label [units]", "Y-label [units]", "title",
+  		 "hist1_legend_title", "hist2_legend_title", true);
+
 
   
-  // select which nuclei to overlay and at which kinematics
-  //TString tgt[5] = {"LD2", "Be9", "B10", "B11", "C12"};
-  //int clr[5]     = {2, 4, 6, 8, 9}; 
-  //overlay_nuclei(5, tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
-  //overlay_nuclei(5, tgt, clr, "SRC", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
 
-  TH1F *h1_Ca48 = 0;
-  
-  h1_Ca48 = single_ratios("Ca48", "MF", "Ca40", "MF",  "kin_plots/H_Pm", true);
+  //--------------------------------
+  // OVERLAY NUCLEI (1D HISTOGRAMS)
+  //--------------------------------
+  // brief: this function returns an overlay of the targets input by the user, with corresponding colors for any given histogram
+  //        The histograms are read from analyzed .root files in a fixed location specified within the function.
 
+  // NOTE: All .root files and summary (.csv) files used by these functions are assumed to be in a fixed location (set within the function)
+
+  vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
+  vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
+  overlay_nuclei(tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+
+
+  //-------------------------
+  // HISTOGRAM SINGLE RATIOS
+  //-------------------------
+  // brief: this function returns any two histograms (A,B) and ratio, A/B. 
+  //         The histograms (A,B) are read from analyzed .root files in a fixed location specified within the function.
+  //         and A/B is calculated within the ratio function
+
+  // NOTE: All .root files and summary (.csv) files used by these functions are assumed to be in a fixed location (set within the function)
+    
+  // Example of Use: 
+
+  // declare histogram vector to retrieve histograms A: Ca48 MF,  B: Ca40 MF, and R: A/B, binned in Pmiss
+  vector<TH1F*> hvec;
+
+  // call function to get ratio
+  // arguments:("targetA", "kinematicsA", "targetB", "kinematicsB", "histogram object", bool show_histos? )
+  hvec = get_single_ratios("Ca48",       "MF",        "Ca40",       "MF",       "kin_plots/H_Pm",     true); 
+
+  // access the histograms from the vector
+  TH1F *A = &*hvec[0];  // get histA
+  TH1F *B = &*hvec[1];  // get histB
+  TH1F *R = &*hvec[2];  // get ratio of two histograms, A/B
+
+  // check that the retrieved histograms are as expected
+  TCanvas *c = new TCanvas("c1","",800,1200);
+  c->Divide(1,2);
+  c->cd(1);
+  A->Draw("histE0");
+  B->Draw("sameshistE0");
+  cout << "A Integral: " << A->Integral() << endl;
+  cout << "B Integral: " << B->Integral() << endl;
+  c->cd(2);
+  R->Draw("E0");
+  cout << "R Integral: " << R->Integral() << endl;
+
+
+  */
   
 }
+
+
