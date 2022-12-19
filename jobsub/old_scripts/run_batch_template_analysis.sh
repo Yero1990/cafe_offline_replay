@@ -6,7 +6,7 @@
 ### A batch submission script based on an earlier version by Richard Trotta, Catholic University of America
 ### SJDK - 06/01/22 - Updated to use swif2 system, also cleaned up the script and added some more comments
 
-# usage: ./run_batch_template.sh ca40_MF.txt
+# usage: ./run_batch_template.sh <targ> <ana_cut>.txt
 
 echo "Running as ${USER}"
 #RunList=$1
