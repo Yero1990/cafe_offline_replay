@@ -3,13 +3,166 @@
    Author: C. Yero
    
    Brief: A compilation of CaFe utility functions
-   for plotting histograms
+   for plotting histograms / reading summary files 
+   and performing numerical operations on them
    
    ------------------
 */ 
 
-#include "cafe_summary_files_utils.h"
+#include "../../UTILS_CAFE/UTILS/parse_utils.h"
+#include "../../UTILS_CAFE/UTILS/read_csv.h"
+#include "../../UTILS_CAFE/UTILS/vector_operations.h"
 
+//___________________________________________________________________________
+double get(string header="", string target="", string kin=""){
+
+  /* brief: returns either total or average value for selected data column header from the
+     cafe summary files.  The summary files are assumed to be in a fixed location and have 
+     the generic format: cafe_prod_<target>_<kin>_report_summary.csv 
+   
+     
+     ----------
+     arguments:
+     ----------
+     header: total_charge, real_yield, real_yield_err, hms_trk_eff, hms_trk_eff_err, shms_trk_eff, shms_trk_eff_err
+     target: "LD2", "Be9",  "B10",  "B11",  "C12",  "Ca40",  "Ca48",  "Fe54"
+
+   */
+ 
+  
+  // set generic .csv file name
+  string file_csv = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+
+
+ 
+  // return total charge (sums over charge for each run)
+  if( header.compare("total_charge")==0 ){
+    vector<double> v_charge         = read_csv(file_csv.c_str(), "charge"); // mC
+    double charge = vsum(v_charge);
+    
+    return charge;
+  }
+
+  // return total yield (sums over real yield for each run)
+  if( header.compare("real_yield")==0 ){
+    
+    vector<double> v_real_Yield     = read_csv(file_csv, "real_Yield");
+    double real_Yield = vsum(v_real_Yield);
+    
+    return real_Yield;
+  }
+
+  // return total yield err ( root of the sum of errors ^{2} ) - basic error propagation for sum of variables  
+  if( header.compare("real_yield_err")==0 ){
+    
+    vector<double> v_real_Yield_err = read_csv(file_csv, "real_Yield_err");
+    double real_Yield_err = sqrt( vsum ( vpow(v_real_Yield_err, 2) ) ); // sqrt [  err_1^{2} + err_2^{2} + . .  . err_n^{2} ]
+    
+    return real_Yield_err;
+    
+  }
+
+  // return weighted avg HMS tracking (and error) efficiency (presumably tracking efficiency is ~ same for every run of the same kinematic)
+  if( header.compare("hms_trk_eff")==0 || header.compare("hms_trk_eff_err")==0 ){
+
+    vector<double> v_hTrkEff        = read_csv(file_csv, "hTrkEff");
+    vector<double> v_hTrkEff_err    = read_csv(file_csv, "hTrkEff_err");
+
+    //error in weighted average is passed by reference
+    double hms_trk_eff_err = 0;          
+
+    // calculated weighted average of a vector of elements
+    double hms_trk_eff              = vavgw(v_hTrkEff, v_hTrkEff_err, hms_trk_eff_err);  
+
+    
+    if( header.compare("hms_trk_eff")==0 ){
+      return hms_trk_eff;
+    }
+
+    if( header.compare("hms_trk_eff_err")==0 ){
+      return hms_trk_eff_err;
+    }    
+
+  }
+
+  // return weighted avg SHMS tracking (and error) efficiency (presumably tracking efficiency is ~ same for every run of the same kinematic)
+  if( header.compare("shms_trk_eff")==0 || header.compare("shms_trk_eff_err")==0 ){
+
+    vector<double> v_pTrkEff        = read_csv(file_csv, "pTrkEff");
+    vector<double> v_pTrkEff_err    = read_csv(file_csv, "pTrkEff_err");
+
+    //error in weighted average is passed by reference
+    double shms_trk_eff_err = 0;          
+
+    // calculated weighted average of a vector of elements
+    double shms_trk_eff              = vavgw(v_pTrkEff, v_pTrkEff_err, shms_trk_eff_err);  
+
+    
+    if( header.compare("shms_trk_eff")==0 ){
+      return shms_trk_eff;
+    }
+
+    if( header.compare("shms_trk_eff_err")==0 ){
+      return shms_trk_eff_err;
+    }    
+
+  }
+
+
+  // return weighted avg total live time (presumably live time is ~ same for every run of the same kinematic)
+  if( header.compare("total_live_time")==0 || header.compare("total_live_time_err")==0 ){
+
+   
+    vector<double> v_tLT            = read_csv(file_csv, "tLT");
+    vector<double> v_tLT_err        = read_csv(file_csv, "tLT_err_Bi");
+
+    //error in weighted average is passed by reference
+    double total_live_time_err = 0;          
+
+    // calculated weighted average of a vector of elements
+    double total_live_time              = vavgw(v_tLT, v_tLT_err, total_live_time_err);  
+
+    
+    if( header.compare("total_live_time")==0 ){
+      return total_live_time;
+    }
+
+    if( header.compare("total_live_time_err")==0 ){
+      return total_live_time_err;
+    }    
+
+  }
+
+  
+  return 0;
+  
+}
+
+
+/*
+double get_param( string var="", string target="", string kin="" ){
+  
+  // brief: function to read parameters from the .csv files
+
+
+  // set generic .csv file name
+  string file_csv = Form("summary_files_pass1/EmissCut_100MeV/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+
+  // find parameters (commented variables)
+
+  // NOTE:  need to parse string and conver to double
+  //double transparency = FindString("transparency:", file_csv.c_str(), false, -1, true);
+  //double tgt_area_density = FindString("target_areal_density", file_csv.c_str(), false, -1, true);
+
+  //double Z = FindString("Z:", file_csv.c_str(), false, -1, true);
+  //double N = FindString("N:", file_csv.c_str(), false, -1, true);
+  //double A = FindString("A:", file_csv.c_str(), false, -1, true);
+
+
+
+  return
+}
+*/
 
 //____________________________________________________________________________________________________
 void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm",
@@ -476,99 +629,5 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
 
 
 
-void cafe_plot_utils(){
-
-  cout << "" << endl;
-  cout << "" << endl;
-  cout << "--------------------------------" << endl;
-  cout << "" << endl;
-  cout << "Welcome to CaFe Plot Utils" << endl;
-  cout << "" << endl;
-  cout << "Please call a plotting utility \nfunction from this script " << endl;
-  cout << "--------------------------------" << endl;
-
-
-  //=====================
-  // EXAMPLES FOR USERS
-  //=====================
-
-
-  /*
-
-  //-------------------------------
-  // COMPARE (OVERLAY) HISTOGRAMS
-  //-------------------------------
-  // brief: this function returns an overlay of any two histogram objects from any two files (or histograms) input by the user
-  //        the user also provides labels, titles and legend text (this is basically a quick way to make quality plot comparisons, without the
-  //        hassle of dealing with ROOT ), there is also an optional flag ( bool norm ) to draw normalized histograms to an areal of 1.
-  
-  // version 1: input file path and histogram objects by user
-  //compare_histos("path/to/file1.root", "kin_plots/H_Pm", "path/to/file2.root", "kin_plots/H_Pm", "X-label [units]", "Y-label [units]", "title",
-  //		 "hist1_legend_title", "hist2_legend_title", true);
-
-  // version 2: input histogram objects by user (assumed that two histograms have the same binning)
-  // example: use dummy histograms to test
-  TH1F *h1_test = new TH1F("h1_test", "hist 1", 100,-5,5);
-  TH1F *h2_test = new TH1F("h2_test", "hist 2", 100,-5,5);
-  h1_test->FillRandom("gaus"); h2_test->FillRandom("landau");
-  
-  compare_histos(h1_test, h2_test, "X-label [units]", "Y-label [units]", "title",
-  		 "hist1_legend_title", "hist2_legend_title", true);
-
-
-  
-
-  //--------------------------------
-  // OVERLAY NUCLEI (1D HISTOGRAMS)
-  //--------------------------------
-  // brief: this function returns an overlay of the targets input by the user, with corresponding colors for any given histogram
-  //        The histograms are read from analyzed .root files in a fixed location specified within the function.
-
-  // NOTE: All .root files and summary (.csv) files used by these functions are assumed to be in a fixed location (set within the function)
-
-  vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
-  vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
-  overlay_nuclei(tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
-
-
-  //-------------------------
-  // HISTOGRAM SINGLE RATIOS
-  //-------------------------
-  // brief: this function returns any two histograms (A,B) and ratio, A/B. 
-  //         The histograms (A,B) are read from analyzed .root files in a fixed location specified within the function.
-  //         and A/B is calculated within the ratio function
-
-  // NOTE: All .root files and summary (.csv) files used by these functions are assumed to be in a fixed location (set within the function)
-    
-  // Example of Use: 
-
-  // declare histogram vector to retrieve histograms A: Ca48 MF,  B: Ca40 MF, and R: A/B, binned in Pmiss
-  vector<TH1F*> hvec;
-
-  // call function to get ratio
-  // arguments:("targetA", "kinematicsA", "targetB", "kinematicsB", "histogram object", bool show_histos? )
-  hvec = get_single_ratios("Ca48",       "MF",        "Ca40",       "MF",       "kin_plots/H_Pm",     true); 
-
-  // access the histograms from the vector
-  TH1F *A = &*hvec[0];  // get histA
-  TH1F *B = &*hvec[1];  // get histB
-  TH1F *R = &*hvec[2];  // get ratio of two histograms, A/B
-
-  // check that the retrieved histograms are as expected
-  TCanvas *c = new TCanvas("c1","",800,1200);
-  c->Divide(1,2);
-  c->cd(1);
-  A->Draw("histE0");
-  B->Draw("sameshistE0");
-  cout << "A Integral: " << A->Integral() << endl;
-  cout << "B Integral: " << B->Integral() << endl;
-  c->cd(2);
-  R->Draw("E0");
-  cout << "R Integral: " << R->Integral() << endl;
-
-
-  */
-  
-}
 
 
