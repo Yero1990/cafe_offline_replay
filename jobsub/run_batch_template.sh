@@ -98,7 +98,7 @@ while true; do
 		    elif [ $runNum -eq 16968  ]; then
 			echo "MEMORY: 12000 MB" >> ${batch} 
                     fi
-		    echo "CPU: 4" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
+		    echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 		    echo "INPUT_FILES: ${tape_file}" >> ${batch}
                     echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/replay_cafe_prod.sh ${runNum} ${MAXEVENTS}"  >> ${batch} ### Insert your script at end!
 		    
