@@ -1,0 +1,161 @@
+# Run 16983 Offline Data Analysis Report
+                                     
+#///////////////////////////////////////////
+#                                         //
+# Run 16983 Offline Data Analysis Report
+#                                         //
+#///////////////////////////////////////////
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# General Run Configuration                              
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+run_number: 16983                     
+
+start_of_run =  2022-09-19 11:39:51
+end_of_run =  2022-09-19 12:59:52
+
+kin_type: MF                     
+daq_mode: coin                     
+events_replayed: 1161966              
+
+beam_energy [GeV]: 10.5494          
+target_name: Be9                       
+target_amu: 9.012182                 
+target_density [g/cm3]: 1.8480                 
+target_thickness [cm]: 0.5335                  
+target_areal_density [g/cm2]: 0.9859           
+
+# Number of Nucleons
+N: 5
+Z: 4
+A: 9
+transparency: 0.6
+
+hms_h_particle_mass [GeV]: 0.938272          
+hms_h_momentum [GeV/c]: 1.8200             
+hms_h_angle [deg]: -48.3000                  
+
+shms_e_particle_mass [GeV]: 0.000511          
+shms_e_momentum [GeV/c]: 8.5500             
+shms_e_angle [deg]: 8.3000                  
+
+# BCM used in analysis: BCM1 
+BCM1_Current_Threshold [uA]: >5.00 
+beam_on_target [sec]: 3805.473       
+BCM1_Average_Current [uA]: 23.293 
+BCM1_Charge [mC]: 88.640 
+
+BCM1_Charge [mC]: 88.640 
+BCM2_Charge [mC]: 88.413 
+BCM4A_Charge [mC]: 88.055 
+BCM4B_Charge [mC]: 87.723 
+BCM4C_Charge [mC]: 88.215 
+
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# CaFe A(e,e')p Mean-Field (MF) Normalized Counts  
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+# Yield = Counts * pre-scale_factor / (Q * h_track_eff * e-_track_eff * total_live_time)
+# Counts : Inegrated Missing Momentum (Pm) : 0.000 -> 0.250 [GeV]
+# pre-scale_factor: 1.000000
+# BCM1 Q [mC]     : 88.640
+# h_track_eff  : 0.996
+# e-_track_eff  : 0.993
+# total_live_time     : 0.939
+#-----------------------------
+total_Counts    : 102172.000
+random_Counts   : 40.461
+real_Counts     : 102131.539
+                                     
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:
+# DAQ Trigger Information  
+# =:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+# NOTE: scaler triggers are not pre-scaled | accepted triggers are pre-scaled  
+#       cpu_live_time   = T#_accepted / ( T#_scaler / Ps#_factor)       
+#       total_live_time = edtm_accepted / ( edtm_scaler / Ps#_factor)       
+                                     
+edtm_scaler   :  37933.000  
+edtm_accepted :  35614.000  
+                                     
+# pre-scale factors (-1: trigger OFF)                 
+Ps1_factor: -1.0
+Ps2_factor: 1025.0
+Ps3_factor: 33.0
+Ps4_factor: -1.0
+Ps5_factor: 1.0
+Ps6_factor: -1.0
+                                     
+# pre-trigger scalers                 
+S1X_scaler:  838152687.000 [ 220.249 kHz ] 
+T1_scaler:  334678405.000 [ 87.947 kHz ] 
+T2_scaler:  260198867.000 [ 68.375 kHz ] 
+T3_scaler:  11486122.000 [ 3.018 kHz ] 
+T4_scaler:  297793.000 [ 0.078 kHz ] 
+T5_scaler:  522967.000 [ 0.137 kHz ] 
+T6_scaler:  596390.000 [ 0.157 kHz ] 
+                                     
+# accepted triggers (pre-scaled)     
+T1_accepted: 811069.000 [ 0.213 kHz ]  
+T2_accepted: 803445.000 [ 0.211 kHz ]  
+T3_accepted: 858463.000 [ 0.226 kHz ]  
+T4_accepted: 19429.000 [ 0.005 kHz ]  
+T5_accepted: 525369.000 [ 0.138 kHz ]  
+T6_accepted: 525088.000 [ 0.138 kHz ]  
+                                     
+# daq computer (cpu) and total live time  
+T2_cpuLT:    3.165 +- 0.004 
+T2_tLT:      962.338 +- 1.261 
+                                     
+T3_cpuLT:    2.466 +- 0.003 
+T3_tLT:      30.983 +- 0.041 
+                                     
+T5_cpuLT:    1.005 +- -nan 
+T5_tLT:      0.939 +- 0.001 
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# Drift Chambers Tracking Efficiency  
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+hms_had_track_eff:  0.996 +- 0.000
+shms_elec_track_eff: 0.993 +- 0.000
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# Data Analysis Cuts                  
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                   
+#--- Tracking Efficiency Definition --- 
+# tracking efficiency = (did && should) / should
+
+# (did) HMS min. number of tracks (H.dc.ntrack): >= 1.0
+# (should) HMS good (fiducial) scintillator hit (H.hod.goodscinhit): true
+# (should) HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (0.000, 0.500)
+# (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (0.000, 0.600)
+# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (0.500. 1.500)
+                                   
+# (did) SHMS min. number of tracks (P.dc.ntrack): >= 1.0
+# (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true
+# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (1.000, 100.000)
+# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (0.900, 1.300)
+# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (0.500. 1.500)
+                                   
+#---Coincidence Time Cut--- 
+# electron (SHMS)-proton(HMS) (prompt) coincidence time (CTime.epCoinTime_ROC2):   (-2.500, 2.500) [ns]
+# electron (SHMS)-proton(HMS) (left)   accidentals sample: (-5.100, -2.600) [ns]
+# electron (SHMS)-proton(HMS) (right)  accidentals sample: (2.600, 15.300) [ns]
+                                   
+#---Acceptance Cuts--- 
+# HMS Momentum Acceptance (H.gtr.dp): (-10.000, 10.000) [%]
+# HMS Collimator Cut: ON 
+# SHMS Momentum Acceptance (P.gtr.dp): (0.000, 22.000) [%]
+# SHMS Collimator Cut: ON 
+#                       
+#---Particle Identification (PID) Cuts--- 
+# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (0.850, 1.250)
+#                       
+#---Kinematics Cuts--- 
+# A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (1.800, 100.000) [GeV2]
+# A(e,e'p) Missing Momentum, Pm (H.kin.secondary.pmiss): (0.000, 0.250) [GeV]
+# A(e,e'p) Missing Energy, Em (H.kin.secondary.emiss_nuc): (-0.020, 0.100) [GeV]
