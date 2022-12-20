@@ -1,0 +1,33 @@
+#-------------------------------------
+#        Data Analysis Summary        
+#-------------------------------------
+#                                     
+#                                     
+# target_name: Be9        kin_type:  MF            
+# target_amu: 9.012182                 
+# target_density [g/cm3]: 1.8480     
+# target_thickness [cm]: 0.5335      
+# target_areal_density [g/cm2]: 0.9859
+#
+# N: 5
+# Z: 4
+# A: 9
+# transparency: 0.6
+#
+# beam_energy [GeV]: 10.5494          
+#
+# hms_h_particle_mass [GeV]: 0.938272          
+# hms_h_momentum [GeV/c]: 1.8200             
+# hms_h_angle [deg]: -48.3000                  
+#
+# shms_e_particle_mass [GeV]: 0.000511          
+# shms_e_momentum [GeV/c]: 8.5500             
+# shms_e_angle [deg]: 8.3000                  
+#
+# BCM1_Current_Threshold [uA]: >5.00 
+# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       
+#                       
+run,beam_time,charge,avg_current,total_Yield,total_Yield_err,real_Yield,real_Yield_err,random_Yield,random_Yield_err,hTrkEff,hTrkEff_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc1u1_res,hdc1u2_res,hdc1x1_res,hdc1x2_res,hdc1v2_res,hdc1v1_res,hdc2v1_res,hdc2v2_res,hdc2x2_res,hdc2x1_res,hdc2u2_res,hdc2u1_res,hdc1u1_res_err,hdc1u2_res_err,hdc1x1_res_err,hdc1x2_res_err,hdc1v2_res_err,hdc1v1_res_err,hdc2v1_res_err,hdc2v2_res_err,hdc2x2_res_err,hdc2x1_res_err,hdc2u2_res_err,hdc2u1_res_err,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err
+16983,3805.473,88.640,23.293,30061.000,173.381,30049.816,173.392,11.184,1.918,0.996,8.993E-05,0.993,1.232E-04,1.005,-NAN,0.939,1.230E-03,2.202E+02,8.795E+01,6.837E+01,3.018E+00,1.374E-01,2.131E-01,2.111E-01,2.256E-01,1.381E-01,37933.000,35614.000,-1.0,1025.0,33.0,1.0,0.281,0.330,0.882,0.021,0.994,0.050,1.022,0.034,337.005,335.893,372.899,356.452,321.350,318.031,344.932,349.909,309.471,325.484,363.445,371.446,1.725,1.721,1.921,1.826,1.689,1.560,1.680,1.703,1.462,1.532,1.822,1.786,230.968,230.917,227.941,216.794,259.469,253.011,232.793,231.685,211.328,219.944,227.430,239.262,1.454,1.461,1.545,1.558,1.813,1.772,1.505,1.411,1.478,1.597,1.557,1.732
+17099,396.880,12.477,31.439,4109.000,64.101,4105.711,64.110,3.289,1.040,0.996,2.868E-04,0.989,4.481E-04,1.004,-NAN,0.931,4.023E-03,2.973E+02,1.235E+02,9.438E+01,4.079E+00,1.822E-01,2.337E-01,2.326E-01,2.134E-01,1.829E-01,3956.000,3684.000,-1.0,2049.0,129.0,1.0,0.105,0.329,0.882,0.021,0.995,0.050,1.033,0.036,345.093,340.069,378.209,358.855,316.417,319.629,341.304,345.910,309.759,321.179,355.372,366.169,1.911,1.977,2.211,2.089,1.830,1.770,1.861,1.883,1.680,1.687,1.925,2.054,234.061,239.873,231.923,220.109,261.554,257.326,237.598,235.313,215.943,223.447,228.537,239.975,1.673,1.631,1.779,1.569,2.043,2.047,1.589,1.579,1.705,1.838,1.681,1.885
+17100,460.983,27.552,59.767,8421.000,91.766,8412.776,91.781,8.224,1.645,0.996,1.953E-04,0.981,4.020E-04,1.002,-NAN,0.938,3.547E-03,5.654E+02,2.461E+02,1.836E+02,7.776E+00,3.696E-01,4.742E-01,4.706E-01,4.283E-01,3.703E-01,4594.000,4311.000,-1.0,2049.0,129.0,1.0,0.108,0.340,0.882,0.021,0.995,0.051,1.043,0.035,345.178,339.462,385.650,358.498,318.848,321.094,337.322,347.752,312.230,324.924,356.820,369.684,1.647,1.691,1.857,1.774,1.588,1.525,1.564,1.631,1.441,1.463,1.676,1.711,247.818,252.424,239.205,230.535,267.318,260.520,243.853,245.173,226.332,230.810,238.225,245.446,1.682,1.623,1.663,1.684,1.894,1.806,1.613,1.561,1.602,1.673,1.632,1.723
