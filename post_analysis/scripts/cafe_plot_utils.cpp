@@ -23,18 +23,27 @@ void cafe_plot_utils(){
 
   /*
   // get summary file columns combined (either total or average)
+  
   double total_charge    = get_header("total_charge", "B11", "SRC"   );
-  double total_yield     = get_header("real_yield", "B11", "SRC"     );
-  double total_yield_err = get_header("real_yield_err", "B11", "SRC" );
+  double total_yield     = get_header("real_yield", "Be9", "SRC"     );
+  double total_yield_err = get_header("real_yield_err", "B10", "MF" );
 
   double hms_trk_err     = get_header("hms_trk_eff", "B11", "SRC" );
-  double hms_trk_err_err = get_header("hms_trk_eff", "B11", "SRC" );
+  double hms_trk_err_err = get_header("hms_trk_eff_err", "LD2", "SRC" );
 
+  double shms_trk_err     = get_header("shms_trk_eff", "C12", "SRC" );
+  double shms_trk_err_err = get_header("shms_trk_eff_err", "B11", "SRC" );
   
-  double transparency = get_param("transparency","C12", "MF" );
-  //cout << "total_charge:" < total_charge << endl;
-  //cout << "total_yield:" < total_yield << endl;
-  */
+  double_t live_time      = get_header("total_live_time", "Fe54,  "MF");
+
+  double transparency     = get_param("transparency","C12", "MF" );
+  double tgt_area_density = get_param("transparency","Fe54", "SRC" );
+  
+  double N    = get_param("N","C12", "MF" );  # get number of neutrons
+  double Z    = get_param("Z, "Fe54", "MF" );  # get number of protons
+  double A    = get_param("A","Be9", "MF" );  # get mass number (N+Z)
+
+*/
   
   
   /*
