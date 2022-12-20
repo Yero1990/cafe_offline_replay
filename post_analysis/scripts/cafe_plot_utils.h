@@ -148,7 +148,7 @@ double get_header(string header="", string target="", string kin=""){
 }
 
 //__________________________________________________________________
-double get_param( string var="", string target="", string kin="" ){
+ double get_param( string var="", string target="", string kin="" ){
   
   // brief: function to read parameters from the .csv files
 
@@ -163,13 +163,10 @@ double get_param( string var="", string target="", string kin="" ){
   double tgt_area_density = stod(split(FindString("target_areal_density", file_csv.c_str(), false, -1, true)[0], ':')[1]);
   double transparency     = stod(split(FindString("transparency:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
 
-  
-  //cout << Form("transparency = %.3f", transparency) << endl;
-  //cout << Form("tgt_area_density = %.4f",tgt_area_density) << endl;
-  
-  //double Z = FindString("Z:", file_csv.c_str(), false, -1, true);
-  //double N = FindString("N:", file_csv.c_str(), false, -1, true);
-  //double A = FindString("A:", file_csv.c_str(), false, -1, true);
+  double N     = stod(split(FindString("N:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
+  double Z     = stod(split(FindString("Z:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
+  double A     = stod(split(FindString("A:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
+
 
   if( var.compare("tgt_area_density")==0 ){
     return tgt_area_density;
@@ -179,9 +176,21 @@ double get_param( string var="", string target="", string kin="" ){
     return transparency;
   }
 
+  if( var.compare("N")==0 ){
+    return N;
+  }
 
+  if( var.compare("Z")==0 ){
+    return Z;
+  }
   
-  return 0;
+  if( var.compare("A")==0 ){
+    return A;
+  }
+
+
+  return 0.;
+  
 }
 
 
@@ -496,31 +505,76 @@ void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", st
 vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="", string kinB="",
 				string hist_name="",  bool show_histos=false ){
   
-  // brief: calculate single ratios of binned histograms (hist_name) for  target, kinematics): R = tgtA_kinA / tgtB_kinB  
+  // brief: calculate single ratios of binned histograms (hist_name) for  each combination of <target, kinematics>: R = tgtA_kinA / tgtB_kinB  
   // using the analyzed CaFe *_combined.root files .  Example:  Ca48 MF / Ca40 MF,  Fe54 SRC / Ca48 SRC, etc.
+  // The histograms, A and B, are scaled to total charge, transparency, target thickness, track efficiency and live time
+  // The user may modify the scaling as desired
 
 
   
   // define histogram scale variables 
-  double scale_factor_A,  Q_A,  hms_trk_eff_A,  shms_trk_eff_A,  total_LT_A;
-  double scale_factor_B, Q_B, hms_trk_eff_B, shms_trk_eff_B, total_LT_B;
+  double scale_factor_A,  Q_A,  hms_trk_eff_A,  shms_trk_eff_A,  total_LT_A, transparency_A, tgt_area_density_A;
+  double scale_factor_B,  Q_B,  hms_trk_eff_B,  shms_trk_eff_B,  total_LT_B, transparency_B, tgt_area_density_B;
 
-  
+
+  //-------------------------------------------------------
+  //  APPLY SCALE FACTOR TO HISTOGRAMS (VERY IMPORTANT)
   // get info from summary files (for scaling histograms)
+  //-------------------------------------------------------
+
+  // total charge
   Q_A  = get_header("total_charge", tgtA.c_str(),  kinA.c_str());    
   Q_B = get_header("total_charge", tgtB.c_str(),  kinB.c_str());
-  
-  hms_trk_eff_A    = get_header("hms_trk_eff",  tgtA.c_str(), kinA.c_str() );
+
+  // weighted average of HMS track efficiency
+  hms_trk_eff_A   = get_header("hms_trk_eff",  tgtA.c_str(), kinA.c_str() );
   hms_trk_eff_B   = get_header("hms_trk_eff",  tgtB.c_str(), kinB.c_str() );    
-  
-  shms_trk_eff_A   = get_header("shms_trk_eff", tgtA.c_str(), kinA.c_str() );
+
+  // weighted average of SHMS track efficiency
+  shms_trk_eff_A  = get_header("shms_trk_eff", tgtA.c_str(), kinA.c_str() );
   shms_trk_eff_B  = get_header("shms_trk_eff", tgtB.c_str(), kinB.c_str() );
-  
-  total_LT_A       = get_header("total_live_time", tgtA.c_str(),  kinA.c_str());
+
+  // weighted average of total live time
+  total_LT_A      = get_header("total_live_time", tgtA.c_str(),  kinA.c_str());
   total_LT_B      = get_header("total_live_time", tgtB.c_str(),  kinB.c_str());
-  
-  scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * total_LT_A ) ;
-  scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * total_LT_B ) ;
+
+  // transparencies
+  transparency_A  = get_param("transparency", tgtA.c_str(),  kinA.c_str());
+  transparency_B  = get_param("transparency", tgtB.c_str(),  kinB.c_str());
+
+  // target areal density [g/cm^2]
+  tgt_area_density_A  = get_param("tgt_area_density", tgtA.c_str(),  kinA.c_str());
+  tgt_area_density_B  = get_param("tgt_area_density", tgtB.c_str(),  kinB.c_str());
+
+  // putting everyting together . . .  
+  scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * total_LT_A * transparency_A * tgt_area_density_A) ;
+  scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * total_LT_B * transparency_B * tgt_area_density_B) ;
+
+  // PRINT OUT scale factor and its components for sanity checking
+  cout << "" << endl;
+  cout << "#---------------------------" << endl;
+  cout << Form(" %s %s Scaler Factors: ", tgtA.c_str(), kinA.c_str() ) << endl;
+  cout << "#---------------------------" << endl;
+  cout << Form("charge [mC]                 : %.3f", Q_A ) << endl;
+  cout << Form("avg. hms  track eff         : %.3f", hms_trk_eff_A ) << endl;
+  cout << Form("avg. shms track eff         : %.3f", shms_trk_eff_A ) << endl;
+  cout << Form("avg. total live time        : %.3f", total_LT_A  ) << endl;
+  cout << Form("transparency                : %.3f", transparency_A  ) << endl;
+  cout << Form("tgt. areal density [g/cm^2] : %.4f", tgt_area_density_A   ) << endl;
+  cout << Form("scale factor                : %.3f", scale_factor_A ) << endl;
+  cout << "" << endl;
+  cout << "" << endl;
+  cout << "#---------------------------" << endl;
+  cout << Form(" %s %s Scaler Factors: ", tgtB.c_str(), kinB.c_str() ) << endl;
+  cout << "#---------------------------" << endl;
+  cout << Form("charge [mC]                 : %.3f", Q_B ) << endl;
+  cout << Form("avg. hms  track eff         : %.3f", hms_trk_eff_B ) << endl;
+  cout << Form("avg. shms track eff         : %.3f", shms_trk_eff_B ) << endl;
+  cout << Form("avg. total live time        : %.3f", total_LT_B  ) << endl;
+  cout << Form("transparency                : %.3f", transparency_B  ) << endl;
+  cout << Form("tgt. areal density [g/cm^2] : %.4f", tgt_area_density_B   ) << endl;
+  cout << Form("scale factor                : %.3f", scale_factor_B ) << endl;
+  cout << "" << endl;
   
   // set .root file names 
   string fname_A = Form(ANALYZED_COMBINED"pass1/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());

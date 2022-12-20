@@ -115,7 +115,6 @@ void cafe_plot_utils(){
   c->cd(2);
   R->Draw("E0");
   cout << "R Integral: " << R->Integral() << endl;
-  
   */
  
   
