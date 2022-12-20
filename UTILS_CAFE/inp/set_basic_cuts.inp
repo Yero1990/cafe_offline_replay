@@ -230,7 +230,7 @@ c_MF_Pm_min = 0.0
 c_MF_Pm_max = 0.250
 
 # in-plane recoil (undetected) angle, theta_rq [deg]
-thrq_MF_cut_flag = 1
+thrq_MF_cut_flag = 0
 c_MF_thrq_min = 0.
 c_MF_thrq_max = 60.
 
