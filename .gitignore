@@ -15,6 +15,7 @@
 !CALIBRATION/bcm_calib/*
 !hcswif/*
 !jobsub
+!post_analysis
 
 # Directories
 RAID
