@@ -49,13 +49,13 @@ vector<double> read_csv(string csv_file="", string col_header=""){
   ifstream myFileStream(csv_file.c_str());
 
   if(!myFileStream.is_open()){
-    cout << "File failed to open" << endl;
+    cout << Form("File %s failed to open",csv_file.c_str()) << endl;
    
   }
 
   if( col_header.empty() ) {
     cout << "Empty column header !" << endl;
-    cout << csv_file.c_str() << " column headers --- > " << endl;
+    cout << csv_file.c_str() << "Please select one of the following column headers --- > " << endl;
   }
 
   string line;

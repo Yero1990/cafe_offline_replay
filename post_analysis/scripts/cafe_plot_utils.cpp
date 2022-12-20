@@ -20,9 +20,21 @@ void cafe_plot_utils(){
   //--------------------------------------------
   // READ PARAMETERS FROM SUMMARY (.csv) FILES
   //--------------------------------------------
-  
 
-  // double transparency = get_param("transparency", string target="", string kin="" )
+  /*
+  // get summary file columns combined (either total or average)
+  double total_charge    = get_header("total_charge", "B11", "SRC"   );
+  double total_yield     = get_header("real_yield", "B11", "SRC"     );
+  double total_yield_err = get_header("real_yield_err", "B11", "SRC" );
+
+  double hms_trk_err     = get_header("hms_trk_eff", "B11", "SRC" );
+  double hms_trk_err_err = get_header("hms_trk_eff", "B11", "SRC" );
+
+  
+  double transparency = get_param("transparency","C12", "MF" );
+  //cout << "total_charge:" < total_charge << endl;
+  //cout << "total_yield:" < total_yield << endl;
+  */
   
   
   /*
@@ -62,8 +74,8 @@ void cafe_plot_utils(){
   vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
   vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
   overlay_nuclei(tgt, clr, "MF", "kin_plots/H_Pm", "Missing Momentum [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+ 
   */
-  
 
   
   /*
