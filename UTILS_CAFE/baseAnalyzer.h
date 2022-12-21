@@ -396,7 +396,11 @@ protected:
 
   Double_t MM_total, MM_rand, MM_real;
   Double_t MM_total_err, MM_rand_err, MM_real_err;
-  
+
+  // counting the events underneath the SHMS Cal E/p (for multi-track eff. correction)
+  Double_t single_peak_counts, single_peak_counts_err;
+  Double_t multi_peak_counts,  multi_peak_counts_err;
+  Double_t multi_track_eff,  multi_track_eff_err;
   
   //------------DECLARE HISTOGRAM BINNING VARIABLES-------------
   Double_t nbins;
@@ -1098,7 +1102,17 @@ protected:
   TH1F *H_pHodBetaNtrk;   
   TH1F *H_pHodBetaTrk;   
 
-
+  //--------------------
+  // SHMS specific histos
+  // for multiple-track corrections 
+  //---------------------
+  TH1F *H_multitrack_ep_ctime_notrk_noCUT;
+  TH1F *H_multitrack_ep_ctime_notrk;      // raw coin time spectrum (no track info)
+  // SHMS e/p spectra (with only a cut on the raw coin time w/o track info)
+  TH1F *H_multitrack_pCalEtotNorm_full_noCUT;     // full E/p spectrum (with only cut on ctime notrk)
+  TH1F *H_multitrack_pCalEtotNorm_full;     // full E/p spectrum (with only cut on ctime notrk)
+  TH1F *H_multitrack_pCalEtotNorm_peak1;    //  E/p single e- peak selected (with only cut on ctime notrk)
+  TH1F *H_multitrack_pCalEtotNorm_multipeaks; //  E/p e- multipeaks(>1) selected (with only cut on ctime notrk)
   
   
   //-------Define 2D PID Histograms (correlations between pid detectors)-------
@@ -1350,6 +1364,8 @@ protected:
   Double_t pTrkEff;
   Double_t pTrkEff_err;
 
+  //SHMS Multi-track efficiency counter
+  
   //Computer Live Time 
   Double_t cpuLT_trig_single;       //generic computer live time
   Double_t cpuLT_trig_coin;       //generic computer live time
@@ -1717,10 +1733,12 @@ protected:
   //--------------------------------
   //Coincidence Time (ONLY DATA)
   Double_t epCoinTime;
+  Double_t epCoinTime_notrk;
   Double_t eKCoinTime;
   Double_t ePiCoinTime;
 
   Double_t epCoinTime_center;
+  Double_t epCoinTime_center_notrk;
 
   //HMS DETECTORS
   Double_t hcer_npesum;
@@ -2053,6 +2071,7 @@ protected:
   
   // define peak values (max bin content x-value)
   Double_t ctime_offset_peak_val = 0.0;
+  Double_t ctime_offset_peak_notrk_val = 0.0;
   Double_t hms_beta_peak_val = 0.0;
   Double_t shms_beta_peak_val = 0.0;
   Double_t shms_ecal_peak_val = 0.0;

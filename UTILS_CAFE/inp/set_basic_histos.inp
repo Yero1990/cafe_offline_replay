@@ -20,7 +20,7 @@ hcer_xmax = 15.
 #calorimeter etotnorm / etottracknorm
 hcal_nbins = 100	  
 hcal_xmin = 0.001	  
-hcal_xmax = 1.5
+hcal_xmax = 3.5
 
 #calculated beta
 hbeta_nbins = 100	  
@@ -46,7 +46,7 @@ phgcer_xmax = 25.
 #calorimeter etotnorm / etottracknorm
 pcal_nbins = 100	  
 pcal_xmin = 0.001  
-pcal_xmax = 1.5	  
+pcal_xmax = 3.5	  
 
 #calculated beta
 pbeta_nbins = 100	  
