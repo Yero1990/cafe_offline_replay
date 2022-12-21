@@ -15,7 +15,8 @@
 !CALIBRATION/bcm_calib/*
 !hcswif/*
 !jobsub
-!post_analysis
+!post_analysis/
+post_analysis/ca48_MF_trackStudy/*.root
 
 # Directories
 RAID
