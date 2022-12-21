@@ -193,6 +193,133 @@ double get_header(string header="", string target="", string kin=""){
   
 }
 
+//____________________________________________________________________________________________________
+void compare_histos( TString file_path="path/to/file1.root",
+		     vector<TString> hist_name={}, vector<int> clr={}, vector<TString> hist_leg={},
+		     TString xlabel="X-label [units]", TString ylabel="Y-label [units]", TString title="title",
+		     bool norm=false)
+{
+
+  /* brief: generic function to compare (overlay) N-number of a histograms with different cuts from the same file 
+     (e.g. study cut variation of a histogram)
+     
+     The arguments are as follows:
+
+     file_path             : ROOTfile paths ( /path/to/file.root )
+     hist1, hist2          : complete path to histogram objects in file (for example if they are in a sub-direcotry, then it must be specified ("path/to/hist_object")
+     xlabel, ylabel, title : self-explanatory (axis labels and plot title)
+     hist1_leg, hist2_leg  : histograms legend names that can help identify what the histogram being plotted is
+     norm                  : boolean flag that if set to true, draws the histograms normalized to an area of 1
+
+   */
+
+
+  int font_type = 132;
+
+  gStyle->SetOptStat(0);
+  gStyle->SetTitleFontSize(0.07);
+  gStyle->SetTitleFont(font_type, "");
+  gStyle->SetLegendBorderSize(0);
+  gStyle->SetLegendFont(font_type);
+  gStyle->SetLegendTextSize(0.03);
+  
+
+  //Open  ROOT files;
+  TFile *file = NULL;
+
+  file = new TFile(file_path.Data());
+
+
+
+  // declare canvas to draw overlay histos
+  TCanvas *c = new TCanvas("c", "c", 900, 700);
+
+ 
+  TLegend *leg = new TLegend(0.14,0.89,0.25,0.78);
+
+
+  // loop over all histogram names to be overlayed
+  for(int i=0; i<hist_name.size(); i++) {
+
+    // declare 1D histos
+    TH1F *H_hist = 0;  
+
+    // get histogram objects
+    file->cd();
+    file->GetObject(hist_name[i].Data(), H_hist);
+    // set histos aethetics
+    H_hist->SetLineColor(clr[i]);
+
+    //H_hist->SetFillColorAlpha(clr[i], 0.40);
+    H_hist->SetFillColor(clr[i]);
+    //H_hist->SetFillStyle(3004+i);
+    
+
+    // set y-range
+    // H_hist->GetYaxis()->SetRangeUser(0.001, H_hist->GetMaximum()+0.6*H_hist->GetMaximum());
+    
+    // set histogram titles/labels/font
+    H_hist->SetTitle(title.Data());
+
+    H_hist->GetXaxis()->SetLabelSize(0.04);
+    H_hist->GetYaxis()->SetLabelSize(0.04);
+    
+    H_hist->GetYaxis()->SetTitle(ylabel.Data());
+    H_hist->GetXaxis()->SetTitle(xlabel.Data());
+
+    H_hist->GetYaxis()->CenterTitle();
+    H_hist->GetXaxis()->CenterTitle();
+    
+    H_hist->SetLabelFont(font_type, "XY");
+    H_hist->SetTitleFont(font_type, "XY");
+    H_hist->SetTitleSize(0.04, "XY");
+    H_hist->SetTitleOffset(1.1, "X");
+    H_hist->SetTitleOffset(1.4, "Y");
+  
+    
+    if(norm) {
+
+      if(i==0){
+	H_hist->DrawNormalized("histE0");
+      }
+      else{
+	H_hist->DrawNormalized("sameshistE0");
+      }
+    }
+
+    else{ 
+      if(i==0){
+	H_hist->Draw("histE0");
+      }
+      else{
+	H_hist->Draw("sameshistE0");
+      }
+    }
+    
+   
+    
+    // create legend ( displays hist legend label and integral counts)
+    double h_I;
+    double h_Ierr;
+    double nbins = H_hist->GetNbinsX();  //Get total number of bins (excluding overflow)
+    h_I = H_hist->IntegralAndError(1, nbins, h_Ierr);
+
+
+    leg->AddEntry(H_hist,Form("%s | Integral: %.1f \n", hist_leg[i].Data(), h_I),"f");
+
+
+    // draw legend
+    leg->Draw();
+    //delete H_hist; H_hist=NULL;
+
+
+  } // end loop over hist names
+  
+
+
+
+  
+}
 
 //____________________________________________________________________________________________________
 void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm",

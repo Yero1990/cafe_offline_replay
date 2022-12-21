@@ -46,7 +46,7 @@ void cafe_plot_utils(){
 */
   
   
-  /*
+  
   //-------------------------------
   // COMPARE (OVERLAY) HISTOGRAMS
   //-------------------------------
@@ -54,6 +54,88 @@ void cafe_plot_utils(){
   //        the user also provides labels, titles and legend text (this is basically a quick way to make quality plot comparisons, without the
   //        hassle of dealing with ROOT ), there is also an optional flag ( bool norm ) to draw normalized histograms to an areal of 1.
   
+  // version 0: returns overlay of histogram objects from a single input file
+
+  //Example: overlyaing same histograms with different cuts (sequential cuts study)
+  vector<TString> hist_name_Q2_mf ={"quality_plots/ACCP+PID+CTIME_CUTS/H_Q2_ACCP_PID_CTIME_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2_CUTS/H_Q2_ACCP_PID_CTIME_Q2_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS/H_Q2_ACCP_PID_CTIME_Q2_Em_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS/H_Q2_ACCP_PID_CTIME_Q2_Em_Pm_CUTS",
+  };
+
+  vector<TString> hist_name_Q2_src ={"quality_plots/ACCP+PID+CTIME_CUTS/H_Q2_ACCP_PID_CTIME_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2_CUTS/H_Q2_ACCP_PID_CTIME_Q2_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS/H_Q2_ACCP_PID_CTIME_Q2_Xbj_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS/H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS/H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS",
+				     
+  };
+
+
+  vector<TString> hist_name_xbj_mf ={"quality_plots/ACCP+PID+CTIME_CUTS/H_xbj_ACCP_PID_CTIME_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2_CUTS/H_xbj_ACCP_PID_CTIME_Q2_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2+Em_CUTS/H_xbj_ACCP_PID_CTIME_Q2_Em_CUTS",
+				    "quality_plots/ACCP+PID+CTIME+Q2+Em+Pm_CUTS/H_xbj_ACCP_PID_CTIME_Q2_Em_Pm_CUTS",
+  };
+
+  vector<TString> hist_name_xbj_src ={"quality_plots/ACCP+PID+CTIME_CUTS/H_xbj_ACCP_PID_CTIME_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2_CUTS/H_xbj_ACCP_PID_CTIME_Q2_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj_CUTS/H_xbj_ACCP_PID_CTIME_Q2_Xbj_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq_CUTS/H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS",
+				     "quality_plots/ACCP+PID+CTIME+Q2+Xbj+thrq+Pm_CUTS/H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS",
+				     
+  };
+   
+  
+  vector<int> clr_mf           ={2, 4, 6, 8};
+  vector<int> clr_src          ={2, 4, 6, 8, 9};
+
+  vector<TString> hist_leg_MF  ={"accp+pid+ctime", "Q^{2}", "Q^{2}+Em", "Q^{2}+Em+Pm"};
+  vector<TString> hist_leg_SRC  ={"accp+pid+ctime", "Q^{2}", "Q^{2}+X_{bj}", "Q^{2}+X_{bj}+#theta_{rq}",  "Q^{2}+X_{bj}+#theta_{rq}+P_{m}"};
+
+  // --- plot Q2 MF for all targets ----
+  //compare_histos("analyzed_files/combined/cafe_prod_LD2_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: LD2 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Be9_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Be9 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B10_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: B10 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B11_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: B11 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_C12_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: C12 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca40_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Ca40 MF", false);
+  //compare_histos("analyzed_files/individual/pass1/cafe_prod_Ca48_MF_17096_-1_histos.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Ca48 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Fe54_MF_combined.root", hist_name_Q2_mf, clr_mf, hist_leg_MF, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Fe54 MF", false);
+
+  // ---- plot Q2 SRC for all targets -----
+  //compare_histos("analyzed_files/combined/cafe_prod_LD2_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: LD2 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Be9_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Be9 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B10_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: B10 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B11_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: B11 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_C12_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: C12 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca40_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Ca40 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca48_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Ca48 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Fe54_SRC_combined.root", hist_name_Q2_src, clr_src, hist_leg_SRC, "Q2 [GeV^{2}]", "Counts", "4-Momentum Transfer, Q^{2}: Fe54 SRC", false);
+
+
+   // --- plot Xbj MF for all targets ----
+  //compare_histos("analyzed_files/combined/cafe_prod_LD2_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: LD2 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Be9_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: Be9 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B10_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: B10 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B11_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: B11 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_C12_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: C12 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca40_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: Ca40 MF", false);
+  //compare_histos("analyzed_files/individual/pass1/cafe_prod_Ca48_MF_17096_-1_histos.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: Ca48 MF", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Fe54_MF_combined.root", hist_name_xbj_mf, clr_mf, hist_leg_MF, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: Fe54 MF", false);
+
+
+  // ---- plot Xbj SRC for all targets -----
+  //compare_histos("analyzed_files/combined/cafe_prod_LD2_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: LD2 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Be9_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: Be9 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B10_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: B10 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_B11_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: B11 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_C12_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts", "x-Bjorken, X_{bj}: C12 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca40_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts","x-Bjorken, X_{bj}: Ca40 SRC", false);
+  //compare_histos("analyzed_files/combined/cafe_prod_Ca48_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts","x-Bjorken, X_{bj}: Ca48 SRC", false);
+  compare_histos("analyzed_files/combined/cafe_prod_Fe54_SRC_combined.root", hist_name_xbj_src, clr_src, hist_leg_SRC, "X_{bj}", "Counts","x-Bjorken, X_{bj}: Fe54 SRC", false);
+  
+  /*
   // version 1: input file path and histogram objects by user
   //compare_histos("path/to/file1.root", "kin_plots/H_Pm", "path/to/file2.root", "kin_plots/H_Pm", "X-label [units]", "Y-label [units]", "title",
   //		 "hist1_legend_title", "hist2_legend_title", true);
