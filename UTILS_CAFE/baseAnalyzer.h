@@ -797,6 +797,7 @@ protected:
   TH1F *H_Pm_noCUT;
   TH1F *H_thxq_noCUT;
   TH1F *H_thrq_noCUT;
+  TH1F *H_cthrq_noCUT;
   TH1F *H_kf_noCUT;
   TH1F *H_Pf_noCUT;
   TH1F *H_thx_noCUT;
@@ -845,6 +846,7 @@ protected:
   TH1F *H_Pm_ACCP;
   TH1F *H_thxq_ACCP;
   TH1F *H_thrq_ACCP;
+  TH1F *H_cthrq_ACCP; 
   TH1F *H_kf_ACCP;
   TH1F *H_Pf_ACCP;
   TH1F *H_thx_ACCP;
@@ -892,6 +894,7 @@ protected:
   TH1F *H_Pm_ACCP_PID;
   TH1F *H_thxq_ACCP_PID;
   TH1F *H_thrq_ACCP_PID;
+  TH1F *H_cthrq_ACCP_PID; 
   TH1F *H_kf_ACCP_PID;
   TH1F *H_Pf_ACCP_PID;
   TH1F *H_thx_ACCP_PID;
@@ -940,6 +943,7 @@ protected:
   TH1F *H_Pm_ACCP_PID_CTIME;
   TH1F *H_thxq_ACCP_PID_CTIME;
   TH1F *H_thrq_ACCP_PID_CTIME;
+  TH1F *H_cthrq_ACCP_PID_CTIME;  
   TH1F *H_kf_ACCP_PID_CTIME;
   TH1F *H_Pf_ACCP_PID_CTIME;
   TH1F *H_thx_ACCP_PID_CTIME;
@@ -980,6 +984,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2;
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2;
@@ -998,6 +1003,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Em;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Em;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2_Em;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2_Em;
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em;
@@ -1015,6 +1021,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2_Em_Pm;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm; 
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm;
@@ -1033,6 +1040,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2_Xbj;
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj;
@@ -1050,6 +1058,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq;
@@ -1067,6 +1076,7 @@ protected:
   TH1F *H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH1F *H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
+  TH1F *H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm; 
   TH2F *H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH2F *H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;  
   TH2F *H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
@@ -1106,10 +1116,10 @@ protected:
   // SHMS specific histos
   // for multiple-track corrections 
   //---------------------
-  TH1F *H_multitrack_ep_ctime_notrk_noCUT;
+  TH1F *H_multitrack_ep_ctime_notrk_ncut;
   TH1F *H_multitrack_ep_ctime_notrk;      // raw coin time spectrum (no track info)
   // SHMS e/p spectra (with only a cut on the raw coin time w/o track info)
-  TH1F *H_multitrack_pCalEtotNorm_full_noCUT;     // full E/p spectrum (with only cut on ctime notrk)
+  TH1F *H_multitrack_pCalEtotNorm_full_ncut;     // full E/p spectrum (with only cut on ctime notrk)
   TH1F *H_multitrack_pCalEtotNorm_full;     // full E/p spectrum (with only cut on ctime notrk)
   TH1F *H_multitrack_pCalEtotNorm_peak1;    //  E/p single e- peak selected (with only cut on ctime notrk)
   TH1F *H_multitrack_pCalEtotNorm_multipeaks; //  E/p e- multipeaks(>1) selected (with only cut on ctime notrk)
@@ -1163,6 +1173,7 @@ protected:
   TH1F *H_MM;
   TH1F *H_thxq;
   TH1F *H_thrq;
+  TH1F *H_cthrq;
   TH1F *H_phxq;
   TH1F *H_phrq;
   TH1F *H_Tx_cm;

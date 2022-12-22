@@ -70,11 +70,11 @@ pdcRes_xmax  = 0.2
 # electron arm central angle
 the_nbins = 70
 the_xmin = 5.0
-the_xmax = 15.0
+the_xmax = 10.0
 
 # final electron arm momentum [GeV/c]
 kf_nbins = 100
-kf_xmin = 8.
+kf_xmin = 7.
 kf_xmax = 11.
 
 # invariant mass (assuming proton target mass)
@@ -253,7 +253,7 @@ thxq_cm_xmax = 360.
 # final hadron arm momentum [GeV/c]
 Pf_nbins = 100
 Pf_xmin = 1.
-Pf_xmax = 1.8
+Pf_xmax = 2.2
 
 # In-plane angle between the recoil system and q in CM frame
 thrq_cm_nbins = 100

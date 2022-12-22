@@ -190,7 +190,8 @@ void baseAnalyzer::Init(){
   H_Tr         = NULL;	
   H_MM         = NULL;	
   H_thxq       = NULL;	
-  H_thrq       = NULL;	
+  H_thrq       = NULL;
+  H_cthrq       = NULL;	
   H_phxq       = NULL;	
   H_phrq       = NULL;	
   H_Tx_cm      = NULL;	
@@ -353,9 +354,9 @@ void baseAnalyzer::Init(){
 
 
   // ------ Multi-track Efficiency Studies -----
-  H_multitrack_ep_ctime_notrk_noCUT     = NULL;
+  H_multitrack_ep_ctime_notrk_ncut     = NULL;
   H_multitrack_ep_ctime_notrk           = NULL;
-  H_multitrack_pCalEtotNorm_full_noCUT  = NULL;
+  H_multitrack_pCalEtotNorm_full_ncut  = NULL;
   H_multitrack_pCalEtotNorm_full        = NULL;
   H_multitrack_pCalEtotNorm_peak1       = NULL;
   H_multitrack_pCalEtotNorm_multipeaks  = NULL;
@@ -377,7 +378,8 @@ void baseAnalyzer::Init(){
   H_MM_noCUT = NULL;	
   H_Pm_noCUT = NULL;	
   H_thxq_noCUT = NULL;	
-  H_thrq_noCUT = NULL;	
+  H_thrq_noCUT = NULL;
+  H_cthrq_noCUT = NULL; 	
   H_kf_noCUT = NULL;	
   H_Pf_noCUT = NULL;	
   H_thx_noCUT = NULL;	
@@ -426,6 +428,7 @@ void baseAnalyzer::Init(){
   H_Pm_ACCP = NULL;
   H_thxq_ACCP = NULL;
   H_thrq_ACCP = NULL;
+  H_cthrq_ACCP = NULL;
   H_kf_ACCP = NULL;
   H_Pf_ACCP = NULL;
   H_thx_ACCP = NULL;
@@ -473,6 +476,7 @@ void baseAnalyzer::Init(){
   H_Pm_ACCP_PID = NULL;
   H_thxq_ACCP_PID = NULL;
   H_thrq_ACCP_PID = NULL;
+  H_cthrq_ACCP_PID = NULL; 
   H_kf_ACCP_PID = NULL;
   H_Pf_ACCP_PID = NULL;
   H_thx_ACCP_PID = NULL;
@@ -521,6 +525,7 @@ void baseAnalyzer::Init(){
   H_Pm_ACCP_PID_CTIME = NULL;
   H_thxq_ACCP_PID_CTIME = NULL;
   H_thrq_ACCP_PID_CTIME = NULL;
+  H_cthrq_ACCP_PID_CTIME = NULL;
   H_kf_ACCP_PID_CTIME = NULL;
   H_Pf_ACCP_PID_CTIME = NULL;
   H_thx_ACCP_PID_CTIME = NULL;
@@ -563,6 +568,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2 = NULL;
     H_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_thrq_ACCP_PID_CTIME_Q2 = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2 = NULL; 
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;
@@ -580,6 +586,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2_Em = NULL;
     H_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
     H_thrq_ACCP_PID_CTIME_Q2_Em = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2_Em = NULL;  
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = NULL;
@@ -597,6 +604,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
     H_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
     H_thrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL; 
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
@@ -616,6 +624,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2 = NULL;
     H_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_thrq_ACCP_PID_CTIME_Q2 = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2 = NULL;
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;
@@ -633,6 +642,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_thrq_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;
@@ -650,6 +660,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL; 
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
@@ -667,6 +678,7 @@ void baseAnalyzer::Init(){
     H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
     H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
     H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;  
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
@@ -775,7 +787,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_Tr;		   H_Tr         = NULL;	
   delete H_MM;		   H_MM         = NULL;	
   delete H_thxq;	   H_thxq       = NULL;	
-  delete H_thrq;	   H_thrq       = NULL;	
+  delete H_thrq;	   H_thrq       = NULL;
+  delete H_cthrq;          H_cthrq      = NULL; 	
   delete H_phxq;	   H_phxq       = NULL;	
   delete H_phrq;	   H_phrq       = NULL;	
   delete H_Tx_cm;	   H_Tx_cm      = NULL;	
@@ -938,9 +951,9 @@ baseAnalyzer::~baseAnalyzer()
     }
 
   // ------ Multi-track Efficiency Studies -----
-  delete H_multitrack_ep_ctime_notrk_noCUT    ; H_multitrack_ep_ctime_notrk_noCUT     = NULL;  
+  delete H_multitrack_ep_ctime_notrk_ncut    ; H_multitrack_ep_ctime_notrk_ncut     = NULL;  
   delete H_multitrack_ep_ctime_notrk          ;	H_multitrack_ep_ctime_notrk           = NULL;
-  delete H_multitrack_pCalEtotNorm_full_noCUT ;	H_multitrack_pCalEtotNorm_full_noCUT  = NULL;
+  delete H_multitrack_pCalEtotNorm_full_ncut ;	H_multitrack_pCalEtotNorm_full_ncut  = NULL;
   delete H_multitrack_pCalEtotNorm_full       ;	H_multitrack_pCalEtotNorm_full        = NULL;
   delete H_multitrack_pCalEtotNorm_peak1      ;	H_multitrack_pCalEtotNorm_peak1       = NULL;
   delete H_multitrack_pCalEtotNorm_multipeaks ;	H_multitrack_pCalEtotNorm_multipeaks  = NULL;
@@ -961,7 +974,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_MM_noCUT;				     		   H_MM_noCUT = NULL;				     			     
   delete H_Pm_noCUT;				     		   H_Pm_noCUT = NULL;				     			     
   delete H_thxq_noCUT;				     		   H_thxq_noCUT = NULL;				     			     
-  delete H_thrq_noCUT;				     		   H_thrq_noCUT = NULL;				     			     
+  delete H_thrq_noCUT;				     		   H_thrq_noCUT = NULL;
+  delete H_cthrq_noCUT;                                            H_cthrq_noCUT = NULL; 	 		     			     
   delete H_kf_noCUT;				     		   H_kf_noCUT = NULL;				     			     
   delete H_Pf_noCUT;				     		   H_Pf_noCUT = NULL;				     			     
   delete H_thx_noCUT;				     		   H_thx_noCUT = NULL;				     			     
@@ -1009,7 +1023,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_MM_ACCP;				     		   H_MM_ACCP = NULL;				     			     
   delete H_Pm_ACCP;				     		   H_Pm_ACCP = NULL;				     			     
   delete H_thxq_ACCP;				     		   H_thxq_ACCP = NULL;				     			     
-  delete H_thrq_ACCP;				     		   H_thrq_ACCP = NULL;				     			     
+  delete H_thrq_ACCP;				     		   H_thrq_ACCP = NULL;
+  delete H_cthrq_ACCP;                                             H_cthrq_ACCP = NULL; 				     			     
   delete H_kf_ACCP;				     		   H_kf_ACCP = NULL;				     			     
   delete H_Pf_ACCP;				     		   H_Pf_ACCP = NULL;				     			     
   delete H_thx_ACCP;				     		   H_thx_ACCP = NULL;				     			     
@@ -1057,6 +1072,7 @@ baseAnalyzer::~baseAnalyzer()
   delete H_Pm_ACCP_PID;				     		   H_Pm_ACCP_PID = NULL;				     			     
   delete H_thxq_ACCP_PID;			     		   H_thxq_ACCP_PID = NULL;			     			     
   delete H_thrq_ACCP_PID;			     		   H_thrq_ACCP_PID = NULL;			     			     
+  delete H_cthrq_ACCP_PID;                                          H_cthrq_ACCP_PID = NULL;   
   delete H_kf_ACCP_PID;				     		   H_kf_ACCP_PID = NULL;				     			     
   delete H_Pf_ACCP_PID;				     		   H_Pf_ACCP_PID = NULL;				     			     
   delete H_thx_ACCP_PID;				     		   H_thx_ACCP_PID = NULL;				     		     
@@ -1105,6 +1121,7 @@ baseAnalyzer::~baseAnalyzer()
   delete H_Pm_ACCP_PID_CTIME;			     		   H_Pm_ACCP_PID_CTIME = NULL;			     			     
   delete H_thxq_ACCP_PID_CTIME;			     		   H_thxq_ACCP_PID_CTIME = NULL;			     			     
   delete H_thrq_ACCP_PID_CTIME;			     		   H_thrq_ACCP_PID_CTIME = NULL;			     			     
+  delete H_cthrq_ACCP_PID_CTIME;                                   H_cthrq_ACCP_PID_CTIME = NULL;  
   delete H_kf_ACCP_PID_CTIME;			     		   H_kf_ACCP_PID_CTIME = NULL;			     			     
   delete H_Pf_ACCP_PID_CTIME;			     		   H_Pf_ACCP_PID_CTIME = NULL;			     			     
   delete H_thx_ACCP_PID_CTIME;			     		   H_thx_ACCP_PID_CTIME = NULL;			     			     
@@ -1147,6 +1164,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2           ;		H_Em_src_ACCP_PID_CTIME_Q2           = NULL;					     
     delete H_Pm_ACCP_PID_CTIME_Q2               ;		H_Pm_ACCP_PID_CTIME_Q2               = NULL;					     
     delete H_thrq_ACCP_PID_CTIME_Q2             ;		H_thrq_ACCP_PID_CTIME_Q2             = NULL;					     
+    delete H_cthrq_ACCP_PID_CTIME_Q2            ;               H_cthrq_ACCP_PID_CTIME_Q2             = NULL;    
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     ;		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = NULL;				     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     ;  	        H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = NULL;					     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 ;		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;			     
@@ -1164,6 +1182,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2_Em ;	   		H_Em_src_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
     delete H_Pm_ACCP_PID_CTIME_Q2_Em ;		   		H_Pm_ACCP_PID_CTIME_Q2_Em = NULL;		   			     
     delete H_thrq_ACCP_PID_CTIME_Q2_Em ;		   	H_thrq_ACCP_PID_CTIME_Q2_Em = NULL;		   			     
+    delete H_cthrq_ACCP_PID_CTIME_Q2_Em ;                       H_cthrq_ACCP_PID_CTIME_Q2_Em = NULL;     
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em ;	   	H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em ;     		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em = NULL;     			     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em ; 		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = NULL; 			     
@@ -1181,6 +1200,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
     delete H_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;		      		H_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;		      		     
     delete H_thrq_ACCP_PID_CTIME_Q2_Em_Pm ;	      		        H_thrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm ;                            H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm = NULL;    
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm ; 		H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL; 			     
@@ -1200,6 +1220,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2 ;			H_Em_src_ACCP_PID_CTIME_Q2 = NULL;						     
     delete H_Pm_ACCP_PID_CTIME_Q2 ;			H_Pm_ACCP_PID_CTIME_Q2 = NULL;						     
     delete H_thrq_ACCP_PID_CTIME_Q2 ;			H_thrq_ACCP_PID_CTIME_Q2 = NULL;						     
+    delete H_cthrq_ACCP_PID_CTIME_Q2 ;                  H_cthrq_ACCP_PID_CTIME_Q2 = NULL;    
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 ;		H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2 = NULL;					     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 ;  		H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2 = NULL;  					     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 ;	H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = NULL;				     
@@ -1217,6 +1238,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Em_src_ACCP_PID_CTIME_Q2_Xbj = NULL;	   				     
     delete H_Pm_ACCP_PID_CTIME_Q2_Xbj ;		   	H_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;		   				     
     delete H_thrq_ACCP_PID_CTIME_Q2_Xbj ;		H_thrq_ACCP_PID_CTIME_Q2_Xbj = NULL;		   			     
+    delete H_cthrq_ACCP_PID_CTIME_Q2_Xbj ;              H_cthrq_ACCP_PID_CTIME_Q2_Xbj = NULL;
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj ;	H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj ;    	H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj = NULL;    				     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj ;	H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;				     
@@ -1234,6 +1256,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
     delete H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
     delete H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq ;		   H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;						     
+    delete H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq ;            H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;    
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq ;     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;  					     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq ; H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;				     
@@ -1251,6 +1274,7 @@ baseAnalyzer::~baseAnalyzer()
     delete H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
     delete H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;		      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;		   				     
     delete H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+    delete H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;            H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;      
     delete H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
     delete H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;    				     
     delete H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ; H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;				     
@@ -2344,6 +2368,7 @@ void baseAnalyzer::CreateHist()
   H_Pf      = new TH1F("H_Pf", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
   H_thxq    = new TH1F("H_thxq", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
   H_thrq    = new TH1F("H_thrq", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_cthrq   = new TH1F("H_cthrq", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);   
   H_phxq    = new TH1F("H_phxq", "Out-of-Plane (detected) Angle, #phi_{pq}", phxq_nbins, phxq_xmin, phxq_xmax);
   H_phrq    = new TH1F("H_phrq", "Out-of-Plane (recoil) Angle, #phi_{rq}", phrq_nbins, phrq_xmin, phrq_xmax);
   H_Tx_cm   = new TH1F("H_Tx_cm", "Kinetic Energy, T_{x, cm} (detected)", Tx_cm_nbins, Tx_cm_xmin, Tx_cm_xmax);     
@@ -2414,6 +2439,7 @@ void baseAnalyzer::CreateHist()
   kin_HList->Add( H_Pf       );
   kin_HList->Add( H_thxq     );
   kin_HList->Add( H_thrq     );
+  kin_HList->Add( H_cthrq    );
   kin_HList->Add( H_phxq     );
   kin_HList->Add( H_phrq     );
   kin_HList->Add( H_Tx_cm    );
@@ -2638,16 +2664,16 @@ void baseAnalyzer::CreateHist()
     }
 
   // ------ Multi-track Efficiency Studies -----
-  H_multitrack_ep_ctime_notrk_noCUT     = new TH1F("H_multitrack_ep_ctime_notrk_noCUT",     "Raw ep Coincidence Time (w/out TrkInfo); ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
+  H_multitrack_ep_ctime_notrk_ncut     = new TH1F("H_multitrack_ep_ctime_notrk_ncut",     "Raw ep Coincidence Time (w/out TrkInfo); ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
   H_multitrack_ep_ctime_notrk           = new TH1F("H_multitrack_ep_ctime_notrk",           "Raw ep Coincidence Time (w/out TrkInfo); ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
-  H_multitrack_pCalEtotNorm_full_noCUT  = new TH1F("H_multitrack_pCalEtotNorm_full_noCUT",  "SHMS Calorimeter E_{tot}/P_{cent} (no cuts); E_{tot} / P_{cent}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);;
+  H_multitrack_pCalEtotNorm_full_ncut  = new TH1F("H_multitrack_pCalEtotNorm_full_ncut",  "SHMS Calorimeter E_{tot}/P_{cent} (no cuts); E_{tot} / P_{cent}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);;
   H_multitrack_pCalEtotNorm_full        = new TH1F("H_multitrack_pCalEtotNorm_full",        "SHMS Calorimeter E_{tot}/P_{cent} (cut: ctime_notrk); E_{tot} / P_{cent}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);;
   H_multitrack_pCalEtotNorm_peak1       = new TH1F("H_multitrack_pCalEtotNorm_peak1",       "SHMS Calorimeter E_{tot}/P_{cent} (cut: ctime_notrk + peak1); E_{tot} / P_{cent}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);;
   H_multitrack_pCalEtotNorm_multipeaks  = new TH1F("H_multitrack_pCalEtotNorm_multipeaks",  "SHMS Calorimeter E_{tot}/P_{cent} (cut: ctime_notrk + multipeaks); E_{tot} / P_{cent}; Counts ", pcal_nbins, pcal_xmin, pcal_xmax);;
 
-  quality_HList->Add( H_multitrack_ep_ctime_notrk_noCUT    ); 
+  quality_HList->Add( H_multitrack_ep_ctime_notrk_ncut    ); 
   quality_HList->Add( H_multitrack_ep_ctime_notrk          );
-  quality_HList->Add( H_multitrack_pCalEtotNorm_full_noCUT ); 
+  quality_HList->Add( H_multitrack_pCalEtotNorm_full_ncut ); 
   quality_HList->Add( H_multitrack_pCalEtotNorm_full       ); 
   quality_HList->Add( H_multitrack_pCalEtotNorm_peak1      ); 
   quality_HList->Add( H_multitrack_pCalEtotNorm_multipeaks ); 
@@ -2671,6 +2697,7 @@ void baseAnalyzer::CreateHist()
   H_Pm_noCUT       = new TH1F("H_Pm_noCUT","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
   H_thxq_noCUT     = new TH1F("H_thxq_noCUT", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
   H_thrq_noCUT     = new TH1F("H_thrq_noCUT", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_cthrq_noCUT    = new TH1F("H_cthrq_noCUT","In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);     
   H_kf_noCUT       = new TH1F("H_kf_noCUT", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   H_Pf_noCUT       = new TH1F("H_Pf_noCUT", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
   H_thx_noCUT      = new TH1F("H_thx_noCUT", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
@@ -2717,6 +2744,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Pm_noCUT        );
   quality_HList->Add( H_thxq_noCUT      );
   quality_HList->Add( H_thrq_noCUT      );
+  quality_HList->Add( H_cthrq_noCUT      );
   quality_HList->Add( H_kf_noCUT        );
   quality_HList->Add( H_Pf_noCUT        );
   quality_HList->Add( H_thx_noCUT       );
@@ -2764,6 +2792,7 @@ void baseAnalyzer::CreateHist()
   H_Pm_ACCP       = new TH1F("H_Pm_ACCP_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
   H_thxq_ACCP     = new TH1F("H_thxq_ACCP_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
   H_thrq_ACCP     = new TH1F("H_thrq_ACCP_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_cthrq_ACCP    = new TH1F("H_cthrq_ACCP_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);   
   H_kf_ACCP       = new TH1F("H_kf_ACCP_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   H_Pf_ACCP       = new TH1F("H_Pf_ACCP_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
   H_thx_ACCP      = new TH1F("H_thx_ACCP_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
@@ -2810,6 +2839,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Pm_ACCP        );
   quality_HList->Add( H_thxq_ACCP      );
   quality_HList->Add( H_thrq_ACCP      );
+  quality_HList->Add( H_cthrq_ACCP     );
   quality_HList->Add( H_kf_ACCP        );
   quality_HList->Add( H_Pf_ACCP        );
   quality_HList->Add( H_thx_ACCP       );
@@ -2856,6 +2886,7 @@ void baseAnalyzer::CreateHist()
   H_Pm_ACCP_PID       = new TH1F("H_Pm_ACCP_PID_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
   H_thxq_ACCP_PID     = new TH1F("H_thxq_ACCP_PID_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
   H_thrq_ACCP_PID     = new TH1F("H_thrq_ACCP_PID_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_cthrq_ACCP_PID    = new TH1F("H_cthrq_ACCP_PID_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);
   H_kf_ACCP_PID       = new TH1F("H_kf_ACCP_PID_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   H_Pf_ACCP_PID       = new TH1F("H_Pf_ACCP_PID_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
   H_thx_ACCP_PID      = new TH1F("H_thx_ACCP_PID_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
@@ -2902,6 +2933,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Pm_ACCP_PID        );
   quality_HList->Add( H_thxq_ACCP_PID      );
   quality_HList->Add( H_thrq_ACCP_PID      );
+  quality_HList->Add( H_cthrq_ACCP_PID     );
   quality_HList->Add( H_kf_ACCP_PID        );
   quality_HList->Add( H_Pf_ACCP_PID        );
   quality_HList->Add( H_thx_ACCP_PID       );
@@ -2951,6 +2983,7 @@ void baseAnalyzer::CreateHist()
   H_Pm_ACCP_PID_CTIME       = new TH1F("H_Pm_ACCP_PID_CTIME_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
   H_thxq_ACCP_PID_CTIME     = new TH1F("H_thxq_ACCP_PID_CTIME_CUTS", "In-Plane (detected) Angle, #theta_{pq}", thxq_nbins, thxq_xmin, thxq_xmax);
   H_thrq_ACCP_PID_CTIME     = new TH1F("H_thrq_ACCP_PID_CTIME_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+  H_cthrq_ACCP_PID_CTIME    = new TH1F("H_cthrq_ACCP_PID_CTIME_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);   
   H_kf_ACCP_PID_CTIME       = new TH1F("H_kf_ACCP_PID_CTIME_CUTS", "Final e^{-} Momentum", kf_nbins, kf_xmin, kf_xmax);
   H_Pf_ACCP_PID_CTIME       = new TH1F("H_Pf_ACCP_PID_CTIME_CUTS", "Final Hadron Momentum (detected), p_{f}", Pf_nbins, Pf_xmin, Pf_xmax);
   H_thx_ACCP_PID_CTIME      = new TH1F("H_thx_ACCP_PID_CTIME_CUTS", "Hadron Scattering Angle (detected), #theta_{p}", thx_nbins, thx_xmin, thx_xmax);
@@ -2997,6 +3030,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Pm_ACCP_PID_CTIME        );
   quality_HList->Add( H_thxq_ACCP_PID_CTIME      );
   quality_HList->Add( H_thrq_ACCP_PID_CTIME      );
+  quality_HList->Add( H_cthrq_ACCP_PID_CTIME     );
   quality_HList->Add( H_kf_ACCP_PID_CTIME        );
   quality_HList->Add( H_Pf_ACCP_PID_CTIME        );
   quality_HList->Add( H_thx_ACCP_PID_CTIME       );
@@ -3035,6 +3069,7 @@ void baseAnalyzer::CreateHist()
     H_Em_src_ACCP_PID_CTIME_Q2           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
     H_Pm_ACCP_PID_CTIME_Q2               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
     H_thrq_ACCP_PID_CTIME_Q2             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+    H_cthrq_ACCP_PID_CTIME_Q2            = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1); 
     H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
     H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
     H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3050,6 +3085,7 @@ void baseAnalyzer::CreateHist()
     quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2           );
     quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2               );
     quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2             );
+    quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2             ); 
     quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2     );
     quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2     );
     quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2 );
@@ -3070,6 +3106,7 @@ void baseAnalyzer::CreateHist()
       H_Em_src_ACCP_PID_CTIME_Q2_Em           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
       H_Pm_ACCP_PID_CTIME_Q2_Em               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
       H_thrq_ACCP_PID_CTIME_Q2_Em             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_cthrq_ACCP_PID_CTIME_Q2_Em            = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_Em_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1); 
       H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
       H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
       H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3085,6 +3122,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2_Em           );
       quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2_Em               );
       quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2_Em             );
+      quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2_Em             );
       quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em     );
       quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em     );
       quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em );
@@ -3101,6 +3139,7 @@ void baseAnalyzer::CreateHist()
       H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
       H_Pm_ACCP_PID_CTIME_Q2_Em_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
       H_thrq_ACCP_PID_CTIME_Q2_Em_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm            = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);      
       H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
       H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
       H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3116,6 +3155,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm           );
       quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2_Em_Pm               );
       quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2_Em_Pm             );
+      quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm             ); 
       quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm     );
       quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm     );
       quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm );
@@ -3140,6 +3180,7 @@ void baseAnalyzer::CreateHist()
       H_Em_src_ACCP_PID_CTIME_Q2_Xbj           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
       H_Pm_ACCP_PID_CTIME_Q2_Xbj               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
       H_thrq_ACCP_PID_CTIME_Q2_Xbj             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_cthrq_ACCP_PID_CTIME_Q2_Xbj            = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_Xbj_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1); 
       H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
       H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
       H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3155,6 +3196,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2_Xbj           );
       quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2_Xbj               );
       quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2_Xbj             );
+      quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2_Xbj             );
       quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj     );
       quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj     );
       quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj );
@@ -3171,6 +3213,7 @@ void baseAnalyzer::CreateHist()
       H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
       H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
       H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq             = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1); 
       H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
       H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
       H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3186,6 +3229,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq           );
       quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq               );
       quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq             );
+      quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq             );
       quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     );
       quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq     );
       quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq );
@@ -3204,6 +3248,7 @@ void baseAnalyzer::CreateHist()
       H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           = new TH1F("H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","SRC Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax); 
       H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               = new TH1F("H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS","Missing Momentum, P_{miss}", Pm_nbins, Pm_xmin, Pm_xmax); 
       H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             = new TH1F("H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "In-Plane (recoil) Angle, #theta_{rq}", thrq_nbins, thrq_xmin, thrq_xmax);
+      H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm            = new TH1F("H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "In-Plane (recoil) Angle, cos(#theta_{rq})", thrq_nbins, -1, 1);      
       H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
       H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);  
       H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = new TH2F("H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", h_arm_name.Data(), h_arm_name.Data(), h_arm_name.Data()), hYColl_nbins, hYColl_xmin, hYColl_xmax,  hXColl_nbins, hXColl_xmin, hXColl_xmax);
@@ -3219,6 +3264,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm           );
       quality_HList->Add( H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               );
       quality_HList->Add( H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             );
+      quality_HList->Add( H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             );
       quality_HList->Add( H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     );
       quality_HList->Add( H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     );
       quality_HList->Add( H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm );
@@ -4755,7 +4801,8 @@ void baseAnalyzer::EventLoop()
 		  //
 		  //-------------------------------------
 
-		  H_multitrack_ep_ctime_notrk_noCUT->Fill(epCoinTime_notrk-ctime_offset_peak_notrk_val);
+		  H_multitrack_ep_ctime_notrk_ncut->Fill(epCoinTime_notrk-ctime_offset_peak_notrk_val);
+		  H_multitrack_pCalEtotNorm_full_ncut->Fill(pcal_etotnorm);
 
 		  // require cut on coin raw time (w/out track info)
 		  if(abs(epCoinTime_notrk-ctime_offset_peak_notrk_val) < 6.) {
@@ -4791,6 +4838,7 @@ void baseAnalyzer::EventLoop()
 		  H_Pm_noCUT                ->Fill( Pm );
 		  H_thxq_noCUT              ->Fill( th_xq/dtr );
 		  H_thrq_noCUT              ->Fill( th_rq/dtr );
+		  H_cthrq_noCUT             ->Fill( cos(th_rq) ); 
 		  H_kf_noCUT                ->Fill( kf );
 		  H_Pf_noCUT                ->Fill( Pf );
 		  H_thx_noCUT               ->Fill( th_x/dtr);
@@ -4837,6 +4885,7 @@ void baseAnalyzer::EventLoop()
 		    H_Pm_ACCP                ->Fill( Pm );
 		    H_thxq_ACCP              ->Fill( th_xq/dtr );
 		    H_thrq_ACCP              ->Fill( th_rq/dtr );
+		    H_cthrq_ACCP              ->Fill( cos(th_rq) );   		    
 		    H_kf_ACCP                ->Fill( kf );
 		    H_Pf_ACCP                ->Fill( Pf );
 		    H_thx_ACCP               ->Fill( th_x/dtr);
@@ -4885,6 +4934,7 @@ void baseAnalyzer::EventLoop()
 		    H_Pm_ACCP_PID                ->Fill( Pm );
 		    H_thxq_ACCP_PID              ->Fill( th_xq/dtr );
 		    H_thrq_ACCP_PID              ->Fill( th_rq/dtr );
+		    H_cthrq_ACCP_PID             ->Fill( cos(th_rq) ); 
 		    H_kf_ACCP_PID                ->Fill( kf );
 		    H_Pf_ACCP_PID                ->Fill( Pf );
 		    H_thx_ACCP_PID               ->Fill( th_x/dtr);
@@ -4932,6 +4982,7 @@ void baseAnalyzer::EventLoop()
 		    H_Pm_ACCP_PID_CTIME                ->Fill( Pm );
 		    H_thxq_ACCP_PID_CTIME              ->Fill( th_xq/dtr );
 		    H_thrq_ACCP_PID_CTIME              ->Fill( th_rq/dtr );
+		    H_cthrq_ACCP_PID_CTIME             ->Fill( cos(th_rq) );
 		    H_kf_ACCP_PID_CTIME                ->Fill( kf );
 		    H_Pf_ACCP_PID_CTIME                ->Fill( Pf );
 		    H_thx_ACCP_PID_CTIME               ->Fill( th_x/dtr);
@@ -4974,6 +5025,7 @@ void baseAnalyzer::EventLoop()
 		      H_Em_src_ACCP_PID_CTIME_Q2            ->Fill( Em_src );
 		      H_Pm_ACCP_PID_CTIME_Q2                ->Fill( Pm );
 		      H_thrq_ACCP_PID_CTIME_Q2              ->Fill( th_rq/dtr );
+		      H_cthrq_ACCP_PID_CTIME_Q2             ->Fill( cos(th_rq) ); 
 		      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2      ->Fill( h_yfp, h_xfp );
 		      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2      ->Fill( e_yfp, e_xfp );
 		      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2  ->Fill( hYColl, hXColl );
@@ -4992,6 +5044,7 @@ void baseAnalyzer::EventLoop()
 			H_Em_src_ACCP_PID_CTIME_Q2_Em            ->Fill( Em_src );
 			H_Pm_ACCP_PID_CTIME_Q2_Em                ->Fill( Pm );
 			H_thrq_ACCP_PID_CTIME_Q2_Em              ->Fill( th_rq/dtr );
+			H_cthrq_ACCP_PID_CTIME_Q2_Em             ->Fill( cos(th_rq) );  
 			H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em      ->Fill( h_yfp, h_xfp );
 			H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em      ->Fill( e_yfp, e_xfp );
 			H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em  ->Fill( hYColl, hXColl );
@@ -5011,6 +5064,7 @@ void baseAnalyzer::EventLoop()
 			H_Em_src_ACCP_PID_CTIME_Q2_Em_Pm            ->Fill( Em_src );
 			H_Pm_ACCP_PID_CTIME_Q2_Em_Pm                ->Fill( Pm );
 			H_thrq_ACCP_PID_CTIME_Q2_Em_Pm              ->Fill( th_rq/dtr );
+			H_cthrq_ACCP_PID_CTIME_Q2_Em_Pm             ->Fill( cos(th_rq) ); 
 			H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Em_Pm      ->Fill( h_yfp, h_xfp );
 			H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Em_Pm      ->Fill( e_yfp, e_xfp );
 			H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Em_Pm  ->Fill( hYColl, hXColl );
@@ -5033,6 +5087,7 @@ void baseAnalyzer::EventLoop()
 		      H_Em_src_ACCP_PID_CTIME_Q2            ->Fill( Em_src );
 		      H_Pm_ACCP_PID_CTIME_Q2                ->Fill( Pm );
 		      H_thrq_ACCP_PID_CTIME_Q2              ->Fill( th_rq/dtr );
+		      H_cthrq_ACCP_PID_CTIME_Q2             ->Fill( cos(th_rq) ); 
 		      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2      ->Fill( h_yfp, h_xfp );
 		      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2      ->Fill( e_yfp, e_xfp );
 		      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2  ->Fill( hYColl, hXColl );
@@ -5051,6 +5106,7 @@ void baseAnalyzer::EventLoop()
 		      H_Em_src_ACCP_PID_CTIME_Q2_Xbj            ->Fill( Em_src );
 		      H_Pm_ACCP_PID_CTIME_Q2_Xbj                ->Fill( Pm );
 		      H_thrq_ACCP_PID_CTIME_Q2_Xbj              ->Fill( th_rq/dtr );
+		      H_cthrq_ACCP_PID_CTIME_Q2_Xbj             ->Fill( cos(th_rq) ); 
 		      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj      ->Fill( h_yfp, h_xfp );
 		      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj      ->Fill( e_yfp, e_xfp );
 		      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj  ->Fill( hYColl, hXColl );
@@ -5069,6 +5125,7 @@ void baseAnalyzer::EventLoop()
 		      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq            ->Fill( Em_src );
 		      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq                ->Fill( Pm );
 		      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq              ->Fill( th_rq/dtr );
+		      H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq             ->Fill( cos(th_rq) ); 
 		      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq      ->Fill( h_yfp, h_xfp );
 		      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq      ->Fill( e_yfp, e_xfp );
 		      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq  ->Fill( hYColl, hXColl );
@@ -5087,6 +5144,7 @@ void baseAnalyzer::EventLoop()
 		      H_Em_src_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm            ->Fill( Em_src );
 		      H_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm                ->Fill( Pm );
 		      H_thrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm              ->Fill( th_rq/dtr );
+		      H_cthrq_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm             ->Fill( cos(th_rq) );
 		      H_hxfp_vs_hyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm      ->Fill( h_yfp, h_xfp );
 		      H_exfp_vs_eyfp_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm      ->Fill( e_yfp, e_xfp );
 		      H_hXColl_vs_hYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm  ->Fill( hYColl, hXColl );
@@ -5183,6 +5241,7 @@ void baseAnalyzer::EventLoop()
 			H_Pf       ->Fill(Pf);
 			H_thxq     ->Fill(th_xq/dtr);
 			H_thrq     ->Fill(th_rq/dtr);
+			H_cthrq    ->Fill( cos(th_rq) );
 			H_phxq     ->Fill(ph_xq/dtr);
 			H_phrq     ->Fill(ph_rq/dtr);
 			H_Tx_cm    ->Fill(Tx_cm);
@@ -5618,6 +5677,7 @@ void baseAnalyzer::EventLoop()
 	    H_Pf       ->Fill(Pf, FullWeight);
 	    H_thxq     ->Fill(th_xq/dtr, FullWeight);
 	    H_thrq     ->Fill(th_rq/dtr, FullWeight);
+	    H_cthrq    ->Fill(cos(th_rq), FullWeight); 
 	    H_phxq     ->Fill(ph_xq/dtr, FullWeight);
 	    H_phrq     ->Fill(ph_rq/dtr, FullWeight);
 
@@ -7902,12 +7962,12 @@ void baseAnalyzer::CombineHistos()
 
 	    // check if histo name is "_charge"
 	    if( hist_name_qual.find("_charge") != std::string::npos ){
-	      h_i->Write(); 	      
+	      outROOT->cd("quality_plots"); h_i->Write(); 	      
 	    }
 	    
 	    // check if histo name is "_multitrack"
 	    if( hist_name_qual.find("_multitrack") != std::string::npos ){  
-	      h_i->Write();
+	      outROOT->cd("quality_plots"); h_i->Write();
 	    }
 	    
 	    // check if histo name is "_fit"
@@ -8099,6 +8159,7 @@ void baseAnalyzer::CombineHistos()
 	  
 	  // check if histo name is "_multitrack"
 	  if( hist_name_qual.find("_multitrack") != std::string::npos ){  
+	    cout << "hist_name_qual --> " << hist_name_qual.c_str() << endl; 
 	    outROOT->GetObject(hist_dir, h_total); h_total->Add(h_i); outROOT->ReOpen("UPDATE"); outROOT->cd("quality_plots"); h_total->Write("", TObject::kOverwrite); outROOT->ReOpen("READ");   
 	  }
 

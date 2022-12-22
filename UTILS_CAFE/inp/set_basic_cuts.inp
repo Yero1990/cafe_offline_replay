@@ -105,8 +105,8 @@ ePctime_cut_max_L = -5.1
 
 # (SHMS PID) Calorimeter Total Energy Normalized By Track Momentum
 petot_trkNorm_pidCut_flag = 1
-cpid_petot_trkNorm_min = 0.85
-cpid_petot_trkNorm_max = 1.25
+cpid_petot_trkNorm_min = 0.8
+cpid_petot_trkNorm_max = 1.3
 
 # (SHMS PID) Noble Gas Cherenkov Total Number of Photo-Electrons
 pngcer_pidCut_flag = 0
