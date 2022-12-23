@@ -828,7 +828,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_noCUT;
   TH2F *H_Em_src_vs_Pm_noCUT;
   TH2F *H_Q2_vs_xbj_noCUT;
-
+  TH2F *H_cthrq_vs_Pm_noCUT;
   
   // -- CUTS: ACCEPTANCE CUTS ONLY --
   // kin
@@ -877,7 +877,8 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP;
   TH2F *H_Em_src_vs_Pm_ACCP;
   TH2F *H_Q2_vs_xbj_ACCP;
-
+  TH2F *H_cthrq_vs_Pm_ACCP;
+ 
     // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
   // kin
   TH1F *H_ep_ctime_ACCP_PID;
@@ -925,7 +926,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID;
   TH2F *H_Em_src_vs_Pm_ACCP_PID;
   TH2F *H_Q2_vs_xbj_ACCP_PID;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID;
 
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --
   // kin
@@ -974,7 +975,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME;
 
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
   TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2;
@@ -992,7 +993,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2;
 
   //  require MF flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
@@ -1011,7 +1012,8 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em;
+ 
   //  require MF flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
   TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm;
@@ -1029,7 +1031,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm;
-  
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm;
   
   //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
@@ -1048,7 +1050,8 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj;
+ 
   //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
   TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq;
@@ -1066,7 +1069,8 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq;
+ 
    //  require SRC flag
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
   TH1F *H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
@@ -1084,7 +1088,7 @@ protected:
   TH2F *H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH2F *H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
   TH2F *H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
-
+  TH2F *H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm;
 
   //------------------------------------
 

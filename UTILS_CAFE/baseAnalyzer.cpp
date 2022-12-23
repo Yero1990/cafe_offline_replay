@@ -111,6 +111,7 @@ void baseAnalyzer::Init(){
   accp_HList = NULL;
   rand_HList = NULL;
   randSub_HList = NULL;
+  quality_HList = NULL;
   
   //-----Initialize Histogram Pointers-----
 
@@ -410,6 +411,7 @@ void baseAnalyzer::Init(){
   H_Em_nuc_vs_Pm_noCUT = NULL;
   H_Em_src_vs_Pm_noCUT = NULL;
   H_Q2_vs_xbj_noCUT = NULL;
+  H_cthrq_vs_Pm_noCUT = NULL;
 
   
   // -- CUTS: ACCEPTANCE CUTS ONLY --
@@ -459,7 +461,8 @@ void baseAnalyzer::Init(){
   H_Em_nuc_vs_Pm_ACCP = NULL;
   H_Em_src_vs_Pm_ACCP = NULL;
   H_Q2_vs_xbj_ACCP = NULL;
-
+  H_cthrq_vs_Pm_ACCP = NULL;
+  
     // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
   // kin
   H_ep_ctime_ACCP_PID = NULL;
@@ -507,7 +510,7 @@ void baseAnalyzer::Init(){
   H_Em_nuc_vs_Pm_ACCP_PID = NULL;
   H_Em_src_vs_Pm_ACCP_PID = NULL;
   H_Q2_vs_xbj_ACCP_PID = NULL;
-
+  H_cthrq_vs_Pm_ACCP_PID = NULL;
 
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --
   // kin
@@ -556,7 +559,7 @@ void baseAnalyzer::Init(){
   H_Em_nuc_vs_Pm_ACCP_PID_CTIME = NULL;
   H_Em_src_vs_Pm_ACCP_PID_CTIME = NULL;
   H_Q2_vs_xbj_ACCP_PID_CTIME = NULL;
-
+  H_cthrq_vs_Pm_ACCP_PID_CTIME = NULL;
 
   if(analysis_cut=="MF") {
 
@@ -576,7 +579,8 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;
-  
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    
     //  require MF flag
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
     H_ep_ctime_ACCP_PID_CTIME_Q2_Em = NULL;
@@ -594,7 +598,8 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em = NULL;
-    
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
+
     //  require MF flag
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
     H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
@@ -612,6 +617,7 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
   }
   
   if(analysis_cut=="SRC") {
@@ -632,7 +638,8 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;
-  
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    
     //  require SRC flag
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
     H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj = NULL;
@@ -650,6 +657,7 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
     
     //  require SRC flag
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
@@ -668,7 +676,7 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
-    
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq  = NULL;
     //  require SRC flag
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
     H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
@@ -686,6 +694,7 @@ void baseAnalyzer::Init(){
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
 
   }
   
@@ -717,7 +726,7 @@ baseAnalyzer::~baseAnalyzer()
   delete accp_HList;    accp_HList = NULL;
   delete rand_HList;    rand_HList = NULL;
   delete randSub_HList; randSub_HList = NULL;
-
+  delete quality_HList; quality_HList = NULL;
   //-----------------------------
   // Detector Histogram Pointers
   //-----------------------------
@@ -1005,7 +1014,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_eXColl_vs_eYColl_noCUT;		     		   H_eXColl_vs_eYColl_noCUT = NULL;		     			     
   delete H_Em_nuc_vs_Pm_noCUT;			     		   H_Em_nuc_vs_Pm_noCUT = NULL;			     			     
   delete H_Em_src_vs_Pm_noCUT;			     		   H_Em_src_vs_Pm_noCUT = NULL;			     			     
-  delete H_Q2_vs_xbj_noCUT;			     		   H_Q2_vs_xbj_noCUT = NULL;			     			     
+  delete H_Q2_vs_xbj_noCUT;			     		   H_Q2_vs_xbj_noCUT = NULL;
+  delete H_cthrq_vs_Pm_noCUT;			     		   H_cthrq_vs_Pm_noCUT = NULL;
                                                                                                                                                  
   	 						     		   						     		     
   // -- CUTS: ACCEPTANCE CUTS ONLY --			     		  		     		     
@@ -1054,7 +1064,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_eXColl_vs_eYColl_ACCP;		     		   H_eXColl_vs_eYColl_ACCP = NULL;		     			     
   delete H_Em_nuc_vs_Pm_ACCP;			     		   H_Em_nuc_vs_Pm_ACCP = NULL;			     			     
   delete H_Em_src_vs_Pm_ACCP;			     		   H_Em_src_vs_Pm_ACCP = NULL;			     			     
-  delete H_Q2_vs_xbj_ACCP;			     		   H_Q2_vs_xbj_ACCP = NULL;			     			     
+  delete H_Q2_vs_xbj_ACCP;			     		   H_Q2_vs_xbj_ACCP = NULL;
+  delete H_cthrq_vs_Pm_ACCP;			     		   H_cthrq_vs_Pm_ACCP = NULL;
                                                                                                                                                  
     // -- CUTS: ACCEPTANCE + PID CUTS ONLY --		     		    CUTS: ACCEPTANCE + PID CUTS ONLY --		     		     
   // kin 						     		   						     		     
@@ -1102,7 +1113,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_eXColl_vs_eYColl_ACCP_PID;		     		   H_eXColl_vs_eYColl_ACCP_PID = NULL;		     			     
   delete H_Em_nuc_vs_Pm_ACCP_PID;		     		   H_Em_nuc_vs_Pm_ACCP_PID = NULL;		     			     
   delete H_Em_src_vs_Pm_ACCP_PID;		     		   H_Em_src_vs_Pm_ACCP_PID = NULL;		     			     
-  delete H_Q2_vs_xbj_ACCP_PID;			     		   H_Q2_vs_xbj_ACCP_PID = NULL;			     			     
+  delete H_Q2_vs_xbj_ACCP_PID;			     		   H_Q2_vs_xbj_ACCP_PID = NULL;
+  delete H_cthrq_vs_Pm_ACCP_PID;			     		   H_cthrq_vs_Pm_ACCP_PID = NULL;	
                                                                                                                                                  
                                                                                                                                                  
   // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --	     		   UTS: ACCEPTANCE + PID CUTS + COIN.TIME ONLY --	     		     
@@ -1151,7 +1163,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_eXColl_vs_eYColl_ACCP_PID_CTIME;	     		   H_eXColl_vs_eYColl_ACCP_PID_CTIME = NULL;	     			     
   delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME;		     		   H_Em_nuc_vs_Pm_ACCP_PID_CTIME = NULL;		     			     
   delete H_Em_src_vs_Pm_ACCP_PID_CTIME;		     		   H_Em_src_vs_Pm_ACCP_PID_CTIME = NULL;		     			     
-  delete H_Q2_vs_xbj_ACCP_PID_CTIME;		     		   H_Q2_vs_xbj_ACCP_PID_CTIME = NULL;		     			     
+  delete H_Q2_vs_xbj_ACCP_PID_CTIME;		     		   H_Q2_vs_xbj_ACCP_PID_CTIME = NULL;
+  delete H_cthrq_vs_Pm_ACCP_PID_CTIME;		     		   H_cthrq_vs_Pm_ACCP_PID_CTIME = NULL;
                                                                                              
                                                                                              
   if(analysis_cut=="MF") {								     
@@ -1171,7 +1184,8 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 ;		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;			     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     ;		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = NULL;				     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     ;		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = NULL;				     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = NULL;				     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2        ;		H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2        = NULL;
   											     
     //  require MF flag									     
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --
@@ -1189,7 +1203,8 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em ; 		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em = NULL; 			     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em ;	   	H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em ;	   	H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em ;	   		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em = NULL;	   			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em ;	   		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em ;	   		H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em = NULL;
     											     
     //  require MF flag									     
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY (MF) --
@@ -1207,7 +1222,9 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm ; 		H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Em_Pm = NULL; 			     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;     		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;     			     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm ;	      		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;	      			     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm ;	      		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm ;	      		H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm = NULL;
+    
   }											     
   											     
   if(analysis_cut=="SRC") {								     
@@ -1227,7 +1244,9 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 ;	H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2 = NULL;				     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 ;		H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;					     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 ;		H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;					     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;					     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 ;		H_Q2_vs_xbj_ACCP_PID_CTIME_Q2 = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2 ;		H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2 = NULL;
+    
   											     
     //  require SRC flag								     
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
@@ -1245,7 +1264,8 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj ;	H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj = NULL;				     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj ;	H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj ;	H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;	   			     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;	   				     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj ;	   	H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj ;	   	H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj = NULL;
     											     
     //  require SRC flag								     
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
@@ -1263,7 +1283,8 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq ; H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;				     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;					     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq ;	   H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq = NULL;
     											     
     //  require SRC flag								     
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
@@ -1281,7 +1302,8 @@ baseAnalyzer::~baseAnalyzer()
     delete H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ; H_eXColl_vs_eYColl_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;				     
     delete H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
     delete H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   			     
-    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	   				     
+    delete H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
+    delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	
                                                                                              
   }											     
   											     
@@ -2727,7 +2749,8 @@ void baseAnalyzer::CreateHist()
   H_eXColl_vs_eYColl_noCUT = new TH2F("H_eXColl_vs_eYColl_noCUT", Form("%s Collimator; %s Y-Collimator [cm]; %s X-Collimator [cm]", e_arm_name.Data(), e_arm_name.Data(), e_arm_name.Data()), eYColl_nbins, eYColl_xmin, eYColl_xmax, eXColl_nbins, eXColl_xmin, eXColl_xmax); 
   H_Em_nuc_vs_Pm_noCUT     = new TH2F("H_Em_nuc_vs_Pm_noCUT", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Em_src_vs_Pm_noCUT     = new TH2F("H_Em_src_vs_Pm_noCUT", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
-  H_Q2_vs_xbj_noCUT        = new TH2F("H_Q2_vs_xbj_noCUT",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_Q2_vs_xbj_noCUT        = new TH2F("H_Q2_vs_xbj_noCUT",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax );
+  H_cthrq_vs_Pm_noCUT      = new TH2F("H_cthrq_vs_Pm_noCUT",    "cos(#theta_{rq}) vs. P_{m}",  Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5,   1.5 ); 
   
 
   quality_HList->Add( H_ep_ctime_noCUT  );
@@ -2772,6 +2795,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Em_nuc_vs_Pm_noCUT     );
   quality_HList->Add( H_Em_src_vs_Pm_noCUT     );
   quality_HList->Add( H_Q2_vs_xbj_noCUT        );
+  quality_HList->Add( H_cthrq_vs_Pm_noCUT        );
 
 
 
@@ -2823,6 +2847,7 @@ void baseAnalyzer::CreateHist()
   H_Em_nuc_vs_Pm_ACCP     = new TH2F("H_Em_nuc_vs_Pm_ACCP_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Em_src_vs_Pm_ACCP     = new TH2F("H_Em_src_vs_Pm_ACCP_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Q2_vs_xbj_ACCP        = new TH2F("H_Q2_vs_xbj_ACCP_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_cthrq_vs_Pm_ACCP      = new TH2F("H_cthrq_vs_Pm_ACCP_CUTS",  "cos(#theta_{rq}) vs. P_{m}",  Pm_nbins,  Pm_xmin,  Pm_xmax,  100,  -1.5,  1.5 ); 
   
 
   quality_HList->Add( H_ep_ctime_ACCP  );
@@ -2867,6 +2892,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Em_nuc_vs_Pm_ACCP     );
   quality_HList->Add( H_Em_src_vs_Pm_ACCP     );
   quality_HList->Add( H_Q2_vs_xbj_ACCP        );
+  quality_HList->Add( H_cthrq_vs_Pm_ACCP        );
 
 
   // -- CUTS: ACCEPTANCE + PID CUTS ONLY --
@@ -2917,6 +2943,7 @@ void baseAnalyzer::CreateHist()
   H_Em_nuc_vs_Pm_ACCP_PID     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Em_src_vs_Pm_ACCP_PID     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Q2_vs_xbj_ACCP_PID        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+  H_cthrq_vs_Pm_ACCP_PID        = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CUTS",    "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
   
 
   quality_HList->Add( H_ep_ctime_ACCP_PID  );
@@ -2961,6 +2988,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID     );
   quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID     );
   quality_HList->Add( H_Q2_vs_xbj_ACCP_PID        );
+  quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID        );
 
 
 
@@ -3014,7 +3042,8 @@ void baseAnalyzer::CreateHist()
   H_Em_nuc_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Em_src_vs_Pm_ACCP_PID_CTIME     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
   H_Q2_vs_xbj_ACCP_PID_CTIME        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-  
+  H_cthrq_vs_Pm_ACCP_PID_CTIME      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_CUTS",    "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
 
   quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME  );
   quality_HList->Add( H_the_ACCP_PID_CTIME       );
@@ -3058,7 +3087,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME     );
   quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME     );
   quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME        );
-  
+  quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME      );
 
   if( (analysis_cut=="MF") || (analysis_cut=="SRC") ) {
     // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 CUT ONLY --
@@ -3077,6 +3106,8 @@ void baseAnalyzer::CreateHist()
     H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
     H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
     H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
+    H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_CUTS",  "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
     
     quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2         );
     quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2               );
@@ -3093,6 +3124,8 @@ void baseAnalyzer::CreateHist()
     quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2     );
     quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2     );
     quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2        );
+    quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2        );
+
   }
 
 
@@ -3114,7 +3147,8 @@ void baseAnalyzer::CreateHist()
       H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-      
+      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_CUTS",    "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Em         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Em               );
       quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2_Em              );
@@ -3130,6 +3164,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em     );
       quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em     );
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em        );
+      quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em        );
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em + Pm CUT ONLY --
       H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
@@ -3147,7 +3182,9 @@ void baseAnalyzer::CreateHist()
       H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-      
+      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm_CUTS",  "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
+	
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Em_Pm         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Em_Pm               );
       quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2_Em_Pm              );
@@ -3163,6 +3200,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     );
       quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm     );
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm        );
+      quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm        );
 
 
     }
@@ -3188,7 +3226,9 @@ void baseAnalyzer::CreateHist()
       H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-      
+      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_CUTS",  "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
+	
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj               );
       quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2_Xbj              );
@@ -3204,6 +3244,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     );
       quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj     );
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj        );
+      quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj        );
 
       // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + thrq CUT ONLY --
       H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq         = new TH1F("H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
@@ -3221,7 +3262,8 @@ void baseAnalyzer::CreateHist()
       H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-      
+      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_CUTS",    "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq               );
       quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq              );
@@ -3237,6 +3279,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     );
       quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq     );
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq        );
+      quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq        );
 
 
 
@@ -3256,7 +3299,8 @@ void baseAnalyzer::CreateHist()
       H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "Em_nuc vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     = new TH2F("H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS", "Em_src vs. Pm", Pm_nbins, Pm_xmin, Pm_xmax, Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
       H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm        = new TH2F("H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS",    "Q2 vs. xbj",    X_nbins,  X_xmin,  X_xmax,  Q2_nbins,     Q2_xmin,     Q2_xmax ); 
-      
+      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm      = new TH2F("H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm_CUTS",    "cos(#theta_{rq}) vs. P_{m}",    Pm_nbins,  Pm_xmin,  Pm_xmax,  100, -1.5, 1.5 ); 
+
       quality_HList->Add( H_ep_ctime_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm         );
       quality_HList->Add( H_Q2_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm               );
       quality_HList->Add( H_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm              );
@@ -3272,6 +3316,7 @@ void baseAnalyzer::CreateHist()
       quality_HList->Add( H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     );
       quality_HList->Add( H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm     );
       quality_HList->Add( H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm        );
+      quality_HList->Add( H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm        );
 
     }
     
@@ -4866,6 +4911,7 @@ void baseAnalyzer::EventLoop()
 		  H_Em_nuc_vs_Pm_noCUT     ->Fill( Pm, Em_nuc );
 		  H_Em_src_vs_Pm_noCUT     ->Fill( Pm, Em_src );
 		  H_Q2_vs_xbj_noCUT        ->Fill( X, Q2 );
+		  H_cthrq_vs_Pm_noCUT      ->Fill( Pm, cos(th_rq) );
 		  
        
 		  // -- CUTS: ACCEPTANCE CUTS ONLY --
@@ -4913,7 +4959,7 @@ void baseAnalyzer::EventLoop()
 		    H_Em_nuc_vs_Pm_ACCP     ->Fill( Pm, Em_nuc );
 		    H_Em_src_vs_Pm_ACCP     ->Fill( Pm, Em_src );
 		    H_Q2_vs_xbj_ACCP        ->Fill( X, Q2 );
-		    
+		    H_cthrq_vs_Pm_ACCP      ->Fill( Pm, cos(th_rq) );
 		    
 		  }
 		  
@@ -4962,6 +5008,7 @@ void baseAnalyzer::EventLoop()
 		    H_Em_nuc_vs_Pm_ACCP_PID     ->Fill( Pm, Em_nuc );
 		    H_Em_src_vs_Pm_ACCP_PID     ->Fill( Pm, Em_src );
 		    H_Q2_vs_xbj_ACCP_PID        ->Fill( X, Q2 );
+		    H_cthrq_vs_Pm_ACCP_PID      ->Fill( Pm, cos(th_rq) );
 		    
 		  }
 
@@ -5010,7 +5057,8 @@ void baseAnalyzer::EventLoop()
 		    H_Em_nuc_vs_Pm_ACCP_PID_CTIME     ->Fill( Pm, Em_nuc );
 		    H_Em_src_vs_Pm_ACCP_PID_CTIME     ->Fill( Pm, Em_src );
 		    H_Q2_vs_xbj_ACCP_PID_CTIME        ->Fill( X, Q2 );
-		    
+		    H_cthrq_vs_Pm_ACCP_PID_CTIME      ->Fill( Pm, cos(th_rq) );
+		     
 		  }
 		  
 
@@ -5033,6 +5081,8 @@ void baseAnalyzer::EventLoop()
 		      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2      ->Fill( Pm, Em_nuc );
 		      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2      ->Fill( Pm, Em_src );
 		      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2         ->Fill( X, Q2 );
+		      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2       ->Fill( Pm, cos(th_rq) );
+		      
 		    }
 		    
 		    // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Em CUT ONLY (MF) --		 
@@ -5052,6 +5102,7 @@ void baseAnalyzer::EventLoop()
 			H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em      ->Fill( Pm, Em_nuc );
 			H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em      ->Fill( Pm, Em_src );
 			H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em         ->Fill( X, Q2 );
+			H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em       ->Fill( Pm, cos(th_rq) );
 			
 		    }
 		    
@@ -5072,6 +5123,7 @@ void baseAnalyzer::EventLoop()
 			H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm      ->Fill( Pm, Em_nuc );
 			H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm      ->Fill( Pm, Em_src );
 			H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Em_Pm         ->Fill( X, Q2 );
+			H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Em_Pm       ->Fill( Pm, cos(th_rq) );
 		    }
 		    
 		  }
@@ -5095,6 +5147,8 @@ void baseAnalyzer::EventLoop()
 		      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2      ->Fill( Pm, Em_nuc );
 		      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2      ->Fill( Pm, Em_src );
 		      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2         ->Fill( X, Q2 );
+		      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2       ->Fill( Pm, cos(th_rq) );
+		      
 		      }
 		      
 		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj CUT ONLY (SRC) --
@@ -5114,6 +5168,8 @@ void baseAnalyzer::EventLoop()
 		      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj      ->Fill( Pm, Em_nuc );
 		      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj      ->Fill( Pm, Em_src );
 		      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj         ->Fill( X, Q2 );
+		      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj       ->Fill( Pm, cos(th_rq) );
+		       
 		      }
 
 		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq CUT ONLY (SRC) --
@@ -5133,6 +5189,8 @@ void baseAnalyzer::EventLoop()
 		      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq      ->Fill( Pm, Em_nuc );
 		      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq      ->Fill( Pm, Em_src );
 		      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq         ->Fill( X, Q2 );
+		      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq       ->Fill( Pm, cos(th_rq) );
+		       
 		      }
 
 		      // -- CUTS: ACCEPTANCE + PID CUTS + COIN.TIME + Q2 + Xbj + th_rq + Pm CUT ONLY (SRC) --
@@ -5152,6 +5210,8 @@ void baseAnalyzer::EventLoop()
 		      H_Em_nuc_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm      ->Fill( Pm, Em_nuc );
 		      H_Em_src_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm      ->Fill( Pm, Em_src );
 		      H_Q2_vs_xbj_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm         ->Fill( X, Q2 );
+		      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm       ->Fill( Pm, cos(th_rq) );
+		       
 		      }
 
 		      
