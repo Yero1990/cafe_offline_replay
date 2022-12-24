@@ -18,7 +18,7 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
     
         for jdx in np.arange(len(kin)):
             
-            filename='summary_files/cafe_prod_%s_%s_report_summary.csv' % (target[idx], kin[jdx])
+            filename='summary_files/pass1/cafe_prod_%s_%s_report_summary.csv' % (target[idx], kin[jdx])
             print('Reading filename: %s' % filename)
 
             df = pd.read_csv(filename, comment='#')
@@ -107,7 +107,10 @@ plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=0.96, yhi=1.05
 #--------------------------
 # plot quality-check data
 #--------------------------
-plot_data(xkey='charge', ykey='real_Yield', ykey_err='real_Yield_err', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+#plot_data(xkey='charge', ykey='real_Yield', ykey_err='real_Yield_err', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+
+plot_data(xkey='charge', ykey='T2_scl_rate', ykey_err='', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+
 
 
 
