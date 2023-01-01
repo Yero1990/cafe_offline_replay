@@ -61,12 +61,12 @@ BCM4C_Charge [mC]: 74.137
 # pre-scale_factor: 1.000000
 # BCM1 Q [mC]     : 74.157
 # h_track_eff  : 0.999
-# e-_track_eff  : 0.970
+# e-_track_eff  : 0.969
 # total_live_time     : 0.937
 #-----------------------------
-total_Counts    : 347.000
-random_Counts   : 33.553
-real_Counts     : 313.447
+total_Counts    : 359.000
+random_Counts   : 34.539
+real_Counts     : 324.461
                                      
 
                                      
@@ -121,14 +121,14 @@ T5_tLT:      0.937 +- 0.002
 # =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
                                      
 hms_had_track_eff:  0.999 +- 0.000
-shms_elec_track_eff: 0.970 +- 0.001
+shms_elec_track_eff: 0.969 +- 0.001
                                      
 # =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
 # Data Analysis Cuts                  
 # =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
                                    
 #--- Tracking Efficiency Definition --- 
-# tracking efficiency = (did && should) / should
+# single tracking efficiency = (did && should) / should
 
 # (did) HMS min. number of tracks (H.dc.ntrack): >= 1.0
 # (should) HMS good (fiducial) scintillator hit (H.hod.goodscinhit): true
@@ -136,11 +136,33 @@ shms_elec_track_eff: 0.970 +- 0.001
 # (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (0.000, 0.600)
 # (should) HMS hodoscope beta no_track (H.hod.betanotrack): (0.500. 1.500)
                                    
+#--- Multi-Tracking Efficiency Definition --- 
+# multi-track efficiency : 1 - [ (E/p) multi-peaks / (E/p 1st peak)], CUT: raw coin. time spectrum (w/out track info)  
+                                   
+# Calorimeter (P.cal.etotnorm) E/p multiple peaks (>1) events are cut out in standard data analysis
+# HCANA only handles single-track events, therefore events with E/p ~2,3, ... (more than 1 good track) are lost in the E/p cut
+# to recover lost events, determine fraction of multi-peak to single peak E/p to be applied as correction factor
+  
+single_peak_counts: 77279.0000 +/- 277.991
+multi_peak_counts: 3292.0000 +/- 57.376
+multi_track_eff: 0.9574 +/- 0.017
+                                   
 # (did) SHMS min. number of tracks (P.dc.ntrack): >= 1.0
 # (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true
 # (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (1.000, 100.000)
-# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (0.900, 1.300)
+# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (0.800, 1.300)
 # (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (0.500. 1.500)
+                                   
+#--- Multi-Tracking Efficiency Definition --- 
+# multi-track efficiency : 1 - [ (E/p) multi-peaks / (E/p 1st peak)], CUT: raw coin. time spectrum (w/out track info)  
+                                   
+# Calorimeter (P.cal.etotnorm) E/p multiple peaks (>1) events are cut out in standard data analysis
+# HCANA only handles single-track events, therefore events with E/p ~2,3, ... (more than 1 good track) are lost in the E/p cut
+# to recover lost events, determine fraction of multi-peak to single peak E/p to be applied as correction factor
+    
+single_peak_counts: 77279.0000 +/- 277.991
+multi_peak_counts: 3292.0000 +/- 57.376
+multi_track_eff: 0.9574 +/- 0.017
                                    
 #---Coincidence Time Cut--- 
 # electron (SHMS)-proton(HMS) (prompt) coincidence time (CTime.epCoinTime_ROC2):   (-2.500, 2.500) [ns]
@@ -154,7 +176,7 @@ shms_elec_track_eff: 0.970 +- 0.001
 # SHMS Collimator Cut: ON 
 #                       
 #---Particle Identification (PID) Cuts--- 
-# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (0.850, 1.250)
+# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (0.800, 1.300)
 #                       
 #---Kinematics Cuts--- 
 # A(e,e'p) 4-momentum transferred squared, Q2 (P.kin.primary.Q2): (1.800, 100.000) [GeV2]
