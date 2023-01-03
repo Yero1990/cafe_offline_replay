@@ -93,23 +93,23 @@ def plot_data(xkey='', ykey='', ykey_err='', ylo=0, yhi=0, target=[], tcolor=[],
 # plot quality-check data
 #--------------------------
 
-'''
+
 # total live time
-plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+#plot_data(xkey='run', ykey='tLT', ykey_err='tLT_err_Bi', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
 
 # hms tracking efficiency
-plot_data(xkey='run', ykey='hTrkEff', ykey_err='hTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+#plot_data(xkey='run', ykey='hTrkEff', ykey_err='hTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
 
 # shms tracking efficiency
-plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
-'''
+#plot_data(xkey='run', ykey='pTrkEff', ykey_err='pTrkEff_err', ylo=0.96, yhi=1.05, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'm', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'])
+
 
 #--------------------------
 # plot quality-check data
 #--------------------------
-#plot_data(xkey='charge', ykey='real_Yield', ykey_err='real_Yield_err', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+plot_data(xkey='charge', ykey='real_Yield', ykey_err='real_Yield_err', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
 
-plot_data(xkey='charge', ykey='T2_scl_rate', ykey_err='', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
+#plot_data(xkey='charge', ykey='T2_scl_rate', ykey_err='', ylo=0., yhi=10, target=['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54'], tcolor=['c', 'chocolate', 'r', 'g', 'b', 'darkorange', 'violet', 'gold'], kin=['MF', 'SRC'], kmarker=['o','v'], calc_ratio=True)
 
 
 

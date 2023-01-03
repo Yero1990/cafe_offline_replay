@@ -103,7 +103,9 @@ def make_final_summary():
             
             # apply efficiency corrections to real yield (with uncertasinties included) (run-by-run)
             real_Yield_corr = real_Yield / (hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff) 
-            
+
+           
+             
             # sum over all efficiency-corrected counts 
             real_Yield_corr_total = real_Yield_corr.sum()
             
@@ -122,17 +124,27 @@ def make_final_summary():
                      
             #------------------MAKE RELEVANT PLOTS----------------
             T2_scl_per_Q = T2_scl/charge
-            real_yield_corr_per_Q  = real_Yield_corr/charge
+            real_yield_per_Q  = real_Yield/(charge * tgt_areal_density)
+            real_yield_corr_per_Q  = real_Yield_corr/(charge * tgt_areal_density)
             
-            print(target[idx],', ', kin[jdx])
-            print(T2_scl_per_Q/T2_scl_per_Q[0])
+            print( real_yield_corr_per_Q)
+            #print(target[idx],', ', kin[jdx])
+            #print(T2_scl_per_Q/T2_scl_per_Q[0])
             
             # plot 1: relative scalers vs current (relative to 1st data point) --> woule be best to normalize both SRC, MF to same 1st point, since T2 scalers (shms same location, so should not change)
             #plt.plot(T2_scl_rate,  T2_scl_per_Q/T2_scl_per_Q[0] , marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 
-            plt.errorbar(run, real_yield_corr_per_Q.n, real_yield_corr_per_Q.s, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+            # plot 2: yield / mC
+            if(kin[jdx]=='MF'):
+                #plt.errorbar(run, unumpy.nominal_values(real_yield_per_Q), unumpy.std_devs(real_yield_per_Q), marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                #plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q), unumpy.std_devs(real_yield_corr_per_Q), marker='^', color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 
-            
+                #plot 3: efficiencies
+                plt.errorbar(run, unumpy.nominal_values(hms_trk_eff), unumpy.std_devs(hms_trk_eff), marker='o', color=tcolor[idx], mec='k', linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
+                plt.errorbar(run, unumpy.nominal_values(shms_trk_eff), unumpy.std_devs(shms_trk_eff), marker='^', color=tcolor[idx], mec='k', linestyle='None')
+                plt.errorbar(run, unumpy.nominal_values(total_LT), unumpy.std_devs(total_LT), marker='s', color=tcolor[idx], mec='k', linestyle='None')
+                plt.errorbar(run, unumpy.nominal_values(mult_trk_eff), unumpy.std_devs(mult_trk_eff), marker='D', color=tcolor[idx], mec='k', linestyle='None')
+
 
             #-----------------------------------------------------
 
