@@ -3,7 +3,7 @@
 # Header Definitions: 
 # target   : target name analyzed 
 # kin      : kinematics analyzed  
-target,kin,beam_time,avg_current,total_charge,yield_raw,yield_raw_err,yield_corr,yield_corr_err,yield_norm,yield_norm_err,tgt_density,T,N,Z,A
+target,kin,beam_time,avg_current,total_charge,yield_raw,yield_raw_err,yield_corr,yield_corr_err,yield_norm,yield_norm_err,tgt_area_density,T,N,Z,A
 LD2, MF, 2690.97, 27.14, 73.34, 447138.005, 668.957, 510698.307, 2708.669, 4169.665, 22.115, 1.6700, 1.000, 1.0, 1.0, 2.0
 LD2, SRC, 3521.29, 61.72, 217.34, 561.039, 23.769, 696.859, 30.712, 1.920, 0.085, 1.6700, 1.000, 1.0, 1.0, 2.0
 Be9, MF, 4663.34, 38.17, 128.67, 143904.737, 379.489, 159094.433, 1453.985, 2090.244, 19.103, 0.9859, 0.600, 5.0, 4.0, 9.0

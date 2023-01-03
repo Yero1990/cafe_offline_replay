@@ -21,7 +21,7 @@ def find_param(param='', fname=''):
         lines = fp.readlines()
         for line in lines:
             if line.find(param) != -1:
-                print('param: ', line)
+                #print('param: ', line)
                 param_value = float(line.split(':')[1].strip())
                 return param_value
 
@@ -36,15 +36,15 @@ def make_final_summary():
     #  ( for additional subtractions -> boron-carbide subtractions, Ca48 impurity and contamination corrections, and double ratio calculations)
     
     #output file to write summary file
-    fname = 'cafe_final_summary.csv' 
-    ofile = open(fname, 'w')
+    ofname = 'cafe_final_summary.csv' 
+    ofile = open(ofname, 'r+')
     ofile.write('# CaFe Final Summary File (Pass 1) \n')
     ofile.write('# \n'
                 '# Header Definitions: \n'
                 '# target   : target name analyzed \n'
                 '# kin      : kinematics analyzed  \n'
                 )
-    ofile.write('target,kin,beam_time,avg_current,total_charge,yield_raw,yield_raw_err,yield_corr,yield_corr_err,yield_norm,yield_norm_err,tgt_density,T,N,Z,A\n') 
+    ofile.write('target,kin,beam_time,avg_current,total_charge,yield_raw,yield_raw_err,yield_corr,yield_corr_err,yield_norm,yield_norm_err,tgt_area_density,T,N,Z,A\n') 
 
     # target, kin list
     target = ['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54']
@@ -109,8 +109,60 @@ def make_final_summary():
 
 
             # Write numerical data to final summary file
-            ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % (target[idx], kin[jdx], total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, yield_norm.n, yield_norm.s, tgt_areal_density, T, N, Z, A) )
+            ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, yield_norm.n, yield_norm.s, tgt_areal_density, T, N, Z, A) )
 
+
+            #--------------------------
+            # APPLY TARGET CORRECTIONS
+            #--------------------------
+            # B4C10, B4C11 targets need to be carbon-subtracted
+            # Ca48 needs to be corrected for impurity
+            # check if final line in summary file has been reached
+            if ((idx == len(target)-1) and (jdx == len(kin)-1)):
+
+                # read final summary file
+                df = pd.read_csv(ofname, comment='#')
+                
+                # select specific data column for carbon-subtraction
+                # g/cm2
+                b4c10_density = df[(df['target']=='B10')]['tgt_area_density'][:-1]
+                b4c11_density = df[(df['target']=='B11')]['tgt_area_density'][:-1]
+                c12_density   = df[(df['target']=='C12')]['tgt_area_density'][:-1]
+
+                # Avogadro's number (# atoms / mol)
+                Na = 6.0221408e23  
+
+                # isotopic molar mass (g/mol)
+                mol_b10 = 10.0129369  
+                mol_b11 = 11.0093052
+                mol_c12 = 12.0107
+
+                # boron-carbide (4 boron-10 boron-11 atoms + 1 carbon atom) molar mass
+                mol_b4c10 = 4*mol_b10 + mol_c12 
+                mol_b4c11 = 4*mol_b11 + mol_c12 
+
+                # number of target atoms / cm^2 (# of scatterers) = (atoms/mol) * g/cm2  / (g/mol)  
+                targetfac_b4c10 = Na * b4c10_density  /  mol_b10
+                targetfac_b4c11 = Na * b4c11_density  /  mol_b11
+                targetfac_c12   = Na * c12_density    /  mol_c12
+
+                # get the efficiency corrected yield and total charge for b4c10, b4c11, c12 (mf, src)
+                yield_corr_b4c10     = unumpy.uarray(df[(df['target']=='B10')]['yield_corr'], df[(df['target']=='B10')]['yield_corr_err']) #val +/- err
+                charge_b4c10         = df[(df['target']=='B10')]['total_charge']
+
+                yield_corr_b4c11     = unumpy.uarray(df[(df['target']=='B11')]['yield_corr'], df[(df['target']=='B11')]['yield_corr_err'])
+                charge_b4c11         = df[(df['target']=='B11')]['total_charge']
+
+                yield_corr_c12       = unumpy.uarray(df[(df['target']=='C12')]['yield_corr'], df[(df['target']=='C12')]['yield_corr_err'])
+                charge_c12           = df[(df['target']=='C12')]['total_charge']
+
+                # apply carbon subtraction (counts / mC)  
+                yield_norm_b410      = (yield_corr_b4c10/charge_b4c10) - (yield_corr_c12/charge_c12) * targetfac_b4c10/targetfac_c12
+                yield_norm_b411      = (yield_corr_b4c11/charge_b4c11) - (yield_corr_c12/charge_c12) * targetfac_b4c11/targetfac_c12
+
+                # apply the remaining scale factors (When boron yield is recovered, how to get the areal density (g/cm2) of ONLY boron, for normalizing?)
+                yield_norm_b410   = yield_norm_b410 / ( df[(df['target']=='B10')]['T'] )
+                
     ofile.close()
 
     
