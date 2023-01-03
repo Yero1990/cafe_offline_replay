@@ -48,8 +48,10 @@ def make_final_summary():
 
     # target, kin list
     target = ['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54']
+    tcolor  = ['c',    'm',   'r',   'g',   'b', 'darkorange', 'violet', 'gold']
     kin    = ['MF', 'SRC']
-
+    kmarker =['o',  's']
+ 
     for idx in np.arange(len(target)):
         
         for jdx in np.arange(len(kin)):
@@ -61,9 +63,10 @@ def make_final_summary():
             df = pd.read_csv(summary_file_path, comment='#')
 
             # select specific Ca48 MF runs (ignore contaminated runs)
-            if( target[idx]=='Ca48' and kin[jdx]=='MF' ):
-                df = df[ df['run']==17096 ] # for now, last run is good enough
-            
+            #if( target[idx]=='Ca48' and kin[jdx]=='MF' ):
+                #df = df[ df['run']==17096 ] # for now, last run is good enough
+            #    df = df.tail(3) # select last 3 runs
+            #    print(df)
             # read parameters from .csv file
             T                 = find_param('transparency', summary_file_path) # transparency
             tgt_areal_density = find_param('target_areal_density', summary_file_path) # g/cm^2
@@ -86,10 +89,19 @@ def make_final_summary():
             T2_scl_rate  = df['T2_scl_rate']  # SHMS EL-REAL khZ
             T3_scl_rate  = df['T3_scl_rate']  # HMS 3/4      khZ
             T5_scl_rate  = df['T5_scl_rate']  # COIN         khZ
+
+            # calculate variables from data columns
+            Qsum = charge.cumsum()  # calculate cumulative charge (may be helpful for plotting)
+            T1_scl = T1_scl_rate * 1000 * beam_time   # total scaler counts
+            T2_scl = T2_scl_rate * 1000 * beam_time
+            T3_scl = T3_scl_rate * 1000 * beam_time
+            T5_scl = T5_scl_rate * 1000 * beam_time 
+   
             
+            # sum over all counts (before applying any corrections, inefficinecy, charge, etc.) 
             real_yield_total = real_Yield.sum()
             
-            # apply efficiency corrections to real yield (with uncertasinties included)
+            # apply efficiency corrections to real yield (with uncertasinties included) (run-by-run)
             real_Yield_corr = real_Yield / (hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff) 
             
             # sum over all efficiency-corrected counts 
@@ -107,14 +119,31 @@ def make_final_summary():
             # normalize yield by : total charge, transparency and target density
             yield_norm =  real_Yield_corr_total / (total_charge * T * tgt_areal_density)  # counts / (mC * g/cm^2)
 
+                     
+            #------------------MAKE RELEVANT PLOTS----------------
+            T2_scl_per_Q = T2_scl/charge
+            real_yield_corr_per_Q  = real_Yield_corr/charge
+            
+            print(target[idx],', ', kin[jdx])
+            print(T2_scl_per_Q/T2_scl_per_Q[0])
+            
+            # plot 1: relative scalers vs current (relative to 1st data point) --> woule be best to normalize both SRC, MF to same 1st point, since T2 scalers (shms same location, so should not change)
+            #plt.plot(T2_scl_rate,  T2_scl_per_Q/T2_scl_per_Q[0] , marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+
+            plt.errorbar(run, real_yield_corr_per_Q.n, real_yield_corr_per_Q.s, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+
+            
+
+            #-----------------------------------------------------
+
 
             # Write numerical data to final summary file
             ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, yield_norm.n, yield_norm.s, tgt_areal_density, T, N, Z, A) )
 
 
-            #--------------------------
-            # APPLY TARGET CORRECTIONS
-            #--------------------------
+            #----------------------------------------
+            # APPLY Boron-Carbide TARGET CORRECTIONS
+            #----------------------------------------
             # B4C10, B4C11 targets need to be carbon-subtracted
             # Ca48 needs to be corrected for impurity
             # check if final line in summary file has been reached
@@ -162,7 +191,12 @@ def make_final_summary():
 
                 # apply the remaining scale factors (When boron yield is recovered, how to get the areal density (g/cm2) of ONLY boron, for normalizing?)
                 yield_norm_b410   = yield_norm_b410 / ( df[(df['target']=='B10')]['T'] )
+
                 
+    plt.legend()
+    #fig1.tight_layout()
+    plt.show()
+    
     ofile.close()
 
     

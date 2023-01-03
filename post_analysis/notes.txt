@@ -1,0 +1,20 @@
+plots to make:
+
+1) relative yield/charge vs cumulative_charge (low priority)
+2) absolute SHMS EL-REAL (T2_rates), HMS Rates(T3_rates) vs cumulative_charge
+3) singles_yield/(pre-scale*mC*thick) vs cumulative_charge  (for SRC) 
+(need to make event type cut to ONLY select SHMS singles)
+
+# multi-track fraction (for Ca48 MF, SRC)
+** (ntrack > 1 ) / (ntrack>=1)
+
+MF_cuts: abs(CTime.epCoinTime_ROC2_center)<=2.5&&abs(H.gtr.dp)<=10&&P.gtr.dp>=0&&P.gtr.dp<=22&&hms_collimator_cut_flag==1&&shms_collimator_cut_flag==1&&H.kin.secondary.emiss_nuc<=0.1&&H.kin.secondary.pmiss<=0.250
+
+Cut on number of tracks on SHMS : P.dc.ntrack
+
+run     ntrack>1 ntrack==1   ntrack>=1     ntrack>1/(ntrack>=1)   ntrack>1/ntrack==1
+16978	2240     3389	     5629          0.3979                 0.6609
+16979   31920    44810	     76730         0.4160                 0.7123
+17093   18430    25940	     44370         0.4153                 0.7104
+17094   4734     6383        11120         0.4257                 0.7416
+17096   37470    42000       79470         0.4714                 0.8921

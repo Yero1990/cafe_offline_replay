@@ -30,3 +30,7 @@ T->Draw("cos(H.kin.secondary.th_bq)>>Costhrq_Ca40MF_ctime+Accp+pid(100,-1.2,1.2)
 
 # 1d cos_thrq (ctime+accp+pid+kin)
 T->Draw("cos(H.kin.secondary.th_bq)>>Costhrq_Ca40MF_ctime+Accp+pid+kin(100,-1.2,1.2)", "abs(CTime.epCoinTime_ROC2_center)<=2.5&&abs(H.gtr.dp)<=10&&P.gtr.dp>=0&&P.gtr.dp<=22&&hms_collimator_cut_flag==1&&shms_collimator_cut_flag==1&&P.cal.etottracknorm>=0.85&&P.cal.etottracknorm<=1.25&&H.kin.secondary.emiss_nuc<=0.1&&H.kin.secondary.pmiss<=0.250&&P.kin.primary.Q2>=1.8", "")
+
+
+# ntrack study
+T->Draw("H.kin.secondary.pmiss>>Pm_Ca48MF(100,-0.1,1)", "abs(CTime.epCoinTime_ROC2_center)<=2.5&&abs(H.gtr.dp)<=10&&P.gtr.dp>=0&&P.gtr.dp<=22&&hms_collimator_cut_flag==1&&shms_collimator_cut_flag==1&&P.cal.etottracknorm>=0.85&&P.cal.etottracknorm<=1.25&&H.kin.secondary.emiss_nuc<=0.1&&H.kin.secondary.pmiss<=0.250", "colz")
