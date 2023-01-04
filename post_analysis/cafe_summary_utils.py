@@ -134,8 +134,9 @@ def make_final_summary():
             # plot 1: relative scalers vs current (relative to 1st data point) --> woule be best to normalize both SRC, MF to same 1st point, since T2 scalers (shms same location, so should not change)
             #plt.plot(T2_scl_rate,  T2_scl_per_Q/T2_scl_per_Q[0] , marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 
-            # plot 2: yield / mC
+            
             if(kin[jdx]=='MF'):
+                # plot 2: yield / mC
                 #plt.errorbar(run, unumpy.nominal_values(real_yield_per_Q), unumpy.std_devs(real_yield_per_Q), marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
                 #plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q), unumpy.std_devs(real_yield_corr_per_Q), marker='^', color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
 

@@ -1344,6 +1344,9 @@ protected:
   TTree *tree_skim;
   Long64_t nentries;
   
+  //Set-Up counters for accepted singles triggers
+  Double_t total_trig1_singles_accp = 0;
+  Double_t total_trig2_singles_accp = 0;
   
   //Set-Up Tdc Counters for accepted triggers
   Double_t total_trig1_accp = 0;
@@ -1427,7 +1430,7 @@ protected:
   Bool_t c_noedtm;
   Bool_t c_edtm;
 
-  //generic cpu live time cuts (HMS singles -> htrig, SHMS singles -> ptrig, coin -> ptrig)
+  //generic cuts to enable/disable triggers 1-6 (HMS singles -> htrig, SHMS singles -> ptrig, coin -> ptrig)
   Bool_t c_trig1;    
   Bool_t c_trig2;   
   Bool_t c_trig3;   
@@ -1435,6 +1438,13 @@ protected:
   Bool_t c_trig5;   
   Bool_t c_trig6;
 
+  Bool_t c_notrig1;    
+  Bool_t c_notrig2;   
+  Bool_t c_notrig3;   
+  Bool_t c_notrig4;   
+  Bool_t c_notrig5;   
+  Bool_t c_notrig6;
+  
   //Pre-Scale factor for each pre-trigger (used in computer/total live time calculation, to account for pre-scaled triggers)
   Float_t Ps_factor_single = 1;  //generic pre-scale factor for singles
   Float_t Ps_factor_coin = 1;  //generic pre-scale factor for coin
