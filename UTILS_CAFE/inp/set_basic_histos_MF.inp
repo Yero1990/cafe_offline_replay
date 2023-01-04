@@ -89,18 +89,18 @@ W2_xmax = 1.5;
 
 # 4-momentum transfer
 Q2_nbins = 100
-Q2_xmin = 1.
-Q2_xmax = 3.
+Q2_xmin = 0.
+Q2_xmax = 4.
 
 # Bjorken-X
 X_nbins = 100
-X_xmin = 0.1
+X_xmin = 0.05
 X_xmax = 2.5
 
 # energy transfer
 nu_nbins = 100
-nu_xmin = 0.5
-nu_xmax = 2.
+nu_xmin = 0.
+nu_xmax = 4.
 
 # 3-momentum transfer
 q_nbins = 100

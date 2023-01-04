@@ -40,6 +40,7 @@ public:
   void ScalerEventLoop(); //bcm current cut threshold in uA units
   void ReadTree();
   void CreateSkimTree();
+  void CreateSinglesSkimTree();
   void EventLoop();
   void CalcEff();
   void ApplyWeight();
@@ -355,6 +356,7 @@ protected:
   TString simc_ifile;  // simc input file (to read central settings used in simulation)
   
   //Output ROOTfile Name
+  TString data_OutputFileName_skim_singles; // only for saving singles skimmed leaf variables (with minimal cuts, like bcm cut and edtm cut) 
   TString data_OutputFileName_skim; // only for saving skimmed leaf variables (with minimal cuts, like bcm cut and edtm cut) 
   TString data_OutputFileName;
   TString simc_OutputFileName_rad;
@@ -791,6 +793,7 @@ protected:
   TH1F *H_xbj_noCUT;
   TH1F *H_xbj_singles_noCUT;
   TH1F *H_nu_noCUT;
+  TH1F *H_nu_singles_noCUT;
   TH1F *H_q_noCUT;
   TH1F *H_thq_noCUT;
   TH1F *H_Em_nuc_noCUT;
@@ -1344,6 +1347,7 @@ protected:
   //----------DATA-RELATED VARIABLES-----------
   TTree *tree;
   TTree *tree_skim;
+  TTree *tree_skim_singles;
   Long64_t nentries;
   
   //Set-Up counters for accepted singles triggers
@@ -1368,6 +1372,7 @@ protected:
   Double_t total_trig5_accp_bcm_cut = 0;
   Double_t total_trig6_accp_bcm_cut = 0;
   Double_t total_edtm_accp_bcm_cut = 0;
+  Double_t total_edtm_accp_bcm_cut_single = 0;
   Double_t total_trig_accp_bcm_cut_single; //generic acc. trig
   Double_t total_trig_accp_bcm_cut_coin; //generic acc. trig
 
@@ -1384,7 +1389,12 @@ protected:
   Double_t pTrkEff;
   Double_t pTrkEff_err;
 
-  //SHMS Multi-track efficiency counter
+  
+  //SHMS singles track eff.
+  Double_t p_did_singles = 0;
+  Double_t p_should_singles = 0;
+  Double_t pTrkEff_singles;
+  Double_t pTrkEff_singles_err;
   
   //Computer Live Time 
   Double_t cpuLT_trig_single;       //generic computer live time

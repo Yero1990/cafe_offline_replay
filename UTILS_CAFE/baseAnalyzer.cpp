@@ -99,6 +99,7 @@ void baseAnalyzer::Init(){
   //Initialize TTree Pointers
   tree        = NULL;
   tree_skim   = NULL;
+  tree_skim_singles   = NULL;
   scaler_tree = NULL;
 
   //Initialize Scaler Pointer
@@ -373,7 +374,8 @@ void baseAnalyzer::Init(){
   H_Q2_singles_noCUT = NULL;
   H_xbj_noCUT = NULL;
   H_xbj_singles_noCUT = NULL;
-  H_nu_noCUT = NULL;	
+  H_nu_noCUT = NULL;
+  H_nu_singles_noCUT = NULL;
   H_q_noCUT = NULL;	
   H_thq_noCUT = NULL;	
   H_Em_nuc_noCUT = NULL;
@@ -979,7 +981,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_Q2_singles_noCUT;				     	   H_Q2_singles_noCUT = NULL;				     			     
   delete H_xbj_noCUT;				     		   H_xbj_noCUT = NULL;				     			     
   delete H_xbj_singles_noCUT;				     	   H_xbj_singles_noCUT = NULL;				     			     
-  delete H_nu_noCUT;				     		   H_nu_noCUT = NULL;				     			     
+  delete H_nu_noCUT;				     		   H_nu_noCUT = NULL;
+  delete H_nu_singles_noCUT;				     	   H_nu_singles_noCUT = NULL;				     			     
   delete H_q_noCUT;				     		   H_q_noCUT = NULL;				     			     
   delete H_thq_noCUT;				     		   H_thq_noCUT = NULL;				     			     
   delete H_Em_nuc_noCUT;				     	   H_Em_nuc_noCUT = NULL;				     		     
@@ -1404,6 +1407,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
     if(set_output_fnames) {
 
+      //Define Output (.root) File Name Pattern (singles skimmed leaf variables are written to this file, with minimal cuts -> bcm_cut, edtm_cut)  
+      temp = trim(split(FindString("output_skimSinglesROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);   
+      data_OutputFileName_skim_singles = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);;
+      
       //Define Output (.root) File Name Pattern (skimmed leaf variables are written to this file, with minimal cuts -> bcm_cut, edtm_cut)  
       temp = trim(split(FindString("output_skimROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);   
       data_OutputFileName_skim = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);;
@@ -2717,6 +2724,7 @@ void baseAnalyzer::CreateHist()
   H_xbj_noCUT      = new TH1F("H_xbj_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);
   H_xbj_singles_noCUT = new TH1F("H_xbj_singles_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
   H_nu_noCUT       = new TH1F("H_nu_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
+  H_nu_singles_noCUT = new TH1F("H_nu_singles_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
   H_q_noCUT        = new TH1F("H_q_noCUT", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
   H_thq_noCUT      = new TH1F("H_thq_noCUT", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
   H_Em_nuc_noCUT   = new TH1F("H_Em_nuc_noCUT","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
@@ -2767,6 +2775,7 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_xbj_noCUT       );
   quality_HList->Add( H_xbj_singles_noCUT);
   quality_HList->Add( H_nu_noCUT        );
+  quality_HList->Add( H_nu_singles_noCUT);
   quality_HList->Add( H_q_noCUT         );
   quality_HList->Add( H_thq_noCUT       );
   quality_HList->Add( H_Em_nuc_noCUT    );
@@ -3565,6 +3574,99 @@ void baseAnalyzer::ScalerEventLoop()
   
 }
 
+//__________________________________________________________________________
+void baseAnalyzer::CreateSinglesSkimTree()
+{
+  
+  // Method to create a singles skimmed version of the data TTree  
+  cout << "Calling Base CreateSinglesSkimTree()  " << endl;
+
+  tree_skim_singles = new TTree("T", "Skimmed Singles TTree");
+  tree_skim_singles->SetDirectory(0);
+  
+  // add branches (assumes the variables already exist, so this method must be called right after
+  // setting the branch addree of the
+
+  
+  // Global Variables
+  tree_skim_singles->Branch("g.evtyp",&gevtyp);
+  tree_skim_singles->Branch("g.evnum",&gevnum);
+
+
+  // Trigger Detector 
+  tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
+  
+  //e- 4-vector components
+  tree_skim_singles->Branch(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
+  tree_skim_singles->Branch(Form("%s.kin.primary.p4y", eArm.Data()), &kfy);
+  tree_skim_singles->Branch(Form("%s.kin.primary.p4z", eArm.Data()), &kfz);
+  tree_skim_singles->Branch(Form("%s.kin.primary.p4e", eArm.Data()), &Ef_k);
+
+  // e- (primary) kinematics 
+  tree_skim_singles->Branch(Form("%s.kin.primary.scat_ang_rad", eArm.Data()),&th_e);
+  tree_skim_singles->Branch(Form("%s.kin.primary.W", eArm.Data()),&W);
+  tree_skim_singles->Branch(Form("%s.kin.primary.Q2", eArm.Data()),&Q2);
+  tree_skim_singles->Branch(Form("%s.kin.primary.x_bj", eArm.Data()),&X);
+  tree_skim_singles->Branch(Form("%s.kin.primary.nu", eArm.Data()),&nu);
+  tree_skim_singles->Branch(Form("%s.kin.primary.q3m", eArm.Data()),&q);
+  tree_skim_singles->Branch(Form("%s.kin.primary.q_x", eArm.Data()),&qx);
+  tree_skim_singles->Branch(Form("%s.kin.primary.q_y", eArm.Data()),&qy);
+  tree_skim_singles->Branch(Form("%s.kin.primary.q_z", eArm.Data()),&qz);
+  tree_skim_singles->Branch(Form("%s.kin.primary.th_q", eArm.Data()),&th_q);
+  tree_skim_singles->Branch(Form("%s.kin.primary.ph_q", eArm.Data()),&ph_q);
+
+  //-------------------------------
+  //------PID Leaf Variables-------
+  //-------------------------------
+  
+  //SHMS DETECTORS
+  tree_skim_singles->Branch("P.ngcer.npeSum",       &pngcer_npesum);
+  tree_skim_singles->Branch("P.cal.etotnorm",       &pcal_etotnorm);
+  tree_skim_singles->Branch("P.cal.etottracknorm",  &pcal_etottracknorm);
+  tree_skim_singles->Branch("P.hod.betanotrack",    &phod_beta_ntrk);
+  tree_skim_singles->Branch("P.hod.beta",           &phod_beta);
+  tree_skim_singles->Branch("P.hod.goodscinhit",    &phod_GoodScinHit);    
+  tree_skim_singles->Branch("P.dc.ntrack",          &pdc_ntrack);
+  
+  //-----------------------------------
+  //-----Acceptance Leaf Variables-----
+  //-----------------------------------
+  
+  //Additional Kinematics (not in primary/secondary modules)
+  tree_skim_singles->Branch(Form("%s.gtr.p",  eArm.Data()), &kf);
+  
+  //----Electron Arm Focal Plane---- 
+  tree_skim_singles->Branch(Form("%s.dc.x_fp",  eArm.Data()), &e_xfp);
+  tree_skim_singles->Branch(Form("%s.dc.xp_fp", eArm.Data()), &e_xpfp);
+  tree_skim_singles->Branch(Form("%s.dc.y_fp",  eArm.Data()), &e_yfp);
+  tree_skim_singles->Branch(Form("%s.dc.yp_fp", eArm.Data()), &e_ypfp);
+  
+  //----Electron Arm Reconstructed----- 
+  tree_skim_singles->Branch(Form("%s.gtr.y",  eArm.Data()), &e_ytar);
+  tree_skim_singles->Branch(Form("%s.gtr.ph", eArm.Data()), &e_yptar);
+  tree_skim_singles->Branch(Form("%s.gtr.th", eArm.Data()), &e_xptar);
+  tree_skim_singles->Branch(Form("%s.gtr.dp", eArm.Data()), &e_delta);
+  
+  //----Target Quantities----
+  //(tarx, tary, tarz) in Hall Coord. System      
+  tree_skim_singles->Branch(Form("%s.react.x", eArm.Data()), &etar_x);
+  tree_skim_singles->Branch(Form("%s.react.y", eArm.Data()), &etar_y);
+  tree_skim_singles->Branch(Form("%s.react.z", eArm.Data()), &etar_z);
+  
+  //----Collimator Quantities-----
+  tree_skim_singles->Branch(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
+  tree_skim_singles->Branch(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
+  
+  
+  
+}
+
+//__________________________________________________________________________
 void baseAnalyzer::CreateSkimTree()
 {
   
@@ -3589,6 +3691,14 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("CTime.epCoinTime_ROC2_center", &epCoinTime_center);
   tree_skim->Branch("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);
 
+  // Trigger Detector 
+  tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
+  tree->SetBranchAddress("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
+  
 
   //e- 4-vector components
   tree_skim->Branch(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
@@ -4027,6 +4137,10 @@ void baseAnalyzer::ReadTree()
       // Call function to create skimmed version of data tree
       CreateSkimTree();
 
+      // Call function to create singles skimmed version of data tree
+      CreateSinglesSkimTree();
+
+      
     } //END DATA SET BRANCH ADDRESS
 
   
@@ -4824,9 +4938,14 @@ void baseAnalyzer::EventLoop()
 	      
 	      // Count SHMS Singles ONLY (particularly, only count T1 and T2)
 
-	      //strictly select trig1 > 0 (and no other triggers)
+	      //strictly select trig1 > 0 (and no other triggers) -- most CaFe runs did not have T1 enabled, but the some heep did
 	      if(c_trig1 && (c_notrig2 && c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
 		total_trig1_singles_accp++;
+	      }
+
+	      //strictly SHMS event type to count EDTM singles (for live time singles)
+	      if(gevtyp==1){
+		total_edtm_accp_bcm_cut_single++;
 	      }
 	      
 	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
@@ -4835,7 +4954,15 @@ void baseAnalyzer::EventLoop()
 
 		H_Q2_singles_noCUT                ->Fill( Q2 );
 		H_xbj_singles_noCUT               ->Fill( X );
+		H_nu_singles_noCUT                ->Fill( nu );
 
+		// Fill singles tree skim
+		tree_skim_singles->Fill();
+
+		//calculate shms T2 singles track efficiency
+		if(good_shms_did){ p_did_singles++;}
+		if(good_shms_should){ p_should_singles++; }
+		
 	      }
 	      
 	      
@@ -5480,6 +5607,10 @@ void baseAnalyzer::EventLoop()
       multi_track_eff         = 1. - (multi_peak_counts / single_peak_counts);
       multi_track_eff_err     = sqrt( pow(multi_track_eff,2) * ( pow(single_peak_counts_err/single_peak_counts,2) + pow(multi_peak_counts_err/multi_peak_counts,2) ) );
 
+
+      //Save Singles Skimmed Tree
+      tree_skim_singles->SaveAs( data_OutputFileName_skim_singles.Data() );
+      delete tree_skim_singles;
       
       //Save Skimmed Tree
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );
@@ -6103,6 +6234,10 @@ void baseAnalyzer::CalcEff()
   //Calculate SHMS Tracking Efficiency                                                                                                
   pTrkEff = p_did / p_should; 
   pTrkEff_err = sqrt(p_should-p_did) / p_should;                                                            
+
+  //Calculate SHMS singles Tracking Efficiency                                                                                                
+  pTrkEff_singles = p_did_singles / p_should_singles; 
+  pTrkEff_singles_err = sqrt(p_should_singles-p_did_singles) / p_should_singles;                                                            
 
   
   
@@ -7570,9 +7705,11 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << "# NOTE: scaler triggers are not pre-scaled | accepted triggers are pre-scaled  " << endl;
     out_file << "#       cpu_live_time   = T#_accepted / ( T#_scaler / Ps#_factor)       " << endl;
     out_file << "#       total_live_time = edtm_accepted / ( edtm_scaler / Ps#_factor)       " << endl;
+    out_file << "#       total_live_time_singles = edtm_accepted_singles / ( edtm_scaler / Ps#_factor) | g.evtyp==1 (SHMS event type)      " << endl;
     out_file << "                                     " << endl;
     out_file << Form("edtm_scaler   :  %.3f  ",         total_edtm_scaler_bcm_cut ) << endl;
     out_file << Form("edtm_accepted :  %.3f  ",         total_edtm_accp_bcm_cut) << endl;
+    out_file << Form("edtm_accepted_singles :  %.3f  ", total_edtm_accp_bcm_cut_single ) << endl;
     out_file << "                                     " << endl;
     out_file << "# pre-scale factors (-1: trigger OFF)                 " << endl;
     out_file << Form("Ps1_factor: %.1f", Ps1_factor) << endl;
@@ -7815,17 +7952,17 @@ void baseAnalyzer::WriteReportSummary()
       
       if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){  
 	
-	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp) << endl;
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err) << endl;
 	
       }
       
       else if(analysis_cut=="heep_coin") {
-	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp) << endl;
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err) << endl;
 	
       }
       
       else if(analysis_cut=="heep_singles") {
-	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp ) << endl;	
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err ) << endl;	
       }
       
       out_file.close();
@@ -7878,18 +8015,18 @@ void baseAnalyzer::WriteReportSummary()
       if( (analysis_cut=="MF") || (analysis_cut=="SRC") || (analysis_cut=="heep_coin") ) {
 	
 	// set appropiate heders for coincidence data
-	out_file << "run,beam_time,charge,avg_current,total_Yield,total_Yield_err,real_Yield,real_Yield_err,random_Yield,random_Yield_err,hTrkEff,hTrkEff_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc1u1_res,hdc1u2_res,hdc1x1_res,hdc1x2_res,hdc1v2_res,hdc1v1_res,hdc2v1_res,hdc2v2_res,hdc2x2_res,hdc2x1_res,hdc2u2_res,hdc2u1_res,hdc1u1_res_err,hdc1u2_res_err,hdc1x1_res_err,hdc1x2_res_err,hdc1v2_res_err,hdc1v1_res_err,hdc2v1_res_err,hdc2v2_res_err,hdc2x2_res_err,hdc2x1_res_err,hdc2u2_res_err,hdc2u1_res_err,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err,multi_track_eff,multi_track_eff_err,T1_accp_singles,T2_accp_singles" << endl;
+	out_file << "run,beam_time,charge,avg_current,total_Yield,total_Yield_err,real_Yield,real_Yield_err,random_Yield,random_Yield_err,hTrkEff,hTrkEff_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc1u1_res,hdc1u2_res,hdc1x1_res,hdc1x2_res,hdc1v2_res,hdc1v1_res,hdc2v1_res,hdc2v2_res,hdc2x2_res,hdc2x1_res,hdc2u2_res,hdc2u1_res,hdc1u1_res_err,hdc1u2_res_err,hdc1x1_res_err,hdc1x2_res_err,hdc1v2_res_err,hdc1v1_res_err,hdc2v1_res_err,hdc2v2_res_err,hdc2x2_res_err,hdc2x1_res_err,hdc2u2_res_err,hdc2u1_res_err,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err,multi_track_eff,multi_track_eff_err,T1_accp_singles,T2_accp_singles,pTrkEff_singles,pTrkEff_singles_err" << endl;
 	
 	
 	if( (analysis_cut=="MF") || (analysis_cut=="SRC") ){  
 	  
-	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp) << endl;
+	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, Pm_total, Pm_total_err,Pm_real, Pm_real_err, Pm_rand, Pm_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma, hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err) << endl;
 	  
 	}
 	
 	else if(analysis_cut=="heep_coin") {
 	  
-	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp ) << endl;	  
+	  out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err,W_real, W_real_err, W_rand, W_rand_err, hTrkEff, hTrkEff_err, pTrkEff, pTrkEff_err, cpuLT_trig_coin, cpuLT_trig_err_Bi_coin, tLT_trig_coin, tLT_trig_err_Bi_coin,S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor, ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc_res_sigma[0],hdc_res_sigma[1],hdc_res_sigma[2],hdc_res_sigma[3],hdc_res_sigma[4],hdc_res_sigma[5],hdc_res_sigma[6],hdc_res_sigma[7],hdc_res_sigma[8],hdc_res_sigma[9],hdc_res_sigma[10],hdc_res_sigma[11],hdc_res_sigma_err[0],hdc_res_sigma_err[1],hdc_res_sigma_err[2],hdc_res_sigma_err[3],hdc_res_sigma_err[4],hdc_res_sigma_err[5],hdc_res_sigma_err[6],hdc_res_sigma_err[7],hdc_res_sigma_err[8],hdc_res_sigma_err[9],hdc_res_sigma_err[10],hdc_res_sigma_err[11],pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err) << endl;	  
 	  
 	}
      
@@ -7899,8 +8036,8 @@ void baseAnalyzer::WriteReportSummary()
       if(analysis_cut=="heep_singles") {
 
 	// set appropiate heders for coincidence data
-	out_file << "run,beam_time,charge,avg_current,total_Yield,total_Yield_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err,multi_track_eff,multi_track_eff_err,T1_accp_singles,T2_accp_singles" << endl;
-	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp ) << endl;	
+	out_file << "run,beam_time,charge,avg_current,total_Yield,total_Yield_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err,multi_track_eff,multi_track_eff_err,T1_accp_singles,T2_accp_singles,pTrkEff_singles,pTrkEff_singles_err" << endl;
+	out_file << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3f,%.3E,%.3f,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3f,%.1f,%.1f,%.1f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3E,%.3E,%.3f,%.3f", run, total_time_bcm_cut, total_charge_bcm_cut, avg_current_bcm_cut, W_total, W_total_err, pTrkEff, pTrkEff_err, cpuLT_trig_single, cpuLT_trig_err_Bi_single, tLT_trig_single, tLT_trig_err_Bi_single, S1XscalerRate_bcm_cut, TRIG1scalerRate_bcm_cut, TRIG2scalerRate_bcm_cut, TRIG3scalerRate_bcm_cut, TRIG5scalerRate_bcm_cut, TRIG1accpRate_bcm_cut, TRIG2accpRate_bcm_cut, TRIG3accpRate_bcm_cut, TRIG5accpRate_bcm_cut, total_edtm_scaler_bcm_cut, total_edtm_accp_bcm_cut, Ps1_factor, Ps2_factor, Ps3_factor, Ps5_factor,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,pdc_res_sigma[0],pdc_res_sigma[1],pdc_res_sigma[2],pdc_res_sigma[3],pdc_res_sigma[4],pdc_res_sigma[5],pdc_res_sigma[6],pdc_res_sigma[7],pdc_res_sigma[8],pdc_res_sigma[9],pdc_res_sigma[10],pdc_res_sigma[11],pdc_res_sigma_err[0],pdc_res_sigma_err[1],pdc_res_sigma_err[2],pdc_res_sigma_err[3],pdc_res_sigma_err[4],pdc_res_sigma_err[5],pdc_res_sigma_err[6],pdc_res_sigma_err[7],pdc_res_sigma_err[8],pdc_res_sigma_err[9],pdc_res_sigma_err[10],pdc_res_sigma_err[11],multi_track_eff,multi_track_eff_err,total_trig1_singles_accp,total_trig2_singles_accp,pTrkEff_singles,pTrkEff_singles_err) << endl;	
 
       }
       

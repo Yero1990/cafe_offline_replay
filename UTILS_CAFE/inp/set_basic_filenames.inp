@@ -12,6 +12,7 @@ input_REPORTPattern          = REPORT_OUTPUT/%s/cafe_%s_%d_%d.report
 #------------------------------
 # Set Ouput Data File Pattern
 #------------------------------
+output_skimSinglesROOTfilePattern = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_%d_%d_skimmed_singles.root
 output_skimROOTfilePattern    = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_%d_%d_skimmed.root
 output_ROOTfilePattern        = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_%d_%d_histos.root
 output_ROOTfilePattern_comb   = CAFE_OUTPUT/ROOT/cafe_%s_%s_%s_combined.root
