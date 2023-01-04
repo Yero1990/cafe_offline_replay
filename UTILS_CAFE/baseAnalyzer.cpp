@@ -369,8 +369,10 @@ void baseAnalyzer::Init(){
   H_ep_ctime_noCUT = NULL;
   H_the_noCUT = NULL;
   H_W_noCUT = NULL;	
-  H_Q2_noCUT = NULL;	
-  H_xbj_noCUT = NULL;	
+  H_Q2_noCUT = NULL;
+  H_Q2_singles_noCUT = NULL;
+  H_xbj_noCUT = NULL;
+  H_xbj_singles_noCUT = NULL;
   H_nu_noCUT = NULL;	
   H_q_noCUT = NULL;	
   H_thq_noCUT = NULL;	
@@ -970,16 +972,18 @@ baseAnalyzer::~baseAnalyzer()
   // ------ Cuts Quality Check Histos ----                                                     
   // -- NO CUTS HISTOS --								     
   // kin							          			     
-  delete H_ep_ctime_noCUT;			                           H_ep_ctime_noCUT = NULL;			        		    			     
+  delete H_ep_ctime_noCUT;			                   H_ep_ctime_noCUT = NULL;			        		    			     
   delete H_the_noCUT;				     		   H_the_noCUT = NULL;				     			     
   delete H_W_noCUT;				     		   H_W_noCUT = NULL;				     			     
   delete H_Q2_noCUT;				     		   H_Q2_noCUT = NULL;				     			     
+  delete H_Q2_singles_noCUT;				     	   H_Q2_singles_noCUT = NULL;				     			     
   delete H_xbj_noCUT;				     		   H_xbj_noCUT = NULL;				     			     
+  delete H_xbj_singles_noCUT;				     	   H_xbj_singles_noCUT = NULL;				     			     
   delete H_nu_noCUT;				     		   H_nu_noCUT = NULL;				     			     
   delete H_q_noCUT;				     		   H_q_noCUT = NULL;				     			     
   delete H_thq_noCUT;				     		   H_thq_noCUT = NULL;				     			     
-  delete H_Em_nuc_noCUT;				     		   H_Em_nuc_noCUT = NULL;				     		     
-  delete H_Em_src_noCUT;				     		   H_Em_src_noCUT = NULL;				     		     
+  delete H_Em_nuc_noCUT;				     	   H_Em_nuc_noCUT = NULL;				     		     
+  delete H_Em_src_noCUT;				     	   H_Em_src_noCUT = NULL;				     		     
   delete H_MM_noCUT;				     		   H_MM_noCUT = NULL;				     			     
   delete H_Pm_noCUT;				     		   H_Pm_noCUT = NULL;				     			     
   delete H_thxq_noCUT;				     		   H_thxq_noCUT = NULL;				     			     
@@ -2708,8 +2712,10 @@ void baseAnalyzer::CreateHist()
   H_ep_ctime_noCUT = new TH1F("H_ep_ctime_noCUT", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
   H_the_noCUT      = new TH1F("H_the_noCUT", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
   H_W_noCUT        = new TH1F("H_W_noCUT", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
-  H_Q2_noCUT       = new TH1F("H_Q2_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
-  H_xbj_noCUT      = new TH1F("H_xbj_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
+  H_Q2_noCUT       = new TH1F("H_Q2_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax);
+  H_Q2_singles_noCUT = new TH1F("H_Q2_singles_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
+  H_xbj_noCUT      = new TH1F("H_xbj_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);
+  H_xbj_singles_noCUT = new TH1F("H_xbj_singles_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
   H_nu_noCUT       = new TH1F("H_nu_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
   H_q_noCUT        = new TH1F("H_q_noCUT", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
   H_thq_noCUT      = new TH1F("H_thq_noCUT", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
@@ -2757,7 +2763,9 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_the_noCUT       );
   quality_HList->Add( H_W_noCUT         );
   quality_HList->Add( H_Q2_noCUT        );
+  quality_HList->Add( H_Q2_singles_noCUT);
   quality_HList->Add( H_xbj_noCUT       );
+  quality_HList->Add( H_xbj_singles_noCUT);
   quality_HList->Add( H_nu_noCUT        );
   quality_HList->Add( H_q_noCUT         );
   quality_HList->Add( H_thq_noCUT       );
@@ -4824,6 +4832,10 @@ void baseAnalyzer::EventLoop()
 	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
 	      if(c_trig1 && c_trig2 && (c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
 		total_trig2_singles_accp++;
+
+		H_Q2_singles_noCUT                ->Fill( Q2 );
+		H_xbj_singles_noCUT               ->Fill( X );
+
 	      }
 	      
 	      

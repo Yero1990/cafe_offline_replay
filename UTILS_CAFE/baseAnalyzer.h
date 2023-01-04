@@ -787,7 +787,9 @@ protected:
   TH1F *H_the_noCUT;
   TH1F *H_W_noCUT;
   TH1F *H_Q2_noCUT;
+  TH1F *H_Q2_singles_noCUT;
   TH1F *H_xbj_noCUT;
+  TH1F *H_xbj_singles_noCUT;
   TH1F *H_nu_noCUT;
   TH1F *H_q_noCUT;
   TH1F *H_thq_noCUT;
