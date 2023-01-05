@@ -4952,9 +4952,14 @@ void baseAnalyzer::EventLoop()
 	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
 	      if(c_trig1 && c_trig2 && (c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
 
-		// count T2 accepted singles
-		total_trig2_singles_accp++;
+		// try some minimal cuts when counting singles (to make sure in is within spectrometer) -- check with Larry
+		if(c_accpCuts_shms){
+		  
+		  // count T2 accepted singles
+		  total_trig2_singles_accp++;
+		}
 
+		
 		// these are necessary in order to write collimator flag to skimmed singles root file
 		shms_coll_cut_bool = false;
 		if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
