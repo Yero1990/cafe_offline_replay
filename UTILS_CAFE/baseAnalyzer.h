@@ -1547,6 +1547,12 @@ protected:
   Double_t cpid_phgcer_npeSum_min;
   Double_t cpid_phgcer_npeSum_max;
 
+  //SHMS Heavy Gas Cherenkov (Pi /K separation)
+  Bool_t pntrack_cut_flag;
+  Bool_t c_pntrack;
+  Double_t pntracks;
+  
+  
   //HMS Calorimeter EtotTrackNorm (e- selection)
   Bool_t hetot_trkNorm_pidCut_flag;
   Bool_t cpid_hetot_trkNorm;

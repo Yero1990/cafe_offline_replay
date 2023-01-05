@@ -1522,6 +1522,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     cpid_phgcer_npeSum_min = stod(split(FindString("cpid_phgcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
     cpid_phgcer_npeSum_max = stod(split(FindString("cpid_phgcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
     
+    // SHMS Number of Tracks CUT (for track eff. study)
+    pntrack_cut_flag = stoi(split(FindString("pntrack_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+    pntracks = stod(split(FindString("pntracks", input_CutFileName.Data())[0], '=')[1]);
     
     //(HMS PID) Calorimeter Total Energy Normalized By Track Momentum
     hetot_trkNorm_pidCut_flag = stoi(split(FindString("hetot_trkNorm_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
@@ -1532,6 +1535,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     hcer_pidCut_flag = stoi(split(FindString("hcer_pidCut_flag", input_CutFileName.Data())[0], '=')[1]);
     cpid_hcer_npeSum_min = stod(split(FindString("cpid_hcer_npeSum_min", input_CutFileName.Data())[0], '=')[1]);
     cpid_hcer_npeSum_max = stod(split(FindString("cpid_hcer_npeSum_max", input_CutFileName.Data())[0], '=')[1]);
+
     
     
     //-----Kinematics Cuts------
@@ -3661,7 +3665,7 @@ void baseAnalyzer::CreateSinglesSkimTree()
   //----Collimator Quantities-----
   tree_skim_singles->Branch(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
   tree_skim_singles->Branch(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
-  tree_skim->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
+  tree_skim_singles->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
 
   
   
@@ -4643,7 +4647,8 @@ void baseAnalyzer::EventLoop()
 	  //CUTS: SHMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
 
 	  //Require at least a minimum number of track(s) 
-	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
+	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack == c_pdc_ntrk_min;} // C.Y. Jan 2023 require ONLY onw track for now, to study track efficiency
+	  //if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
 	  else{
 	    cout <<
 	      "********************************\n"
@@ -4719,8 +4724,12 @@ void baseAnalyzer::EventLoop()
 	  //SHMS Heavy Gas Cherenkov
 	  if(phgcer_pidCut_flag) {cpid_phgcer_NPE_Sum = phgcer_npesum>=cpid_phgcer_npeSum_min && phgcer_npesum<=cpid_phgcer_npeSum_max;}
 	  else{cpid_phgcer_NPE_Sum=1;}
-
-	  c_pidCuts_shms = cpid_petot_trkNorm && cpid_pngcer_NPE_Sum && cpid_phgcer_NPE_Sum;
+	  
+	  //SHMS Number of Tracks
+	  if(pntrack_cut_flag) {c_pntrack = pdc_ntrack==pntracks;}
+	  else{c_pntrack=1;}
+	  
+	  c_pidCuts_shms = cpid_petot_trkNorm && cpid_pngcer_NPE_Sum && cpid_phgcer_NPE_Sum && c_pntrack;
 	  
 	  //HMS calorimeter total normalized track energy
 	  if(hetot_trkNorm_pidCut_flag) {cpid_hetot_trkNorm = hcal_etottracknorm>=cpid_hetot_trkNorm_min && hcal_etottracknorm<=cpid_hetot_trkNorm_max;}
@@ -7491,6 +7500,8 @@ void baseAnalyzer::WriteOnlineReport()
 	if(petot_trkNorm_pidCut_flag)  {out_file << Form("# SHMS calorimeter total energy / track momentum (P.cal.etottracknorm): (%.1f, %.1f)",cpid_petot_trkNorm_min, cpid_petot_trkNorm_max) << endl;}
 	if(pngcer_pidCut_flag)        {out_file << Form("# SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.1f, %.1f)",cpid_pngcer_npeSum_min,cpid_pngcer_npeSum_max) << endl;}
 	if(phgcer_pidCut_flag)        {out_file << Form("# SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.1f, %.1f)",cpid_phgcer_npeSum_min,cpid_phgcer_npeSum_max) << endl;}
+	if(pntrack_cut_flag)        {out_file << Form("# SHMS Number of Tracks Selected (P.dc.ntrack): %.1f",pntracks) << endl;}
+
       }
     out_file << "#                       " << endl;
     out_file << "#---Kinematics Cuts--- " << endl;
@@ -7822,7 +7833,7 @@ void baseAnalyzer::WriteOfflineReport()
     if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
       {
 	out_file << "                                   " << endl;
-	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): >= %.1f", c_pdc_ntrk_min) << endl;}
+	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): == %.1f", c_pdc_ntrk_min) << endl;}
 	if(pScinGood_cut_flag)   {out_file <<      "# (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true"  << endl;}
 	if(pngcer_cut_flag)      {out_file << Form("# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.3f, %.3f)", c_pngcer_npeSum_min, c_pngcer_npeSum_max) << endl;}
 	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
