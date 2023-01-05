@@ -3661,7 +3661,8 @@ void baseAnalyzer::CreateSinglesSkimTree()
   //----Collimator Quantities-----
   tree_skim_singles->Branch(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
   tree_skim_singles->Branch(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
-  
+  tree_skim->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
+
   
   
 }
@@ -4950,12 +4951,21 @@ void baseAnalyzer::EventLoop()
 	      
 	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
 	      if(c_trig1 && c_trig2 && (c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
+
+		// count T2 accepted singles
 		total_trig2_singles_accp++;
 
+		// these are necessary in order to write collimator flag to skimmed singles root file
+		shms_coll_cut_bool = false;
+		if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
+
+
+		// fill some histos (maybe can remove these later, once we figure how we want to count singles)
 		H_Q2_singles_noCUT                ->Fill( Q2 );
 		H_xbj_singles_noCUT               ->Fill( X );
 		H_nu_singles_noCUT                ->Fill( nu );
 
+		
 		// Fill singles tree skim
 		tree_skim_singles->Fill();
 
