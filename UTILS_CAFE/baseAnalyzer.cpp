@@ -3718,12 +3718,12 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);
 
   // Trigger Detector 
-  tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
+  tree_skim->SetBranchAddress("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
   
 
   //e- 4-vector components
@@ -3860,7 +3860,37 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("%s.extcor.ysieve", hArm.Data()),&hYColl);
   tree_skim->Branch("hms_collimator_cut_flag", &hms_coll_cut_bool);
   tree_skim->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
-
+  
+  //--------------------------------------------------------------
+  //----Drift Chamber Variables for Track Algorithm  Studies------
+  //--------------------------------------------------------------
+  
+  tree_skim->SetBranchAddress(Form("%s.dc.stubtest",  eArm.Data()),         &pdc_stubtest);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.nhit",  eArm.Data()),             &pdc_nhit);		   
+  tree_skim->SetBranchAddress(Form("%s.dc.tnhit", eArm.Data()),             &pdc_tnhit);	   
+									                           
+  tree_skim->SetBranchAddress(Form("%s.dc.track_chisq",  eArm.Data()),      &pdc_track_chi2);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.track_nhits",  eArm.Data()),      &pdc_track_nhits);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.InsideDipoleExit",  eArm.Data()), &pdc_InsideDipoleExit);
+									                           
+									                           
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.maxhits",  eArm.Data()),      &pdc_Ch1_maxhits);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.spacepoints",  eArm.Data()),  &pdc_Ch1_spacepoints); 
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.nhit",  eArm.Data()),         &pdc_Ch1_nhit);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.ncombos",  eArm.Data()),      &pdc_Ch1_ncombos);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.stub_x",  eArm.Data()),       &pdc_Ch1_stub_x);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.stub_xp",  eArm.Data()),      &pdc_Ch1_stub_xp);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.stub_y",  eArm.Data()),       &pdc_Ch1_stub_y);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch1.stub_yp",  eArm.Data()),      &pdc_Ch1_stub_yp);	   
+  									                           
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.maxhits",  eArm.Data()),      &pdc_Ch2_maxhits);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.spacepoints",  eArm.Data()),  &pdc_Ch2_spacepoints); 
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.nhit",  eArm.Data()),         &pdc_Ch2_nhit);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.ncombos",  eArm.Data()),      &pdc_Ch2_ncombos);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.stub_x",  eArm.Data()),       &pdc_Ch2_stub_x);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.stub_xp",  eArm.Data()),      &pdc_Ch2_stub_xp);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.stub_y",  eArm.Data()),       &pdc_Ch2_stub_y);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.Ch2.stub_yp",  eArm.Data()),      &pdc_Ch2_stub_yp);	   
   
   
 }
@@ -4157,6 +4187,9 @@ void baseAnalyzer::ReadTree()
 	  //----Collimator Quantities-----
 	  tree->SetBranchAddress(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
 	  tree->SetBranchAddress(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
+
+
+
 	  
 	}
       

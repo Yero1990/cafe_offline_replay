@@ -1923,6 +1923,41 @@ protected:
   //Additional Acceptance Quantities (User-defined)
   Double_t ztar_diff; //[cm]
 
+  //-----------------------------------------------------------------------
+  // LOW-LEVEL DRIFT CHAMBER LEAF VARIABLES FOR TRACKING ALGORITHM STUDIES
+  //-----------------------------------------------------------------------
+
+  Double_t pdc_stubtest;	   
+  Double_t pdc_nhit;		   
+  Double_t pdc_tnhit;	   
+                        
+  Double_t pdc_track_chi2;	   
+  Double_t pdc_track_nhits;	   
+  Double_t pdc_InsideDipoleExit;
+                        
+                        
+  Double_t pdc_Ch1_maxhits;	   
+  Double_t pdc_Ch1_spacepoints; 
+  Double_t pdc_Ch1_nhit;	   
+  Double_t pdc_Ch1_ncombos;	   
+  Double_t pdc_Ch1_stub_x;	   
+  Double_t pdc_Ch1_stub_xp;	   
+  Double_t pdc_Ch1_stub_y;	   
+  Double_t pdc_Ch1_stub_yp;	   
+                        
+  Double_t pdc_Ch2_maxhits;	   
+  Double_t pdc_Ch2_spacepoints; 
+  Double_t pdc_Ch2_nhit;	   
+  Double_t pdc_Ch2_ncombos;	   
+  Double_t pdc_Ch2_stub_x;	   
+  Double_t pdc_Ch2_stub_xp;	   
+  Double_t pdc_Ch2_stub_y;	   
+  Double_t pdc_Ch2_stub_yp;	   
+
+
+
+  
+  
 
   //----- SIMC Specific TTree Variable Names -----
   Double_t Normfac;
