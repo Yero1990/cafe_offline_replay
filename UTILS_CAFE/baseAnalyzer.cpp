@@ -3379,7 +3379,10 @@ void baseAnalyzer::ReadScalerTree()
       scaler_tree->SetBranchAddress("P.BCM4C.scalerCurrent", &Scal_BCM4C_current);
 
       scaler_tree->SetBranchAddress("P.1MHz.scalerTime",&Scal_time);
-      scaler_tree->SetBranchAddress("P.S1X.scaler",&S1X_scaler);  
+      scaler_tree->SetBranchAddress("P.S1X.scaler",&S1X_scaler);
+      scaler_tree->SetBranchAddress("P.S1Y.scaler",&S1Y_scaler);  
+      scaler_tree->SetBranchAddress("P.S2X.scaler",&S2X_scaler);  
+      scaler_tree->SetBranchAddress("P.S2Y.scaler",&S2Y_scaler);  
       scaler_tree->SetBranchAddress("P.pTRIG1.scaler",&TRIG1_scaler);
       scaler_tree->SetBranchAddress("P.pTRIG2.scaler",&TRIG2_scaler);
       scaler_tree->SetBranchAddress("P.pTRIG3.scaler",&TRIG3_scaler);
@@ -3408,7 +3411,10 @@ void baseAnalyzer::ReadScalerTree()
       scaler_tree->SetBranchAddress(Form("%s.BCM4C.scalerCurrent",eArm.Data()), &Scal_BCM4C_current);
 
       scaler_tree->SetBranchAddress(Form("%s.1MHz.scalerTime", eArm.Data()),                   &Scal_time);
-      scaler_tree->SetBranchAddress(Form("%s.S1X.scaler", eArm.Data()),                        &S1X_scaler);  
+      scaler_tree->SetBranchAddress(Form("%s.S1X.scaler", eArm.Data()),                        &S1X_scaler);
+      scaler_tree->SetBranchAddress(Form("%s.S1Y.scaler", eArm.Data()),                        &S1Y_scaler);  
+      scaler_tree->SetBranchAddress(Form("%s.S2X.scaler", eArm.Data()),                        &S2X_scaler);  
+      scaler_tree->SetBranchAddress(Form("%s.S2Y.scaler", eArm.Data()),                        &S2Y_scaler);  
       scaler_tree->SetBranchAddress(Form("%s.%sTRIG1.scaler",eArm.Data(), e_arm.Data() ),      &TRIG1_scaler);
       scaler_tree->SetBranchAddress(Form("%s.%sTRIG2.scaler",eArm.Data(), e_arm.Data() ),      &TRIG2_scaler);
       scaler_tree->SetBranchAddress(Form("%s.%sTRIG3.scaler",eArm.Data(), e_arm.Data() ),      &TRIG3_scaler);
@@ -3473,6 +3479,9 @@ void baseAnalyzer::ScalerEventLoop()
       total_charge_bcm4c = Scal_BCM4C_charge;
       total_time = Scal_time;
       total_s1x_scaler = S1X_scaler;
+      total_s1y_scaler = S1Y_scaler;
+      total_s2x_scaler = S2X_scaler;
+      total_s2y_scaler = S2Y_scaler;
       total_trig1_scaler = TRIG1_scaler;
       total_trig2_scaler = TRIG2_scaler;
       total_trig3_scaler = TRIG3_scaler;
@@ -3499,6 +3508,9 @@ void baseAnalyzer::ScalerEventLoop()
 	  total_charge_bcm4b_cut = total_charge_bcm4b_cut + (Scal_BCM4B_charge - prev_charge_bcm4b);  
 	  total_charge_bcm4c_cut = total_charge_bcm4c_cut + (Scal_BCM4C_charge - prev_charge_bcm4c);  
 	  total_s1x_scaler_bcm_cut = total_s1x_scaler_bcm_cut + (S1X_scaler-prev_s1x_scaler);
+	  total_s1y_scaler_bcm_cut = total_s1y_scaler_bcm_cut + (S1Y_scaler-prev_s1y_scaler);
+	  total_s2x_scaler_bcm_cut = total_s2x_scaler_bcm_cut + (S2X_scaler-prev_s2x_scaler);
+	  total_s2y_scaler_bcm_cut = total_s2y_scaler_bcm_cut + (S2Y_scaler-prev_s2y_scaler);
 	  total_trig1_scaler_bcm_cut = total_trig1_scaler_bcm_cut + (TRIG1_scaler-prev_trig1_scaler);
 	  total_trig2_scaler_bcm_cut = total_trig2_scaler_bcm_cut + (TRIG2_scaler-prev_trig2_scaler);
 	  total_trig3_scaler_bcm_cut = total_trig3_scaler_bcm_cut + (TRIG3_scaler-prev_trig3_scaler);
@@ -3517,6 +3529,9 @@ void baseAnalyzer::ScalerEventLoop()
       prev_charge_bcm4b = Scal_BCM4B_charge;
       prev_charge_bcm4c = Scal_BCM4C_charge;
       prev_s1x_scaler = S1X_scaler;
+      prev_s1y_scaler = S1Y_scaler;
+      prev_s2x_scaler = S2X_scaler;
+      prev_s2y_scaler = S2Y_scaler;
       prev_trig1_scaler = TRIG1_scaler;
       prev_trig2_scaler = TRIG2_scaler;
       prev_trig3_scaler = TRIG3_scaler;
@@ -3557,6 +3572,9 @@ void baseAnalyzer::ScalerEventLoop()
 
   //Subtract EDTM counts from trigger scalers
   total_s1x_scaler_bcm_cut = total_s1x_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
+  total_s1y_scaler_bcm_cut = total_s1y_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
+  total_s2x_scaler_bcm_cut = total_s2x_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
+  total_s2y_scaler_bcm_cut = total_s2y_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
   total_trig1_scaler_bcm_cut = total_trig1_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
   total_trig2_scaler_bcm_cut = total_trig2_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
   total_trig3_scaler_bcm_cut = total_trig3_scaler_bcm_cut - total_edtm_scaler_bcm_cut;
@@ -3566,6 +3584,9 @@ void baseAnalyzer::ScalerEventLoop()
 
   //Calculate Scaler Trigger Rates (EDTM subtracted already)
   S1XscalerRate_bcm_cut = total_s1x_scaler_bcm_cut / total_time_bcm_cut;
+  S1YscalerRate_bcm_cut = total_s1y_scaler_bcm_cut / total_time_bcm_cut;
+  S2XscalerRate_bcm_cut = total_s2x_scaler_bcm_cut / total_time_bcm_cut;
+  S2YscalerRate_bcm_cut = total_s2y_scaler_bcm_cut / total_time_bcm_cut;
   TRIG1scalerRate_bcm_cut = total_trig1_scaler_bcm_cut / total_time_bcm_cut;
   TRIG2scalerRate_bcm_cut = total_trig2_scaler_bcm_cut / total_time_bcm_cut;
   TRIG3scalerRate_bcm_cut = total_trig3_scaler_bcm_cut / total_time_bcm_cut;
@@ -6152,6 +6173,9 @@ void baseAnalyzer::CalcEff()
   
   //Convert Scaler Trigger/EDTM Rates from Hz to kHz 
   S1XscalerRate_bcm_cut   = S1XscalerRate_bcm_cut   / 1000.;
+  S1YscalerRate_bcm_cut   = S1YscalerRate_bcm_cut   / 1000.;
+  S2XscalerRate_bcm_cut   = S2XscalerRate_bcm_cut   / 1000.;
+  S2YscalerRate_bcm_cut   = S2YscalerRate_bcm_cut   / 1000.;
   TRIG1scalerRate_bcm_cut = TRIG1scalerRate_bcm_cut / 1000.;
   TRIG2scalerRate_bcm_cut = TRIG2scalerRate_bcm_cut / 1000.;
   TRIG3scalerRate_bcm_cut = TRIG3scalerRate_bcm_cut / 1000.;
@@ -7746,7 +7770,10 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("Ps6_factor: %.1f", Ps6_factor) << endl;
     out_file << "                                     " << endl;
     out_file << "# pre-trigger scalers                 " << endl;
-    out_file << Form("S1X_scaler:  %.3f [ %.3f kHz ] ", total_s1x_scaler_bcm_cut,    S1XscalerRate_bcm_cut) << endl; 
+    out_file << Form("S1X_scaler:  %.3f [ %.3f kHz ] ", total_s1x_scaler_bcm_cut,    S1XscalerRate_bcm_cut) << endl;
+    out_file << Form("S1Y_scaler:  %.3f [ %.3f kHz ] ", total_s1y_scaler_bcm_cut,    S1YscalerRate_bcm_cut) << endl; 
+    out_file << Form("S2X_scaler:  %.3f [ %.3f kHz ] ", total_s2x_scaler_bcm_cut,    S2XscalerRate_bcm_cut) << endl; 
+    out_file << Form("S2Y_scaler:  %.3f [ %.3f kHz ] ", total_s2y_scaler_bcm_cut,    S2YscalerRate_bcm_cut) << endl; 
     out_file << Form("T1_scaler:  %.3f [ %.3f kHz ] ",  total_trig1_scaler_bcm_cut,  TRIG1scalerRate_bcm_cut) << endl;
     out_file << Form("T2_scaler:  %.3f [ %.3f kHz ] ",  total_trig2_scaler_bcm_cut,  TRIG2scalerRate_bcm_cut) << endl;
     out_file << Form("T3_scaler:  %.3f [ %.3f kHz ] ",  total_trig3_scaler_bcm_cut,  TRIG3scalerRate_bcm_cut) << endl;

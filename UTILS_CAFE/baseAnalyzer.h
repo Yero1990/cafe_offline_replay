@@ -1983,6 +1983,9 @@ protected:
   Double_t prev_charge_bcm4b = 0.;
   Double_t prev_charge_bcm4c = 0.;
   Double_t prev_s1x_scaler = 0;
+  Double_t prev_s1y_scaler = 0;
+  Double_t prev_s2x_scaler = 0;
+  Double_t prev_s2y_scaler = 0;
   Double_t prev_trig1_scaler = 0;
   Double_t prev_trig2_scaler = 0;
   Double_t prev_trig3_scaler = 0;
@@ -2000,6 +2003,9 @@ protected:
   Double_t total_charge_bcm4b = 0.;
   Double_t total_charge_bcm4c = 0.;
   Double_t total_s1x_scaler = 0;
+  Double_t total_s1y_scaler = 0;
+  Double_t total_s2x_scaler = 0;
+  Double_t total_s2y_scaler = 0;
   Double_t total_trig1_scaler = 0;
   Double_t total_trig2_scaler = 0;
   Double_t total_trig3_scaler = 0;
@@ -2017,6 +2023,9 @@ protected:
   Double_t total_charge_bcm4b_cut = 0.;
   Double_t total_charge_bcm4c_cut = 0.;
   Double_t total_s1x_scaler_bcm_cut = 0;
+  Double_t total_s1y_scaler_bcm_cut = 0;
+  Double_t total_s2x_scaler_bcm_cut = 0;
+  Double_t total_s2y_scaler_bcm_cut = 0;
   Double_t total_trig1_scaler_bcm_cut = 0;
   Double_t total_trig2_scaler_bcm_cut = 0;
   Double_t total_trig3_scaler_bcm_cut = 0;
@@ -2029,6 +2038,10 @@ protected:
 
   //Store Scaler Rates if current cut passed
   Double_t S1XscalerRate_bcm_cut;
+  Double_t S1YscalerRate_bcm_cut;
+  Double_t S2XscalerRate_bcm_cut;
+  Double_t S2YscalerRate_bcm_cut;
+
   Double_t TRIG1scalerRate_bcm_cut;
   Double_t TRIG2scalerRate_bcm_cut;
   Double_t TRIG3scalerRate_bcm_cut;
@@ -2075,6 +2088,10 @@ protected:
   
   Double_t Scal_time;
   Double_t S1X_scaler;
+  Double_t S1Y_scaler;
+  Double_t S2X_scaler;
+  Double_t S2Y_scaler;
+
   Double_t TRIG1_scaler;   
   Double_t TRIG2_scaler;   
   Double_t TRIG3_scaler;   
