@@ -13,17 +13,21 @@ Emiss for 1-track and all-track
 Chi2
 yield (did/should)  (i.e. reconstructed tracks over should have recon)
 
+
 Short term - Carlos
 0) establish baseline for both beam currents (Carlos)
 
-1) reduce cluster size (space point criterion) - check #tracks (Carlos)
+1) reduce cluster size
+(space point criterion,  pspace_point_criterion) - check #tracks (Carlos)
 
-2) reduce track_criterion (Carlos)
+2) reduce track_criterion
+(modify HCANA and do a hard cut to actually kill the tracks that don't meet the criteria) (Carlos)
+(also put a cut to hodoscope number of pmts hit, pprune_pmt)
 
-3) pruning - make sure track hits active part of scint plane in X2
+3) pruning - make sure track hits active part of scint plane in X2 (I think this is part of point 2)
 ( requires to modify hcana geometry for active areas (paddles >7) in shms hodo X1, X2 planes - Holly)
 
-4) reduce drift time range ( Dien / Carlos / Noah)
+4) reduce drift time range in param file ( Dien / Carlos / Noah)
 
 5) optimize pruning cuts ( Dien / Carlos /Noah )
 

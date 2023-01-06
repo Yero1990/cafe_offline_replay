@@ -24,11 +24,14 @@ pmin_combos = 4,4
 ; hspace_point_criterion(i) minimum separation of distinct space points
 ; recommended value for hspace_point_criterion ( based on meeting
 ; Feb 2003)
-  pspace_point_criterion = 0.9, 0.9
-
 ; C.Y. Jan 06, 2023
 ; space point cluster-size (cm) change from 0.9 to ~ 0.5 (to reduce number of tracks)
 ; for matching hits between dc planes
+
+  pspace_point_criterion = 0.9, 0.9
+
+;  help reduce # of stubs to deal with
+;  pspace_point_criterion = 0.5, 0.5
 
 
 
