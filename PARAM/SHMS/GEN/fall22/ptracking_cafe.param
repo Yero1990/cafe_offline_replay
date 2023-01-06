@@ -9,8 +9,10 @@ pUseNewFindSpacePoints=1
 
 pTrackLargeResidCut=0.15
 
-; Tracking parameters
-  pmax_pr_hits = 35, 35
+; Tracking parameters (this is the cut that actually throws out tracks)
+; C.Y. Jan 06, study: set this to 15,15 or 10,10, to check if rate dependence goes away
+; look at the distribution for these
+pmax_pr_hits = 35, 35
 
 ; pminhit(i)   minimum number of hits in each space point (one for each chamber)
 pmin_hit = 5,5
@@ -24,6 +26,12 @@ pmin_combos = 4,4
 ; Feb 2003)
   pspace_point_criterion = 0.9, 0.9
 
+; C.Y. Jan 06, 2023
+; space point cluster-size (cm) change from 0.9 to ~ 0.5 (to reduce number of tracks)
+; for matching hits between dc planes
+
+
+
 ; The following four criteria are applied to the stub fit results at the
 ; focal plane position to link stubs to tracks
 ; maximum number of possible focal plane tracks, must be <= 20
@@ -31,6 +39,7 @@ pntracks_max_fp = 10
 
 ; The following four criteria are applied to the stub fit results at the
 ; focal plane position to link stubs to tracks
+; C.Y. Jan 06, 2023 : study stubs, track chi2, emiss (only x,y y')
   pntracks_max_fp = 10
   pxt_track_criterion = 100.0
   pyt_track_criterion = 20.0
@@ -51,6 +60,7 @@ pstub_max_xpdiff=0.2
 
 
 ; if both psel_using_scin = 0 and psel_using_prune = 0 then best chi2 track is used.
+; C.Y. Jan 06, 2023 : try to improve pruning
 ; psel_using_scin         uses scintillator for track selection
   psel_using_scin = 0
 ; psel_using_prune         using prune

@@ -4668,8 +4668,8 @@ void baseAnalyzer::EventLoop()
 	  //CUTS: SHMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
 
 	  //Require at least a minimum number of track(s) 
-	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack == c_pdc_ntrk_min;} // C.Y. Jan 2023 require ONLY onw track for now, to study track efficiency
-	  //if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
+	  //if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack == c_pdc_ntrk_min;} // C.Y. Jan 2023 require ONLY onw track for now, to study track efficiency
+	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
 	  else{
 	    cout <<
 	      "********************************\n"
@@ -7860,7 +7860,7 @@ void baseAnalyzer::WriteOfflineReport()
     if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
       {
 	out_file << "                                   " << endl;
-	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): == %.1f", c_pdc_ntrk_min) << endl;}
+	if(pdc_ntrk_cut_flag)    {out_file << Form("# (did) SHMS min. number of tracks (P.dc.ntrack): >= %.1f", c_pdc_ntrk_min) << endl;}
 	if(pScinGood_cut_flag)   {out_file <<      "# (should) SHMS good (fiducial) scintillator hit (P.hod.goodscinhit): true"  << endl;}
 	if(pngcer_cut_flag)      {out_file << Form("# (should) SHMS noble gas Chrenkov number of photoelectrons (P.ngcer.npeSum): (%.3f, %.3f)", c_pngcer_npeSum_min, c_pngcer_npeSum_max) << endl;}
 	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}

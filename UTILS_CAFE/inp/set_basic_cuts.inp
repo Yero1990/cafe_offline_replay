@@ -49,7 +49,7 @@ c_hBetaNtrk_max = 1.5
 # flag that enables a cut on the number of tracks for tracking eff. calculations (DO NOT TOUCH ! ! !)  
 pdc_ntrk_cut_flag = 1
 
-# minimum number of tracks required (for now we changed the code to ONLY require 1 track for SHMS) C.Y. Jan 2023
+# minimum number of tracks required 
 c_pdc_ntrk_min = 1
 
 # fiducial scintillator region cut (search "goodscinhit" defined in /hcana/src/THcHodoscope.cxx)
@@ -118,8 +118,8 @@ phgcer_pidCut_flag = 0
 cpid_phgcer_npeSum_min = 0.0
 cpid_phgcer_npeSum_max = 1.5
 
-# (SHMS PID) Number of Trakcs (for track study, until we find how to deal with multiple tracks selection)
-pntrack_cut_flag = 1
+# (SHMS PID) Number of Trakcs (apply a cut on data analysis for track study, until we find how to deal with multiple tracks selection)
+pntrack_cut_flag = 0
 pntracks = 1
 
 # (HMS PID) Calorimeter Total Energy Normalized By Track Momentum

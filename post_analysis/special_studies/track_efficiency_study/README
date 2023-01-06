@@ -1,0 +1,36 @@
+==================================
+
+CaFe Tracking Studies TO-DO LIST
+
+==================================
+
+-------------------
+diagnostics plots:
+-------------------
+xptar, yptar, ytar, delta
+# tracks (P.dc.ntrack)
+Emiss for 1-track and all-track
+Chi2
+yield (did/should)  (i.e. reconstructed tracks over should have recon)
+
+Short term - Carlos
+0) establish baseline for both beam currents (Carlos)
+
+1) reduce cluster size (space point criterion) - check #tracks (Carlos)
+
+2) reduce track_criterion (Carlos)
+
+3) pruning - make sure track hits active part of scint plane in X2
+( requires to modify hcana geometry for active areas (paddles >7) in shms hodo X1, X2 planes - Holly)
+
+4) reduce drift time range ( Dien / Carlos / Noah)
+
+5) optimize pruning cuts ( Dien / Carlos /Noah )
+
+more speculative (lower priority)
+5) see effect of pmax_pr_hits
+   plot this first
+   reduce to 10,10 and see effect??
+
+longer term - Dien
+6) match DC track to scintillator hits in each plane
