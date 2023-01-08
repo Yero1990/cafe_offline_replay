@@ -1927,38 +1927,43 @@ protected:
   // LOW-LEVEL DRIFT CHAMBER LEAF VARIABLES FOR TRACKING ALGORITHM STUDIES
   //-----------------------------------------------------------------------
 
-  Double_t pdc_stubtest;	   
-  Double_t pdc_nhits;		   
-  Double_t pdc_tnhits;	   
+  static Double_t pdc_stubtest;	   
+  static Double_t pdc_nhits;		   
+  static Double_t pdc_tnhits;	   
 
-  Double_t pdc_chi2dof;
-  Double_t pdc_track_chi2;	   
-  Double_t pdc_track_nhits;	   
-  Double_t pdc_InsideDipoleExit;
+  static Double_t pdc_chi2dof;
+  static Double_t pdc_track_chi2[1000];	   
+  static Double_t pdc_track_nhits[1000];	   
+  static Double_t pdc_InsideDipoleExit;
                         
+
+  static Double_t pdc_Ch1_maxhits;	   
+  static Double_t pdc_Ch1_spacepoints; 
+  static Double_t pdc_Ch1_nhit;	   
+  static Double_t pdc_Ch1_ncombos[1000]; // this has P.dc.Ch1.ncombos[Ndata.P.dc.Ch1.ncombos]	   
+  static Double_t pdc_Ch1_stub_x[1000];	   
+  static Double_t pdc_Ch1_stub_xp[1000];	   
+  static Double_t pdc_Ch1_stub_y[1000];	   
+  static Double_t pdc_Ch1_stub_yp[1000];	   
                         
-  Double_t pdc_Ch1_maxhits;	   
-  Double_t pdc_Ch1_spacepoints; 
-  Double_t pdc_Ch1_nhit;	   
-  Double_t pdc_Ch1_ncombos;	   
-  Double_t pdc_Ch1_stub_x;	   
-  Double_t pdc_Ch1_stub_xp;	   
-  Double_t pdc_Ch1_stub_y;	   
-  Double_t pdc_Ch1_stub_yp;	   
-                        
-  Double_t pdc_Ch2_maxhits;	   
-  Double_t pdc_Ch2_spacepoints; 
-  Double_t pdc_Ch2_nhit;	   
-  Double_t pdc_Ch2_ncombos;	   
-  Double_t pdc_Ch2_stub_x;	   
-  Double_t pdc_Ch2_stub_xp;	   
-  Double_t pdc_Ch2_stub_y;	   
-  Double_t pdc_Ch2_stub_yp;	   
+  static Double_t pdc_Ch2_maxhits;	   
+  static Double_t pdc_Ch2_spacepoints; 
+  static Double_t pdc_Ch2_nhit;	   
+  static Double_t pdc_Ch2_ncombos[1000];	   
+  static Double_t pdc_Ch2_stub_x[1000];	   
+  static Double_t pdc_Ch2_stub_xp[1000];	   
+  static Double_t pdc_Ch2_stub_y[1000];	   
+  static Double_t pdc_Ch2_stub_yp[1000];	   
 
 
 
   
-  
+  //static Double_t pdc_rawTDC[dc_PLANES][1000];
+
+  //static Int_t hndata_rawTDC[dc_PLANES];
+
+
+ 
 
   //----- SIMC Specific TTree Variable Names -----
   Double_t Normfac;
