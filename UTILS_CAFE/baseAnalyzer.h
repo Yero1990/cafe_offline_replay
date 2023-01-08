@@ -1930,7 +1930,8 @@ protected:
   Double_t pdc_stubtest;	   
   Double_t pdc_nhits;		   
   Double_t pdc_tnhits;	   
-                        
+
+  Double_t pdc_chi2dof;
   Double_t pdc_track_chi2;	   
   Double_t pdc_track_nhits;	   
   Double_t pdc_InsideDipoleExit;
