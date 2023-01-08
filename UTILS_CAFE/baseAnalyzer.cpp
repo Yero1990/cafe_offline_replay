@@ -3866,8 +3866,8 @@ void baseAnalyzer::CreateSkimTree()
   //--------------------------------------------------------------
   
   tree_skim->SetBranchAddress(Form("%s.dc.stubtest",  eArm.Data()),         &pdc_stubtest);	   
-  tree_skim->SetBranchAddress(Form("%s.dc.nhit",  eArm.Data()),             &pdc_nhit);		   
-  tree_skim->SetBranchAddress(Form("%s.dc.tnhit", eArm.Data()),             &pdc_tnhit);	   
+  tree_skim->SetBranchAddress(Form("%s.dc.nhit",  eArm.Data()),             &pdc_nhits);		   
+  tree_skim->SetBranchAddress(Form("%s.dc.tnhit", eArm.Data()),             &pdc_tnhits);	   
 									                           
   tree_skim->SetBranchAddress(Form("%s.dc.track_chisq",  eArm.Data()),      &pdc_track_chi2);	   
   tree_skim->SetBranchAddress(Form("%s.dc.track_nhits",  eArm.Data()),      &pdc_track_nhits);	   

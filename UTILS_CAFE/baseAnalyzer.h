@@ -1928,8 +1928,8 @@ protected:
   //-----------------------------------------------------------------------
 
   Double_t pdc_stubtest;	   
-  Double_t pdc_nhit;		   
-  Double_t pdc_tnhit;	   
+  Double_t pdc_nhits;		   
+  Double_t pdc_tnhits;	   
                         
   Double_t pdc_track_chi2;	   
   Double_t pdc_track_nhits;	   
