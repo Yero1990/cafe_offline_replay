@@ -1932,8 +1932,8 @@ protected:
   Double_t pdc_tnhits;	   
   
   Double_t pdc_chi2dof;
-  Int_t    ndata_pdc_track_chi2;
-  Double_t pdc_track_chi2[1000];
+  Int_t    ndata_pdc_track_chisq;
+  Double_t pdc_track_chisq[1000];
   Int_t    ndata_pdc_track_nhits;
   Double_t pdc_track_nhits[1000];	   
   Double_t pdc_InsideDipoleExit;
