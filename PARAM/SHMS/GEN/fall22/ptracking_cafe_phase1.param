@@ -57,8 +57,8 @@ pntracks_max_fp = 10
 ; focal plane position to link stubs to tracks
 ; C.Y. Jan 06, 2023 : study stubs, track chi2, emiss (only x,y y')
   pntracks_max_fp = 10
-  pxt_track_criterion = 100.0
-  pyt_track_criterion = 20.0
+  pxt_track_criterion = 10.0
+  pyt_track_criterion = 5.0
   pxpt_track_criterion = 1.6
   pypt_track_criterion = 1.0
 
