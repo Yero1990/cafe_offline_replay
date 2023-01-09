@@ -3875,7 +3875,7 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("Ndata.%s.dc.track_nhits",  eArm.Data()), &ndata_pdc_track_nhits, "Ndata.P.dc.track_nhits/I");   
 
     
-  tree->SetBranchAddress(Form("%s.dc.chisq",  eArm.Data()),      &pdc_chi2dof);	   	  
+  tree_skim->Branch(Form("%s.dc.chisq",  eArm.Data()),      &pdc_chi2dof);	   	  
   tree_skim->Branch(Form("%s.dc.track_chisq",  eArm.Data()),     pdc_track_chisq); // these are array of hits	   
   tree_skim->Branch(Form("%s.dc.track_nhits",  eArm.Data()),     pdc_track_nhits);	   
   tree_skim->Branch(Form("%s.dc.InsideDipoleExit",  eArm.Data()), &pdc_InsideDipoleExit);
