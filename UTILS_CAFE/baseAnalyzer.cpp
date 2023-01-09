@@ -1369,8 +1369,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       //data_InputFileName = Form("ROOTfiles/sample/cafe_replay_prod_%d_%d.root", run, evtNum);
 
 	//Check if ROOTfile exists
@@ -1385,10 +1385,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
+      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
-
+      
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
@@ -3896,7 +3896,9 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("%s.dc.Ch2.stub_y",  eArm.Data()),       &pdc_Ch2_stub_y);	   
   tree_skim->Branch(Form("%s.dc.Ch2.stub_yp",  eArm.Data()),      &pdc_Ch2_stub_yp);	   
   */
-  
+
+  tree_skim->Branch(Form("Ndata.%s.dc.Ch1.stub_x",  eArm.Data()), &ndata_pdc_Ch1_stub_x); 
+  tree_skim->Branch(Form("%s.dc.Ch1.stub_x",  eArm.Data()),       pdc_Ch1_stub_x);
 }
 
 //_______________________________________________________________________________
@@ -4227,15 +4229,16 @@ void baseAnalyzer::ReadTree()
 	  tree->SetBranchAddress(Form("%s.dc.Ch2.stub_y",  eArm.Data()),       &pdc_Ch2_stub_y);	   
 	  tree->SetBranchAddress(Form("%s.dc.Ch2.stub_yp",  eArm.Data()),      &pdc_Ch2_stub_yp);	
 	  */
-	  
+	  tree->SetBranchAddress(Form("Ndata.%s.dc.Ch1.stub_x",  eArm.Data()), &ndata_pdc_Ch1_stub_x);
+	  tree->SetBranchAddress(Form("%s.dc.Ch1.stub_x",  eArm.Data()),       pdc_Ch1_stub_x);
 	}
       
       // Call function to create skimmed version of data tree
       CreateSkimTree();
-
+      
       // Call function to create singles skimmed version of data tree
       CreateSinglesSkimTree();
-
+      
       
     } //END DATA SET BRANCH ADDRESS
 
