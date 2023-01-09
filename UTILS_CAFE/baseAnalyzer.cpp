@@ -3876,8 +3876,8 @@ void baseAnalyzer::CreateSkimTree()
 
     
   tree_skim->Branch(Form("%s.dc.chisq",  eArm.Data()),      &pdc_chi2dof);	   	  
-  tree_skim->Branch(Form("%s.dc.track_chisq",  eArm.Data()),     pdc_track_chisq); // these are array of hits	   
-  tree_skim->Branch(Form("%s.dc.track_nhits",  eArm.Data()),     pdc_track_nhits);	   
+  tree_skim->Branch(Form("%s.dc.track_chisq",  eArm.Data()),     pdc_track_chisq,   Form("%s.dc.track_chisq[Ndata.%s.dc.track_chisq]/D", eArm.Data(), eArm.Data())); 	   
+  tree_skim->Branch(Form("%s.dc.track_nhits",  eArm.Data()),     pdc_track_nhits,   Form("%s.dc.track_nhits[Ndata.%s.dc.track_nhits]/D", eArm.Data(), eArm.Data()));	   
   tree_skim->Branch(Form("%s.dc.InsideDipoleExit",  eArm.Data()), &pdc_InsideDipoleExit);
 									                           
 									                           
@@ -3893,11 +3893,11 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("Ndata.%s.dc.Ch1.stub_yp",  eArm.Data()), &ndata_pdc_Ch1_stub_yp, "Ndata.P.dc.Ch1.stub_yp/I" ); 
 
   
-  tree_skim->Branch(Form("%s.dc.Ch1.ncombos",  eArm.Data()),      pdc_Ch1_ncombos);	   
-  tree_skim->Branch(Form("%s.dc.Ch1.stub_x",  eArm.Data()),       pdc_Ch1_stub_x);	   
-  tree_skim->Branch(Form("%s.dc.Ch1.stub_xp",  eArm.Data()),      pdc_Ch1_stub_xp);	   
-  tree_skim->Branch(Form("%s.dc.Ch1.stub_y",  eArm.Data()),       pdc_Ch1_stub_y);	   
-  tree_skim->Branch(Form("%s.dc.Ch1.stub_yp",  eArm.Data()),      pdc_Ch1_stub_yp);	   
+  tree_skim->Branch(Form("%s.dc.Ch1.ncombos",  eArm.Data()),      pdc_Ch1_ncombos,  Form("%s.dc.Ch1.ncombos[Ndata.%s.dc.Ch1.ncombos]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch1.stub_x",  eArm.Data()),       pdc_Ch1_stub_x,   Form("%s.dc.Ch1.stub_x[Ndata.%s.dc.Ch1.stub_x]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch1.stub_xp",  eArm.Data()),      pdc_Ch1_stub_xp,  Form("%s.dc.Ch1.stub_xp[Ndata.%s.dc.Ch1.stub_xp]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch1.stub_y",  eArm.Data()),       pdc_Ch1_stub_y,   Form("%s.dc.Ch1.stub_y[Ndata.%s.dc.Ch1.stub_y]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch1.stub_yp",  eArm.Data()),      pdc_Ch1_stub_yp,  Form("%s.dc.Ch1.stub_yp[Ndata.%s.dc.Ch1.stub_yp]/D", eArm.Data(), eArm.Data()));	   
   
   
   tree_skim->Branch(Form("%s.dc.Ch2.maxhits",  eArm.Data()),      &pdc_Ch2_maxhits);	   
@@ -3912,11 +3912,11 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch(Form("Ndata.%s.dc.Ch2.stub_yp",  eArm.Data()), &ndata_pdc_Ch2_stub_yp, "Ndata.P.dc.Ch2.stub_yp/I"); 
 
   
-  tree_skim->Branch(Form("%s.dc.Ch2.ncombos",  eArm.Data()),      pdc_Ch2_ncombos);	   
-  tree_skim->Branch(Form("%s.dc.Ch2.stub_x",  eArm.Data()),       pdc_Ch2_stub_x);	   
-  tree_skim->Branch(Form("%s.dc.Ch2.stub_xp",  eArm.Data()),      pdc_Ch2_stub_xp);	   
-  tree_skim->Branch(Form("%s.dc.Ch2.stub_y",  eArm.Data()),       pdc_Ch2_stub_y);	   
-  tree_skim->Branch(Form("%s.dc.Ch2.stub_yp",  eArm.Data()),      pdc_Ch2_stub_yp);	   
+  tree_skim->Branch(Form("%s.dc.Ch2.ncombos",  eArm.Data()),      pdc_Ch2_ncombos,  Form("%s.dc.Ch2.ncombos[Ndata.%s.dc.Ch2.ncombos]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch2.stub_x",  eArm.Data()),       pdc_Ch2_stub_x,   Form("%s.dc.Ch2.stub_x[Ndata.%s.dc.Ch2.stub_x]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch2.stub_xp",  eArm.Data()),      pdc_Ch2_stub_xp,  Form("%s.dc.Ch2.stub_xp[Ndata.%s.dc.Ch2.stub_xp]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch2.stub_y",  eArm.Data()),       pdc_Ch2_stub_y,   Form("%s.dc.Ch2.stub_y[Ndata.%s.dc.Ch2.stub_y]/D", eArm.Data(), eArm.Data()));	   
+  tree_skim->Branch(Form("%s.dc.Ch2.stub_yp",  eArm.Data()),      pdc_Ch2_stub_yp,  Form("%s.dc.Ch2.stub_yp[Ndata.%s.dc.Ch2.stub_yp]/D", eArm.Data(), eArm.Data()));	   
   
 
 }
