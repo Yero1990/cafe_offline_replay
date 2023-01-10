@@ -6,6 +6,8 @@
 ; 1) Added new flag 'EnforceTrackCriterion' to enfore hard-cuts based on '_track_criterion' parameters
 ;    to eliminate the possibility of the code attempting to actually form a track even if the condition is not met
 ; 2) Added additional pruning parameter NPMT + (enforced the pruning parameters on HCANA THcHallCSpectrometer.cxx) + restricted S1X,S2X scin from >=7            
+;
+; 3) Add all pruning cuts +  change pspace_point_criterion from 0.9 to 0.5
 ;---------------------------------------------------
 ; shms pattern recognition and tracking code parameters
 ; pmax_pr_hits is the maximum number of decoded hits allowed in a chamber for
@@ -43,10 +45,10 @@ pmin_combos = 4,4
 ; space point cluster-size (cm) change from 0.9 to ~ 0.5 (to reduce number of tracks)
 ; for matching hits between dc planes
 
-  pspace_point_criterion = 0.9, 0.9
+; pspace_point_criterion = 0.9, 0.9
 
-;  help reduce # of stubs to deal with
-;  pspace_point_criterion = 0.5, 0.5
+; C.Y. Jan 10, 2023 | help reduce # of stubs to deal with
+pspace_point_criterion = 0.5, 0.5
 
 
 
@@ -87,6 +89,7 @@ pstub_max_xpdiff=0.2
 ; CaFe pruning parameters
 ; Number PMT hits    min = 6.0 (min number of PMTs required to fire)
 pprune_npmt=6
+
 
 
 ; parameters used in selecting tracks for Hodoscope efficiency in THcHodoEff.cxx
