@@ -1,0 +1,72 @@
+phase0: baseline (cafe original tracking config parameters)
+
+phase1: enfore stub_criterion (actually changes number of tracks, but emiss does not change much)
+
+phase2: enfore stub_criterion + (prune: npmt>=6 && hodo_2x_hit && hodo_2y_hit ) + (hodo geom: paddles 7-14)
+
+
+
+definition:
+norm_counts = counts / (charge *  h_trk_eff * e-_trk_eff * tLT *  e-_multi_track)
+rel_norm_counts norm_counts / norm_counts_17094
+
+run    phase  counts      charge       h_trk_eff  e-_trk_eff  tLT     e-_multi_track    norm_counts    rel_norm_counts
+17094  0      6052.487    12.680       0.997      0.987       0.934   0.9760            532.115	       1.
+17096  0      42541.394   98.674       0.995      0.973       0.934   0.9554            499.0464       0.9378
+	               
+17094  1      6081.145    12.680       0.997      0.981       0.934   0.976             537.9045       1.
+17096  1      42863.066   98.674       0.995      0.966       0.934   0.9554            506.463        0.9415
+
+17094  2      5969.434    12.680       0.997      0.981       0.934   0.976             528.0232       1.
+17096  2      41607.105   98.674       0.995      0.965       0.934   0.9554            492.1327       0.9320
+
+
+Seems the stub criteria hard-cut on HCANA did not make much difference as we thought it would
+
+We'll need to be more stringent in the pruning.
+There I will implement the remaining pruning cuts, like xptar, yptar, ytar, beta, focalplane
+
+There are also other tracking parameters Mark had suggested we could tighted:
+;  help reduce # of stubs to deal with
+;  pspace_point_criterion = 0.5, 0.5
+
+
+; this is something to add (for drift chambers)
+; p(h)min_drifttime = -50
+; p(h)max_drifttime =200
+
+
+;  this is a copy of the pruning Mark used for VCS experiment ( I will over each of these and for Cafe
+;   and apply them in the appropriate range
+
+; if both psel_using_scin = 0 and psel_using_prune = 0 then best chi2 track is used.
+; psel_using_scin         uses scintillator for track selection
+  psel_using_scin = 0
+; psel_using_prune         using prune
+  psel_using_prune = 1
+; xptar prune
+pprune_xp = .1
+; yptar prune
+pprune_yp = .1
+; ytar prune
+pprune_ytar = 6
+; delta prune
+pprune_delta = 30
+; beta track = beta mom diff
+pprune_beta = .5
+; min number of deg of freedom in track
+pprune_df = 8
+; Number PMT hits    min = 6.0
+pprune_npmt=6
+; chi of beta   min = 2.0
+pprune_chibeta = 100
+; focal plane time - Start time center difference  
+pprune_fptime = 1000.
+; Prune selects on if hit Y2 plane
+; Prune selects on if hit X2 plane
+; Prune selects on chi2
+
+
+
+
+

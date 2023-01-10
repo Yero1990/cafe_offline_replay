@@ -7,12 +7,23 @@ block T.coin.pEDTM*
 #block RFTime.* 
 
 block H.kin.*
+; for tracking algorithm studies                                                                                                                                    
+block H.dc.Ch*                                                                                                                                                         
+block H.dc.stubtest                                                                                                                                                                  
+block H.dc.nhit                                                                                                                                                                    
+block H.dc.tnhit                                                                                                                                                                         
+block H.dc.chisq                                                                                                                                                                        
+block H.dc.track_chisq                                                                                                                                                                 
+block H.dc.track_nhits                                                                                                                                                              
+block H.dc.InsideDipoleExit
+
 block H.dc.*_fp*
 block H.dc.ntrack
 block H.dc.*.time
 block H.dc.*.dist
 block H.dc.*.wirenum
 block H.dc.*.nhit
+block H.dc.Ch*
 block H.dc.residual*
 block H.gtr.beta
 block H.gtr.p
@@ -32,6 +43,16 @@ block H.hod.goodscinhit
 block H.hod.*.*Track* 
 
 block P.kin.*
+; for tracking algorithm studies
+block P.dc.Ch*
+block P.dc.stubtest
+block P.dc.nhit
+block P.dc.tnhit
+block P.dc.chisq
+block P.dc.track_chisq
+block P.dc.track_nhits
+block P.dc.InsideDipoleExit
+
 block P.dc.*_fp*
 block P.dc.ntrack
 block P.dc.*.time

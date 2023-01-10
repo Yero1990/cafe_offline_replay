@@ -1370,8 +1370,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
-      //data_InputFileName = Form("ROOTfiles/sample/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase2.root", run, evtNum);
 
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());

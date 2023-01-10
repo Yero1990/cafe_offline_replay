@@ -1,11 +1,11 @@
 ;---------------------------------------------------
-; PHASE 1 parameters in our CaFe tracking studies
+; PHASE 2 parameters in our CaFe tracking studies
 ; Jan 08, 2023 C. Yero
 ;
 ; Additions:
 ; 1) Added new flag 'EnforceTrackCriterion' to enfore hard-cuts based on '_track_criterion' parameters
 ;    to eliminate the possibility of the code attempting to actually form a track even if the condition is not met
-;             
+; 2) Added additional pruning parameter NPMT + (enforced the pruning parameters on HCANA THcHallCSpectrometer.cxx) + restricted S1X,S2X scin from >=7            
 ;---------------------------------------------------
 ; shms pattern recognition and tracking code parameters
 ; pmax_pr_hits is the maximum number of decoded hits allowed in a chamber for
@@ -16,7 +16,9 @@
 ; C.Y. Jan 08, 2023 | added param
 pEnforceTrackCriterion=1
 
-pUseNewLinkStubs=1   
+pdebuglinkstubs=0
+
+pUseNewLinkStubs=1
 
 pUseNewFindSpacePoints=1 
 
@@ -82,6 +84,11 @@ pstub_max_xpdiff=0.2
 ; psel_using_prune         using prune
   psel_using_prune = 1
 
+; CaFe pruning parameters
+; Number PMT hits    min = 6.0 (min number of PMTs required to fire)
+pprune_npmt=6
+
+
 ; parameters used in selecting tracks for Hodoscope efficiency in THcHodoEff.cxx
 ;   HodoEff_CalEnergy_Cut  cut on the track energy (GeV)
 ;   pstat_maxchisq          chisquared limit for tracks used to measure hodo. eff.
@@ -111,10 +118,14 @@ pstub_max_xpdiff=0.2
                       .95,.95,.95,.95,.95,.95
 ;Derek added this for scintillator based fiducial cuts.  Everything from
 ;loscin to hiscin inclusive will be included as "good" scintillator hits.
-  pxloscin  = 4, 4
-  pxhiscin  = 11, 10
-  pyloscin  = 4, 6
-  pyhiscin  = 11, 16
+; C.Y. Jan 10 phase 2: set upper limits from
+;  pxloscin  = 4, 4
+;  pxhiscin  = 11, 10
+pxloscin  = 7, 7  
+pxhiscin  = 13, 14  
+pyloscin  = 4, 6
+pyhiscin  = 11, 16
+
 ;  ptrack_eff_test_scin_planes is the number of planes nec needed to
 ;  set sweet spot to true. 4 is extra clean, 3 is good enough for e-'s.
   ptrack_eff_test_num_scin_planes = 4

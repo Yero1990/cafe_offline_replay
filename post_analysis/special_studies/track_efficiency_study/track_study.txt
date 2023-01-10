@@ -1,6 +1,6 @@
 Order of items tracking study:
 
-0) optimize track_criterion parameters (ptracking.param)
+0) optimize track_criterion parameters (ptracking.param) --> DONE
 
 1) study space point criterion (cluster size, will actually reduce number of track)
 
@@ -11,4 +11,4 @@ Order of items tracking study:
 4) matching the dc track to the scintillator plane (modify hcana)
 
 
-** look at xptar,yptar,delta, chi2, ytar for (single track events)
+** look at xptar,yptar,delta, chi2, ytar for (single and multi-track  events)
