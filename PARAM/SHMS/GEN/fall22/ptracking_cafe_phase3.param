@@ -87,10 +87,34 @@ pstub_max_xpdiff=0.2
   psel_using_prune = 1
 
 ; CaFe pruning parameters
+
+; xptar prune
+pprune_xp = .1
+; yptar prune
+pprune_yp = .1
+; ytar prune
+pprune_ytar = 5
+; delta prune
+pprune_delta_min = 0
+pprune_delta_max = 22
+; beta track = beta mom diff
+pprune_beta = .5
+; min number of deg of freedom in track (C.Y. not sure about this one so will not use for now)
+;pprune_df = 8
 ; Number PMT hits    min = 6.0 (min number of PMTs required to fire)
 pprune_npmt=6
+; chi of beta   min = 2.0
+; (esentially turned off, will have to check P.tr.betachisq to set properly)
+pprune_chibeta = 100
+; focal plane time - Start time center difference 
+; (esentially turned off, plot P.hod.fpHitsTime-P.hod.starttime to set properly)
+pprune_fptime = 1000.
+; Prune selects on if hit Y2 plane
+; Prune selects on if hit X2 plane
+; Prune selects on chi2
 
-
+; keep track if it tracks back to inside dipole exit window
+prune_DipoleExit = 1
 
 ; parameters used in selecting tracks for Hodoscope efficiency in THcHodoEff.cxx
 ;   HodoEff_CalEnergy_Cut  cut on the track energy (GeV)
