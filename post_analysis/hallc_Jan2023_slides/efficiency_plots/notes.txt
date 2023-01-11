@@ -1,0 +1,2 @@
+The yield per charge in the plots
+was also normalized by transparency and target areal density
