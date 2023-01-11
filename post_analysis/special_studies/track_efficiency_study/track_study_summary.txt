@@ -4,33 +4,48 @@ phase1: enfore stub_criterion (actually changes number of tracks, but emiss does
 
 phase2: enfore stub_criterion + (prune: npmt>=6 && hodo_2x_hit && hodo_2y_hit ) + (hodo geom: paddles 7-14)
 
-
+phase3: enfore stub_criterion + (prune: npmt>=6 && hodo_2x_hit && hodo_2y_hit ) + (hodo geom: paddles 7-14) + pruning (x'tar, y'tar, ytar, delta, insideDipole, )
+        + tightened spacepoint criteria (0.9 -> 0.5)
 
 definition:
 norm_counts = counts / (charge *  h_trk_eff * e-_trk_eff * tLT *  e-_multi_track)
 rel_norm_counts norm_counts / norm_counts_17094
 
-run    phase  counts      charge       h_trk_eff  e-_trk_eff  tLT     e-_multi_track    norm_counts    rel_norm_counts
-17094  0      6052.487    12.680       0.997      0.987       0.934   0.9760            532.115	       1.
-17096  0      42541.394   98.674       0.995      0.973       0.934   0.9554            499.0464       0.9378
+run    phase  counts      charge       h_trk_eff  e-_trk_eff  tLT     e-_multi_track    norm_counts    rel_norm_counts   ntrk=0,  ntrk=1,  ntrk>1
+17094  0      6052.487    12.680       0.997      0.987       0.934   0.9760            532.115	       1.		 102929	  39241	   46940
+17096  0      42541.394   98.674       0.995      0.973       0.934   0.9554            499.0464       0.9378		 242702	  244171   321505
 	               
-17094  1      6081.145    12.680       0.997      0.981       0.934   0.976             537.9045       1.
-17096  1      42863.066   98.674       0.995      0.966       0.934   0.9554            506.463        0.9415
+17094  1      6081.145    12.680       0.997      0.981       0.934   0.976             537.9045       1.	         109876   44979    34255
+17096  1      42863.066   98.674       0.995      0.966       0.934   0.9554            506.463        0.9415		 281427	  298007   228944
 
-17094  2      5969.434    12.680       0.997      0.981       0.934   0.976             528.0232       1.
-17096  2      41607.105   98.674       0.995      0.965       0.934   0.9554            492.1327       0.9320
+17094  2      5969.434    12.680       0.997      0.981       0.934   0.976             528.0232       1.		 109876	  44979	   34255
+17096  2      41607.105   98.674       0.995      0.965       0.934   0.9554            492.1327       0.9320		 281427	  298007   228944
 
+17094  3      5950.434	  12.680       0.997	  0.976	      0.934   0.976		529.039	       1.	         110431	  46195	   32484
+17096  3      41333.421	  98.674       0.995	  0.958	      0.934   0.955		492.6741       0.93126		 286344	  305565   216469
+       
 
 Seems the stub criteria hard-cut on HCANA did not make much difference as we thought it would
 
-We'll need to be more stringent in the pruning.
-There I will implement the remaining pruning cuts, like xptar, yptar, ytar, beta, focalplane
+applying most stringent pruning (phase 3) did not make a difference
 
-There are also other tracking parameters Mark had suggested we could tighted:
-;  help reduce # of stubs to deal with
-;  pspace_point_criterion = 0.5, 0.5
+** NOTES/Observations
+
+* P.dc.ntrack has slighly higher number of tracks at 100 (why?) Ist is aumoatic set?
+* with tighter pruning and track criteria, multi-tracks reduced, while single tracks increased
+
+Ideas to try:
+1) re-define single-track and multi-track efficiency as:  did/should,  did_single: ntrack==1 / should,  did_multi: (ntrack>1) / should
+17094: single: 0.63101, multi: 0.747538   (not much difference between two runs, so it would not help)
+17096: single: 0.61775, mult: 0.72897 
+
+2) tighten restrictions on "did" (i.e., ntrack>=1 && pruning_cuts) in analysis code
+
+3) 
 
 
+
+-------------------------------------------------------------
 ; this is something to add (for drift chambers)
 ; p(h)min_drifttime = -50
 ; p(h)max_drifttime =200
