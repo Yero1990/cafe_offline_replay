@@ -13,8 +13,9 @@ pdc_tdc_min_win = -13500.0, -13500.0, -13500.0, -13500.0, -13500.0, -13500.0
 pdc_tdc_max_win =  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0
                    -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0
 
-; this is something to add
-;p(h)min_drifttime = -50 and p(h)max_drifttime =200
+; this is something to add (only add after DCs have been calibrated)
+pmin_drifttime = -5
+pmax_drifttime = 120
 
 pdc_fix_lr = 1
 pdc_fix_propcorr = 1
