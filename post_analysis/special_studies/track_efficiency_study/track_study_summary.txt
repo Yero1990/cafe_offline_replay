@@ -9,6 +9,8 @@ phase3: enfore stub_criterion + (prune: npmt>=6 && hodo_2x_hit && hodo_2y_hit ) 
 
 phase4: phase3 + tightened shms dc tdctime to : -5, 120 ns (tight cut on drift time to cut out junk hits) -> increase number of single tracks
 
+phase5: phase4 + tightened pmax_pr_hits from ( 35, 35 ) to ---> (10, 10), max number of hits per chamber for forming stubs (for purposes of studing rate dependence)
+
 
 definition:
 norm_counts = counts / (charge *  h_trk_eff * e-_trk_eff * tLT *  e-_multi_track)
@@ -31,6 +33,10 @@ run    phase  counts      charge       h_trk_eff  e-_trk_eff  tLT     e-_multi_t
 17094  4      5933.092	  12.680       0.997	  0.972	      0.934   0.975		530.211	       1.		 110826	  51911	   26373		
 17096  4      41339.092	  98.674       0.995	  0.957	      0.934   0.955		493.2566       0.93030		 284198	  351674   172506
 
+17094  5      4479.079	  12.680       0.997	  0.725	      0.934   0.9731		537.6899       1.
+17096  5      28005.04	  98.674       0.995	  0.642	      0.934   0.9508		500.3101       0.93048		      
+
+
 Seems the stub criteria hard-cut on HCANA did not make much difference as we thought it would
 
 applying most stringent pruning (phase 3) did not make a difference
@@ -41,6 +47,8 @@ applying most stringent pruning (phase 3) did not make a difference
 * with tighter pruning and track criteria, multi-tracks reduced, while single tracks increased
 
 Ideas to try:
+0) test out lowering  pmax_pr_hits from ( 35, 35 ) to ---> (10, 10)  --> DID NOT WORK, relative yield is still ~6%
+
 1) re-define single-track and multi-track efficiency as:  did/should,  did_single: ntrack==1 / should,  did_multi: (ntrack>1) / should
 17094: single: 0.63101, multi: 0.747538   (not much difference between two runs, so it would not help)
 17096: single: 0.61775, mult: 0.72897 
