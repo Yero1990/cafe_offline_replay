@@ -1,5 +1,5 @@
 ;---------------------------------------------------
-; PHASE 3 parameters in our CaFe tracking studies
+; Speculative Studies on  parameters in our CaFe tracking studies
 ; Jan 08, 2023 C. Yero
 ;
 ; Additions:
@@ -8,6 +8,7 @@
 ; 2) Added additional pruning parameter NPMT + (enforced the pruning parameters on HCANA THcHallCSpectrometer.cxx) + restricted S1X,S2X scin from >=7            
 ;
 ; 3) Add all pruning cuts +  change pspace_point_criterion from 0.9 to 0.5
+; 4) tightened pmax_pr_hits = 35, 35 ---> 10, 10
 ;---------------------------------------------------
 ; shms pattern recognition and tracking code parameters
 ; pmax_pr_hits is the maximum number of decoded hits allowed in a chamber for
@@ -29,7 +30,7 @@ pTrackLargeResidCut=0.15
 ; Tracking parameters (this is the cut that actually throws out tracks)
 ; C.Y. Jan 06, study: set this to 15,15 or 10,10, to check if rate dependence goes away
 ; look at the distribution for these
-pmax_pr_hits = 35, 35
+pmax_pr_hits = 10, 10
 
 ; pminhit(i)   minimum number of hits in each space point (one for each chamber)
 pmin_hit = 5,5
