@@ -148,41 +148,46 @@ def make_final_summary():
 
              
                 #plt.plot(avg_current,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+                #plt.plot(Qsum,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s'%(target[idx], kin[jdx]))
+            #if(kin[jdx]=='SRC' and (target[idx]=='Ca40')):
+            #    plt.plot(Qsum,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[2], marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s'%(target[idx], kin[jdx]))
+                
                 #plt.errorbar(avg_current,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='', label='%s %s'%(target[idx], kin[jdx]))
-            
+
+                
                 #plt.xlabel('Cumulative Charge [mC]', fontsize=18)
-                #plt.xlabel('Average Current [uA]')
                 #plt.ylabel('Relative Yield (or T2 scalers) / mC ', fontsize=18)
-                #plt.xlabel('Average Current [uA]', fontsize=18)
-                #plt.ylabel('Relative T2 scalers / mC ')
+                #plt.ylabel('Average Current [uA]', fontsize=18)
+                #plt.ylabel('Relative T2 scalers / mC ', fontsize=18)
                 #plt.xticks(fontsize=14)
                 #plt.yticks(fontsize=14)
-                
+                #plt.grid(True)
+                 
             #if((kin[jdx]=='MF') & (target[idx]=='LD2')):
             #    plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q)/200., unumpy.std_devs(real_yield_corr_per_Q)/200., marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
             #if((kin[jdx]=='MF') & (target[idx]!='LD2')):
             #    plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q)/100., unumpy.std_devs(real_yield_corr_per_Q)/100., marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
             #if(kin[jdx]=='SRC'):
             #    plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q), unumpy.std_devs(real_yield_corr_per_Q), marker='^', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
-            if((kin[jdx])=='MF'):
-               plt.plot(run, avg_current, marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
-            if((kin[jdx])=='SRC'):
-               plt.plot(run, avg_current, marker='^', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+            #if((kin[jdx])=='MF'):
+            #   plt.plot(run, avg_current, marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
+            #if((kin[jdx])=='SRC'):
+            #   plt.plot(run, avg_current, marker='^', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
     
                 #plt.errorbar(Qsum, unumpy.nominal_values(real_yield_corr_per_Q), unumpy.std_devs(real_yield_corr_per_Q), marker='^', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
                 #plt.xlabel('Cumulative Charge [mC]', fontsize=18)
-            plt.xlabel('Run Number', fontsize=18)
-            plt.ylabel('Avearge Current', fontsize=18)
+            #plt.xlabel('Run Number', fontsize=18)
+            #plt.ylabel('Avearge Current', fontsize=18)
             #plt.ylabel('Yield / mC', fontsize=18)
-            plt.xticks(fontsize=14)
-            plt.yticks(fontsize=14)
-            plt.grid(True)
+            #plt.xticks(fontsize=14)
+            #plt.yticks(fontsize=14)
+            #plt.grid(True)
             
             #plt.tick_params(axis='both', which='major', labelsize=18)
 
             #plot 3: efficiencies
             #plt.errorbar(avg_current, unumpy.nominal_values(hms_trk_eff), unumpy.std_devs(hms_trk_eff), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
-            #plt.errorbar(T2_scl_rate, unumpy.nominal_values(hms_trk_eff), unumpy.std_devs(hms_trk_eff), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
+            plt.errorbar(T3_scl_rate, unumpy.nominal_values(hms_trk_eff), unumpy.std_devs(hms_trk_eff), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
 
             #plt.errorbar(avg_current, unumpy.nominal_values(shms_trk_eff), unumpy.std_devs(shms_trk_eff), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
             #plt.errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff), unumpy.std_devs(shms_trk_eff), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
@@ -190,13 +195,13 @@ def make_final_summary():
             #plt.errorbar(avg_current, unumpy.nominal_values(total_LT), unumpy.std_devs(total_LT), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
             #plt.errorbar(T2_scl_rate, unumpy.nominal_values(total_LT), unumpy.std_devs(total_LT), marker=kmarker[jdx], color=tcolor[idx], mec='k',  markersize=8, linestyle='None', label='%s %s '%(target[idx], kin[jdx]))
 
-            #plt.ylabel('SHMS Track Efficiency', fontsize=18)
+            plt.ylabel('HMS Track Efficiency', fontsize=18)
             #plt.ylabel('Total Live Time Efficiency', fontsize=18)
             #plt.xlabel('Average Current [uA]', fontsize=18)
-            #plt.xlabel('T2 Scaler Rate [kHz]', fontsize=18)
-            #plt.xticks(fontsize=14)
-            #plt.yticks(fontsize=14)
-            
+            plt.xlabel('T3 Scaler Rate [kHz]', fontsize=18)
+            plt.xticks(fontsize=14)
+            plt.yticks(fontsize=14)
+            #plt.grid(True)
                 #plt.errorbar(run, unumpy.nominal_values(mult_trk_eff), unumpy.std_devs(mult_trk_eff), marker='D', color=tcolor[idx], mec='k', linestyle='None')
 
                 
