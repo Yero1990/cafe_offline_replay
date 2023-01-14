@@ -36,5 +36,66 @@ more speculative (lower priority)
    plot this first
    reduce to 10,10 and see effect??
 
-longer term - Dien
+
+
+=======================================
+longer term - Dien / Carlos
 6) match DC track to scintillator hits in each plane
+=======================================
+
+Email from Mark with suggestions to implement in coding (this is not track matching, but is the next best thing)
+
+   I would suggest for now a slightly different approach. I assume the main goal is to eliminate events
+for which a golden track is found but this golden track does not hit the S2X, S2Y and NPMT<6.
+In addition, you want to eliminate from all the possible tracks per event the possible tracks
+that does not   the S2X, S2Y and NPMT<6 as early as possible.
+
+I would put the test you have as the first pruning test right before the prune xptar
+
+   // ! Prune on S2X,S2Y and NPMT
+    nGood = 0;
+    for (Int_t ptrack = 0; ptrack < fNtracks; ptrack++ ){
+      if ( ( testTracks[ptrack]->GetGoodPlane3() == 1 && testTracks[ptrack]->GetGoodPlane4() == 1   &&  testTracks[ptrack]->GetNPMT() >= fPruneNPMT) && ( keep[ptrack] ) ){
+      nGood ++;
+      }
+    }
+    if ( nGood > 0 ) {
+      for (Int_t ptrack = 0; ptrack < fNtracks; ptrack++ ){
+      if (   testTracks[ptrack]->GetGoodPlane3() == 0 || testTracks[ptrack]->GetGoodPlane4() == 0   ||  testTracks[ptrack]->GetNPMT()< fPruneNPMT){
+        keep[ptrack] = kFALSE;
+        reject[ptrack] += 1;
+      }
+      }
+    }
+    PruneSelect++;
+ // ! Prune on xptar
+
+This will first eliminate possible tracks which do not meet the first in the pruning.
+Also it is more stringent then the individual pruning on S2X,S2Y and nPMT.
+This will eliminates the possibility that a possible track which meets these criterion gets elminate by some other
+pruning criterion. If all the possible tracks for that event do not pass the Scint criterion , then
+a golden track will be selected based on other pruing criterion or eventually chisquared.
+But to eliminate these events  I propose the following changes. 
+  
+To be able to eliminate events for which a golden track is found but 
+this golden track does not hit the S2X, S2Y and NPMT<6.
+I would suggest the following:
+
+In the THcDC.cxx there is the module SetFocalPlaneBestTrack which is
+called from the TrackCalc module in THcHallCSpectrometer
+
+
+void THcDC::SetFocalPlaneBestTrack(Int_t golden_track_index)
+{
+      THcDCTrack *tr1 = static_cast<THcDCTrack*>( fDCTracks->At(golden_track_index));
+      fX_fp_best=tr1->GetX();
+      fTrack_Scin_Flag_best = 1;
+   if (tr1->GetGoodPlane4()==0 || tr1->GetGoodPlane3()==0 || tr1->GetNPMT() < 6) {' 
+      fTrack_Scin_Flag_best = 0;
+     }
+
+You would have to follow the example of fX_fp_best to put this fTrack_Scin_Flag_best in the tree.
+Needs to be in the header file etc..
+
+Then you could add the test P.dc.fTrack_Scin_Flag_best==1 fro event that you want to keep.
+I am unsure if you want to correct for the loss of these events. 
