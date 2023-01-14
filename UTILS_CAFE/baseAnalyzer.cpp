@@ -7957,17 +7957,8 @@ void baseAnalyzer::WriteOfflineReport()
 	if(hcer_cut_flag)        {out_file << Form("# (should) HMS gas Cherenkov number of photoelectrons (H.cer.npeSum): (%.3f, %.3f)", c_hnpeSum_min, c_hnpeSum_max) << endl;}
 	if(hetotnorm_cut_flag)   {out_file << Form("# (should) HMS calorimeter energy / central_momentum  (H.cal.etotnorm): (%.3f, %.3f)", c_hetotnorm_min, c_hetotnorm_max) << endl;}
 	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.3f. %.3f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
-	out_file << "                                   " << endl;
-	out_file << "#--- Multi-Tracking Efficiency Definition --- " << endl;
-	out_file << "# multi-track efficiency : 1 - [ (E/p) multi-peaks / (E/p 1st peak)], CUT: raw coin. time spectrum (w/out track info)  " << endl;  
-	out_file << "                                   " << endl; 
-	out_file << "# Calorimeter (P.cal.etotnorm) E/p multiple peaks (>1) events are cut out in standard data analysis" << endl;
-	out_file << "# HCANA only handles single-track events, therefore events with E/p ~2,3, ... (more than 1 good track) are lost in the E/p cut" << endl;
-	out_file << "# to recover lost events, determine fraction of multi-peak to single peak E/p to be applied as correction factor" << endl;
-	out_file << "  " << endl;
-	out_file << Form("single_peak_counts: %.4f +/- %.3f", single_peak_counts, single_peak_counts_err) << endl;
-	out_file << Form("multi_peak_counts: %.4f +/- %.3f",  multi_peak_counts, multi_peak_counts_err)  << endl;
-	out_file << Form("multi_track_eff: %.4f +/- %.3f",  multi_track_eff,  multi_track_eff_err) << endl;
+	out_file << Form("# HMS did: %.1f",  h_did) << endl;
+	out_file << Form("# HMS should: %.1f",  h_should) << endl;
 	
       }
     if((analysis_cut=="heep_singles") || (analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC") )
@@ -7979,6 +7970,9 @@ void baseAnalyzer::WriteOfflineReport()
 	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
 	if(petotnorm_cut_flag)   {out_file << Form("# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (%.3f, %.3f)", c_petotnorm_min, c_petotnorm_max) << endl;}
 	if(pBeta_notrk_cut_flag) {out_file << Form("# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (%.3f. %.3f)", c_pBetaNtrk_min, c_pBetaNtrk_max) << endl;}
+	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.3f. %.3f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
+	out_file << Form("# SHMS did: %.1f",  p_did) << endl;
+	out_file << Form("# SHMS should: %.1f",  p_should) << endl;
 	out_file << "                                   " << endl;
 	out_file << "#--- Multi-Tracking Efficiency Definition --- " << endl;
 	out_file << "# multi-track efficiency : 1 - [ (E/p) multi-peaks / (E/p 1st peak)], CUT: raw coin. time spectrum (w/out track info)  " << endl;     
@@ -7990,7 +7984,16 @@ void baseAnalyzer::WriteOfflineReport()
 	out_file << Form("single_peak_counts: %.4f +/- %.3f", single_peak_counts, single_peak_counts_err) << endl;
 	out_file << Form("multi_peak_counts: %.4f +/- %.3f",  multi_peak_counts, multi_peak_counts_err)  << endl;
 	out_file << Form("multi_track_eff: %.4f +/- %.3f",  multi_track_eff,  multi_track_eff_err) << endl;
-	
+	out_file << "                                   " << endl;
+	out_file << "#--- SHMS T2 Singles / Track Efficiency Definition --- " << endl;
+	out_file << "                                   " << endl;    
+	out_file << "# T2 Singles Definition: Require T2tdcTime>0 && (T3,T4,T5,T6 tdcTime==0) && noedtm && g.evtyp==1(only SHMS event)  " << endl;
+	out_file << "# T2 (SHMS EL-REAL) is a subset of T1 (SHMS 3/4), so each T2 must have a T1.                           " << endl;    
+	out_file << "# T2 Singles Track Eff. Definition: same as above (should), (did) for SHMS     " << endl;
+	out_file << Form("# SHMS did singles: %.1f",  p_did_singles) << endl;
+	out_file << Form("# SHMS should singles: %.1f",  p_should_singles) << endl;
+	out_file << Form("# SHMS singlesTrkEff: %.3f +/- %.3f ", pTrkEff_singles, pTrkEff_singles_err) << endl;
+	  
       }
     
     out_file << "                                   " << endl;
