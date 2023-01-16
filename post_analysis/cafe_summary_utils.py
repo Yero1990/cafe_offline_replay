@@ -83,7 +83,8 @@ def make_final_summary():
             hms_trk_eff  = unumpy.uarray(df['hTrkEff'],         df['hTrkEff_err'])
             shms_trk_eff = unumpy.uarray(df['pTrkEff'],         df['pTrkEff_err'])
             total_LT     = unumpy.uarray(df['tLT'],             df['tLT_err_Bi'])
-            mult_trk_eff = unumpy.uarray(df['multi_track_eff'], df['multi_track_eff_err'])
+            #mult_trk_eff = unumpy.uarray(df['multi_track_eff'], df['multi_track_eff_err'])
+            mult_trk_eff = np.array(df['multi_track_eff'])
             
             T1_scl_rate  = df['T1_scl_rate']  # SHMS  3/4    khZ
             T2_scl_rate  = df['T2_scl_rate']  # SHMS EL-REAL khZ
@@ -302,20 +303,37 @@ def make_double_ratio():
     mf_yield_norm_C12_arr   = unumpy.uarray(mf_yield_norm_C12,  mf_yield_norm_err_C12)
 
     double_ratio = (src_yield_norm_arr/mf_yield_norm_arr) / (src_yield_norm_C12_arr/mf_yield_norm_C12_arr )
-    N = df[(df['kin']==' SRC')]['N']
-    Z = df[(df['kin']==' SRC')]['Z']
-    A = df[(df['kin']==' SRC')]['A']
-    
-    print('double_ratio = ', double_ratio)
 
-    plt.errorbar(N/Z, unumpy.nominal_values(double_ratio), unumpy.std_devs(double_ratio), marker='o', markersize=8, color='k', mec='k', linestyle='None', label='double ratio')
+    double_ratio_val = unumpy.nominal_values(double_ratio)
+    double_ratio_err = unumpy.std_devs(double_ratio)
+    
+    N = np.array(df[(df['kin']==' SRC')]['N'])
+    Z = np.array(df[(df['kin']==' SRC')]['Z'])
+    A = np.array(df[(df['kin']==' SRC')]['A'])
+    targ = np.array(df[(df['kin']==' SRC')]['target'])
+
+    tcolor  = ['c',    'm',   'r',   'g',   'b', 'darkorange', 'violet', 'gold'] 
+
+    #print('double_ratio = ', double_ratio)
+    for i in range(len(src_yield_norm_arr)):
+
+       
+        #print('N[i] = ', N[i])
+        if targ[i]=='LD2':
+            continue
+        else:
+            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
+            #plt.errorbar((N[i]-Z[i])/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
+        
+        
     plt.ylabel('SRC High Momentum Fraction', fontsize=18)
     plt.xlabel('N/Z', fontsize=18)
+    #plt.xlabel('(N-Z)/Z', fontsize=18)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     plt.grid(True)
+    plt.legend()
     plt.show()
-# Call Functions
     
 make_final_summary()
 make_double_ratio()

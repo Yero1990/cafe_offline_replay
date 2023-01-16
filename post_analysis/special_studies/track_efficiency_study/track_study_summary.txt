@@ -2,7 +2,7 @@ phase0: baseline (cafe original tracking config parameters, deault prune npmt>=6
 
 phase1: enforce stub_criterion (actually changes number of tracks, but emiss does not change much)
 
-phase2: phase1 + (hodo geometry fiducial region: paddles 7-14)
+phase2: phase1 + (hodo geometry fiducial region: paddles 7-14) + enforced hard-cut prune npmt>=6
 
 phase3: phase2 + tightened pruning (x'tar, y'tar, ytar, delta, beta) + tightened spacepoint criteria (0.9 -> 0.5)
 
