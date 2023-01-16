@@ -270,13 +270,52 @@ def make_final_summary():
                 yield_norm_b410   = yield_norm_b410 / ( df[(df['target']=='B10')]['T'] )
 
                 
-    plt.legend()
-    #fig1.tight_layout()
-    plt.show()
+
     
     ofile.close()
 
     
 
+def make_double_ratio():
+
+
+    filename='cafe_final_summary.csv'
+    df = pd.read_csv(filename, comment='#')
+    
+    src_yield_norm = df[(df['kin']==' SRC')]['yield_norm']
+    src_yield_norm_err = df[(df['kin']==' SRC')]['yield_norm_err']
+
+    mf_yield_norm = df[(df['kin']==' MF')]['yield_norm']
+    mf_yield_norm_err = df[(df['kin']==' MF')]['yield_norm_err']
+
+    src_yield_norm_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm']
+    src_yield_norm_err_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm_err']
+
+    mf_yield_norm_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm']
+    mf_yield_norm_err_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm_err']
+
+    # put into arrays for error calculation
+    src_yield_norm_arr  = unumpy.uarray(src_yield_norm,  src_yield_norm_err)
+    mf_yield_norm_arr   = unumpy.uarray(mf_yield_norm,  mf_yield_norm_err)
+
+    src_yield_norm_C12_arr  = unumpy.uarray(src_yield_norm_C12, src_yield_norm_err_C12)
+    mf_yield_norm_C12_arr   = unumpy.uarray(mf_yield_norm_C12,  mf_yield_norm_err_C12)
+
+    double_ratio = (src_yield_norm_arr/mf_yield_norm_arr) / (src_yield_norm_C12_arr/mf_yield_norm_C12_arr )
+    N = df[(df['kin']==' SRC')]['N']
+    Z = df[(df['kin']==' SRC')]['Z']
+    A = df[(df['kin']==' SRC')]['A']
+    
+    print('double_ratio = ', double_ratio)
+
+    plt.errorbar(N/Z, unumpy.nominal_values(double_ratio), unumpy.std_devs(double_ratio), marker='o', markersize=8, color='k', mec='k', linestyle='None', label='double ratio')
+    plt.ylabel('SRC High Momentum Fraction', fontsize=18)
+    plt.xlabel('N/Z', fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.grid(True)
+    plt.show()
+# Call Functions
     
 make_final_summary()
+make_double_ratio()
