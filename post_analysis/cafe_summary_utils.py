@@ -8,7 +8,7 @@ from uncertainties import unumpy
 
 '''
 Author: C. Yero
-Date: Jan 02, 2022
+Date: Jan 02, 2023
 Brief: Compilation of scripts for 
 handling/combining cafe numerical 
 (.csv) summary files
@@ -133,7 +133,7 @@ def make_final_summary():
             
             
             # plot 1: relative scalers vs current (relative to 1st data point) --> woule be best to normalize both SRC, MF to same 1st point, since T2 scalers (shms same location, so should not change)
-            if(kin[jdx]=='MF' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
+            #if(kin[jdx]=='MF' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
             #if(kin[jdx]=='MF' and (target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12')):
             #if(kin[jdx]=='SRC' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
             #if(kin[jdx]=='SRC' and (target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12')):
@@ -146,8 +146,8 @@ def make_final_summary():
                 #plt.errorbar(avg_current,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
                 #plt.plot(avg_current,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
 
-                plt.errorbar(T2_scl_rate,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
-                plt.plot(T2_scl_rate,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
+                #plt.errorbar(T2_scl_rate,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
+                #plt.plot(T2_scl_rate,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
 
 
                 # Plot relative T2 scalers vs (current, cumulative charge, or T2 rates)
@@ -159,13 +159,13 @@ def make_final_summary():
                 #plt.errorbar(avg_current,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='', label='%s %s'%(target[idx], kin[jdx]))
 
 
-                plt.xlabel('T2 Scaler Rates [kHz]', fontsize=18)
+                #plt.xlabel('T2 Scaler Rates [kHz]', fontsize=18)
                 #plt.xlabel('Cumulative Charge [mC]', fontsize=18)
-                plt.ylabel('Relative Yield (or T2 scalers) / mC ', fontsize=18)
+                #plt.ylabel('Relative Yield (or T2 scalers) / mC ', fontsize=18)
                 #plt.ylabel('Average Current [uA]', fontsize=18)
-                plt.xticks(fontsize=14)
-                plt.yticks(fontsize=14)
-                plt.grid(True)
+                #plt.xticks(fontsize=14)
+                #plt.yticks(fontsize=14)
+                #plt.grid(True)
                  
             #if((kin[jdx]=='MF') & (target[idx]=='LD2')):
             #    plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q)/200., unumpy.std_devs(real_yield_corr_per_Q)/200., marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
