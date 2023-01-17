@@ -13,9 +13,9 @@ pdc_tdc_min_win = -13500.0, -13500.0, -13500.0, -13500.0, -13500.0, -13500.0
 pdc_tdc_max_win =  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0
                    -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0,  -10000.0
 
-; this is something to add (only add after DCs have been calibrated)
-pmin_drifttime = -5
-pmax_drifttime = 120
+; this is something to add (only add after DCs have been calibrated) -- make a reasonable cut (we dont want to risk too tight) C.Y. Jan 16, 2023
+pmin_drifttime = -10
+pmax_drifttime = 150
 
 pdc_fix_lr = 1
 pdc_fix_propcorr = 1

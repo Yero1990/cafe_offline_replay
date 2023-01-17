@@ -1,7 +1,7 @@
 ; New parameters (used by the updated tracking algorithm from MKJones on 2021)
 ; new link stubs method less confusing (see THcDC.cxx)
 hUseNewLinkStubs=1
-
+hdebugprintforcafe=0
 hUseNewFindSpacePoints=1
 
 ;remove hit with the largest residual (-1 is off), 
@@ -75,6 +75,8 @@ hstub_max_xpdiff = .05
 ; hsel_using_prune         using prune
   hsel_using_prune = 1
 
+hprune_delta_min = -15                                                                                                                                                                        
+hprune_delta_max = 15
 
 ; parameters used in selecting tracks for Hodoscope efficiency in THcHodoEff.cxx
 ;   hHodoEff_CalEnergy_Cut  cut on the track energy (GeV)

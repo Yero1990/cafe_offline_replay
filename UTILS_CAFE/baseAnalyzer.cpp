@@ -1370,8 +1370,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
-      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase5.root", run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
 
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -3657,7 +3657,8 @@ void baseAnalyzer::CreateSinglesSkimTree()
   tree_skim_singles->Branch("P.hod.beta",           &phod_beta);
   tree_skim_singles->Branch("P.hod.goodscinhit",    &phod_GoodScinHit);    
   tree_skim_singles->Branch("P.dc.ntrack",          &pdc_ntrack);
-  
+  tree_skim_singles->Branch("P.dc.TheRealGolden",   &pdc_TheRealGolden);
+
   //-----------------------------------
   //-----Acceptance Leaf Variables-----
   //-----------------------------------
@@ -3757,7 +3758,8 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("P.hod.beta",           &phod_beta);
   tree_skim->Branch("P.hod.goodscinhit",    &phod_GoodScinHit);    
   tree_skim->Branch("P.dc.ntrack",          &pdc_ntrack);
-  
+  tree_skim->Branch("P.dc.TheRealGolden",   &pdc_TheRealGolden);
+
   //-----------------------------------
   //-----Acceptance Leaf Variables-----
   //-----------------------------------
@@ -3829,7 +3831,8 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("H.hod.beta",           &hhod_beta);
   tree_skim->Branch("H.hod.goodscinhit",    &hhod_GoodScinHit);    
   tree_skim->Branch("H.dc.ntrack",          &hdc_ntrack);
-	  
+  tree_skim->Branch("H.dc.TheRealGolden",   &hdc_TheRealGolden);
+
   //-----------------------------------
   //-----Acceptance Leaf Variables-----
   //-----------------------------------
@@ -4136,6 +4139,7 @@ void baseAnalyzer::ReadTree()
 	  tree->SetBranchAddress("H.hod.beta",           &hhod_beta);
 	  tree->SetBranchAddress("H.hod.goodscinhit",    &hhod_GoodScinHit);    
 	  tree->SetBranchAddress("H.dc.ntrack",          &hdc_ntrack);
+	  tree->SetBranchAddress("H.dc.TheRealGolden",   &hdc_TheRealGolden);
 
 	  //-----------------------------------
 	  //-----Acceptance Leaf Variables-----
@@ -4184,7 +4188,7 @@ void baseAnalyzer::ReadTree()
 	  tree->SetBranchAddress("P.hod.beta",           &phod_beta);
 	  tree->SetBranchAddress("P.hod.goodscinhit",    &phod_GoodScinHit);    
 	  tree->SetBranchAddress("P.dc.ntrack",          &pdc_ntrack);
-
+	  tree->SetBranchAddress("P.dc.TheRealGolden",   &pdc_TheRealGolden);   
 	  //-----------------------------------
 	  //-----Acceptance Leaf Variables-----
 	  //-----------------------------------
@@ -4435,6 +4439,7 @@ void baseAnalyzer::GetPeak()
     {	  
       tree->GetEntry(ientry);
       
+      //cout << "theRealGolden = " << pdc_TheRealGolden << endl;
       // Fill sample histo to find peak
       ctime_peak->Fill(epCoinTime);
       ctime_peak_notrk->Fill(epCoinTime_notrk);
@@ -4818,8 +4823,8 @@ void baseAnalyzer::EventLoop()
 	  good_shms_should = c_pScinGood && c_pngcer_NPE_Sum && c_phgcer_NPE_Sum && c_petotnorm && c_pBeta_notrk;
 
 	  //electrons (or hadrons) that 'DID' passed the cuts to form a track
-	  good_shms_did = c_pdc_ntrk && good_shms_should;
-
+	  good_shms_did = c_pdc_ntrk && good_shms_should && (pdc_TheRealGolden==1); //C.Y. Jan 17, 2023 | added additional constraint on the track
+	  //cout << "pdc_TheRealGolden = " << pdc_TheRealGolden << endl;
 	  //=====END: CUTS USED IN TRACKING EFFICIENCY CALCULATION=====
 	  
 	  
@@ -5538,8 +5543,10 @@ void baseAnalyzer::EventLoop()
 		  //=============================================================================
 		  
 		  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
-		  if(c_baseCuts){
-		    
+		  
+		    //C.Y Jan 17, 2023 | added additional constraint to ensure golden track (thet passed pruning) is selected in our sample 
+		    // and also evtyp==4 (only coin. events, just in case)
+		    if(c_baseCuts && pdc_TheRealGolden==1 && gevtyp==4){   
 		    
 		    // full (reals + accidentals) coin. time spectrum with all other cuts   
 		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 

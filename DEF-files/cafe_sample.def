@@ -16,6 +16,7 @@ block H.dc.chisq
 block H.dc.track_chisq                                                                                                                                                                 
 block H.dc.track_nhits                                                                                                                                                              
 block H.dc.InsideDipoleExit
+block H.dc.TheRealGolden
 
 block H.dc.*_fp*
 block H.dc.ntrack
@@ -52,6 +53,7 @@ block P.dc.chisq
 block P.dc.track_chisq
 block P.dc.track_nhits
 block P.dc.InsideDipoleExit
+block P.dc.TheRealGolden
 
 block P.dc.*_fp*
 block P.dc.ntrack

@@ -1792,6 +1792,7 @@ protected:
   Double_t hhod_beta;
   Double_t hhod_GoodScinHit;
   Double_t hdc_ntrack;
+  Double_t   hdc_TheRealGolden; 
   Double_t hdc_res[dc_PLANES]; 		      		   
   Double_t hdc_nhit[dc_PLANES];		     
  
@@ -1805,6 +1806,7 @@ protected:
   Double_t phod_beta;
   Double_t phod_GoodScinHit;
   Double_t pdc_ntrack;
+  Double_t   pdc_TheRealGolden; 
   Double_t pdc_res[dc_PLANES]; 
   Double_t pdc_nhit[dc_PLANES];
  

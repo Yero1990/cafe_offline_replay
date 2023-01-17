@@ -12,10 +12,6 @@
 ; 4) Tightened shms dc tdctime (param in DC) to : -5, 120 ns (tight cut on drift time to cut out junk hits) -> increase number of single tracks
 ;
 ; 5) temporarily applied the crazy cut (that the min. number hits / chamber  = 10)
-;
-; 6) loosened a little bit param in DC) to : -5, 120  --> -10, 150 ns (is better than too tight, out of extreme caution from my part)
-;    but most importantly, enfored the NPMT>=6 && S2X_hit==1 && S2Y_hit==1 on THcDC.cxx, which sets a "TheRealGolden=1" if passed, and can be applied to data cuts.
-;    also changed the upper limits of S1X and S2X back to pxhiscin  = 11, 10  (as was before)
 ;---------------------------------------------------
 ; shms pattern recognition and tracking code parameters
 ; pmax_pr_hits is the maximum number of decoded hits allowed in a chamber for
@@ -27,8 +23,6 @@
 pEnforceTrackCriterion=1
 
 pdebuglinkstubs=0
-
-pdebugprintforcafe=0
 
 pUseNewLinkStubs=1
 
@@ -159,7 +153,7 @@ prune_DipoleExit = 1
 ;  pxloscin  = 4, 4
 ;  pxhiscin  = 11, 10
 pxloscin  = 7, 7  
-pxhiscin  = 11, 10  
+pxhiscin  = 13, 14  
 pyloscin  = 4, 6
 pyhiscin  = 11, 16
 
