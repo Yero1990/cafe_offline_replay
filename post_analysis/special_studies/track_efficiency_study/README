@@ -98,4 +98,32 @@ You would have to follow the example of fX_fp_best to put this fTrack_Scin_Flag_
 Needs to be in the header file etc..
 
 Then you could add the test P.dc.fTrack_Scin_Flag_best==1 fro event that you want to keep.
-I am unsure if you want to correct for the loss of these events. 
+I am unsure if you want to correct for the loss of these events.
+
+
+---------------------------
+Jan 17, 2023 : Next Steps
+---------------------------
+Look at Ca40, 48 high + low current runs
+1) compare corrected yield for high vs. low current  for:
+   ** only coin. events
+   ** pre-scale e- singles ONLY
+
+2) Emiss for high vs. lo
+3) Ratio #p/#e tracks for coin. events
+4) DC Track Efficiency
+
+
+Look at these for:
+a) original tracking
+b) cut on deltaX, deltaY stub cuts
+...
+c) cut on hit planes, S2X && S2Y && NPMT>=6
+
+
+Other Tasks
+------------
+* Ca 48 Contamination
+* B4C10, B4C11 carbon subtraction
+* systematics error on cut uncertainty
+* check H(e,e'p), C(e,e'p)
