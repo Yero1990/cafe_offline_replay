@@ -8,7 +8,7 @@ from uncertainties import unumpy
 
 '''
 Author: C. Yero
-Date: Jan 02, 2022
+Date: Jan 02, 2023
 Brief: Compilation of scripts for 
 handling/combining cafe numerical 
 (.csv) summary files
@@ -83,7 +83,8 @@ def make_final_summary():
             hms_trk_eff  = unumpy.uarray(df['hTrkEff'],         df['hTrkEff_err'])
             shms_trk_eff = unumpy.uarray(df['pTrkEff'],         df['pTrkEff_err'])
             total_LT     = unumpy.uarray(df['tLT'],             df['tLT_err_Bi'])
-            mult_trk_eff = unumpy.uarray(df['multi_track_eff'], df['multi_track_eff_err'])
+            #mult_trk_eff = unumpy.uarray(df['multi_track_eff'], df['multi_track_eff_err'])
+            mult_trk_eff = np.array(df['multi_track_eff'])
             
             T1_scl_rate  = df['T1_scl_rate']  # SHMS  3/4    khZ
             T2_scl_rate  = df['T2_scl_rate']  # SHMS EL-REAL khZ
@@ -133,7 +134,7 @@ def make_final_summary():
             
             
             # plot 1: relative scalers vs current (relative to 1st data point) --> woule be best to normalize both SRC, MF to same 1st point, since T2 scalers (shms same location, so should not change)
-            if(kin[jdx]=='MF' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
+            #if(kin[jdx]=='MF' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
             #if(kin[jdx]=='MF' and (target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12')):
             #if(kin[jdx]=='SRC' and (target[idx]=='Ca48' or target[idx]=='Ca40' or target[idx]=='Fe54')):
             #if(kin[jdx]=='SRC' and (target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12')):
@@ -146,8 +147,8 @@ def make_final_summary():
                 #plt.errorbar(avg_current,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
                 #plt.plot(avg_current,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
 
-                plt.errorbar(T2_scl_rate,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
-                plt.plot(T2_scl_rate,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
+                #plt.errorbar(T2_scl_rate,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker='o',markersize=8, color=tcolor[idx], mec='k', linestyle='dashed', label='%s %s (yield)'%(target[idx], kin[jdx]))
+                #plt.plot(T2_scl_rate,  unumpy.nominal_values(T2_scl_per_Q)/T2_scl_per_Q[0], marker='s', color=tcolor[idx], mec='k', linestyle='solid', markersize=8, label='%s %s (T2 e- scalers)'%(target[idx], kin[jdx]))
 
 
                 # Plot relative T2 scalers vs (current, cumulative charge, or T2 rates)
@@ -159,13 +160,13 @@ def make_final_summary():
                 #plt.errorbar(avg_current,  unumpy.nominal_values(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, unumpy.std_devs(real_yield_corr_per_Q)/real_yield_corr_per_Q[0].n, marker=kmarker[jdx], color=tcolor[idx], mec='k', linestyle='', label='%s %s'%(target[idx], kin[jdx]))
 
 
-                plt.xlabel('T2 Scaler Rates [kHz]', fontsize=18)
+                #plt.xlabel('T2 Scaler Rates [kHz]', fontsize=18)
                 #plt.xlabel('Cumulative Charge [mC]', fontsize=18)
-                plt.ylabel('Relative Yield (or T2 scalers) / mC ', fontsize=18)
+                #plt.ylabel('Relative Yield (or T2 scalers) / mC ', fontsize=18)
                 #plt.ylabel('Average Current [uA]', fontsize=18)
-                plt.xticks(fontsize=14)
-                plt.yticks(fontsize=14)
-                plt.grid(True)
+                #plt.xticks(fontsize=14)
+                #plt.yticks(fontsize=14)
+                #plt.grid(True)
                  
             #if((kin[jdx]=='MF') & (target[idx]=='LD2')):
             #    plt.errorbar(run, unumpy.nominal_values(real_yield_corr_per_Q)/200., unumpy.std_devs(real_yield_corr_per_Q)/200., marker='o', markersize=8, color=tcolor[idx], mec='k', linestyle='None', label='%s %s'%(target[idx], kin[jdx]))
@@ -270,13 +271,69 @@ def make_final_summary():
                 yield_norm_b410   = yield_norm_b410 / ( df[(df['target']=='B10')]['T'] )
 
                 
-    plt.legend()
-    #fig1.tight_layout()
-    plt.show()
+
     
     ofile.close()
 
     
 
+def make_double_ratio():
+
+
+    filename='cafe_final_summary.csv'
+    df = pd.read_csv(filename, comment='#')
+    
+    src_yield_norm = df[(df['kin']==' SRC')]['yield_norm']
+    src_yield_norm_err = df[(df['kin']==' SRC')]['yield_norm_err']
+
+    mf_yield_norm = df[(df['kin']==' MF')]['yield_norm']
+    mf_yield_norm_err = df[(df['kin']==' MF')]['yield_norm_err']
+
+    src_yield_norm_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm']
+    src_yield_norm_err_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm_err']
+
+    mf_yield_norm_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm']
+    mf_yield_norm_err_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm_err']
+
+    # put into arrays for error calculation
+    src_yield_norm_arr  = unumpy.uarray(src_yield_norm,  src_yield_norm_err)
+    mf_yield_norm_arr   = unumpy.uarray(mf_yield_norm,  mf_yield_norm_err)
+
+    src_yield_norm_C12_arr  = unumpy.uarray(src_yield_norm_C12, src_yield_norm_err_C12)
+    mf_yield_norm_C12_arr   = unumpy.uarray(mf_yield_norm_C12,  mf_yield_norm_err_C12)
+
+    double_ratio = (src_yield_norm_arr/mf_yield_norm_arr) / (src_yield_norm_C12_arr/mf_yield_norm_C12_arr )
+
+    double_ratio_val = unumpy.nominal_values(double_ratio)
+    double_ratio_err = unumpy.std_devs(double_ratio)
+    
+    N = np.array(df[(df['kin']==' SRC')]['N'])
+    Z = np.array(df[(df['kin']==' SRC')]['Z'])
+    A = np.array(df[(df['kin']==' SRC')]['A'])
+    targ = np.array(df[(df['kin']==' SRC')]['target'])
+
+    tcolor  = ['c',    'm',   'r',   'g',   'b', 'darkorange', 'violet', 'gold'] 
+
+    #print('double_ratio = ', double_ratio)
+    for i in range(len(src_yield_norm_arr)):
+
+       
+        #print('N[i] = ', N[i])
+        if targ[i]=='LD2':
+            continue
+        else:
+            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
+            #plt.errorbar((N[i]-Z[i])/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
+        
+        
+    plt.ylabel('SRC High Momentum Fraction', fontsize=18)
+    plt.xlabel('N/Z', fontsize=18)
+    #plt.xlabel('(N-Z)/Z', fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.grid(True)
+    plt.legend()
+    plt.show()
     
 make_final_summary()
+make_double_ratio()

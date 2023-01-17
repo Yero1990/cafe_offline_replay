@@ -7977,7 +7977,6 @@ void baseAnalyzer::WriteOfflineReport()
 	if(phgcer_cut_flag)      {out_file << Form("# (should) SHMS heavy gas Chrenkov number of photoelectrons (P.hgcer.npeSum): (%.3f, %.3f)", c_phgcer_npeSum_min, c_phgcer_npeSum_max) << endl;}
 	if(petotnorm_cut_flag)   {out_file << Form("# (should) SHMS calorimeter energy / central_momentum  (p.cal.etotnorm): (%.3f, %.3f)", c_petotnorm_min, c_petotnorm_max) << endl;}
 	if(pBeta_notrk_cut_flag) {out_file << Form("# (should) SHMS hodoscope beta no_track (P.hod.betanotrack): (%.3f. %.3f)", c_pBetaNtrk_min, c_pBetaNtrk_max) << endl;}
-	if(hBeta_notrk_cut_flag) {out_file << Form("# (should) HMS hodoscope beta no_track (H.hod.betanotrack): (%.3f. %.3f)", c_hBetaNtrk_min, c_hBetaNtrk_max) << endl;}
 	out_file << Form("# SHMS did: %.1f",  p_did) << endl;
 	out_file << Form("# SHMS should: %.1f",  p_should) << endl;
 	out_file << "                                   " << endl;
