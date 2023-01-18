@@ -16,7 +16,8 @@
 !hcswif/*
 !jobsub
 !post_analysis/*/*/*
-post_analysis/ca48_MF_trackStudy/*.root
+!post_analysis/special_studies/track_efficiency_study/documentation/*.pdf
+!post_analysis/ca48_MF_trackStudy/*.root
 
 # Directories
 RAID
