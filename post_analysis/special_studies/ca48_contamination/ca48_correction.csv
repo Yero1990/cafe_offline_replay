@@ -1,0 +1,37 @@
+# Ca48 Contamination Correction Factors
+# 
+# Header Definitions: 
+# run      : run number 
+# kin      : kinematics analyzed  
+# Q        : charge [mC]  
+# Qsum     : cumulative charge [mC]  
+# H_absCntm_meas: Hydrogen measured absolute contamination (in percent)
+# C_absCntm_meas: Carbon measured absolute contamination (in percent)
+# C_absCntm_calc: Carbon calculated (from fit to scalers)  absolute contamination (in percent)
+run,kin,Q,Qsum,H_absCntm_meas,C_absCntm_meas,C_absCntm_calc
+16978,MF,5.465,5.465,0.650,3.800,3.165
+16979,MF,76.211,81.676,0.510,3.100,3.014
+17036,SRC,117.765,199.441,nan,nan,2.795
+17037,SRC,117.285,316.726,nan,nan,2.592
+17038,SRC,122.684,439.410,nan,nan,2.395
+17039,SRC,132.399,571.809,nan,nan,2.200
+17040,SRC,115.060,686.869,nan,nan,2.043
+17041,SRC,103.463,790.332,nan,nan,1.912
+17043,SRC,40.234,830.566,nan,nan,1.863
+17044,SRC,137.416,967.982,nan,nan,1.706
+17045,SRC,126.950,1094.932,nan,nan,1.572
+17046,SRC,23.467,1118.399,nan,nan,1.549
+17047,SRC,125.148,1243.547,nan,nan,1.429
+17048,SRC,140.722,1384.269,nan,nan,1.306
+17049,SRC,78.985,1463.254,nan,nan,1.241
+17050,SRC,74.157,1537.411,nan,nan,1.183
+17051,SRC,219.960,1757.371,nan,nan,1.028
+17052,SRC,138.030,1895.401,nan,nan,0.940
+17053,SRC,187.167,2082.568,nan,nan,0.834
+17054,SRC,158.156,2240.724,nan,nan,0.753
+17055,SRC,184.968,2425.692,nan,nan,0.669
+17056,SRC,192.365,2618.057,nan,nan,0.591
+17057,SRC,174.487,2792.544,nan,nan,0.529
+17093,MF,49.769,2842.313,0.110,0.650,0.512
+17094,MF,12.680,2854.993,0.091,0.540,0.508
+17096,MF,98.674,2953.667,0.090,0.530,0.477
