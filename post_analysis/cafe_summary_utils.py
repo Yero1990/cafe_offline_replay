@@ -85,7 +85,7 @@ def make_final_summary():
     
     #output file to write summary file
     ofname = 'cafe_final_summary.csv' 
-    ofile = open(ofname, 'r+')
+    ofile = open(ofname, 'w+')
     ofile.write('# CaFe Final Summary File (Pass 1) \n')
     ofile.write('# \n'
                 '# Header Definitions: \n'
@@ -297,88 +297,209 @@ def make_final_summary():
                 ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (ca48_tgt.strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
 
               
-
-            #----------------------------------------
-            # APPLY Boron-Carbide TARGET CORRECTIONS
-            #----------------------------------------
-            # B4C10, B4C11 targets need to be carbon-subtracted
-            # check if final line in summary file has been reached
-            if ((idx == len(target)-1) and (jdx == len(kin)-1)):
-
-                # read final summary file
-                df = pd.read_csv(ofname, comment='#')
-                
-                # get areal densities for carbon-subtraction
-                # g/cm2
-                b4c10_density = df[(df['target']=='B10')]['tgt_area_density'][:-1]
-                b4c11_density = df[(df['target']=='B11')]['tgt_area_density'][:-1]
-                c12_density   = df[(df['target']=='C12')]['tgt_area_density'][:-1]
-
-                # Avogadro's number (# atoms / mol)
-                Na = 6.0221408e23  
-
-                # isotopic molar mass (g/mol)
-                mol_b10 = 10.0129369  # shouldnt it be number of nucleons A?
-                mol_b11 = 11.0093052
-                mol_c12 = 12.0107
-
-                # boron-carbide (4 boron-10 boron-11 atoms + 1 carbon atom) molar mass
-                mol_b4c10 = 4*mol_b10 + mol_c12 
-                mol_b4c11 = 4*mol_b11 + mol_c12 
-
-                # number of target atoms / cm^2 (# of scatterers) = (atoms/mol) * g/cm2  / (g/mol)  
-                targetfac_b4c10 = Na * b4c10_density  /  mol_b4c10 
-                targetfac_b4c11 = Na * b4c11_density  /  mol_b4c11
-                targetfac_c12   = Na * c12_density    /  mol_c12
-
-                # IMPORTANT: Recover the areal density (g/cm2) of B10, B11 (for normalizing after subtraction)
-                b10_density = (b4c10_density / mol_b4c10) * 4. * 10.  # [(g/cm^2) / (g/mol)] * 4 (B10 atoms) * 10 g/mol
-                b11_density = (b4c11_density / mol_b4c11) * 4. * 11.  # [(g/cm^2) / (g/mol)] * 4 (B10 atoms) * 11 g/mol
-
-                print('b4c10_density = %.3f' % b4c10_density )
-                print('b10_density = %.3f' % b10_density )
-
-                print('b4c11_density = %.3f' % b4c11_density )
-                print('b11_density = %.3f' % b11_density )
-
-                # set conditions for selecting b10, b11
-                cond_b10_mf  =((df['target']=='B10') & (df['kin']=='MF'))
-                cond_b10_src =((df['target']=='B10') & (df['kin']=='SRC'))
-                cond_b11_mf  =((df['target']=='B11') & (df['kin']=='MF'))
-                cond_b11_src =((df['target']=='B11') & (df['kin']=='SRC'))
-                cond_c12_mf  =((df['target']=='C12') & (df['kin']=='MF'))
-                cond_c12_src =((df['target']=='C12') & (df['kin']=='SRC'))
-                
-                # get the efficiency corrected yield and total charge for b4c10, b4c11, c12 (mf, src)
-                yield_corr_b4c10_mf     = unumpy.uarray(df[cond_b10_mf]['yield_corr'], df[cond_b10_mf]['yield_corr_err']) #val +/- err
-                charge_b4c10_mf         = df[cond_b10_mf]['total_charge']
-
-                yield_corr_b4c11_mf     = unumpy.uarray(df[cond_b11_mf]['yield_corr'], df[cond_b11_mf]['yield_corr_err'])
-                charge_b4c11_mf         = df[cond_b11_mf]['total_charge']
-
-                yield_corr_c12_mf       = unumpy.uarray(df[cond_c12_mf]['yield_corr'], df[cond_c12_mf]['yield_corr_err'])
-                charge_c12_mf           = df[cond_c12_mf]['total_charge']
-
-                
-           
-                '''
-                print('yield_corr_b4c11=',yield_corr_b4c11)
-                
-                # apply carbon subtraction (counts / mC)  
-                yield_norm_b410      = (yield_corr_b4c10/charge_b4c10) - (yield_corr_c12/charge_c12) * targetfac_b4c10/targetfac_c12
-                yield_norm_b411      = (yield_corr_b4c11/charge_b4c11) - (yield_corr_c12/charge_c12) * targetfac_b4c11/targetfac_c12
-
-                # apply the remaining scale factors (transparency and boron 10, 11 densities)
-                yield_norm_b10   = (yield_norm_b410 / 4) / ( df[(df['target']=='B10')]['T'] * b10_density) 
-                yield_norm_b11   = (yield_norm_b411 / 4) / ( df[(df['target']=='B11')]['T'] * b11_density) 
-
-                b10_corr='B10_corr'
-                b11_corr='B11_corr'
-                ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % (b10_corr.strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
-                '''
-
-    
     ofile.close()
+
+def applyB4C_correction():
+
+    #----------------------------------------
+    # APPLY Boron-Carbide TARGET CORRECTIONS
+    #----------------------------------------
+    # B4C10, B4C11 targets need to be carbon-subtracted
+
+    ofname='cafe_final_summary.csv'
+    # read final summary file
+    df = pd.read_csv(ofname, comment='#')
+    
+    # get areal densities for carbon-subtraction
+    # g/cm2
+    b4c10_density = np.array(df[(df['target']=='B10')]['tgt_area_density'][:-1])
+    b4c11_density = np.array(df[(df['target']=='B11')]['tgt_area_density'][:-1])
+    c12_density   = np.array(df[(df['target']=='C12')]['tgt_area_density'][:-1])
+    
+    # Avogadro's number (# atoms / mol)
+    Na = 6.0221408e23  
+    
+    # isotopic molar mass (g/mol)
+    mol_b10 = 10.0129369  # shouldnt it be number of nucleons A?
+    mol_b11 = 11.0093052
+    mol_c12 = 12.0107
+    
+    # boron-carbide (4 boron-10 boron-11 atoms + 1 carbon atom) molar mass
+    mol_b4c10 = 4*mol_b10 + mol_c12 
+    mol_b4c11 = 4*mol_b11 + mol_c12 
+    
+    # number of target atoms / cm^2 (# of scatterers) = (atoms/mol) * g/cm2  / (g/mol)  
+    targetfac_b4c10 = Na * b4c10_density  /  mol_b4c10
+    targetfac_b4c11 = Na * b4c11_density  /  mol_b4c11
+    targetfac_c12   = Na * c12_density    /  mol_c12
+    
+    # IMPORTANT: Recover the areal density (g/cm2) of B10, B11 (for normalizing after subtraction)
+    b10_density = (b4c10_density / mol_b4c10) * 4. * 10.  # [(g/cm^2) / (g/mol)] * 4 (B10 atoms) * 10 g/mol
+    b11_density = (b4c11_density / mol_b4c11) * 4. * 11.  # [(g/cm^2) / (g/mol)] * 4 (B11 atoms) * 11 g/mol
+
+    print('areal densities')
+    print('b4c10_density (g/cm2) =', b4c10_density)
+    print('b4c11_density (g/cm2) =', b4c11_density)
+    print('b10_density (g/cm2) =', b10_density)
+    print('b11_density (g/cm2) =', b11_density)
+    
+    # set conditions for selecting b10, b11
+    cond_b10_mf  =((df['target']=='B10') & (df['kin']=='MF'))
+    cond_b10_src =((df['target']=='B10') & (df['kin']=='SRC'))
+    cond_b11_mf  =((df['target']=='B11') & (df['kin']=='MF'))
+    cond_b11_src =((df['target']=='B11') & (df['kin']=='SRC'))
+    cond_c12_mf  =((df['target']=='C12') & (df['kin']=='MF'))
+    cond_c12_src =((df['target']=='C12') & (df['kin']=='SRC'))
+    
+    # get the efficiency corrected yield and total charge for b4c10, b4c11, c12 (mf, src)
+    
+    # MF
+    yield_corr_b4c10_mf     = unumpy.uarray(df[cond_b10_mf]['yield_corr'], df[cond_b10_mf]['yield_corr_err']) #val +/- err
+    charge_b4c10_mf         = np.array(df[cond_b10_mf]['total_charge'])
+    
+    yield_corr_b4c11_mf     = unumpy.uarray(df[cond_b11_mf]['yield_corr'], df[cond_b11_mf]['yield_corr_err'])
+    charge_b4c11_mf         = np.array(df[cond_b11_mf]['total_charge'])
+    
+    yield_corr_c12_mf       = unumpy.uarray(df[cond_c12_mf]['yield_corr'], df[cond_c12_mf]['yield_corr_err'])
+    charge_c12_mf           = np.array(df[cond_c12_mf]['total_charge'])
+    
+    # SRC
+    yield_corr_b4c10_src     = unumpy.uarray(df[cond_b10_src]['yield_corr'], df[cond_b10_src]['yield_corr_err']) #val +/- err
+    charge_b4c10_src         = np.array(df[cond_b10_src]['total_charge'])
+    
+    yield_corr_b4c11_src     = unumpy.uarray(df[cond_b11_src]['yield_corr'], df[cond_b11_src]['yield_corr_err'])
+    charge_b4c11_src         = np.array(df[cond_b11_src]['total_charge'])
+    
+    yield_corr_c12_src       = unumpy.uarray(df[cond_c12_src]['yield_corr'], df[cond_c12_src]['yield_corr_err'])
+    charge_c12_src           = np.array(df[cond_c12_src]['total_charge'])
+    
+    
+    # ---------------------------------------
+    # Apply carbon subtraction (counts / mC)
+    # ---------------------------------------
+    
+    #--- MF ---
+    yield_norm_b410_mf      = (yield_corr_b4c10_mf/charge_b4c10_mf) - ((yield_corr_c12_mf/charge_c12_mf) * targetfac_b4c10/targetfac_c12)
+    yield_norm_b411_mf      = (yield_corr_b4c11_mf/charge_b4c11_mf) - ((yield_corr_c12_mf/charge_c12_mf) * targetfac_b4c11/targetfac_c12)
+
+    print('Apply the Carbon subtraction to MF B4C10 and B4C11 Yield/charge')
+    print('Boron-10 (MF):')
+    print('B4C10_MF Yield/Q = %.3f'%(unumpy.nominal_values(yield_corr_b4c10_mf)/charge_b4c10_mf) )
+    print('C12_MF Yield/Q= %.3f' %(unumpy.nominal_values(yield_corr_c12_mf)/charge_c12_mf))
+    print('targetfac_b4c10/targetfac_c12 = %.3E' %(targetfac_b4c10/targetfac_c12))
+    print('B410_MF Yield/Q = %.3f' % ( unumpy.nominal_values(yield_norm_b410_mf) ))
+    print('')
+    print('Boron-11 (MF):')
+    print('B4C11_MF Yield/Q = %.3f'%(unumpy.nominal_values(yield_corr_b4c11_mf)/charge_b4c11_mf) )
+    print('C12_MF Yield/Q= %.3f' %(unumpy.nominal_values(yield_corr_c12_mf)/charge_c12_mf))
+    print('targetfac_b4c11/targetfac_c12 = %.3E' %(targetfac_b4c11/targetfac_c12))
+    print('B411_MF Yield/Q = %.3f' % ( unumpy.nominal_values(yield_norm_b411_mf) ))
+    print('---------------------------------\n')
+
+    # apply the remaining scale factors (transparency and boron 10, 11 densities)
+    yield_norm_b10_mf   = (yield_norm_b410_mf / 4.) / ( df[cond_b10_mf]['T'] * b10_density) 
+    yield_norm_b11_mf   = (yield_norm_b411_mf / 4.) / ( df[cond_b11_mf]['T'] * b11_density) 
+    print('Apply the remaining scaler factors (transparency and areal density) -- not that it matters for double ratio, but just to check')
+    print('B10_MF Yield/Q = (B410_MF Yield/Q) / 4 B10 atoms = %.3f' % (unumpy.nominal_values(yield_norm_b410_mf) / 4) )
+    print('T, B10_density (g/cm2) = %.3f, %.3f' % (df[cond_b10_mf]['T'],  b10_density) )
+    print('B10_MF Yield/(Q * T * B10_density) = %.3f' % ( unumpy.nominal_values(yield_norm_b10_mf) ))
+    print('')
+    print('B11_MF Yield/Q = (B411_MF Yield/Q) / 4 B11 atoms = %.3f' % (unumpy.nominal_values(yield_norm_b411_mf) / 4) )
+    print('T, B11_density (g/cm2) = %.3f, %.3f' % (df[cond_b11_mf]['T'],  b11_density) )
+    print('B11_MF Yield/(Q * T * B11_density) = %.3f' % ( unumpy.nominal_values(yield_norm_b11_mf) ))
+    print('---------------------------------\n')
+
+    #--- SRC ---
+    yield_norm_b410_src      = (yield_corr_b4c10_src/charge_b4c10_src) - (yield_corr_c12_src/charge_c12_src) * targetfac_b4c10/targetfac_c12
+    yield_norm_b411_src      = (yield_corr_b4c11_src/charge_b4c11_src) - (yield_corr_c12_src/charge_c12_src) * targetfac_b4c11/targetfac_c12
+    print('Apply the Carbon subtraction to SRC B4C10 and B4C11 Yield/charge')
+    print('Boron-10 SRC:')
+    print('B4C10_SRC Yield/Q = %.3f'%(unumpy.nominal_values(yield_corr_b4c10_src)/charge_b4c10_src) )
+    print('C12_SRC Yield/Q= %.3f' %(unumpy.nominal_values(yield_corr_c12_src)/charge_c12_src))
+    print('targetfac_b4c10/targetfac_c12 = %.3E' %(targetfac_b4c10/targetfac_c12))
+    print('B410_SRC Yield/Q = %.3f' % ( unumpy.nominal_values(yield_norm_b410_src) ))
+    print('')
+    print('Boron-11 SRC:')
+    print('B4C11_SRC Yield/Q = %.3f'%(unumpy.nominal_values(yield_corr_b4c11_src)/charge_b4c11_src) )
+    print('C12_SRC Yield/Q= %.3f' %(unumpy.nominal_values(yield_corr_c12_src)/charge_c12_src))
+    print('targetfac_b4c11/targetfac_c12 = %.3E' %(targetfac_b4c11/targetfac_c12))
+    print('B411_SRC Yield/Q = %.3f' % ( unumpy.nominal_values(yield_norm_b411_src) ))
+    print('---------------------------------\n')
+    # apply the remaining scale factors (transparency and boron 10, 11 densities)
+    yield_norm_b10_src   = (yield_norm_b410_src / 4. ) / ( df[cond_b10_src]['T'] * b10_density) 
+    yield_norm_b11_src   = (yield_norm_b411_src / 4. ) / ( df[cond_b11_src]['T'] * b11_density) 
+    print('Apply the remaining scaler factors (transparency and areal density) -- not that it matters for double ratio, but just to check')
+    print('B10_SRC Yield/Q = (B410_SRC Yield/Q) / 4 B10 atoms = %.3f' % (unumpy.nominal_values(yield_norm_b410_src) / 4) )
+    print('T, B10_density (g/cm2) = %.3f, %.3f' % (df[cond_b10_src]['T'],  b10_density) )
+    print('B10_SRC Yield/(Q * T * B10_density) = %.3f' % ( unumpy.nominal_values(yield_norm_b10_src) ))
+    print('')
+    print('B11_SRC Yield/Q = (B411_SRC Yield/Q) / 4 B11 atoms = %.3f' % (unumpy.nominal_values(yield_norm_b411_src) / 4) )
+    print('T, B11_density (g/cm2) = %.3f, %.3f' % (df[cond_b11_src]['T'],  b11_density) )
+    print('B11_SRC Yield/(Q * T * B11_density) = %.3f' % ( unumpy.nominal_values(yield_norm_b11_src) ))
+    print('---------------------------------\n')
+
+
+      
+    # recover back yield_corr (correctded for inefficiencies, but not yet normalized by Q, T, area_density)
+    yield_corr_b10_mf = yield_norm_b10_mf * (b10_density * df[cond_b10_mf]['T'] * df[cond_b10_mf]['total_charge'])
+    yield_corr_b11_mf = yield_norm_b11_mf * (b11_density * df[cond_b11_mf]['T'] * df[cond_b11_mf]['total_charge'])
+
+    yield_corr_b10_src = yield_norm_b10_src * (b10_density * df[cond_b10_src]['T'] * df[cond_b10_src]['total_charge'])
+    yield_corr_b11_src = yield_norm_b11_src * (b11_density * df[cond_b11_src]['T'] * df[cond_b11_src]['total_charge'])
+
+    # recover back uncorrected yield from inefficiencies
+    # can't do that, sir. The efficiencies were only read in and applied in the previous method. Its ok, This is not as important.
+
+    # this is how to extract the nominal values and error from unumpy (uncertainty package)
+    # unumpy.nominal_values(yield_corr_b10_mf),  unumpy.std_devs(yield_corr_b10_mf)
+
+ 
+    # add B10, B11 rows to write applied corrections
+    df = pd.concat([df,df[4:8]], ignore_index=True)
+    
+
+    # last index (we need last four indices to update)
+    idx_last = df.tail(1).index.item()
+
+    print('unumpy.nominal_values(yield_corr_b10_mf)=',unumpy.nominal_values(yield_corr_b10_mf))
+    #Updating B10 MF
+    df.loc[idx_last-3, ['target']] = ['B10_corr']
+    df.loc[idx_last-3, ['yield_corr']]       = round(unumpy.nominal_values(yield_corr_b10_mf)[0], 3)
+    df.loc[idx_last-3, ['yield_corr_err']]   = round(unumpy.std_devs(yield_corr_b10_mf)[0], 3)
+    df.loc[idx_last-3, ['yield_norm']]       = round(unumpy.nominal_values(yield_norm_b10_mf)[0], 3)
+    df.loc[idx_last-3, ['yield_norm_err']]   = round(unumpy.std_devs(yield_norm_b10_mf)[0], 3)
+    df.loc[idx_last-3, ['tgt_area_density']] = round(b10_density[0], 3)
+    #Updating B10 SRC
+    df.loc[idx_last-2, ['target']] = ['B10_corr']
+    df.loc[idx_last-2, ['yield_corr']]       = round(unumpy.nominal_values(yield_corr_b10_src)[0], 3)
+    df.loc[idx_last-2, ['yield_corr_err']]   = round(unumpy.std_devs(yield_corr_b10_src)[0], 3)
+    df.loc[idx_last-2, ['yield_norm']]       = round(unumpy.nominal_values(yield_norm_b10_src)[0], 3)
+    df.loc[idx_last-2, ['yield_norm_err']]   = round(unumpy.std_devs(yield_norm_b10_src)[0], 3)
+    df.loc[idx_last-2, ['tgt_area_density']] = round(b10_density[0], 3)
+    #Updating B11 MF
+    df.loc[idx_last-1, ['target']] = ['B11_corr']
+    df.loc[idx_last-1, ['yield_corr']]       = round(unumpy.nominal_values(yield_corr_b11_mf)[0], 3)
+    df.loc[idx_last-1, ['yield_corr_err']]   = round(unumpy.std_devs(yield_corr_b11_mf)[0], 3)
+    df.loc[idx_last-1, ['yield_norm']]       = round(unumpy.nominal_values(yield_norm_b11_mf)[0], 3)
+    df.loc[idx_last-1, ['yield_norm_err']]   = round(unumpy.std_devs(yield_norm_b11_mf)[0], 3)
+    df.loc[idx_last-1, ['tgt_area_density']] = round(b11_density[0], 3)
+    #Updating B11 SRC
+    df.loc[idx_last, ['target']] = ['B11_corr']
+    df.loc[idx_last, ['yield_corr']]       = round(unumpy.nominal_values(yield_corr_b11_src)[0], 3)
+    df.loc[idx_last, ['yield_corr_err']]   = round(unumpy.std_devs(yield_corr_b11_src)[0], 3)
+    df.loc[idx_last, ['yield_norm']]       = round(unumpy.nominal_values(yield_norm_b11_src)[0], 3)
+    df.loc[idx_last, ['yield_norm_err']]   = round(unumpy.std_devs(yield_norm_b11_src)[0], 3)
+    df.loc[idx_last, ['tgt_area_density']] = round(b11_density[0], 3)
+    
+    #df.loc[idx_last-1, ['target']] = ['B11_corr']
+    #df.loc[idx_last,   ['target']] = ['B11_corr']
+
+    df.to_csv('cafe_final_summary.csv', index=False)
+    
+    #ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % ('B10_corr', 'MF', total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
+                
+
+    #ofile.close()
 
     
 
@@ -388,18 +509,19 @@ def make_double_ratio():
     filename='cafe_final_summary.csv'
     df = pd.read_csv(filename, comment='#')
     
-    src_yield_norm = df[(df['kin']==' SRC')]['yield_norm']
-    src_yield_norm_err = df[(df['kin']==' SRC')]['yield_norm_err']
+    src_yield_norm = df[(df['kin']=='SRC')]['yield_norm']
+    src_yield_norm_err = df[(df['kin']=='SRC')]['yield_norm_err']
 
-    mf_yield_norm = df[(df['kin']==' MF')]['yield_norm']
-    mf_yield_norm_err = df[(df['kin']==' MF')]['yield_norm_err']
+    mf_yield_norm = df[(df['kin']=='MF')]['yield_norm']
+    mf_yield_norm_err = df[(df['kin']=='MF')]['yield_norm_err']
 
-    src_yield_norm_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm']
-    src_yield_norm_err_C12 = df[(df['kin']==' SRC') & (df['target']=='C12')]['yield_norm_err']
+    src_yield_norm_C12 = df[(df['kin']=='SRC') & (df['target']=='C12')]['yield_norm']
+    src_yield_norm_err_C12 = df[(df['kin']=='SRC') & (df['target']=='C12')]['yield_norm_err']
 
-    mf_yield_norm_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm']
-    mf_yield_norm_err_C12 = df[(df['kin']==' MF') & (df['target']=='C12')]['yield_norm_err']
+    mf_yield_norm_C12 = df[(df['kin']=='MF') & (df['target']=='C12')]['yield_norm']
+    mf_yield_norm_err_C12 = df[(df['kin']=='MF') & (df['target']=='C12')]['yield_norm_err']
 
+    print('src_yield_norm=',src_yield_norm)
     # put into arrays for error calculation
     src_yield_norm_arr  = unumpy.uarray(src_yield_norm,  src_yield_norm_err)
     mf_yield_norm_arr   = unumpy.uarray(mf_yield_norm,  mf_yield_norm_err)
@@ -412,13 +534,13 @@ def make_double_ratio():
     double_ratio_val = unumpy.nominal_values(double_ratio)
     double_ratio_err = unumpy.std_devs(double_ratio)
     
-    N = np.array(df[(df['kin']==' SRC')]['N'])
-    Z = np.array(df[(df['kin']==' SRC')]['Z'])
-    A = np.array(df[(df['kin']==' SRC')]['A'])
-    targ = np.array(df[(df['kin']==' SRC')]['target'])
+    N = np.array(df[(df['kin']=='SRC')]['N'])
+    Z = np.array(df[(df['kin']=='SRC')]['Z'])
+    A = np.array(df[(df['kin']=='SRC')]['A'])
+    targ = np.array(df[(df['kin']=='SRC')]['target'])
 
-    #          'LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40',      'Ca48',  'Ca48_corr' ,  'Fe54'
-    tcolor  = ['c',    'm',   'r',   'g',   'b', 'darkorange', 'violet', 'violet',   'gold'] 
+    #          'LD2', 'Be9', 'B10',   'B11',   'C12', 'Ca40',       'Ca48',  'Ca48_corr' , 'Fe54', 'B10_corr', 'B11_corr'
+    tcolor  = ['c',    'm',   'r',     'g',     'b',  'darkorange', 'violet', 'violet',    'gold',    'r',      'g'     ] 
 
     #print('double_ratio = ', double_ratio)
     for i in range(len(src_yield_norm_arr)):
@@ -427,7 +549,7 @@ def make_double_ratio():
         #print('N[i] = ', N[i])
         if (targ[i]=='LD2'):
             continue
-        if (targ[i]=='Ca48'):
+        if (targ[i]=='Ca48' or targ[i]=='B10' or targ[i]=='B11'):
             plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc='gray', ecolor='gray', mec='gray', linestyle='None', label=targ[i])
         else:
             plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
@@ -444,4 +566,5 @@ def make_double_ratio():
     plt.show()
     
 make_final_summary()
-#make_double_ratio()
+applyB4C_correction()
+make_double_ratio()
