@@ -125,7 +125,6 @@ def make_final_summary():
                 if (kin[jdx]=='MF'):
                     cntm_eff = cntm_eff[-3:] # read only last 3 Ca48 contamination factort
                     df = df[-3:]  # select last 3 Ca48 runs (esentially almost no contamination)
-                    df = df[-3:]  # select last 3 Ca48 runs (esentially almost no contamination)
             
             # select specific Ca48 MF runs (ignore contaminated runs)
             #if( target[idx]=='Ca48' and kin[jdx]=='MF' ):
