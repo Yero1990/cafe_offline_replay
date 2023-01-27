@@ -300,10 +300,15 @@ def make_final_summary():
 
 def applyB4C_correction():
 
-    #----------------------------------------
-    # APPLY Boron-Carbide TARGET CORRECTIONS
-    #----------------------------------------
+    #------------------------------------------------------------------
+    # APPLY Boron-Carbide TARGET CORRECTIONS / Ca48 PURITY CORRECTIONS
+    #------------------------------------------------------------------
     # B4C10, B4C11 targets need to be carbon-subtracted
+    # Ca48 is only ~90.5 % pure, the remaining is Ca40 
+    # Ca48 is 90.5% pure, assuming that the remainder is Ca40.  The 48Ca target is 1051 mg/cm2.
+    # If the purity refers to number of atoms, then the purity by weight is 91.5%.  (We need to find out whether purity refers to mass or to number.)  
+
+
 
     ofname='cafe_final_summary.csv'
     # read final summary file
@@ -314,6 +319,52 @@ def applyB4C_correction():
     b4c10_density = np.array(df[(df['target']=='B10')]['tgt_area_density'][:-1])
     b4c11_density = np.array(df[(df['target']=='B11')]['tgt_area_density'][:-1])
     c12_density   = np.array(df[(df['target']=='C12')]['tgt_area_density'][:-1])
+
+    # -------------------------------------
+    
+    # set Ca48 purity by weight: 
+    ca48_purity = 0.915
+    
+    # get areal densities for Ca48 subtraction from Ca48 (g/cm2)
+    ca48_density = np.array(df[(df['target']=='Ca48')]['tgt_area_density'][:-1])
+    ca40_density = np.array(df[(df['target']=='Ca40')]['tgt_area_density'][:-1])
+
+    # get norm. yield for ca40, ca48
+    ca48_mf_yield_norm  = np.array(df[(df['target']=='Ca48')  & (df['kin']=='MF') ]['yield_norm'])
+    ca48_mf_yield_norm_err  = np.array(df[(df['target']=='Ca48')  & (df['kin']=='MF') ]['yield_norm_err'])
+
+    ca48_src_yield_norm = np.array(df[(df['target']=='Ca48')  & (df['kin']=='SRC') ]['yield_norm'])
+    ca48_src_yield_norm_err = np.array(df[(df['target']=='Ca48')  & (df['kin']=='SRC') ]['yield_norm_err'])
+
+    ca40_mf_yield_norm  = np.array(df[(df['target']=='Ca40')  & (df['kin']=='MF') ]['yield_norm'])
+    ca40_mf_yield_norm_err  = np.array(df[(df['target']=='Ca40')  & (df['kin']=='MF') ]['yield_norm_err'])
+    
+    ca40_src_yield_norm = np.array(df[(df['target']=='Ca40')  & (df['kin']=='SRC') ]['yield_norm'])
+    ca40_src_yield_norm_err = np.array(df[(df['target']=='Ca40')  & (df['kin']=='SRC') ]['yield_norm_err'])
+
+    # add value +/- error for easy uncertainty propagations
+    ca48_mf_yield_norm = ufloat(ca48_mf_yield_norm, ca48_mf_yield_norm_err)
+    ca48_src_yield_norm = ufloat(ca48_src_yield_norm, ca48_src_yield_norm_err)
+
+    ca40_mf_yield_norm = ufloat(ca40_mf_yield_norm, ca40_mf_yield_norm_err)
+    ca40_src_yield_norm = ufloat(ca40_src_yield_norm, ca40_src_yield_norm_err)
+       
+    
+    # calculate amount of ca40 on ca48
+    ca40_cntm = 1. - (ca48_purity * ca48_density) # g/cm2 (amount of ca40)
+
+    # corrected ca48 target thickness
+    ca48_density_corr =  ca48_density - ca40_cntm
+
+    # apply density correction (ca48 corrected density) and  ca40 subtraction from ca48
+    ca48_mf_corr  = (ca48_mf_yield_norm * ca48_density_corr /  ca48_density) - (ca40_cntm /ca40_density) * (ca40_mf_yield_norm * ca48_density_corr /  ca48_density)
+    ca48_src_corr = (ca48_src_yield_norm * ca48_density_corr /  ca48_density) - (ca40_cntm /ca40_density) * (ca40_src_yield_norm * ca48_density_corr /  ca48_density)
+
+    print('ca48_mf_corr---->', unumpy.nominal_values(ca48_mf_corr))
+
+    
+    # -------------------------------------
+
     
     # Avogadro's number (# atoms / mol)
     Na = 6.0221408e23  
@@ -447,7 +498,7 @@ def applyB4C_correction():
     yield_corr_b11_src = yield_norm_b11_src * (b11_density * df[cond_b11_src]['T'] * df[cond_b11_src]['total_charge'])
 
     # recover back uncorrected yield from inefficiencies
-    # can't do that, sir. The efficiencies were only read in and applied in the previous method. Its ok, This is not as important.
+    # Cant do it. The efficiencies were only read in and applied in the previous method. Its ok, This is not as important.
 
     # this is how to extract the nominal values and error from unumpy (uncertainty package)
     # unumpy.nominal_values(yield_corr_b10_mf),  unumpy.std_devs(yield_corr_b10_mf)
@@ -489,10 +540,20 @@ def applyB4C_correction():
     df.loc[idx_last, ['yield_norm']]       = round(unumpy.nominal_values(yield_norm_b11_src)[0], 3)
     df.loc[idx_last, ['yield_norm_err']]   = round(unumpy.std_devs(yield_norm_b11_src)[0], 3)
     df.loc[idx_last, ['tgt_area_density']] = round(b11_density[0], 3)
-    
-    #df.loc[idx_last-1, ['target']] = ['B11_corr']
-    #df.loc[idx_last,   ['target']] = ['B11_corr']
 
+    #Updating Ca48_corr MF (index - 8)
+    #df.loc[idx_last-8, ['target']] = ['Ca48_corr']
+    #df.loc[idx_last-8, ['yield_corr']]       = round(unumpy.nominal_values(yield_corr_b10_mf)[0], 3)
+    #df.loc[idx_last-8, ['yield_corr_err']]   = round(unumpy.std_devs(yield_corr_b10_mf)[0], 3)
+    df.loc[idx_last-8, ['yield_norm']]       = round(unumpy.nominal_values(ca48_mf_corr)[0], 3)
+    df.loc[idx_last-8, ['yield_norm_err']]   = round(unumpy.std_devs(ca48_mf_corr)[0], 3)  
+    df.loc[idx_last-8, ['tgt_area_density']] = round(ca48_density_corr[0], 3)
+    
+    #Updating Ca48_corr SRC (index - 6)
+    df.loc[idx_last-6, ['yield_norm']]       = round(unumpy.nominal_values(ca48_src_corr)[0], 3)
+    df.loc[idx_last-6, ['yield_norm_err']]   = round(unumpy.std_devs(ca48_src_corr)[0], 3)  
+    df.loc[idx_last-6, ['tgt_area_density']] = round(ca48_density_corr[0], 3)
+    
     df.to_csv('cafe_final_summary.csv', index=False)
     
     #ofile.write("%s, %s, %.2f, %.2f, %.2f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.3f, %.1f, %.1f, %.1f\n" % ('B10_corr', 'MF', total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
