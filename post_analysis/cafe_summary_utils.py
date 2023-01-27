@@ -175,6 +175,10 @@ def make_final_summary():
             if(target[idx]=='Ca48'):
                 real_Yield_cntm_corr = real_Yield / (hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff * cntm_eff)              
                 real_Yield_cntm_corr_total = real_Yield_cntm_corr.sum()
+
+                print('real_Yield_corr_total=',real_Yield_corr_total)
+                print('real_Yield_cntm_corr_total=',real_Yield_cntm_corr_total)
+                print('cntm_eff = ', cntm_eff)
             
             # sum over all total charge
             total_charge = charge.sum()
@@ -360,8 +364,8 @@ def applyB4C_correction():
     ca48_mf_corr  = (ca48_mf_yield_norm * ca48_density_corr /  ca48_density) - (ca40_cntm /ca40_density) * (ca40_mf_yield_norm * ca48_density_corr /  ca48_density)
     ca48_src_corr = (ca48_src_yield_norm * ca48_density_corr /  ca48_density) - (ca40_cntm /ca40_density) * (ca40_src_yield_norm * ca48_density_corr /  ca48_density)
 
-    print('ca48_mf_corr---->', unumpy.nominal_values(ca48_mf_corr))
-
+    print('ca48 SRC/MF (before Ca40 subtraction): ',  ca48_src_yield_norm/ ca48_mf_yield_norm)
+    print('ca48 SRC/MF (after Ca40 subtraction): ',  ca48_src_corr / ca48_mf_corr)
     
     # -------------------------------------
 
