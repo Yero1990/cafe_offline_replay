@@ -109,8 +109,12 @@ def make_final_summary():
     kmarker =['o',  's']
  
     for idx in np.arange(len(target)):
+
+        
         
         for jdx in np.arange(len(kin)):
+
+            df_empty_flag = 0
             
             # get generic summary file name
             summary_file_path = 'summary_files/pass1/cafe_prod_%s_%s_report_summary.csv' % (target[idx], kin[jdx])
@@ -118,20 +122,36 @@ def make_final_summary():
             # read .csv file
             df = pd.read_csv(summary_file_path, comment='#')
 
+            # ---- Add Beam Current Dependency Condition (still need to work on this) ------
+            
+            if(kin[jdx]=='MF'):
+                cond_Ithrs  = (df['avg_current'] < 100.)
+                df = df[cond_Ithrs]                
+                
+                #print('target:', target[idx], ' kin: ', kin[jdx])
+                #print(df)
+
+                # check if MF dataframe is empty
+                df_empty_flag = 0
+                if(df.empty):
+                    df_empty_flag = 1
+                    
+            #print('----------------------------------------------')
+            #print('target:', target[idx], ' kin: ', kin[jdx], 'df_empty?: ', df_empty_flag)
+            #print(df)
+            #print('----------------------------------------------')
+            #--------------------------------------------------
+            
+            
             if(target[idx]=='Ca48'):
                 # read array of contamination eff. factors
                 cntm_eff = get_cntmEff(kin[jdx])
                 
                 if (kin[jdx]=='MF'):
                     cntm_eff = cntm_eff[-3:] # read only last 3 Ca48 contamination factort
-                    df = df[-3:]  # select last 3 Ca48 runs (esentially almost no contamination)
-            
-            # select specific Ca48 MF runs (ignore contaminated runs)
-            #if( target[idx]=='Ca48' and kin[jdx]=='MF' ):
-                #df = df[ df['run']==17096 ] # for now, last run is good enough
-            #    df = df.tail(3) # select last 3 runs
-            #    print(df)
-            # read parameters from .csv file
+                    df = df[-3:]  # [-3:] select last 3 Ca48 runs (esentially almost no contamination)
+
+                
             T                 = find_param('transparency', summary_file_path) # transparency
             tgt_areal_density = find_param('target_areal_density', summary_file_path) # g/cm^2
             N                 = find_param('N:', summary_file_path) # number of neutrons
@@ -139,10 +159,12 @@ def make_final_summary():
             A                 = find_param('A:', summary_file_path) # number of nucleons
             
             # read selected data columns (with respective uncertainties)
+            avg_current  = df['avg_current'] # average beam current [uA]     
             run          = df['run']
             charge       = df['charge'] # [mC]
             beam_time    = df['beam_time'] # (beam-on-target time) [sec]
-            avg_current  = df['avg_current'] # average beam current [uA]
+
+            
             real_Yield   = unumpy.uarray(df['real_Yield'],      df['real_Yield_err'])
             hms_trk_eff  = unumpy.uarray(df['hTrkEff'],         df['hTrkEff_err'])
             shms_trk_eff = unumpy.uarray(df['pTrkEff'],         df['pTrkEff_err'])
