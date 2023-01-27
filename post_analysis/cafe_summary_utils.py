@@ -148,8 +148,8 @@ def make_final_summary():
                 cntm_eff = get_cntmEff(kin[jdx])
                 
                 if (kin[jdx]=='MF'):
-                    cntm_eff = cntm_eff[-3:] # read only last 3 Ca48 contamination factort
-                    df = df[-3:]  # [-3:] select last 3 Ca48 runs (esentially almost no contamination)
+                    cntm_eff = cntm_eff[-1:] # read only last 3 Ca48 contamination factort
+                    df = df[-1:]  # [-3:] select last 3 Ca48 runs (esentially almost no contamination)
 
                 
             T                 = find_param('transparency', summary_file_path) # transparency
