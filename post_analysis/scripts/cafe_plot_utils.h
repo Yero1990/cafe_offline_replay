@@ -753,16 +753,18 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   
     // set histos aethetics
   H_hist_A->SetLineColor(kRed);
-  H_hist_A->SetFillColorAlpha(kRed, 0.40);
-  H_hist_A->SetFillStyle(3004);
+  H_hist_A->SetLineWidth(2);
+  //H_hist_A->SetFillColorAlpha(kRed, 0.40);
+  //H_hist_A->SetFillStyle(3004);
 
   H_hist_B->SetLineColor(kBlue);
-  H_hist_B->SetFillColorAlpha(kBlue, 0.40);
-  H_hist_B->SetFillStyle(3005);
+  H_hist_B->SetLineWidth(2);
+  //H_hist_B->SetFillColorAlpha(kBlue, 0.40);
+  //H_hist_B->SetFillStyle(3005);
 
   H_hist_R->SetLineColor(kBlack);
-  H_hist_R->SetFillColorAlpha(kBlack, 0.40);
-  H_hist_R->SetFillStyle(3005);
+  //H_hist_R->SetFillColorAlpha(kBlack, 0.40);
+  //H_hist_R->SetFillStyle(3005);
   
   // set histogram titles/labels/font
   H_hist_A->SetTitle(H_hist_A->GetTitle());

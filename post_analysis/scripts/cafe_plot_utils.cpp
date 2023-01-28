@@ -165,18 +165,18 @@ void cafe_plot_utils(){
   //vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
   //vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
 
-  vector<string> tgt = {"Be9", "B10", "B11", "C12"};
-  vector<int> clr     = {1, 2, 4, 8};    //  root cern color code ---> 1: black,  2 : red,  4: blue, 6: magenta, 8: green, 9: purple
+  //vector<string> tgt = {"Be9", "B10", "B11", "C12"};
+  //vector<int> clr     = {1, 2, 4, 8};    //  root cern color code ---> 1: black,  2 : red,  4: blue, 6: magenta, 8: green, 9: purple
 
   //overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Q2_rand_sub",     "Q^{2} [GeV^{2}]", "Normalized Counts",  "4-Momentum Transfer (light nuclei)");
   // overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_xbj_rand_sub",    "x_{Bj}",          "Normalized Counts",  "x-Bjorken (light nuclei)");
   //overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Em_nuc_rand_sub", "E_{m} [GeV]",     "Normalized Counts",  "Missing Energy (light nuclei)");
-  overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Pm_rand_sub",     "P_{m} [GeV/c]",   "Normalized Counts",  "Missing Momentum (light nuclei)");
+  //overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Pm_rand_sub",     "P_{m} [GeV/c]",   "Normalized Counts",  "Missing Momentum (light nuclei)");
  
   
 
   
-  /*
+  
   //-------------------------
   // HISTOGRAM SINGLE RATIOS
   //-------------------------
@@ -188,32 +188,61 @@ void cafe_plot_utils(){
     
   // Example of Use: 
 
-  // declare histogram vector to retrieve histograms A: Ca48 MF,  B: Ca40 MF, and R: A/B, binned in Pmiss
-  vector<TH1F*> hvec;
+  //declare histogram vector to retrieve histograms A: Ca48 MF,  B: Ca40 MF, and R: A/B, binned in Pmiss
+  vector<TH1F*> hvec_be9;
+  vector<TH1F*> hvec_b10;
+  vector<TH1F*> hvec_b11;
+  
 
   // call function to get ratio
   // arguments:("targetA", "kinematicsA", "targetB", "kinematicsB", "histogram object", bool show_histos? )
-  hvec = get_single_ratios("Ca48",       "MF",        "Ca40",       "MF",       "kin_plots/H_Pm",     true); 
+  hvec_be9 = get_single_ratios("Be9",       "MF",        "C12",       "MF",       "randSub_plots/H_Pm_rand_sub",     true);  //hvec[0]: histA, hvec[1]: histB, hvec[3]: R
+  hvec_b10 = get_single_ratios("B10",       "MF",        "C12",       "MF",       "randSub_plots/H_Pm_rand_sub",     true); 
+  hvec_b11 = get_single_ratios("B11",       "MF",        "C12",       "MF",       "randSub_plots/H_Pm_rand_sub",     true); 
 
   // access the histograms from the vector
-  TH1F *A = &*hvec[0];  // get histA
-  TH1F *B = &*hvec[1];  // get histB
-  TH1F *R = &*hvec[2];  // get ratio of two histograms, A/B
-  */
+  TH1F *be9 = &*hvec_be9[0];  // get histA
+  TH1F *c12 = &*hvec_be9[1];  // get histB
+  TH1F *b10 = &*hvec_b10[0];  
+  TH1F *b11 = &*hvec_b11[0];
+
+  be9->SetLineColor(kBlack);
+  be9->SetLineWidth(3);
+  b10->SetLineColor(kRed);
+  b10->SetLineWidth(3);
+  b11->SetLineColor(kBlue);
+  b11->SetLineWidth(3);
+  c12->SetLineColor(kGreen);
+  c12->SetLineWidth(3);
   
-  /*
+  //access ratios
+  TH1F *be9r = &*hvec_be9[2];
+  TH1F *b10r = &*hvec_b10[2];
+  TH1F *b11r = &*hvec_b11[2];
+  be9r->SetLineColor(kBlack);
+  be9r->SetMarkerColor(kBlack);
+  b10r->SetLineColor(kRed);
+  b10r->SetMarkerColor(kRed);
+  b11r->SetLineColor(kBlue);
+  b11r->SetMarkerColor(kBlue);
+  
+  
   // check that the retrieved histograms are as expected
   TCanvas *c = new TCanvas("c1","",800,1200);
   c->Divide(1,2);
   c->cd(1);
-  A->Draw("histE0");
-  B->Draw("sameshistE0");
-  cout << "A Integral: " << A->Integral() << endl;
-  cout << "B Integral: " << B->Integral() << endl;
+  be9->Draw("histE0");
+  b10->Draw("sameshistE0");
+  b11->Draw("sameshistE0");
+  c12->Draw("sameshistE0");
+
+
   c->cd(2);
-  R->Draw("E0");
-  cout << "R Integral: " << R->Integral() << endl;
-  */
+  be9r->Draw("E0");
+  b10r->Draw("E0sames");
+  b11r->Draw("E0sames");
+  
+  
  
   
 }
