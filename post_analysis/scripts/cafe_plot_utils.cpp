@@ -159,10 +159,19 @@ void cafe_plot_utils(){
   //        The histograms are read from analyzed .root files in a fixed location specified within the function.
   
   // NOTE: All .root files and summary (.csv) files used by these functions are assumed to be in a fixed location (set within the function)
+
+  // histo names: randSub_plots/H_Em_nuc_rand_sub, randSub_plots/H_Q2_rand_sub, randSub_plots/H_xbj_rand_sub, randSub_plots/H_Pm_rand_sub,
   
-  vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
-  vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
-  overlay_nuclei(tgt, clr, "MF", "randSub_plots/H_Em_nuc_rand_sub", "Missing Emergy [GeV/c]", "Normalized Counts", "Missing Momentum (light nuclei)");
+  //vector<string> tgt = {"LD2", "Be9", "B10", "B11", "C12"};
+  //vector<int> clr     = {2, 4, 6, 8, 9};    //  root cern color code ---> 2 : red,  4: blue, 6: magenta, 8: green, 9: purple
+
+  vector<string> tgt = {"Be9", "B10", "B11", "C12"};
+  vector<int> clr     = {1, 2, 4, 8};    //  root cern color code ---> 1: black,  2 : red,  4: blue, 6: magenta, 8: green, 9: purple
+
+  //overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Q2_rand_sub",     "Q^{2} [GeV^{2}]", "Normalized Counts",  "4-Momentum Transfer (light nuclei)");
+  // overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_xbj_rand_sub",    "x_{Bj}",          "Normalized Counts",  "x-Bjorken (light nuclei)");
+  //overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Em_nuc_rand_sub", "E_{m} [GeV]",     "Normalized Counts",  "Missing Energy (light nuclei)");
+  overlay_nuclei(tgt, clr, "SRC", "randSub_plots/H_Pm_rand_sub",     "P_{m} [GeV/c]",   "Normalized Counts",  "Missing Momentum (light nuclei)");
  
   
 
