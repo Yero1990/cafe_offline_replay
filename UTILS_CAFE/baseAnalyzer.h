@@ -167,6 +167,7 @@ protected:
   Double_t sig_Ti48 = rho_Ti48 * thick_Ti48; // 0.294
 
   // nuclear transparency factors (prob. that hit proton exits the nucleus)
+  // T_A = T_C12 * A ^ {-1/3}
   Double_t T_H    = 1.;
   Double_t T_D    = 1.; 
   Double_t T_Be9  = 0.6;
