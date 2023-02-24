@@ -166,7 +166,7 @@ void replay_cafe_scalers(Int_t RunNumber = 0, Int_t MaxEvent = 0, TString ftype=
   THcConfigEvtHandler* ev125 = new THcConfigEvtHandler("HC", "Config Event type 125");
   gHaEvtHandlers->Add(ev125);
   // Add event handler for EPICS events
-  THaEpicsEvtHandler* hcepics = new THaEpicsEvtHandler("epics", "HC EPICS event type 180");
+  THaEpicsEvtHandler* hcepics = new THaEpicsEvtHandler("epics", "HC EPICS event type 181");
   gHaEvtHandlers->Add(hcepics);
  
   // Set up the analyzer - we use the standard one,
@@ -203,7 +203,8 @@ void replay_cafe_scalers(Int_t RunNumber = 0, Int_t MaxEvent = 0, TString ftype=
   analyzer->SetEvent(event);
 
   // Set EPICS event type
-  analyzer->SetEpicsEvtType(180);
+  analyzer->SetEpicsEvtType(181);
+  analyzer->AddEpicsEvtType(182);
 
   // Define crate map
   analyzer->SetCrateMapFileName("MAPS/db_cratemap.dat");
