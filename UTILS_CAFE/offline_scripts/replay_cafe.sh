@@ -13,7 +13,7 @@
 #        DEF-files/cafe_{replay_type}.def and may be modified.
 #        Where {replay_type} can be either production where only
 #        necessary leaf variables are written for doing physics analysis,
-#        or calibration (i.e., "hod_calib", "dc_calib", "cal_calib", "scalers",
+#        or calibration (i.e., "optics", "hod_calib", "dc_calib", "cal_calib", "scalers",
 #        "reftime", "timewin")
 
 # What type of input is {replay_type} ?

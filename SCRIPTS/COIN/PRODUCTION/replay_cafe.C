@@ -25,7 +25,7 @@ void replay_cafe(Int_t RunNumber = 0, Int_t MaxEvent = 0, TString ftype="") {
   }
   
   if(ftype==""){
-    cout  << "\nEnter analysis type to use (e.g., prod, reftime, timewin, hodcalib, calcalib, dccalib): \n " << endl;
+    cout  << "\nEnter analysis type to use (e.g., sample, prod, optics, reftime, timewin, hodcalib, calcalib, dccalib): \n " << endl;
     cin >> ftype;
     if(ftype==""){
       cerr << "...Invalid file type\n";

@@ -34,6 +34,7 @@ block H.gtr.ph
 block H.gtr.th
 block H.gtr.dp
 block H.react.*
+block H.rb.raster.*
 block H.extcor.*sieve*
 block H.cer.npe*
 block H.cal.etot*norm*
@@ -70,6 +71,7 @@ block P.gtr.ph
 block P.gtr.th
 block P.gtr.dp
 block P.react.*
+block P.rb.raster.*
 block P.extcor.*sieve*
 block P.ngcer.npe*
 block P.hgcer.npe*

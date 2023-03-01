@@ -12,20 +12,36 @@
 ; Add new variables for Hall C BPM A, B, and C, based on HARP calibration
 ; Updated  by Mark Jones , Fit to Dec 8 2019 harp versus bpm scan
 ;
-;
+; D. Gaskell Dec. 06, 2022 adjust offsets for raw bpms (THcRaster.cxx)
+; the order is: BPMX_offset: [a, b, c] = [-0.162, 0.221, 0.544], BPMY_offset: [a, b, c] = [-0.185, 0.022, 0.394]
+  
   gbpmxa_slope = -0.957023
-  gbpmxa_off   = 0.141521
+  gbpmxa_off   = -0.162
+
   gbpmxb_slope = -1.08737
-  gbpmxb_off   = 0.216443
+  gbpmxb_off   = 0.221
+
   gbpmxc_slope = -0.963681
-  gbpmxc_off   = -1.12796
+  gbpmxc_off   = 0.544
+
   gbpmya_slope = 0.948114
-  gbpmya_off   = -0.0623243
+  gbpmya_off   = -0.185
+  
   gbpmyb_slope = 1.15675
-  gbpmyb_off   = -0.292128
+  gbpmyb_off   = 0.022
+
   gbpmyc_slope = 0.854674
-  gbpmyc_off   = -0.77972
-;
+  gbpmyc_off   = 0.394
+
+; old offsets ( from 2019)
+; gbpmxa_off   = 0.141521
+; gbpmxb_off   = 0.216443
+; gbpmxc_off   = -1.12796
+  
+; gbpmya_off   = -0.0623243
+; gbpmyb_off   = -0.292128
+; gbpmyc_off   = -0.77972
+  
 
 ;positions of BPMs relative to target (from Fall 2018 survey)
 gbpma_zpos = 320.17 ; cm
@@ -50,7 +66,7 @@ gfryb_adc_zero_offset = 54800
 
 
 
-; (see log: https://logbooks.jlab.org/entry/4138317 )
+; (see log: https://logbooks.jlab.org/entry/4138317 ) Feb 24, 2023
 ; corect Raster sign convention
 gfrxa_adcpercm = -(63427-44954)/.2
 gfrxb_adcpercm = -(63841-44824)/.2
