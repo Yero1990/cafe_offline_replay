@@ -26,7 +26,7 @@ if [[ -z "$1" ]]; then
     echo "Usage: "
     echo "./run_batch_analysis.sh <targ> <ana_cut> MAXEVENTS"
     echo ""
-    echo "<targ> : target type (h2, d2, be9, b10, b11, c12, ca40, ca48, fe54) "
+    echo "<targ> : target type (h2, d2, be9, b10, b11, c12, ca40, ca48, fe54, au197) "
     echo "<ana_cut> : analysis type cut (heep_coin, heep_singles, MF, SRC, optics)"
     echo ""
     echo "A runlist will be read, based on the input, from the directory located at: "

@@ -1874,7 +1874,15 @@ void baseAnalyzer::ReadReport()
     Z = 22;
     A = N+Z;
   }
-  
+
+  //adding the gold target to Feb-2023 CaFe run  
+  else if(abs(temp_var-MAu197_amu)<=max_diff){   
+    tgt_type = "Au197";  
+    tgt_mass = MAu197_amu; tgt_density = rho_Au197; tgt_thickness = thick_Au197; 
+    N = 118; 
+    Z = 79;   
+    A = N+Z;    
+  }
   else{
     cout << "Target mass (amu) mis-match of >1E-6 between this script and standard.kinematics . . . Check target mass is set correctly in standard.kinematics file !" << endl;
     gSystem->Exit(0);
@@ -3540,9 +3548,9 @@ void baseAnalyzer::ScalerEventLoop()
 
     
       //Check If BCM Beam Current in Between Reads is Over Threshold
-      bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
-      if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
-      //if(Scal_BCM_current>=bcm_thrs)
+      //bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
+      //if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
+      if(Scal_BCM_current>=bcm_thrs)
 	{
 	  
 	  //Turn Event Flag ON, if beam current is within threshold
@@ -5784,7 +5792,7 @@ void baseAnalyzer::EventLoop()
 
 		    
 		    
-		  }  //----------------------END: Fill DATA Histograms-----------------------		  		 		  
+		    }  //----------------------END: Fill DATA Histograms-----------------------		  		 		  
 		  
 		  
 		} //------END: REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS-----
@@ -6893,7 +6901,7 @@ void baseAnalyzer::ScaleSIMC(TString target="")
   if(target=="Ca40" && analysis_cut=="MF")  scale_factor = ( Transparency("Ca40") / Transparency("C12") ) * ( sig_A("Ca40") / sig_A("C12") ) ;
   if(target=="Ca48" && analysis_cut=="MF")  scale_factor = ( Transparency("Ca48") / Transparency("C12") ) * ( sig_A("Ca48") / sig_A("C12") ) ;
   if(target=="Fe54" && analysis_cut=="MF")  scale_factor = ( Transparency("Fe54") / Transparency("C12") ) * ( sig_A("Fe54") / sig_A("C12") ) ;
-
+  if(target=="Au197" && analysis_cut=="MF")  scale_factor = ( Transparency("Au197") / Transparency("C12") ) * ( sig_A("Au197") / sig_A("C12") ) ;
 
   // determine scale factors for various targets (scale deuteron SRC simulation by other targets)
   if(target=="Be9" && analysis_cut=="SRC") scale_factor = ( Transparency("Be9") / Transparency("LD2") ) * ( sig_A("Be9") / sig_A("LD2") ) * a2("Be9") ;
@@ -6903,6 +6911,7 @@ void baseAnalyzer::ScaleSIMC(TString target="")
   if(target=="Ca40" && analysis_cut=="SRC") scale_factor = ( Transparency("Ca40") / Transparency("LD2") ) * ( sig_A("Ca40") / sig_A("LD2") ) * a2("Ca40") ;
   if(target=="Ca48" && analysis_cut=="SRC") scale_factor = ( Transparency("Ca48") / Transparency("LD2") ) * ( sig_A("Ca48") / sig_A("LD2") ) * a2("Ca48") ;
   if(target=="Fe54" && analysis_cut=="SRC") scale_factor = ( Transparency("Fe54") / Transparency("LD2") ) * ( sig_A("Fe54") / sig_A("LD2") ) * a2("Fe54") ;
+  if(target=="Au197" && analysis_cut=="SRC") scale_factor = ( Transparency("Au197") / Transparency("LD2") ) * ( sig_A("Au197") / sig_A("LD2") ) * a2("Au197") ;                                                    
 
 
   
@@ -7406,8 +7415,8 @@ void baseAnalyzer::WriteOnlineReport()
     out_file << Form("shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
     out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
     out_file << "" << endl;      
-    //out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
-    out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    //out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
     out_file << Form("BCMi_Charge [mC]: %.3f ", total_charge_bcm_cut ) << endl;
@@ -7817,8 +7826,8 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
     out_file << "" << endl;
     out_file << Form("# BCM used in analysis: %s " , bcm_type.Data()) << endl;
-    //out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
-    out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    //out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
     out_file << Form("%s_Charge [mC]: %.3f ", bcm_type.Data(), total_charge_bcm_cut ) << endl;
@@ -8235,8 +8244,8 @@ void baseAnalyzer::WriteReportSummary()
       out_file << Form("# shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
       out_file << Form("# shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
       out_file << "#" << endl;      
-      // out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
-      out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
+      out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+      //out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
 
       out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;

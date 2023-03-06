@@ -1,0 +1,68 @@
+# CaFe Current / Rate Dependence Studies
+# Date: March 06, 2023
+#
+# C. Yero
+#
+# Brief: The yield / mC is dependent on the beam current (T2 rates). This study shows
+# that part of this dependency is due accidental hits blocking the "good hits" that actually
+# formed a coincidence. This effect is amplified with higher beam currents (i.e., higher rates), 
+# as there are more accidentals blocking the  hits. The effect is mostly from the SHMS (e- arm) 
+# trigger T2, rather than the HMS (hadron arm) T3, as the SHMS is a forward angles (8.3 deg) 
+# and high momentum (-8.55 GeV/c)
+# 
+#   Technical Details of how the coincidence blocking happens:
+# ----------------------------------------------------------------
+#  When a coincidence is made: T5 = T2 (SHMS) x T3 (HMS),  the signal (T5) is sent to the trigger interface (TI)
+#  The TI then accepts the signal and propagates it across all readout crates (ROCs) in HMS/SHMS. The modules in each
+#  crate (ADCs, TDCs), are notified and emit a "look-back window", typically a few microseconds (~1000s) in which each channel
+#  in the module reads out all the possible hits that within the window, and selects the 1st hit as the "good hit". For single hits,
+#  it can only be the "good hit", however, if there are multiple hits, such as accidentals at higher rates, if the accidental came before 
+#  the "good hit", then the accidental is selected. This is the reason why reference time / time window cuts are done first in the analysis. 
+#
+#  With respect to the coincidence formation of a coincidence signal by the analyzer (HCANA), for the CaFe, it uses the T2 (T.coin.pTRIG2_tdcTimeRaw) 
+#  and T3 (T.coin.pTRIG3_tdcTimeRaw) to make the raw coincidence time signal, and applies pathlength correction afterwards. Therefore, a time window cut
+#  MUST also be placed on these variables to ensure the "good hit" is selected. Keep in mind that the "good hit" could be either real or accidental coincidence
+#  in which case, it will just show up in the normal coincidence time spectrum either in the prompt peak or spaced apart by intervals of 2 or 4 ns bunch structures.
+#  For CaFe, we have determined the proper cut to be made on the T2, T3 and the number of good hits is expected to increase.
+#
+#  Technical Details of this Study
+# -----------------------------------
+# This study consist of variation of parameters to quantify the effect on the relative yield as a function of T2 rates and beam current.
+# 
+# The parameter varies consist of the following:
+#
+# (0) existing configuration (no changes) -- baseline 
+#
+# (1) applied T2, T3 raw tdc Time cuts for each scenario: (modified t_coin_TdcTimeWindowMin/Max on PARAM/TRIG/fall22/tcoin_fall22.param)
+#     (a) >5 uA beam current cut
+#     (b)  peak_current +/- 3 uA cut
+#
+# NOTE: this was mainly to measure the effect beam current cuts, given than some runs had multiple currents which can make
+#       the interpretation of the beam current study non-trivial. For example, a Be9 run 17099, 4 localized current peaks (20, 30, 50, 65 uA)
+#       which would distort our interpretation of beam current dependency. Therefore, one has to be careful to either exclude this type of runs 
+#       from the study, or analyze the  peak currents individually.
+#
+# (2) applied a tighter reference time cut on SHMS/HMS (might help recover potentially lost events) 
+#    ( modified ** PARAM/TRIG/fall22/tcoin_fall22.param **, **PARAM/SHMS/GEN/fall22/p_reftime_cut_cafe.param** )
+
+# Header definitions:
+# (only statistical errors considered)
+#
+# yield_norm =  counts  / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
+# yield_norm_err = sqrt(counts) / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
+# rel_yield = yield_norm / yield_norm (@ lowest current)
+# rel_yield_err = yield_norm_err / yield_norm (@ lowest current)
+
+Study (0)
+run  target kin avg_current [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  yield_norm  rel_yield
+
+
+Study (1a)
+run  target kin avg_current [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  yield_norm  rel_yield
+
+
+Study (1b)
+run  target kin avg_current [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  yield_norm  rel_yield
+
+Study (2)
+run  target kin avg_current [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  yield_norm  rel_yield

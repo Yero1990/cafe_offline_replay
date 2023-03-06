@@ -94,6 +94,9 @@ protected:
   Double_t MCa48_amu  = 47.95252276   , A_Ca48 = 48;
   Double_t MFe54_amu  = 53.9396147    , A_Fe54 = 54;
   Double_t MTi48_amu  = 47.9479463    , A_Ti48 = 48;
+  //Dien adding the Au197 target in  
+  Double_t MAu197_amu  = 196.966570  , A_Au197 = 197; //Adding for Feb 2023 CaFe run  
+
   // target mass (GeV)
   Double_t MH     = MH_amu    * amu2GeV;
   Double_t MD     = MD_amu    * amu2GeV;
@@ -106,6 +109,7 @@ protected:
   Double_t MCa48  = MCa48_amu * amu2GeV;
   Double_t MFe54  = MFe54_amu * amu2GeV;
   Double_t MTi48  = MTi48_amu * amu2GeV;
+  Double_t MAu187  = MAu197_amu * amu2GeV; //adding for Feb-2023 CaFe run 
   
   //detected particle masses (GeV/c^2)
   const Double_t me = 0.000510998950;  //electron Mass
@@ -138,6 +142,7 @@ protected:
   Double_t rho_Ca48 = 1.86; //
   Double_t rho_Fe54 = 7.87;
   Double_t rho_Ti48 = 4.5;
+  Double_t rho_Au197 = 19.32; //Adding for Feb-2023 CaFe run 
 
   //target thickness (or length) (cm)
   Double_t tgt_thickness = 0.0;  // generic variable to hold target thickness
@@ -152,6 +157,7 @@ protected:
   Double_t thick_Ca48 = 0.565; //
   Double_t thick_Fe54 = 0.04663; // 
   Double_t thick_Ti48 = 0.718;
+  Double_t thick_Au197 = 0.020947; //Adding for Feb-2023 CaFe run 
 
   //target areal density (g/cm^2)
   Double_t sig_H    = rho_H   * thick_H; 
@@ -165,6 +171,7 @@ protected:
   Double_t sig_Ca48 = rho_Ca48 * thick_Ca48; // 1.051
   Double_t sig_Fe54 = rho_Fe54 * thick_Fe54; // 0.367
   Double_t sig_Ti48 = rho_Ti48 * thick_Ti48; // 0.294
+  Double_t sig_Au197 = rho_Au197 * thick_Au197; //0.4047;
 
   // nuclear transparency factors (prob. that hit proton exits the nucleus)
   // T_A = T_C12 * A ^ {-1/3}
@@ -177,6 +184,7 @@ protected:
   Double_t T_Ca40 = 0.43;
   Double_t T_Ca48 = 0.37;
   Double_t T_Fe54 = 0.36;
+  Double_t T_Au197 = 0.3; //adding for Feb-2023 Cafe run  
 
   Double_t Transparency(TString target=""){
 
@@ -193,6 +201,7 @@ protected:
     else if(target=="Ca40") return T_Ca40;
     else if(target=="Ca48") return T_Ca48;
     else if(target=="Fe54") return T_Fe54;
+    else if(target=="Au197") return T_Au197;
     else return 0.;
 
   }
@@ -210,6 +219,7 @@ protected:
     Double_t a2_Ca40 = 4.5;
     Double_t a2_Ca48 = 4.5;
     Double_t a2_Fe54 = 5.2;
+    Double_t a2_Au197 = 4.8; //Need to check Nadia paper and update this number  
 
     if(target=="d2")        return a2_D;
     else if(target=="Be9")  return a2_Be9;
@@ -219,6 +229,7 @@ protected:
     else if(target=="Ca40") return a2_Ca40;
     else if(target=="Ca48") return a2_Ca48;
     else if(target=="Fe54") return a2_Fe54;
+    else if(target=="Au197") return a2_Au197; 
     else return 0.;
     
   }
@@ -238,7 +249,7 @@ protected:
     else if(target=="Ca48") return sig_Ca48;
     else if(target=="Fe54") return sig_Fe54;
     else if(target=="Ti48") return sig_Ti48;
-    
+    else if(target=="Au197") return sig_Au197;      
     else return 0.;
     
     
