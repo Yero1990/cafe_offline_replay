@@ -1,0 +1,14 @@
+rate-dependent study on MF data analyzed
+by setting  T2, T3 tdcTimeRaw time cuts on tcoin_fall22.param
+to ensure the right tdc hit is selected for making a
+coincidence.
+
+This study was done under two conditons on beam current:
+
+1) > 5 uA cut
+
+2)  peak_current +/- 3 uA cut
+
+The reason is that some runs have varying current, which
+can be misleading when interpreting the effect of beam
+current changes on the yield/mC

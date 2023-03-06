@@ -74,9 +74,6 @@ Ideas to try:
 2) tighten restrictions on "did" (i.e., ntrack>=1 && pruning_cuts) in analysis code
 (need to think about this, 
 
-3) 
-
-
 
 -------------------------------------------------------------
 ; this is something to add (for drift chambers)
@@ -84,8 +81,8 @@ Ideas to try:
 ; p(h)max_drifttime =200
 
 
-;  this is a copy of the pruning Mark used for VCS experiment ( I will over each of these and for Cafe
-;   and apply them in the appropriate range
+;  this is a copy of the pruning Mark used for VCS experiment ( I will go over each of these and for Cafe
+;   and apply them in the appropriate range)
 
 ; if both psel_using_scin = 0 and psel_using_prune = 0 then best chi2 track is used.
 ; psel_using_scin         uses scintillator for track selection

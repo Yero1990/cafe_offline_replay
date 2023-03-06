@@ -1,0 +1,8 @@
+rate-dependent study on MF data analyzed with a
+beam current cut of:  peak_current +/- 3 uA
+
+(some runs had varying beam current, and thus
+an average beam current could be misleading if one
+is studing yield dependence pn beam current and rate.
+One needs to ensure a specific beam current range is chosen
+to study the effect on the yield/mC
