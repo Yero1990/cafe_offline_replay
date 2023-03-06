@@ -768,6 +768,7 @@ protected:
 
   // keep track of total charge
   TH1F *H_total_charge;
+  TH1F *H_bcmCurrent;
 
 
   //HMS quality check histos

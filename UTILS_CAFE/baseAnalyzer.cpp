@@ -338,8 +338,9 @@ void baseAnalyzer::Init(){
   // DATA QUALITY CHECK / CUTS STUDY Histograms
   //----------------------------------------------------------------
 
-  // keep track of total charge
+  // keep track of total charge / current
   H_total_charge = NULL;
+  H_bcmCurrent = NULL;
 
   // quality check histos (will be fitted)
   H_hbeta_fit = NULL;
@@ -947,9 +948,10 @@ baseAnalyzer::~baseAnalyzer()
   // DATA QUALITY CHECK / CUTS STUDY Histograms
   //----------------------------------------------------------------
 
-  //-TOTAL CHARGE-
+  //-TOTAL CHARGE/CURRENT-
   delete H_total_charge; H_total_charge = NULL;
- 
+  delete H_bcmCurrent;   H_bcmCurrent = NULL;
+
   //quality histos
   delete H_hbeta_fit;   H_hbeta_fit = NULL;
   delete H_pbeta_fit;	H_pbeta_fit = NULL;
@@ -1370,8 +1372,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
+      data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
 
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1386,9 +1389,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
-      
+      data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
+
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
@@ -2676,7 +2680,7 @@ void baseAnalyzer::CreateHist()
   
   // total charge
   H_total_charge = new TH1F("H_total_charge", "Total Charge", 100,-4.5,5.5);
-   
+  H_bcmCurrent = new TH1F("H_bcmCurrent", "BCM Current", 100, 1., 100.);
   // calibration fits
   H_ctime_fit   = new TH1F("H_ctime_fit", "Coin. Time ", coin_nbins, coin_xmin,coin_xmax);
   H_hbeta_fit   = new TH1F("H_hms_beta_fit", "HMS Hodoscope Beta ", hbeta_nbins, hbeta_xmin, hbeta_xmax);
@@ -2688,6 +2692,7 @@ void baseAnalyzer::CreateHist()
 
   // Add to TList
   quality_HList->Add(H_total_charge);  
+  quality_HList->Add(H_bcmCurrent);  
 
   quality_HList->Add(H_hbeta_fit);
   quality_HList->Add(H_pbeta_fit);
@@ -3437,6 +3442,49 @@ void baseAnalyzer::ScalerEventLoop()
   cout << "Calling Base ScalerEventLoop() " << endl;
 
   
+  //Check If BCM Beam Current in Between Reads is Over Threshold (for beam current study )
+  /*
+  if(run==17094){
+    set_current = 35.;
+    bcm_thrs = 2.;
+  }
+  if(run==17096){
+    set_current = 64.;
+    bcm_thrs = 4.;
+  }
+  */
+  
+  //1ST PASS Scaler reads loop. to get peak current
+  for (int i = 0; i < scal_entries; i++) 
+    {
+      scaler_tree->GetEntry(i);
+
+      // Determine which bcm current to cut on (based on user input)
+      if(bcm_type=="BCM1"){
+	Scal_BCM_current = Scal_BCM1_current;
+      }
+      else if(bcm_type=="BCM2"){
+	Scal_BCM_current = Scal_BCM2_current;
+      }
+      else if(bcm_type=="BCM4A"){
+	Scal_BCM_current = Scal_BCM4A_current;
+      }
+      else if(bcm_type=="BCM4B"){
+	Scal_BCM_current = Scal_BCM4B_current;
+      }
+      else if(bcm_type=="BCM4C"){
+	Scal_BCM_current = Scal_BCM4C_current;
+      }
+
+      
+      H_bcmCurrent->Fill(Scal_BCM_current);
+      
+      cout << "ScalerEventLoop(PASS1): " << std::setprecision(2) << double(i) / scal_entries * 100. << "  % " << std::flush << "\r";
+    }
+  
+  set_current =  H_bcmCurrent->GetXaxis()->GetBinCenter( H_bcmCurrent->GetMaximumBin() );  //set current corresponds to maximum bin content of bcm current hist
+  
+  cout << Form("---------> Peak Current for this run [uA]: %.3f ", set_current) << endl;
 
 
   //Scaler reads loop. ith scaler read
@@ -3492,9 +3540,9 @@ void baseAnalyzer::ScalerEventLoop()
 
     
       //Check If BCM Beam Current in Between Reads is Over Threshold
-      //set_current = 40.;
-      //if(abs(Scal_BCM_current-set_current)<bcm_thrs)  // set_current +/- bcm_thrs
-      if(Scal_BCM_current>bcm_thrs)
+      bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
+      if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
+      //if(Scal_BCM_current>=bcm_thrs)
 	{
 	  
 	  //Turn Event Flag ON, if beam current is within threshold
@@ -7070,6 +7118,9 @@ void baseAnalyzer::WriteHist()
 	    if( hist_name.find("_charge") != std::string::npos ){
 	      outROOT->cd("quality_plots"); h_i->Write(); 	      
 	    }
+	    if( hist_name.find("_bcmCurrent") != std::string::npos ){
+	      outROOT->cd("quality_plots"); h_i->Write(); 	      
+	    }
 	    if( hist_name.find("_multitrack") != std::string::npos ){  
 	      outROOT->cd("quality_plots"); h_i->Write();
 	    }
@@ -7355,7 +7406,8 @@ void baseAnalyzer::WriteOnlineReport()
     out_file << Form("shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
     out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
     out_file << "" << endl;      
-    out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    //out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
     out_file << Form("BCMi_Charge [mC]: %.3f ", total_charge_bcm_cut ) << endl;
@@ -7765,7 +7817,8 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << Form("shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
     out_file << "" << endl;
     out_file << Form("# BCM used in analysis: %s " , bcm_type.Data()) << endl;
-    out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    //out_file << Form("%s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+    out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
     out_file << Form("beam_on_target [sec]: %.3f       ", total_time_bcm_cut) << endl;
     out_file << Form("%s_Average_Current [uA]: %.3f ", bcm_type.Data(), avg_current_bcm_cut ) << endl;
     out_file << Form("%s_Charge [mC]: %.3f ", bcm_type.Data(), total_charge_bcm_cut ) << endl;
@@ -8182,7 +8235,9 @@ void baseAnalyzer::WriteReportSummary()
       out_file << Form("# shms_e_momentum [GeV/c]: %.4f             ",  shms_p ) << endl;
       out_file << Form("# shms_e_angle [deg]: %.4f                  ",  shms_angle ) << endl;  
       out_file << "#" << endl;      
-      out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+      // out_file << Form("# %s_Current_Threshold [uA]: >%.2f ", bcm_type.Data(), bcm_thrs) << endl;
+      out_file << Form("%s_Current_Threshold [uA]: peak_current +/- %.2f ", bcm_type.Data(), bcm_thrs) << endl;
+
       out_file << "# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       " << endl;
       out_file << "#                       " << endl;
     

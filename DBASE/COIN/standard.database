@@ -32,5 +32,11 @@ g_ctp_parm_filename       = "DBASE/COIN/GEN/general_cafe_fall22.param"
 g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_fall22.param"
 g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_fall22.param"
 
+; cafe official remaining 2 PAC days (feb 22-24, 2023)
+20776-20835
+g_ctp_parm_filename       = "DBASE/COIN/GEN/general_cafe_fall22.param"
+g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_fall22.param"
+g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_fall22.param"
+
 ; xem heep elastics
 

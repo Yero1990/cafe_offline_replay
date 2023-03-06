@@ -58,7 +58,7 @@ pScinGood_cut_flag = 1
 # SHMS Noble Gas Cherenkov Total Number of Photo-Electrons (search "npeSum" in /hcana/src/THcCherenkov.cxx)
 pngcer_cut_flag = 1
 c_pngcer_npeSum_min = 1.0
-c_pngcer_npeSum_max = 100.
+c_pngcer_npeSum_max = 1000.
 
 # SHMS Heavy Gas Cherenkov (will NOT be used by CaFe experiment)
 phgcer_cut_flag = 0
@@ -111,7 +111,7 @@ cpid_petot_trkNorm_max = 1.3
 # (SHMS PID) Noble Gas Cherenkov Total Number of Photo-Electrons
 pngcer_pidCut_flag = 0
 cpid_pngcer_npeSum_min = 1.5
-cpid_pngcer_npeSum_max = 100.
+cpid_pngcer_npeSum_max = 1000.
 
 # (SHMS PID) Heavy Gas Cherenkov (Pi / K Separation) --not needed for CaFe
 phgcer_pidCut_flag = 0
