@@ -1,5 +1,14 @@
 block g.*
 
+block H.kin.*
+block H.react.*
+block H.gtr.dp
+block H.gtr.ph
+block H.gtr.th
+block H.gtr.x
+block H.gtr.y
+block H.dc.*_fp
+
 block P.kin.*
 block P.react.*   
 block P.ngcer.npe*
