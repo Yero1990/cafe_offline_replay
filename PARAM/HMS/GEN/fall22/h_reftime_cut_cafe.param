@@ -9,15 +9,15 @@
 ; Cut is on reference time per detector.
 
 ; CaFe Fall 2022 Ref. Times 
-;hdc_tdcrefcut=-15000.
-;hhodo_tdcrefcut=-2500.
-;hhodo_adcrefcut=-3000.
-;hcer_adcrefcut=-3000.
-;hcal_adcrefcut=-3000.
+hdc_tdcrefcut=-15000.
+hhodo_tdcrefcut=-2500.
+hhodo_adcrefcut=-3000.
+hcer_adcrefcut=-3000.
+hcal_adcrefcut=-3000.
 
 ; C.Y. Mar 06, 2023 | optimizing ref. time cuts (made a little bit tighter)
-hdc_tdcrefcut=-16500.
-hhodo_tdcrefcut=-3600.
-hhodo_adcrefcut=-5000.
-hcer_adcrefcut=-5000.
-hcal_adcrefcut=-5000.
+;hdc_tdcrefcut=-16500.
+;hhodo_tdcrefcut=-3600.
+;hhodo_adcrefcut=-5000.
+;hcer_adcrefcut=-5000.
+;hcal_adcrefcut=-5000.

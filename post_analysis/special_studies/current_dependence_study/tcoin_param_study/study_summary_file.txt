@@ -51,7 +51,9 @@
 # Ynorm =  counts  / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
 # Ynorm_err = sqrt(counts) / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
 # relY = Ynorm / Ynorm (@ lowest current)
-# relY_err = Ynorm_err / Ynorm (@ lowest current)
+# relY_err = Ynorm_err / Ynorm (@ lowest current) --> f=A/B ---> df_err = |f| * srt( (dA/A)**2 + (dB/B)**2 ) 
+
+** NOTE: need to study drop in yield fADC deadtime effects (P. Bosted)
 
 Study (0)
 run    target kin avg_I [uA]  T2_rate [kHz]  counts     Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  Ynorm  Ynorm_err  relY  relY_err
