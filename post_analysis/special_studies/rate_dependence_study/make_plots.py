@@ -152,7 +152,16 @@ def compare(target='', kin='', file1='', file2=''):
     # calcualte charge-normalized yield
     Y_f1 = N_f1 / ( Q_f1 * hms_trk_eff_f1 * shms_trk_eff_f1 * total_LT_f1 * mult_trk_eff_f1)              
     relY_f1  = Y_f1 / Y_f1[0] 
-     
+
+    # extract the values and respective uncertanties for plotting
+    Y_f1_nom = unumpy.nominal_values(Y_f1)
+    Y_f1_err = unumpy.std_devs(Y_f1)
+
+    relY_f1_nom = unumpy.nominal_values(relY_f1)
+    relY_f1_err = unumpy.std_devs(relY_f1)
+
+
+    
     # get relevant header info (from file2)
     I_f2                    = get_data(target, kin, 'avg_current', file2 )
     Q_f2                    = get_data(target, kin, 'charge', file2)
@@ -165,5 +174,20 @@ def compare(target='', kin='', file1='', file2=''):
     # calcualte charge-normalized yield
     Y_f2 = N_f2 / ( Q_f2 * hms_trk_eff_f2 * shms_trk_eff_f2 * total_LT_f2 * mult_trk_eff_f2)              
     relY_f2  = Y_f2 / Y_f2[0] 
+
+    # extract the values and respective uncertanties for plotting
+    Y_f2_nom = unumpy.nominal_values(Y_f2)
+    Y_f2_err = unumpy.std_devs(Y_f2)
+
+    relY_f2_nom = unumpy.nominal_values(relY_f2)
+    relY_f2_err = unumpy.std_devs(relY_f2)
+
     
-    print(relY_f1)
+    plt.errorbar(I_f1, relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s'%(target, kin))
+    plt.errorbar(I_f2, relY_f2_nom, relY_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='dashed', label='%s %s'%(target, kin))
+    plt.legend()
+    plt.show()
+
+compare('C12', 'MF',
+        '../../summary_files/pass1_with_tcoin/above_5uA_cut/cafe_prod_Be9_MF_report_summary.csv',
+        '../../summary_files/pass1_with_tcoin/tight_current_cut/cafe_prod_Be9_MF_report_summary.csv')
