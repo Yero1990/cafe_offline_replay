@@ -7,7 +7,7 @@ from uncertainties import ufloat
 from uncertainties import unumpy
 
 
-def get_data(target='', kin='', header='', fname=''):
+def get_data(header='', fname=''):
 
     # read any data from the .csv file
     
@@ -131,63 +131,138 @@ def make_plots():
     #print(unumpy.nominal_values(Y)[-3:])
     #print(unumpy.std_devs(Y)[-3:])
 '''
+
+
+def get_relative(name='',  file1=''):
+
+    # name: 'rel_yield_nom', 'rel_yield_err', 'rel_T2_nom', 'rel_T2_err'
     
+    # get relevant header info (from file1)
+    I                    = get_data('avg_current', file1 )
+    Q                    = get_data('charge', file1)
+    T2_scl               = get_data('T2_scl_rate', file1) * 1000. * get_data('beam_time', file1) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
+
+    N                    = unumpy.uarray(get_data('real_Yield', file1),  get_data('real_Yield_err', file1) )
+    hms_trk_eff   = unumpy.uarray(get_data('hTrkEff',    file1),  get_data('hTrkEff_err',    file1) )
+    shms_trk_eff  = unumpy.uarray(get_data('pTrkEff',    file1),  get_data('pTrkEff_err',    file1) )
+    total_LT      = unumpy.uarray(get_data('tLT',        file1),  get_data('tLT_err_Bi',     file1) )
+    mult_trk_eff  = np.array(get_data('multi_track_eff', file1) )
+    
+    # calcualte charge-normalized yield
+    Y     = N / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)              
+    relY  = Y / Y[0] 
+
+    Y_nom = unumpy.nominal_values(Y)
+    Y_err = unumpy.std_devs(Y)
+
+    relY_nom = unumpy.nominal_values(relY)
+    relY_err = unumpy.std_devs(relY)
+    
+    #calculate T2 scaler counts / charge
+    T2    = T2_scl/Q 
+    relT2 = T2/T2[0]
+
+    T2_nom = unumpy.nominal_values(T2)
+    T2_err = unumpy.std_devs(T2)
+    
+    relT2_nom = unumpy.nominal_values(relT2)
+    relT2_err = unumpy.std_devs(relT2)
+
+    if(name=='rel_yield_nom'):
+        return relY_nom
+    elif(name=='rel_yield_err'):
+        return relY_err
+    elif(name=='rel_T2_nom'):
+        return relT2_nom
+    elif(name=='rel_T2_err'):
+        return relT2_err
 
 def compare(target='', kin='', file1='', file2=''):
     
     # Brief: this method is used to compare changes in the relative charge-norm yield
     # for a given target, for various studies done. Additional studies can be added, bu
-    # then the overlay can get a little bit crowded.
+    # then the overlay can get a little bit crowded.  converntion: use file1 for new, and file2 for existing
     
 
     # get relevant header info (from file1)
-    I_f1                    = get_data(target, kin, 'avg_current', file1 )
-    Q_f1                    = get_data(target, kin, 'charge', file1)
-    N_f1                    = unumpy.uarray(get_data(target, kin, 'real_Yield', file1),  get_data(target, kin, 'real_Yield_err', file1) )
-    hms_trk_eff_f1   = unumpy.uarray(get_data(target, kin, 'hTrkEff',    file1),  get_data(target, kin, 'hTrkEff_err',    file1) )
-    shms_trk_eff_f1  = unumpy.uarray(get_data(target, kin, 'pTrkEff',    file1),  get_data(target, kin, 'pTrkEff_err',    file1) )
-    total_LT_f1      = unumpy.uarray(get_data(target, kin,'tLT',        file1),  get_data(target, kin,'tLT_err_Bi',     file1) )
-    mult_trk_eff_f1  = np.array(get_data(target, kin, 'multi_track_eff', file1) )
+    I_f1                    = get_data('avg_current', file1 )
+    Q_f1                    = get_data('charge', file1)
+    T2_scl_f1               = get_data('T2_scl_rate', file1) * 1000. * get_data('beam_time', file1) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
+
+    N_f1                    = unumpy.uarray(get_data('real_Yield', file1),  get_data('real_Yield_err', file1) )
+    hms_trk_eff_f1   = unumpy.uarray(get_data('hTrkEff',    file1),  get_data('hTrkEff_err',    file1) )
+    shms_trk_eff_f1  = unumpy.uarray(get_data('pTrkEff',    file1),  get_data('pTrkEff_err',    file1) )
+    total_LT_f1      = unumpy.uarray(get_data('tLT',        file1),  get_data('tLT_err_Bi',     file1) )
+    mult_trk_eff_f1  = np.array(get_data('multi_track_eff', file1) )
     
     # calcualte charge-normalized yield
-    Y_f1 = N_f1 / ( Q_f1 * hms_trk_eff_f1 * shms_trk_eff_f1 * total_LT_f1 * mult_trk_eff_f1)              
+    Y_f1     = N_f1 / ( Q_f1 * hms_trk_eff_f1 * shms_trk_eff_f1 * total_LT_f1 * mult_trk_eff_f1)              
     relY_f1  = Y_f1 / Y_f1[0] 
 
-    # extract the values and respective uncertanties for plotting
     Y_f1_nom = unumpy.nominal_values(Y_f1)
     Y_f1_err = unumpy.std_devs(Y_f1)
 
     relY_f1_nom = unumpy.nominal_values(relY_f1)
     relY_f1_err = unumpy.std_devs(relY_f1)
+    
+    #calculate T2 scaler counts / charge
+    T2_f1    = T2_scl_f1/Q_f1 
+    relT2_f1 = T2_f1/T2_f1[0]
+
+    T2_f1_nom = unumpy.nominal_values(T2_f1)
+    T2_f1_err = unumpy.std_devs(T2_f1)
+    
+    relT2_f1_nom = unumpy.nominal_values(relT2_f1)
+    relT2_f1_err = unumpy.std_devs(relT2_f1)
 
 
+    #------------------------------------------------------------------------
     
     # get relevant header info (from file2)
-    I_f2                    = get_data(target, kin, 'avg_current', file2 )
-    Q_f2                    = get_data(target, kin, 'charge', file2)
-    N_f2                    = unumpy.uarray(get_data(target, kin, 'real_Yield', file2),  get_data(target, kin, 'real_Yield_err', file2) )
-    hms_trk_eff_f2   = unumpy.uarray(get_data(target, kin, 'hTrkEff',    file2),  get_data(target, kin, 'hTrkEff_err',    file2) )
-    shms_trk_eff_f2  = unumpy.uarray(get_data(target, kin, 'pTrkEff',    file2),  get_data(target, kin, 'pTrkEff_err',    file2) )
-    total_LT_f2      = unumpy.uarray(get_data(target, kin,'tLT',        file2),  get_data(target, kin,'tLT_err_Bi',     file2) )
-    mult_trk_eff_f2  = np.array(get_data(target, kin, 'multi_track_eff', file2) )
+    I_f2                    = get_data('avg_current', file2 )
+    T2_scl_f2               = get_data('T2_scl_rate', file2) * 1000. * get_data('beam_time', file2) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
+    Q_f2                    = get_data('charge', file2)
+    N_f2                    = unumpy.uarray(get_data('real_Yield', file2),  get_data('real_Yield_err', file2) )
+    hms_trk_eff_f2   = unumpy.uarray(get_data('hTrkEff',    file2),  get_data('hTrkEff_err',    file2) )
+    shms_trk_eff_f2  = unumpy.uarray(get_data('pTrkEff',    file2),  get_data('pTrkEff_err',    file2) )
+    total_LT_f2      = unumpy.uarray(get_data('tLT',        file2),  get_data('tLT_err_Bi',     file2) )
+    mult_trk_eff_f2  = np.array(get_data('multi_track_eff', file2) )
     
     # calcualte charge-normalized yield
     Y_f2 = N_f2 / ( Q_f2 * hms_trk_eff_f2 * shms_trk_eff_f2 * total_LT_f2 * mult_trk_eff_f2)              
     relY_f2  = Y_f2 / Y_f2[0] 
 
-    # extract the values and respective uncertanties for plotting
     Y_f2_nom = unumpy.nominal_values(Y_f2)
     Y_f2_err = unumpy.std_devs(Y_f2)
-
+    
     relY_f2_nom = unumpy.nominal_values(relY_f2)
     relY_f2_err = unumpy.std_devs(relY_f2)
 
+    #calculate T2 scaler counts / charge
+    T2_f2    = T2_scl_f2/Q_f2 
+    relT2_f2 = T2_f2/T2_f2[0]
+
+    T2_f2_nom = unumpy.nominal_values(T2_f2)
+    T2_f2_err = unumpy.std_devs(T2_f2)
     
-    plt.errorbar(I_f1, relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s'%(target, kin))
-    plt.errorbar(I_f2, relY_f2_nom, relY_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='dashed', label='%s %s'%(target, kin))
-    plt.legend()
+    relT2_f2_nom = unumpy.nominal_values(relT2_f2)
+    relT2_f2_err = unumpy.std_devs(relT2_f2)
+
+    #plot relative yield for files 1, 2
+    plt.errorbar(I_f1, relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s (new relative Yield)'%(target, kin))
+    plt.errorbar(I_f2, relY_f2_nom, relY_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='dashed', label='(existing relative Yield)')
+    
+    #plot relative T2 scalers for files 1, 2
+    plt.errorbar(I_f1, relT2_f1_nom, relT2_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='solid', label='%s %s (new relative T2)'%(target, kin))
+    plt.errorbar(I_f2, relT2_f2_nom, relT2_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='solid', label='(existing relative T2)')
+
+    plt.xlabel('Average Beam Current []')
+    plt.ylabel('Relative Yield []')
+    
+    #plt.legend()
     plt.show()
 
-compare('C12', 'MF',
+
+compare('Be9', 'MF',
         '../../summary_files/pass1_with_tcoin/above_5uA_cut/cafe_prod_Be9_MF_report_summary.csv',
         '../../summary_files/pass1_with_tcoin/tight_current_cut/cafe_prod_Be9_MF_report_summary.csv')

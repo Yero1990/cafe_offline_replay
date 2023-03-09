@@ -3,8 +3,13 @@ by setting  T2, T3 tdcTimeRaw time cuts on tcoin_fall22.param
 to ensure the right tdc hit is selected for making a
 coincidence.
 
-This study was done under two conditons on beam current:
 
+directories:
+
+./pass1_pruning : replayed data using pruning  (improved trackinh)
+but without applying a T2, T3 tdctime cut in tcoin_fall22.param
+
+./pass1_pruning_and
 1) > 5 uA cut
 
 2)  peak_current +/- 3 uA cut
