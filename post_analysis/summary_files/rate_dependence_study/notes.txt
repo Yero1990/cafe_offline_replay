@@ -14,12 +14,16 @@ also applying a T2, T3 time window cut to select the good
 TDC hit before forming a coincidence (this is expected to
 improved the agreement in relative yields betweem low/high currents)
 
-There are two cases:
+sub-directories:
+--> ./existing_ref_time_cuts/
+(used existing cafe ref. time cuts)
 
-1) > 5 uA cut
+--> ./tighter_ref_time_cuts/
+(used existing cafe ref. time cuts, which might help to further
+improve the relative yield/mC. )
 
-2)  peak_current +/- 3 uA cut
-
-The reason is that some runs have varying current, which
+--> ./tight_beam_current_cuts
+some runs have varying current, which
 can be misleading when interpreting the effect of beam
-current changes on the yield/mC
+current changes on the yield/mC, but if BCM is linear,
+maybe it should not matter?

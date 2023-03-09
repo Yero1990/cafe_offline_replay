@@ -177,7 +177,7 @@ def get_relative(name='',  file1=''):
     elif(name=='rel_T2_err'):
         return relT2_err
 
-def compare(target='', kin='', file1='', file2=''):
+def compare(target='', kin='', file1='', file2='', file3=''):
     
     # Brief: this method is used to compare changes in the relative charge-norm yield
     # for a given target, for various studies done. Additional studies can be added, bu
@@ -187,8 +187,8 @@ def compare(target='', kin='', file1='', file2=''):
     # get relevant header info (from file1)
     I_f1                    = get_data('avg_current', file1 )
     Q_f1                    = get_data('charge', file1)
+    T2_scl_rate_f1          = get_data('T2_scl_rate', file1)
     T2_scl_f1               = get_data('T2_scl_rate', file1) * 1000. * get_data('beam_time', file1) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
-
     N_f1                    = unumpy.uarray(get_data('real_Yield', file1),  get_data('real_Yield_err', file1) )
     hms_trk_eff_f1   = unumpy.uarray(get_data('hTrkEff',    file1),  get_data('hTrkEff_err',    file1) )
     shms_trk_eff_f1  = unumpy.uarray(get_data('pTrkEff',    file1),  get_data('pTrkEff_err',    file1) )
@@ -220,6 +220,7 @@ def compare(target='', kin='', file1='', file2=''):
     
     # get relevant header info (from file2)
     I_f2                    = get_data('avg_current', file2 )
+    T2_scl_rate_f2          = get_data('T2_scl_rate', file2)
     T2_scl_f2               = get_data('T2_scl_rate', file2) * 1000. * get_data('beam_time', file2) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
     Q_f2                    = get_data('charge', file2)
     N_f2                    = unumpy.uarray(get_data('real_Yield', file2),  get_data('real_Yield_err', file2) )
@@ -248,21 +249,78 @@ def compare(target='', kin='', file1='', file2=''):
     relT2_f2_nom = unumpy.nominal_values(relT2_f2)
     relT2_f2_err = unumpy.std_devs(relT2_f2)
 
-    #plot relative yield for files 1, 2
-    plt.errorbar(I_f1, relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s (new relative Yield)'%(target, kin))
-    plt.errorbar(I_f2, relY_f2_nom, relY_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='dashed', label='(existing relative Yield)')
-    
-    #plot relative T2 scalers for files 1, 2
-    plt.errorbar(I_f1, relT2_f1_nom, relT2_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='solid', label='%s %s (new relative T2)'%(target, kin))
-    plt.errorbar(I_f2, relT2_f2_nom, relT2_f2_err,   marker='o', markersize=8, color='gray', mec='k', linestyle='solid', label='(existing relative T2)')
 
-    plt.xlabel('Average Beam Current []')
-    plt.ylabel('Relative Yield []')
+    #------------------------------------------------------------------------
     
+    # get relevant header info (from file3)
+    I_f3                    = get_data('avg_current', file3 )
+    T2_scl_rate_f3          = get_data('T2_scl_rate', file3)
+    T2_scl_f3               = get_data('T2_scl_rate', file3) * 1000. * get_data('beam_time', file3) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
+    Q_f3                    = get_data('charge', file3)
+    N_f3                    = unumpy.uarray(get_data('real_Yield', file3),  get_data('real_Yield_err', file3) )
+    hms_trk_eff_f3   = unumpy.uarray(get_data('hTrkEff',    file3),  get_data('hTrkEff_err',    file3) )
+    shms_trk_eff_f3  = unumpy.uarray(get_data('pTrkEff',    file3),  get_data('pTrkEff_err',    file3) )
+    total_LT_f3      = unumpy.uarray(get_data('tLT',        file3),  get_data('tLT_err_Bi',     file3) )
+    mult_trk_eff_f3  = np.array(get_data('multi_track_eff', file3) )
+    
+    # calcualte charge-normalized yield
+    Y_f3 = N_f3 / ( Q_f3 * hms_trk_eff_f3 * shms_trk_eff_f3 * total_LT_f3 * mult_trk_eff_f3)              
+    relY_f3  = Y_f3 / Y_f3[0] 
+
+    Y_f3_nom = unumpy.nominal_values(Y_f3)
+    Y_f3_err = unumpy.std_devs(Y_f3)
+    
+    relY_f3_nom = unumpy.nominal_values(relY_f3)
+    relY_f3_err = unumpy.std_devs(relY_f3)
+
+    #calculate T2 scaler counts / charge
+    T2_f3    = T2_scl_f3/Q_f3 
+    relT2_f3 = T2_f3/T2_f3[0]
+
+    T2_f3_nom = unumpy.nominal_values(T2_f3)
+    T2_f3_err = unumpy.std_devs(T2_f3)
+    
+    relT2_f3_nom = unumpy.nominal_values(relT2_f3)
+    relT2_f3_err = unumpy.std_devs(relT2_f3)
+
+
+    #=====================================================================
+
+
+
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
+
+    plt.subplot(1, 2, 1)
+    #plot relative yield for files 1, 2
+    plt.errorbar(I_f1, relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s (pruning+tcoin+tight_ref_time)'%(target, kin))
+    plt.errorbar(I_f2, relY_f2_nom, relY_f2_err,   marker='s', markersize=8, color='gray', mec='k', linestyle='dashed', label='(pruning+tcoin)')    
+    plt.errorbar(I_f3, relY_f3_nom, relY_f3_err,   marker='^', markersize=8, color='k', mec='k', linestyle='dashed', label='(pruning)')
+
+    plt.ylabel('Relative Yield', fontsize=18)
+    plt.xlabel('Average Current [uA]', fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.grid(True)
+    
+    plt.subplot(1, 2, 2)
+    #plot relative T2 scalers for files 1, 2
+
+    plt.errorbar(  T2_scl_rate_f1 , relY_f1_nom, relY_f1_err,   marker='o', markersize=8, color='b', mec='k', linestyle='dashed', label='%s %s (pruning+tcoin+tight_ref_time)'%(target, kin))
+    plt.errorbar(  T2_scl_rate_f2 , relY_f2_nom, relY_f2_err,   marker='s', markersize=8, color='gray', mec='k', linestyle='dashed', label='(pruning+tcoin)')    
+    plt.errorbar(  T2_scl_rate_f3 , relY_f3_nom, relY_f3_err,   marker='^', markersize=8, color='k', mec='k', linestyle='dashed', label='(pruning)')
+
+    
+    plt.xlabel('T2 Scaler Rate [kHz]', fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.grid(True)
+                 
+    fig.tight_layout() 
     #plt.legend()
     plt.show()
 
 
-compare('Be9', 'MF',
-        '../../summary_files/pass1_with_tcoin/above_5uA_cut/cafe_prod_Be9_MF_report_summary.csv',
-        '../../summary_files/pass1_with_tcoin/tight_current_cut/cafe_prod_Be9_MF_report_summary.csv')
+compare('Au197', 'MF',
+        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/tighter_ref_time_cuts/cafe_prod_Au197_MF_report_summary.csv',
+        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/existing_ref_time_cuts/cafe_prod_Au197_MF_report_summary.csv',
+        '../../summary_files/rate_dependence_study/pass1_pruning/cafe_prod_Au197_MF_report_summary.csv')

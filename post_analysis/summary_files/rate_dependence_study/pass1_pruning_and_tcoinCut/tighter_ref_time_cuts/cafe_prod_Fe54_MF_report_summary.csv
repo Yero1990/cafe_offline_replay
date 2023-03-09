@@ -1,0 +1,32 @@
+#-------------------------------------
+#        Data Analysis Summary        
+#-------------------------------------
+#                                     
+#                                     
+# target_name: Fe54        kin_type:  MF            
+# target_amu: 53.939615                 
+# target_density [g/cm3]: 7.8700     
+# target_thickness [cm]: 0.0466      
+# target_areal_density [g/cm2]: 0.3670
+#
+# N: 28
+# Z: 26
+# A: 54
+# transparency: 0.36
+#
+# beam_energy [GeV]: 10.5494          
+#
+# hms_h_particle_mass [GeV]: 0.938272          
+# hms_h_momentum [GeV/c]: 1.8200             
+# hms_h_angle [deg]: -48.3000                  
+#
+# shms_e_particle_mass [GeV]: 0.000511          
+# shms_e_momentum [GeV/c]: 8.5500             
+# shms_e_angle [deg]: 8.3000                  
+#
+# BCM1_Current_Threshold [uA]: >5.00 
+# Units: time [sec] | charge [mC] | currnet [uA] | rates [kHz] |  efficiencies [fractional form]                       
+#                       
+run,beam_time,charge,avg_current,total_Yield,total_Yield_err,real_Yield,real_Yield_err,random_Yield,random_Yield_err,hTrkEff,hTrkEff_err,pTrkEff,pTrkEff_err,cpuLT,cpuLT_err_Bi,tLT,tLT_err_Bi,S1X_rate,T1_scl_rate,T2_scl_rate,T3_scl_rate,T5_scl_rate,T1_accp_rate,T2_accp_rate,T3_accp_rate,T5_accp_rate,edtm_scl,edtm_accp,PS1,PS2,PS3,PS5,ctime_offset,ctime_sigma,hbeta_mean,hbeta_sigma,pbeta_mean,pbeta_sigma,pcal_mean,pcal_sigma,hdc1u1_res,hdc1u2_res,hdc1x1_res,hdc1x2_res,hdc1v2_res,hdc1v1_res,hdc2v1_res,hdc2v2_res,hdc2x2_res,hdc2x1_res,hdc2u2_res,hdc2u1_res,hdc1u1_res_err,hdc1u2_res_err,hdc1x1_res_err,hdc1x2_res_err,hdc1v2_res_err,hdc1v1_res_err,hdc2v1_res_err,hdc2v2_res_err,hdc2x2_res_err,hdc2x1_res_err,hdc2u2_res_err,hdc2u1_res_err,pdc1u1_res,pdc1u2_res,pdc1x1_res,pdc1x2_res,pdc1v1_res,pdc1v2_res,pdc2v2_res,pdc2v1_res,pdc2x2_res,pdc2x1_res,pdc2u2_res,pdc2u1_res,pdc1u1_res_err,pdc1u2_res_err,pdc1x1_res_err,pdc1x2_res_err,pdc1v1_res_err,pdc1v2_res_err,pdc2v2_res_err,pdc2v1_res_err,pdc2x2_res_err,pdc2x1_res_err,pdc2u2_res_err,pdc2u1_res_err,multi_track_eff,multi_track_eff_err,T1_accp_singles,T2_accp_singles,pTrkEff_singles,pTrkEff_singles_err
+16981,6537.647,181.279,27.728,34434.000,185.564,34417.882,185.578,16.118,2.303,0.997,8.694E-05,0.984,2.051E-04,1.015,-NAN,0.948,8.731E-04,1.232E+02,3.867E+01,3.023E+01,3.289E+00,3.698E-02,1.592E-01,1.583E-01,1.365E-01,3.753E-02,65163.000,61747.000,-1.0,257.0,33.0,1.0,0.248,0.335,0.882,0.022,0.994,0.051,1.008,0.035,335.712,338.767,375.733,359.214,317.728,313.182,348.859,357.812,311.979,324.181,357.209,370.853,2.206,2.287,2.490,2.413,2.116,1.919,2.165,2.309,1.934,1.979,2.271,2.271,223.438,231.632,224.360,218.056,253.169,254.782,228.857,226.218,210.804,218.738,219.136,228.469,1.792,1.763,1.785,1.871,2.049,2.099,1.750,1.674,1.735,1.899,1.685,1.839,0.992,0.016,0.000E+00,2.664E+05,0.983,0.000
+16982,4781.262,104.138,21.781,20318.000,142.541,20312.737,142.547,5.263,1.316,0.996,1.453E-04,0.986,3.006E-04,1.019,-NAN,0.947,1.030E-03,9.684E+01,3.012E+01,2.365E+01,2.583E+00,2.831E-02,7.621E-02,7.591E-02,6.825E-02,2.885E-02,47647.000,45104.000,-1.0,513.0,65.0,1.0,0.257,0.332,0.883,0.022,0.994,0.050,1.010,0.035,347.648,337.531,376.228,355.857,324.794,318.561,347.194,361.847,318.097,328.457,366.268,375.765,2.135,2.145,2.388,2.244,1.978,1.895,2.093,2.284,1.816,1.932,2.253,2.246,223.371,224.464,223.164,214.980,251.160,249.315,229.324,230.122,211.551,220.649,225.064,231.155,1.642,1.518,1.639,1.668,1.858,1.877,1.608,1.613,1.641,1.770,1.685,1.737,0.994,0.029,0.000E+00,7.671E+04,0.984,0.001
