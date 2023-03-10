@@ -215,7 +215,8 @@ def compare(target='', kin='', file1='', file2='', file3=''):
     relT2_f1_nom = unumpy.nominal_values(relT2_f1)
     relT2_f1_err = unumpy.std_devs(relT2_f1)
 
-
+    print('relY_f1_nom=',relY_f1_nom)
+    print('relY_f1_err=',relY_f1_err)
     #------------------------------------------------------------------------
     
     # get relevant header info (from file2)
@@ -249,7 +250,8 @@ def compare(target='', kin='', file1='', file2='', file3=''):
     relT2_f2_nom = unumpy.nominal_values(relT2_f2)
     relT2_f2_err = unumpy.std_devs(relT2_f2)
 
-
+    print('relY_f2_nom=',relY_f2_nom)
+    print('relY_f2_err=',relY_f2_err)
     #------------------------------------------------------------------------
     
     # get relevant header info (from file3)
@@ -283,7 +285,8 @@ def compare(target='', kin='', file1='', file2='', file3=''):
     relT2_f3_nom = unumpy.nominal_values(relT2_f3)
     relT2_f3_err = unumpy.std_devs(relT2_f3)
 
-
+    print('relY_f3_nom=',relY_f3_nom)
+    print('relY_f3_err=',relY_f3_err)
     #=====================================================================
 
 
@@ -320,7 +323,18 @@ def compare(target='', kin='', file1='', file2='', file3=''):
     plt.show()
 
 
-compare('Au197', 'MF',
-        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/tighter_ref_time_cuts/cafe_prod_Au197_MF_report_summary.csv',
-        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/existing_ref_time_cuts/cafe_prod_Au197_MF_report_summary.csv',
-        '../../summary_files/rate_dependence_study/pass1_pruning/cafe_prod_Au197_MF_report_summary.csv')
+compare('B10', 'MF',
+        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/tighter_ref_time_cuts/cafe_prod_B10_MF_report_summary.csv',
+        '../../summary_files/rate_dependence_study/pass1_pruning_and_tcoinCut/existing_ref_time_cuts/cafe_prod_B10_MF_report_summary.csv',
+        '../../summary_files/rate_dependence_study/pass1_pruning/cafe_prod_B10_MF_report_summary.csv')
+
+
+#Be9
+#relY_f1_err= [5.32194262e-19 1.03384359e-02 7.75697750e-03]
+#relY_f2_err= [0.         0.01034461 0.00773343]
+#relY_f3_err= [0.         0.00496368 0.01029875 0.01029875 0.00751901 0.00751901]
+
+#B10
+#relY_f1_err= [7.63847080e-19 8.00247946e-03]
+#relY_f2_err= [0.         0.00799893]
+#relY_f3_err= [0.         0.00791032]
