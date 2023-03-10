@@ -5131,7 +5131,10 @@ void baseAnalyzer::EventLoop()
 	      // if(c_edtm && event_type_cut){ total_edtm_accp_bcm_cut++;}
 	      //}
 	      
-	      if(c_edtm){ total_edtm_accp_bcm_cut++;}
+	      
+	      //if(c_edtm){ total_edtm_accp_bcm_cut++;}
+	      // try adding a restriction on event type cut
+	      if(c_edtm &&  gevtyp==4){ total_edtm_accp_bcm_cut++;}
 	      
 	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation)
 	      if(c_trig1 && c_noedtm) { total_trig1_accp_bcm_cut++; }
