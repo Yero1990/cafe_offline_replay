@@ -5133,8 +5133,8 @@ void baseAnalyzer::EventLoop()
 	      
 	      
 	      //if(c_edtm){ total_edtm_accp_bcm_cut++;}
-	      // try adding a restriction on event type cut
-	      if(c_edtm &&  gevtyp==4){ total_edtm_accp_bcm_cut++;}
+	      // try adding a restriction on event type cut (>=4 for coincidences)
+	      if(c_edtm &&  gevtyp>=4){ total_edtm_accp_bcm_cut++;}
 	      
 	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation)
 	      if(c_trig1 && c_noedtm) { total_trig1_accp_bcm_cut++; }
@@ -5604,8 +5604,8 @@ void baseAnalyzer::EventLoop()
 		  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  
 		    //C.Y Jan 17, 2023 | added additional constraint to ensure golden track (thet passed pruning) is selected in our sample 
-		    // and also evtyp==4 (only coin. events, just in case)
-		    if(c_baseCuts && pdc_TheRealGolden==1 && gevtyp==4){   
+		    //C.Y. Mar 10, 2023 and also evtyp>=4 (only coin. events, as well as coincidences, in which singles are were in the trigger)
+		    if(c_baseCuts && pdc_TheRealGolden==1 && gevtyp>=4){   
 		    
 		    // full (reals + accidentals) coin. time spectrum with all other cuts   
 		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
