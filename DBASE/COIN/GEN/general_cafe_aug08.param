@@ -42,7 +42,7 @@ cminch=2.54
 ; #include "PARAM/SHMS/GEN/fall22/shmsflags_cafe.param"
 #include "PARAM/SHMS/GEN/fall22/shmsflags_cafe_optimized.param"
 #include "PARAM/SHMS/GEN/fall22/ptracking_cafe.param"
-#include "PARAM/SHMS/GEN/fall22/p_reftime_cut_cafe.param"
+#include "PARAM/SHMS/GEN/fall22/p_reftime_cut_cafe_aug08.param"
 
 ; SHMS default geometry parameter files
 #include "PARAM/SHMS/NGCER/pngcer_geom.param"
