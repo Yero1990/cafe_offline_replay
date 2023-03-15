@@ -1,0 +1,5 @@
+This directory contains slides/studies to understand the
+trigger bit configuration for Hall C DAQ in coincidence mode.
+Particularly, the configuration during CaFe to extract singles
+triggers as both singles and coincidence triggers (PS2, PS3, PS5)
+were taken simultaneously for most of the runs
