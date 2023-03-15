@@ -3675,6 +3675,7 @@ void baseAnalyzer::CreateSinglesSkimTree()
 
 
   // Trigger Detector 
+  tree->SetBranchAddress("T.coin.pEDTM_tdcTimeRaw",&EDTM_tdcTimeRaw);
   tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
   tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
   tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
@@ -5084,16 +5085,16 @@ void baseAnalyzer::EventLoop()
 	    c_baseCuts =  c_pidCuts_shms;
 	  }
 	  else if(analysis_cut=="heep_singles"){
-	    c_baseCuts =  c_accpCuts_shms && c_pidCuts_shms && c_kinHeepSing_Cuts && (eP_ctime_cut=1); //setting eP_ctime=1 guarantees cut will always pass (i.e. turned coin time cut OFF)
+	    c_baseCuts =  c_accpCuts_shms && c_pidCuts_shms && c_kinHeepSing_Cuts && pdc_TheRealGolden==1 && (eP_ctime_cut=1) && (gevtyp==1 || gevtyp==3); //setting eP_ctime=1 guarantees cut will always pass (i.e. turned coin time cut OFF)
 	  }
 	  else if(analysis_cut=="heep_coin"){
-	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinHeepCoin_Cuts;
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinHeepCoin_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  else if(analysis_cut=="MF"){
-	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinMF_Cuts;
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinMF_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  else if(analysis_cut=="SRC"){
-	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts;
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  
 	  
@@ -5134,30 +5135,31 @@ void baseAnalyzer::EventLoop()
 	      
 	      //if(c_edtm){ total_edtm_accp_bcm_cut++;}
 	      // try adding a restriction on event type cut (>=4 for coincidences)
-	      if(c_edtm &&  gevtyp>=4){ total_edtm_accp_bcm_cut++;}
 	      
+	      if(c_edtm &&  gevtyp>=4){ total_edtm_accp_bcm_cut++;}
+
 	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation)
-	      if(c_trig1 && c_noedtm) { total_trig1_accp_bcm_cut++; }
-	      if(c_trig2 && c_noedtm) { total_trig2_accp_bcm_cut++; }
-	      if(c_trig3 && c_noedtm) { total_trig3_accp_bcm_cut++; }
-	      if(c_trig4 && c_noedtm) { total_trig4_accp_bcm_cut++; }
-	      if(c_trig5 && c_noedtm) { total_trig5_accp_bcm_cut++; }
-	      if(c_trig6 && c_noedtm) { total_trig6_accp_bcm_cut++; }
+	      if(c_trig1 && c_noedtm && gevtyp>=4) { total_trig1_accp_bcm_cut++; }
+	      if(c_trig2 && c_noedtm && gevtyp>=4) { total_trig2_accp_bcm_cut++; }
+	      if(c_trig3 && c_noedtm && gevtyp>=4) { total_trig3_accp_bcm_cut++; }
+	      if(c_trig4 && c_noedtm && gevtyp>=4) { total_trig4_accp_bcm_cut++; }
+	      if(c_trig5 && c_noedtm && gevtyp>=4) { total_trig5_accp_bcm_cut++; }
+	      if(c_trig6 && c_noedtm && gevtyp>=4) { total_trig6_accp_bcm_cut++; }
 	      
 	      // Count SHMS Singles ONLY (particularly, only count T1 and T2)
 
 	      //strictly select trig1 > 0 (and no other triggers) -- most CaFe runs did not have T1 enabled, but the some heep did
-	      if(c_trig1 && (c_notrig2 && c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
+	      if(c_noedtm && (gevtyp==1 || gevtyp==3)){
 		total_trig1_singles_accp++;
 	      }
 
-	      //strictly SHMS event type to count EDTM singles (for live time singles)
-	      if(gevtyp==1){
-		total_edtm_accp_bcm_cut_single++;
+	      //strictly SHMS event type to count EDTM singles (for live time singles) gevtp1: SHMS_event, gevtyp3: BOTH_SINGLES_event
+	      if(EDTM_tdcTimeRaw>2200. && EDTM_tdcTimeRaw<3500. && (gevtyp==1 || gevtyp==3)){
+		total_edtm_accp_bcm_cut_single++; // this is for the runs taken in aug with T1, and T4 enabled
 	      }
 	      
 	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
-	      if(c_trig1 && c_trig2 && (c_notrig3 && c_notrig4 && c_notrig5 && c_notrig6) && c_noedtm && gevtyp==1){
+	      if(c_noedtm && (gevtyp==1 || gevtyp==3)){
 
 		// try some minimal cuts when counting singles (to make sure in is within spectrometer) -- check with Larry
 		if(c_accpCuts_shms){
@@ -5603,10 +5605,11 @@ void baseAnalyzer::EventLoop()
 		  
 		  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  
-		    //C.Y Jan 17, 2023 | added additional constraint to ensure golden track (thet passed pruning) is selected in our sample 
-		    //C.Y. Mar 10, 2023 and also evtyp>=4 (only coin. events, as well as coincidences, in which singles are were in the trigger)
-		    if(c_baseCuts && pdc_TheRealGolden==1 && gevtyp>=4){   
+		  
 		    
+		    if(c_baseCuts){  
+		    
+		        
 		    // full (reals + accidentals) coin. time spectrum with all other cuts   
 		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
 		  
@@ -6424,6 +6427,13 @@ void baseAnalyzer::CalcEff()
   tLT_trig4_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps4_factor / total_edtm_scaler_bcm_cut;
   tLT_trig5_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps5_factor / total_edtm_scaler_bcm_cut;
   tLT_trig6_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps6_factor / total_edtm_scaler_bcm_cut;
+
+  if(analysis_cut=="heep_singles"){
+    tLT_trig2 = total_edtm_accp_bcm_cut_single / (total_edtm_scaler_bcm_cut / Ps2_factor);
+    tLT_trig2_err_Bi = sqrt( total_edtm_accp_bcm_cut_single * (1. - (total_edtm_accp_bcm_cut_single )/total_edtm_scaler_bcm_cut ) ) * Ps2_factor / total_edtm_scaler_bcm_cut; 
+    tLT_trig2_err_Bay = sqrt( (total_edtm_accp_bcm_cut_single * Ps2_factor + 1)*(total_edtm_accp_bcm_cut_single * Ps2_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps2_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+
+  }
 
   //Calculate EDTM Live Time Error (Use Bayesian Error)
   tLT_trig1_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps1_factor + 1)*(total_edtm_accp_bcm_cut * Ps1_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps1_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
@@ -7940,7 +7950,7 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << "# NOTE: scaler triggers are not pre-scaled | accepted triggers are pre-scaled  " << endl;
     out_file << "#       cpu_live_time   = T#_accepted / ( T#_scaler / Ps#_factor)       " << endl;
     out_file << "#       total_live_time = edtm_accepted / ( edtm_scaler / Ps#_factor)       " << endl;
-    out_file << "#       total_live_time_singles = edtm_accepted_singles / ( edtm_scaler / Ps#_factor) | g.evtyp==1 (SHMS event type)      " << endl;
+    out_file << "#       total_live_time_singles = edtm_accepted_singles / ( edtm_scaler / Ps#_factor) --> g.evtyp==1 || g.evtyp==3 (SHMS event type or BOTH_SINGLES event type)      " << endl;
     out_file << "                                     " << endl;
     out_file << Form("edtm_scaler   :  %.3f  ",         total_edtm_scaler_bcm_cut ) << endl;
     out_file << Form("edtm_accepted :  %.3f  ",         total_edtm_accp_bcm_cut) << endl;
