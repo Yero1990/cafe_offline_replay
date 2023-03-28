@@ -94,6 +94,28 @@ def compare():
     
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
 
+
+    # define output file to write correction factors (change in relative yield vs. T2 rates)
+
+    # output file to write summary file
+    ofname = 'cafe_relYield_corrections_%s.csv' % (target)
+    ofile = open(ofname, 'w+')
+    ofile.write('# CaFe Relative Yield Correction Factors (using MF kinematics) \n')
+    ofile.write('# \n'
+                '# Header Definitions: \n'
+                '# phase#       : 0 -> baseline (pruning)   \n'
+                '# phase#       : 1 -> 0 + added the T2,T3 TDC raw time window cuts (tcoin param)   \n'
+                '# phase#       : 2 -> 1 + added tighter reference time cuts on HMS/SHMS to try and recover more lost coincidences    \n'
+                '# phase#       : 3 -> 2 + added an event type cut (g.evtyp>=4) to properly select ALL coincidences   \n'
+                '# deltaY       : difference in relative charge-norm, eff.-corrected data yield between lowest and highest T2 rate runs \n'
+                '# deltaY_err   : error in deltaY \n'
+                '# deltaX       : difference between lowest and highest T2 rates [kHz] \n'
+                '# slope        : deltaY/deltaX or drop in relative yield per kHz (to be used as correction factor) \n'
+                '# slope_err    : error in slope \n'
+                )
+    ofile.write('phase,target,deltaY,deltaY_err,deltaX,slope,slope_err\n') 
+
+    
     for i, ifile in enumerate(file_arr):
 
         print('phase: ', i)
@@ -133,16 +155,20 @@ def compare():
         deltaY = max(relY) - min(relY)
         deltaY_nom = unumpy.nominal_values(deltaY)  # fractional form (need to multiply by 100 to convert to %)
         deltaY_err = unumpy.std_devs(deltaY)        # fractional form (need to multiply by 100 to convert to %)
-        deltaX = max(T2_scl_rate) - min(T2_scl_rate)  # kHz
+        deltaX = max(T2_scl_rate) - min(T2_scl_rate)  # kHz (range of T2 scalers)
         slope= deltaY_nom / deltaX
         slope_err = deltaY_err / deltaX
+
+        ofile.write("%i, %s, %.3E, %.3E, %.3f, %.3E, %.3E \n" % (phase, target, ))
+             
         print('-----------------------------\n')
+        print('target=', target)
         print('relY_nom=',relY_nom)
         print('relY_err=',relY_err)
         print('T2_scl_rate=', T2_scl_rate)
-        print('deltaY_nom=', deltaY_nom)
-        print('deltaY_err=', deltaY_err)
-        print('deltaX=',deltaX)
+        print('deltaY_nom =', deltaY_nom)
+        print('deltaY_err =', deltaY_err)
+        print('deltaX [kHz]=',deltaX)
         print('slope=', slope)
         print('slope_err=', slope_err)
         print('-----------------------------\n')
