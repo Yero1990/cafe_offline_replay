@@ -1,0 +1,332 @@
+***********************************
+******Author - Richard Trotta******
+*****Created - Sep, 2022***********
+***********************************
+
+Note - The uncertainties for the efficiencies are purely statistical and blow up quickly with low statistics (e.g. individual run). Therefore, they should not be used for yield calculations. An overall error for entire setting must be used instead which should be calculated using same formula. Please contact AU for further details.
+
+=====================================
+======= Shift Worker Section ========
+=====================================
+start_of_run = 2018-10-15 19:18:54 
+end_of_run = 2018-10-15 19:31:50
+
+KLT_Run_Number		:		5155
+KLT_Beam_Energy		:		10.585370
+Target_Mass_amu	        : 		12.010700
+
+KLT_HMS_Particle_Mass	:		0.000511
+KLT_HMS_P_Central	:		3.266000
+KLT_HMS_Angle		:		-12.530000
+
+KLT_SHMS_Particle_Mass	:		0.493677
+KLT_SHMS_P_Central	:		6.842000
+KLT_SHMS_Angle		:		6.495000
+
+KLT_SHMS_Run_Length	:		769.355 sec
+KLT_HMS_Run_Length	:		769.355 sec
+
+KLT_Total_Events	:		69619
+
+Cut on BCM1 current of 5 uA. Beam over threshold for 757.256s, or 98.427% of total run time.
+
+KLT_BCM_Cut_SHMS_Run_Length      :               769.355 sec
+KLT_BCM_Cut_HMS_Run_Length       :               757.256 sec
+
+ With no cuts on BCM1.
+
+KLT_BCM1_Current			:		43.227 uA
+KLT_Unser_Current			:		34.537 uA
+
+KLT_BCM1_Charge				:		33.257 mC
+KLT_Unser_Charge			:		26.571 mC
+
+Cut on BCM1 current of 5 uA. Beam over threshold for 757.256s, or 98.427% of total run time.
+
+KLT_BCM1_Beam_Cut_Current		   :	       43.912 uA
+KLT_Unser_Beam_Cut_Current   	   	   :	       35.080 uA
+
+KLT_BCM1_Beam_Cut_Charge   	   	   :	       33.252 mC
+KLT_Unser_Beam_Cut_Charge   	   	   :	       26.564 mC
+
+KLT_Ps1_factor	 	 	    	   :		  257
+KLT_Ps2_factor				   :		  -1
+KLT_Ps3_factor				   :		  33
+KLT_Ps4_factor				   :		  -1
+KLT_Ps5_factor				   :		  -1
+KLT_Ps6_factor				   :		  -1
+
+KLT_Total_SHMS_3/4_Triggers                   :		173437030
+KLT_(current_cut)_Total_SHMS_3/4_Triggers     :		173437030
+KLT_Pre-Scaled_SHMS_3/4_Triggers              :		674852
+KLT_SHMS_3/4_Trigger_Rate                     :		225.432 kHz
+KLT_Accepted_SHMS_Triggers                    :		1149664
+
+KLT_Total_HMS_EL-REAL_Triggers                :		43120135
+KLT_(current_cut)_Total_HMS_EL-REAL_Triggers  :		43120135
+KLT_Pre-Scaled_HMS_EL-REAL_Triggers           :		1306671
+KLT_HMS_EL-REAL_Trigger_Rate                  :		56.047 kHz
+KLT_Accepted_HMS_Triggers                     :		1373296
+
+KLT_Total_COIN_Triggers                       :		8272031
+KLT_(current_cut)_Total_COIN_Triggers         :		8272031
+KLT_Pre-Scaled_COIN_Triggers                  :		-8272031
+KLT_COIN_Trigger_Rate                         :		10.752 kHz
+KLT_Accepted_COIN_Triggers                    :		298608
+
+***********
+* Beamline
+***********
+
+ With no cuts on BCM1.
+
+HMS BCM1 Current: 43.227 uA
+HMS BCM2 Current: 43.208 uA
+HMS BCM4A Current: 43.052 uA
+HMS BCM4B Current: 43.009 uA
+HMS BCM4C Current: 43.326 uA
+HMS Unser Current: 34.537 uA
+
+HMS BCM1  Charge: 33.257 mC
+HMS BCM2  Charge: 33.242 mC
+HMS BCM4A Charge: 33.122 mC
+HMS BCM4B Charge: 33.089 mC
+HMS BCM4C Charge: 33.333 mC
+HMS Unser Charge: 26.571 mC
+
+Cut on BCM1 current of 5 uA. Beam over threshold for 757.256s, or 98.427% of total run time.
+HMS BCM1 Beam Cut Current: 43.912 uA
+HMS BCM2 Beam Cut Current: 43.893 uA
+HMS BCM4A Beam Cut Current: 43.724 uA
+HMS BCM4B Beam Cut Current: 43.668 uA
+HMS BCM4C Beam Cut Current: 44.005 uA
+HMS Unser Beam Cut Current: 35.080 uA
+
+HMS BCM1  Beam Cut Charge: 33.252 mC
+HMS BCM2  Beam Cut Charge: 33.238 mC
+HMS BCM4A Beam Cut Charge: 33.110 mC
+HMS BCM4B Beam Cut Charge: 33.067 mC
+HMS BCM4C Beam Cut Charge: 33.323 mC
+HMS Unser Beam Cut Charge: 26.564 mC
+
+ With no cuts on BCM1.
+
+SHMS BCM1 Current: 43.227 uA
+SHMS BCM2 Current: 43.208 uA
+SHMS BCM4A Current: 43.052 uA
+SHMS BCM4B Current: 43.009 uA
+SHMS BCM4C Current: 43.326 uA
+SHMS Unser Current: 34.537 uA
+
+SHMS BCM1  Charge: 33.257 mC
+SHMS BCM2  Charge: 33.242 mC
+SHMS BCM4A Charge: 33.122 mC
+SHMS BCM4B Charge: 33.089 mC
+SHMS BCM4C Charge: 33.333 mC
+SHMS Unser Charge: 26.571 mC
+
+Cut on BCM1 current of 5 uA. Beam over threshold for 769.355s, or 100.000% of total run time.
+SHMS BCM1 Beam Cut Current: 43.227 uA
+SHMS BCM2 Beam Cut Current: 43.208 uA
+SHMS BCM4A Beam Cut Current: 43.052 uA
+SHMS BCM4B Beam Cut Current: 43.009 uA
+SHMS BCM4C Beam Cut Current: 43.326 uA
+SHMS Unser Beam Cut Current: 34.537 uA
+
+SHMS BCM1  Beam Cut Charge: 33.257 mC
+SHMS BCM2  Beam Cut Charge: 33.242 mC
+SHMS BCM4A Beam Cut Charge: 33.122 mC
+SHMS BCM4B Beam Cut Charge: 33.089 mC
+SHMS BCM4C Beam Cut Charge: 33.333 mC
+SHMS Unser Beam Cut Charge: 26.571 mC
+
+=:=:=:=:
+= EDTM =
+=:=:=:=:
+
+KLT_EDTM_Accepted_Triggers     :    277532
+
+EDTM Live Time calculation using non-scaler cut 
+
+KLT_Non_Scaler_EDTM_Live_Time	 	     :      0.0361 +-   0.0001
+
+=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+=   Computer Live/Dead Times   =
+=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+
+*New* work in progress calculations, might give numbers that make sense
+
+KLT_HMS_CPULT     	          :	       0.0318 +-   0.0000
+KLT_SHMS_CPULT		  	  :	       0.0066 +-   0.0000
+KLT_COIN_CPULT  	          :	       0.0361 +-   0.0001
+
+*******************************
+***  Detector Efficiencies  ***
+*******************************
+
+=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+=     Tracking Efficiency    =
+=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+
+KLT_SHMS_Had_ALL_Trk_Should		:	192968
+KLT_SHMS_Had_ALL_Trk_Did		:	186347
+KLT_SHMS_Prot_ALL_Trk_Should		:	8500
+KLT_SHMS_Prot_ALL_Trk_Did		:	8363
+KLT_SHMS_Prot_Coin_Trk_Should		:	0
+KLT_SHMS_Prot_Coin_Trk_Did		:	0
+KLT_SHMS_Prot_Sing_Trk_Should		:	7063
+KLT_SHMS_Prot_Sing_Trk_Did		:	6987
+KLT_SHMS_Pion_ALL_Trk_Should		:	93466
+KLT_SHMS_Pion_ALL_Trk_Did		:	91900
+KLT_SHMS_Pion_Coin_Trk_Should		:	0
+KLT_SHMS_Pion_Coin_Trk_Did		:	0
+KLT_SHMS_Pion_Sing_Trk_Should		:	80888
+KLT_SHMS_Pion_Sing_Trk_Did		:	79731
+KLT_SHMS_Elec_ALL_Trk_Should		:	28191
+KLT_SHMS_Elec_ALL_Trk_Did		:	27886
+KLT_SHMS_Elec_Coin_Trk_Should		:	0
+KLT_SHMS_Elec_Coin_Trk_Did		:	0
+KLT_SHMS_Elec_Sing_Trk_Should		:	24376
+KLT_SHMS_Elec_Sing_Trk_Did		:	24164
+KLT_HMS_Elec_ALL_Trk_Should		:	168991
+KLT_HMS_Elec_ALL_Trk_Did		:	167840
+KLT_HMS_Elec_Coin_Trk_Should		:	0
+KLT_HMS_Elec_Coin_Trk_Did		:	0
+KLT_HMS_Elec_Sing_Trk_Should		:	166917
+KLT_HMS_Elec_Sing_Trk_Did		:	165780
+
+KLT_SHMS_Hadron_ALL_TRACK_EFF           :            0.9657 +-   0.0031
+
+KLT_SHMS_Prot_ALL_TRACK_EFF             :            0.9839 +-   0.0152
+
+KLT_SHMS_Prot_COIN_TRACK_EFF		:	     0.0000 +-   0.0000
+
+KLT_SHMS_Prot_SING_TRACK_EFF		:	     0.9892 +-   0.0167
+
+KLT_SHMS_Pion_ALL_TRACK_EFF		:	     0.9832 +-   0.0046
+
+KLT_SHMS_Pion_COIN_TRACK_EFF		:	     0.0000 +-   0.0000
+
+KLT_SHMS_Pion_SING_TRACK_EFF		:	     0.9857 +-   0.0049
+
+KLT_SHMS_Elec_ALL_TRACK_EFF	     :		  0.9892 +-   0.0006
+
+KLT_HMS_Elec_ALL_TRACK_EFF		:            0.9932 +-   0.0034
+
+KLT_HMS_Elec_COIN_TRACK_EFF		:	     0.0000 +-   0.0000
+
+KLT_HMS_Elec_SING_TRACK_EFF		:	     0.9932 +-   0.0034
+
+=:=:=:=:=:=:=:=:=:=:=:=:=
+=     SHMS Cerenkovs    =
+=:=:=:=:=:=:=:=:=:=:=:=:=
+
+***************
+* HGC Cerenkov
+***************
+
+KLT_SHMS_Pion_HGC_Did		    :   67089
+KLT_SHMS_Pion_HGC_Should	    :	162729
+
+KLT_SHMS_HGC_Pion_Eff		      :     0.4123 +-   0.0071
+
+**********
+* Aerogel
+**********
+
+KLT_SHMS_Pion_ALL_Aero_Did		    :   90041
+KLT_SHMS_Pion_ALL_Aero_Should		    :	92133
+KLT_SHMS_Pion_COIN_Aero_Did		    :	0
+KLT_SHMS_Pion_COIN_Aero_Should		    :	0
+KLT_SHMS_Pion_SING_Aero_Did		    :	77536
+KLT_SHMS_Pion_SING_Aero_Should		    :	78569
+
+KLT_SHMS_Aero_ALL_Pion_Eff		      :     0.9773 +-   0.0046
+
+KLT_SHMS_Aero_COIN_Pion_Eff		      :	    0.0000 +-   0.0000
+
+KLT_SHMS_Aero_SING_Pion_Eff		      :	    0.9869 +-   0.0050
+
+=:=:=:=:=:=:=:=:=:=:=:=:=
+=      HMS Cerenkov     =
+=:=:=:=:=:=:=:=:=:=:=:=:=
+
+KLT_HMS_ALL_Elec_Cer_Did	    :   192503
+KLT_HMS_ALL_Elec_Cer_Should	    :	222948
+KLT_HMS_COIN_Elec_Cer_Did	    :	0
+KLT_HMS_COIN_Elec_Cer_Should	    :	0
+KLT_HMS_SING_Elec_Cer_Did	    :	190111
+KLT_HMS_SING_Elec_Cer_Should	    :	219948
+
+KLT_HMS_Cer_ALL_Elec_Eff	    :     0.8634 +-   0.0027
+
+KLT_HMS_Cer_COIN_Elec_Eff	    :	  0.0000 +-   0.0000
+
+KLT_HMS_Cer_SING_Elec_Eff	    :	  0.8643 +-   0.0027
+
+
+**************************
+* Hodoscope Efficiencies *
+**************************
+
+=:=:=:=:=
+= SHMS  =
+=:=:=:=:=
+
+KLT_SHMS_Hodo_Plane_1	:	0.996189
+KLT_SHMS_Hodo_Plane_2	:	0.995819
+KLT_SHMS_Hodo_Plane_3	:	0.981032
+KLT_SHMS_Hodo_Plane_4	:	0.916075
+
+KLT_SHMS_Hodo_S1XY	:	0.999984
+KLT_SHMS_Hodo_S2XY	:	0.998408
+
+KLT_SHMS_Hodo_3_of_4_EFF	:	0.997598
+KLT_SHMS_Hodo_4_of_4_EFF	:	0.891531
+
+=:=:=:=:=
+=  HMS  =
+=:=:=:=:=
+
+KLT_HMS_Hodo_Plane_1	:	0.997241
+KLT_HMS_Hodo_Plane_2	:	0.997515
+KLT_HMS_Hodo_Plane_3	:	0.949887
+KLT_HMS_Hodo_Plane_4	:	0.971141
+
+KLT_HMS_Hodo_S1XY	:	0.999993
+KLT_HMS_Hodo_S2XY	:	0.998554
+
+KLT_HMS_Hodo_3_of_4_EFF	:	0.998149
+KLT_HMS_Hodo_4_of_4_EFF	:	0.917644
+
+****************************
+* Calorimeter Efficiencies *
+****************************
+
+These are raw efficiencies and should not be used for yield calculation
+
+=:=:=:=:=
+= SHMS  =
+=:=:=:=:=
+
+shmsPreShower        Counts: 67929 eff : 0.687556 
+shmsShowerArray      Counts: 75127 eff : 0.853009
+
+=:=:=:=:=
+=  HMS  =
+=:=:=:=:=
+
+hA       Counts: 83485 eff : 0.503252
+hB       Counts: 83485 eff : 0.590178
+hC       Counts: 83485 eff : 0.482278
+hD       Counts: 83485 eff : 0.155741
+
+===================
+== Triggers Info ==
+===================
+
+KLT_SHMS_Hodoscope_S1X_Triggers		:	737694134
+KLT_HMS_Hodoscope_S1X_Triggers		:	168615712
+
+KLT_SHMS_Hodoscope_S1X_Rate         :     958.847 kHz 
+KLT_HMS_Hodoscope_S1X_Rate          :     222.667 kHz 

@@ -1374,7 +1374,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
       //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
-      data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+      
+      // kaonlt testing
+      data_InputFileName = Form("ROOTfiles_kaon_lumi/Kaon_replay_luminosity_%d_%d.root", run, evtNum);
 
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1391,7 +1394,10 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
       //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
-      data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
+      
+      // kaonlt testing
+      data_InputReport = Form("REPORT_OUTPUT_kaonlt_lumi/Kaon_replay_luminosity_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -3467,8 +3473,10 @@ void baseAnalyzer::ScalerEventLoop()
     {
       scaler_tree->GetEntry(i);
 
+      cout << "scaler_read = " << i << endl;
       // Determine which bcm current to cut on (based on user input)
       if(bcm_type=="BCM1"){
+	cout << "Scal_BCM1_current=" << Scal_BCM1_current << endl;
 	Scal_BCM_current = Scal_BCM1_current;
       }
       else if(bcm_type=="BCM2"){
@@ -3485,14 +3493,14 @@ void baseAnalyzer::ScalerEventLoop()
       }
 
       
-      H_bcmCurrent->Fill(Scal_BCM_current);
+      //H_bcmCurrent->Fill(Scal_BCM_current);
       
       cout << "ScalerEventLoop(PASS1): " << std::setprecision(2) << double(i) / scal_entries * 100. << "  % " << std::flush << "\r";
     }
   
-  set_current =  H_bcmCurrent->GetXaxis()->GetBinCenter( H_bcmCurrent->GetMaximumBin() );  //set current corresponds to maximum bin content of bcm current hist
+  //set_current =  H_bcmCurrent->GetXaxis()->GetBinCenter( H_bcmCurrent->GetMaximumBin() );  //set current corresponds to maximum bin content of bcm current hist
   
-  cout << Form("---------> Peak Current for this run [uA]: %.3f ", set_current) << endl;
+  //cout << Form("---------> Peak Current for this run [uA]: %.3f ", set_current) << endl;
 
 
   //Scaler reads loop. ith scaler read
@@ -3548,9 +3556,10 @@ void baseAnalyzer::ScalerEventLoop()
 
     
       //Check If BCM Beam Current in Between Reads is Over Threshold
-      //bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
-      //if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
-      if(Scal_BCM_current>=bcm_thrs)
+      bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
+      set_current=15.;
+      if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
+      //if(Scal_BCM_current>=bcm_thrs)
 	{
 	  
 	  //Turn Event Flag ON, if beam current is within threshold
@@ -6351,7 +6360,7 @@ void baseAnalyzer::CalcEff()
   total_charge_bcm4b_cut = total_charge_bcm4b_cut / 1000.; 
   total_charge_bcm4c_cut = total_charge_bcm4c_cut / 1000.; 
 
-  H_total_charge->SetBinContent(46 ,total_charge_bcm_cut);
+  //  H_total_charge->SetBinContent(46 ,total_charge_bcm_cut);
   
   //Convert Scaler Trigger/EDTM Rates from Hz to kHz 
   S1XscalerRate_bcm_cut   = S1XscalerRate_bcm_cut   / 1000.;
