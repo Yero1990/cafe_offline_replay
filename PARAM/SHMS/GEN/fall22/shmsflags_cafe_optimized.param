@@ -1,4 +1,3 @@
-
 ; The pdelta_offset,ptheta_offset,pphi_offset effect the
 ; reconstructed target quantities. 
 ; For transport x is in the dispersive direction with + down
@@ -14,21 +13,9 @@
 ; do not change pdelta_offset from zero, use ppcentral_offset
 pdelta_offset = 0.0;   (%)   hdelta_tar = hdelta_tar + hdelta_offset 
 
-; new_xptar_2020.dat 
-;ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset
-;pphi_offset = -8.681269905E-4; (rad) hxp_tar = hxp_tar + hphi_offset 
-
-;OPTICS_MATRIX: hsv_fit_global.dat offsets
-;pphi_offset = -0.00158534706; (rad) hxp_tar = hxp_tar + hphi_offset
-;ptheta_offset = 0.000336262798 ; (rad) hyp_tar = hyp_tar + htheta_offset
-
-;OPTICS_MATRIX: shms_OptimizedFINAL_post3288.dat (C. Yero optics for deuteron 2018)
-;pphi_offset = -6.824131892e-04; (rad) hxp_tar = hxp_tar + hphi_offset  
-;ptheta_offset = 4.114719318e-04 ; (rad) hyp_tar = hyp_tar + htheta_offset  
-
-;OPTICS_MATRIX: cafe_optics_fall22.dat offsets 
-pphi_offset = -0.000612879171 ; (rad) hxp_tar = hxp_tar + hphi_offset 
-ptheta_offset = 0.000396363283 ; (rad) hyp_tar = hyp_tar + htheta_offset 
+; relative offsets 
+pphi_offset   = 0.0 ; (rad) hxp_tar = hxp_tar + hphi_offset 
+ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset 
 
 ; The following offsets are applied to the central kinematic variables
 ;      ptheta_lab=htheta_lab + pthetacentral_offset/degree 
@@ -36,8 +23,7 @@ ptheta_offset = 0.000396363283 ; (rad) hyp_tar = hyp_tar + htheta_offset
 pthetacentral_offset = 0.0
 p_oopcentral_offset = 0.0
 
-;  SHMS central momentum offset determined from carbon elastic data fall 2017
+;  SHMS central momentum offset determined from optics taken on Aug 2022 (for cafe)
 ; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )
-ppcentral_offset = -0.250
-;ppcentral_offset = 0
+ppcentral_offset = -0.30
 
