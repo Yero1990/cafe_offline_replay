@@ -368,7 +368,6 @@ protected:
   TString simc_ifile;  // simc input file (to read central settings used in simulation)
   
   //Output ROOTfile Name
-  TString data_OutputFileName_skim_singles; // only for saving singles skimmed leaf variables (with minimal cuts, like bcm cut and edtm cut) 
   TString data_OutputFileName_skim; // only for saving skimmed leaf variables (with minimal cuts, like bcm cut and edtm cut) 
   TString data_OutputFileName;
   TString simc_OutputFileName_rad;
@@ -802,11 +801,8 @@ protected:
   TH1F *H_the_noCUT;
   TH1F *H_W_noCUT;
   TH1F *H_Q2_noCUT;
-  TH1F *H_Q2_singles_noCUT;
   TH1F *H_xbj_noCUT;
-  TH1F *H_xbj_singles_noCUT;
   TH1F *H_nu_noCUT;
-  TH1F *H_nu_singles_noCUT;
   TH1F *H_q_noCUT;
   TH1F *H_thq_noCUT;
   TH1F *H_Em_nuc_noCUT;
@@ -1360,7 +1356,6 @@ protected:
   //----------DATA-RELATED VARIABLES-----------
   TTree *tree;
   TTree *tree_skim;
-  TTree *tree_skim_singles;
   Long64_t nentries;
   
   //Set-Up counters for accepted singles triggers
@@ -1784,6 +1779,10 @@ protected:
   Double_t TRIG6_tdcTimeRaw;
   Double_t EDTM_tdcTimeRaw;
 
+  Double_t pEL_LO_tdcTimeRaw;
+  Double_t pEL_HI_tdcTimeRaw;
+  
+  
   //--------------------------------
   //-------PID Leaf Variables-------
   //--------------------------------

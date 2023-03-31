@@ -99,7 +99,6 @@ void baseAnalyzer::Init(){
   //Initialize TTree Pointers
   tree        = NULL;
   tree_skim   = NULL;
-  tree_skim_singles   = NULL;
   scaler_tree = NULL;
 
   //Initialize Scaler Pointer
@@ -372,11 +371,8 @@ void baseAnalyzer::Init(){
   H_the_noCUT = NULL;
   H_W_noCUT = NULL;	
   H_Q2_noCUT = NULL;
-  H_Q2_singles_noCUT = NULL;
   H_xbj_noCUT = NULL;
-  H_xbj_singles_noCUT = NULL;
   H_nu_noCUT = NULL;
-  H_nu_singles_noCUT = NULL;
   H_q_noCUT = NULL;	
   H_thq_noCUT = NULL;	
   H_Em_nuc_noCUT = NULL;
@@ -980,11 +976,8 @@ baseAnalyzer::~baseAnalyzer()
   delete H_the_noCUT;				     		   H_the_noCUT = NULL;				     			     
   delete H_W_noCUT;				     		   H_W_noCUT = NULL;				     			     
   delete H_Q2_noCUT;				     		   H_Q2_noCUT = NULL;				     			     
-  delete H_Q2_singles_noCUT;				     	   H_Q2_singles_noCUT = NULL;				     			     
   delete H_xbj_noCUT;				     		   H_xbj_noCUT = NULL;				     			     
-  delete H_xbj_singles_noCUT;				     	   H_xbj_singles_noCUT = NULL;				     			     
   delete H_nu_noCUT;				     		   H_nu_noCUT = NULL;
-  delete H_nu_singles_noCUT;				     	   H_nu_singles_noCUT = NULL;				     			     
   delete H_q_noCUT;				     		   H_q_noCUT = NULL;				     			     
   delete H_thq_noCUT;				     		   H_thq_noCUT = NULL;				     			     
   delete H_Em_nuc_noCUT;				     	   H_Em_nuc_noCUT = NULL;				     		     
@@ -1002,11 +995,11 @@ baseAnalyzer::~baseAnalyzer()
   delete H_eytar_noCUT;  			     		   H_eytar_noCUT = NULL;  			     			     
   delete H_eyptar_noCUT; 			     		   H_eyptar_noCUT = NULL; 			     			     
   delete H_exptar_noCUT; 			     		   H_exptar_noCUT = NULL; 			     			     
-  delete H_edelta_noCUT;				     		   H_edelta_noCUT = NULL;				     		     
+  delete H_edelta_noCUT;				     	   H_edelta_noCUT = NULL;				     		     
   delete H_hytar_noCUT;  			     		   H_hytar_noCUT = NULL;  			     			     
   delete H_hyptar_noCUT; 			     		   H_hyptar_noCUT = NULL; 			     			     
   delete H_hxptar_noCUT; 			     		   H_hxptar_noCUT = NULL; 			     			     
-  delete H_hdelta_noCUT;				     		   H_hdelta_noCUT = NULL;				     		     
+  delete H_hdelta_noCUT;				     	   H_hdelta_noCUT = NULL;				     		     
                                                                                                                                                  
   // detector						     		   					     		     
   delete H_pCalEtotTrkNorm_noCUT;		     		   H_pCalEtotTrkNorm_noCUT = NULL;		     			     
@@ -1411,13 +1404,11 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
     if(set_output_fnames) {
 
-      //Define Output (.root) File Name Pattern (singles skimmed leaf variables are written to this file, with minimal cuts -> bcm_cut, edtm_cut)  
-      temp = trim(split(FindString("output_skimSinglesROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);   
-      data_OutputFileName_skim_singles = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);;
+    
       
       //Define Output (.root) File Name Pattern (skimmed leaf variables are written to this file, with minimal cuts -> bcm_cut, edtm_cut)  
       temp = trim(split(FindString("output_skimROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);   
-      data_OutputFileName_skim = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);;
+      data_OutputFileName_skim = Form(temp.Data(), replay_type.Data(), tgt_type.Data(), analysis_cut.Data(), run, evtNum);
       
       //Define Output (.root) File Name Pattern (analyzed histos are written to this file)
       temp = trim(split(FindString("output_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
@@ -2737,11 +2728,8 @@ void baseAnalyzer::CreateHist()
   H_the_noCUT      = new TH1F("H_the_noCUT", "Electron Scattering Angle, #theta_{e}", the_nbins, the_xmin, the_xmax);
   H_W_noCUT        = new TH1F("H_W_noCUT", "Invariant Mass, W", W_nbins, W_xmin, W_xmax); 
   H_Q2_noCUT       = new TH1F("H_Q2_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax);
-  H_Q2_singles_noCUT = new TH1F("H_Q2_singles_noCUT","4-Momentum Transfer, Q^{2}", Q2_nbins, Q2_xmin, Q2_xmax); 
   H_xbj_noCUT      = new TH1F("H_xbj_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);
-  H_xbj_singles_noCUT = new TH1F("H_xbj_singles_noCUT", "x-Bjorken", X_nbins, X_xmin, X_xmax);  
   H_nu_noCUT       = new TH1F("H_nu_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
-  H_nu_singles_noCUT = new TH1F("H_nu_singles_noCUT","Energy Transfer, #nu", nu_nbins, nu_xmin, nu_xmax); 
   H_q_noCUT        = new TH1F("H_q_noCUT", "3-Momentum Transfer, |#vec{q}|", q_nbins, q_xmin, q_xmax);
   H_thq_noCUT      = new TH1F("H_thq_noCUT", "#theta_{q}", thq_nbins, thq_xmin, thq_xmax);
   H_Em_nuc_noCUT   = new TH1F("H_Em_nuc_noCUT","Nuclear Missing Energy", Em_nuc_nbins, Em_nuc_xmin, Em_nuc_xmax);
@@ -2788,11 +2776,8 @@ void baseAnalyzer::CreateHist()
   quality_HList->Add( H_the_noCUT       );
   quality_HList->Add( H_W_noCUT         );
   quality_HList->Add( H_Q2_noCUT        );
-  quality_HList->Add( H_Q2_singles_noCUT);
   quality_HList->Add( H_xbj_noCUT       );
-  quality_HList->Add( H_xbj_singles_noCUT);
   quality_HList->Add( H_nu_noCUT        );
-  quality_HList->Add( H_nu_singles_noCUT);
   quality_HList->Add( H_q_noCUT         );
   quality_HList->Add( H_thq_noCUT       );
   quality_HList->Add( H_Em_nuc_noCUT    );
@@ -3655,100 +3640,7 @@ void baseAnalyzer::ScalerEventLoop()
   
 }
 
-//__________________________________________________________________________
-void baseAnalyzer::CreateSinglesSkimTree()
-{
-  
-  // Method to create a singles skimmed version of the data TTree  
-  cout << "Calling Base CreateSinglesSkimTree()  " << endl;
 
-  tree_skim_singles = new TTree("T", "Skimmed Singles TTree");
-  tree_skim_singles->SetDirectory(0);
-  
-  // add branches (assumes the variables already exist, so this method must be called right after
-  // setting the branch addree of the
-
-  
-  // Global Variables
-  tree_skim_singles->Branch("g.evtyp",&gevtyp);
-  tree_skim_singles->Branch("g.evnum",&gevnum);
-
-
-  // Trigger Detector 
-  tree->SetBranchAddress("T.coin.pEDTM_tdcTimeRaw",&EDTM_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
-  tree->SetBranchAddress("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
-  
-  //e- 4-vector components
-  tree_skim_singles->Branch(Form("%s.kin.primary.p4x", eArm.Data()), &kfx);
-  tree_skim_singles->Branch(Form("%s.kin.primary.p4y", eArm.Data()), &kfy);
-  tree_skim_singles->Branch(Form("%s.kin.primary.p4z", eArm.Data()), &kfz);
-  tree_skim_singles->Branch(Form("%s.kin.primary.p4e", eArm.Data()), &Ef_k);
-
-  // e- (primary) kinematics 
-  tree_skim_singles->Branch(Form("%s.kin.primary.scat_ang_rad", eArm.Data()),&th_e);
-  tree_skim_singles->Branch(Form("%s.kin.primary.W", eArm.Data()),&W);
-  tree_skim_singles->Branch(Form("%s.kin.primary.Q2", eArm.Data()),&Q2);
-  tree_skim_singles->Branch(Form("%s.kin.primary.x_bj", eArm.Data()),&X);
-  tree_skim_singles->Branch(Form("%s.kin.primary.nu", eArm.Data()),&nu);
-  tree_skim_singles->Branch(Form("%s.kin.primary.q3m", eArm.Data()),&q);
-  tree_skim_singles->Branch(Form("%s.kin.primary.q_x", eArm.Data()),&qx);
-  tree_skim_singles->Branch(Form("%s.kin.primary.q_y", eArm.Data()),&qy);
-  tree_skim_singles->Branch(Form("%s.kin.primary.q_z", eArm.Data()),&qz);
-  tree_skim_singles->Branch(Form("%s.kin.primary.th_q", eArm.Data()),&th_q);
-  tree_skim_singles->Branch(Form("%s.kin.primary.ph_q", eArm.Data()),&ph_q);
-
-  //-------------------------------
-  //------PID Leaf Variables-------
-  //-------------------------------
-  
-  //SHMS DETECTORS
-  tree_skim_singles->Branch("P.ngcer.npeSum",       &pngcer_npesum);
-  tree_skim_singles->Branch("P.cal.etotnorm",       &pcal_etotnorm);
-  tree_skim_singles->Branch("P.cal.etottracknorm",  &pcal_etottracknorm);
-  tree_skim_singles->Branch("P.hod.betanotrack",    &phod_beta_ntrk);
-  tree_skim_singles->Branch("P.hod.beta",           &phod_beta);
-  tree_skim_singles->Branch("P.hod.goodscinhit",    &phod_GoodScinHit);    
-  tree_skim_singles->Branch("P.dc.ntrack",          &pdc_ntrack);
-  tree_skim_singles->Branch("P.dc.TheRealGolden",   &pdc_TheRealGolden);
-
-  //-----------------------------------
-  //-----Acceptance Leaf Variables-----
-  //-----------------------------------
-  
-  //Additional Kinematics (not in primary/secondary modules)
-  tree_skim_singles->Branch(Form("%s.gtr.p",  eArm.Data()), &kf);
-  
-  //----Electron Arm Focal Plane---- 
-  tree_skim_singles->Branch(Form("%s.dc.x_fp",  eArm.Data()), &e_xfp);
-  tree_skim_singles->Branch(Form("%s.dc.xp_fp", eArm.Data()), &e_xpfp);
-  tree_skim_singles->Branch(Form("%s.dc.y_fp",  eArm.Data()), &e_yfp);
-  tree_skim_singles->Branch(Form("%s.dc.yp_fp", eArm.Data()), &e_ypfp);
-  
-  //----Electron Arm Reconstructed----- 
-  tree_skim_singles->Branch(Form("%s.gtr.y",  eArm.Data()), &e_ytar);
-  tree_skim_singles->Branch(Form("%s.gtr.ph", eArm.Data()), &e_yptar);
-  tree_skim_singles->Branch(Form("%s.gtr.th", eArm.Data()), &e_xptar);
-  tree_skim_singles->Branch(Form("%s.gtr.dp", eArm.Data()), &e_delta);
-  
-  //----Target Quantities----
-  //(tarx, tary, tarz) in Hall Coord. System      
-  tree_skim_singles->Branch(Form("%s.react.x", eArm.Data()), &etar_x);
-  tree_skim_singles->Branch(Form("%s.react.y", eArm.Data()), &etar_y);
-  tree_skim_singles->Branch(Form("%s.react.z", eArm.Data()), &etar_z);
-  
-  //----Collimator Quantities-----
-  tree_skim_singles->Branch(Form("%s.extcor.xsieve", eArm.Data()),&eXColl);
-  tree_skim_singles->Branch(Form("%s.extcor.ysieve", eArm.Data()),&eYColl);
-  tree_skim_singles->Branch("shms_collimator_cut_flag", &shms_coll_cut_bool);
-
-  
-  
-}
 
 //__________________________________________________________________________
 void baseAnalyzer::CreateSkimTree()
@@ -3775,13 +3667,16 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("CTime.epCoinTime_ROC2_center", &epCoinTime_center);
   tree_skim->Branch("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);
 
-  // Trigger Detector 
+  // Trigger Detector
+  tree_skim->Branch("T.coin.pEL_LO_ROC2_tdcTimeRaw",&pEL_LO_tdcTimeRaw);
+  tree_skim->Branch("T.coin.pEL_HI_ROC2_tdcTimeRaw",&pEL_HI_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
+  tree_skim->Branch("T.coin.pEDTM_ROC2_tdcTimeRaw" ,&EDTM_tdcTimeRaw);
   
 
   //e- 4-vector components
@@ -4028,7 +3923,9 @@ void baseAnalyzer::ReadTree()
 	tree->SetBranchAddress("CTime.epCoinTime_ROC2",  &epCoinTime);
 	tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack",  &epCoinTime_notrk); // used to cut on E/P (etotnorm) to account for multi-track events (without bias)
 
-	// Trigger Detector 
+	// Trigger Detector
+	tree->SetBranchAddress("T.coin.pEL_LO_ROC2_tdcTimeRaw",&pEL_LO_tdcTimeRaw);
+	tree->SetBranchAddress("T.coin.pEL_HI_ROC2_tdcTimeRaw",&pEL_HI_tdcTimeRaw);
 	tree->SetBranchAddress("T.coin.pTRIG1_ROC2_tdcTimeRaw",&TRIG1_tdcTimeRaw);
 	tree->SetBranchAddress("T.coin.pTRIG2_ROC2_tdcTimeRaw",&TRIG2_tdcTimeRaw);
 	tree->SetBranchAddress("T.coin.pTRIG3_ROC2_tdcTimeRaw",&TRIG3_tdcTimeRaw);
@@ -4338,7 +4235,7 @@ void baseAnalyzer::ReadTree()
       CreateSkimTree();
       
       // Call function to create singles skimmed version of data tree
-      CreateSinglesSkimTree();
+      //CreateSinglesSkimTree();
       
       
     } //END DATA SET BRANCH ADDRESS
@@ -5085,7 +4982,7 @@ void baseAnalyzer::EventLoop()
 	    c_baseCuts =  c_pidCuts_shms;
 	  }
 	  else if(analysis_cut=="heep_singles"){
-	    c_baseCuts =  c_accpCuts_shms && c_pidCuts_shms && c_kinHeepSing_Cuts && pdc_TheRealGolden==1 && (eP_ctime_cut=1) && (gevtyp==1 || gevtyp==3); //setting eP_ctime=1 guarantees cut will always pass (i.e. turned coin time cut OFF)
+	    c_baseCuts =  c_accpCuts_shms && c_pidCuts_shms && c_kinHeepSing_Cuts && pdc_TheRealGolden==1 && (eP_ctime_cut=1) && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7); //setting eP_ctime=1 guarantees cut will always pass (i.e. turned coin time cut OFF)
 	  }
 	  else if(analysis_cut=="heep_coin"){
 	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinHeepCoin_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
@@ -5105,7 +5002,7 @@ void baseAnalyzer::EventLoop()
 	  //----------END DEFINE CUTS--------------------
 
 	  //Count Accepted EDTM events (no bcm current cut : this is just to compare with counts that have bcm cuts)
-	  if(c_edtm){total_edtm_accp++;}
+	  if(c_edtm){ total_edtm_accp++; }
 	  
 	  //Count Accepted TRIG 1-6 events (no bcm current cut : this is just to compare with counts that have bcm cuts)
 	  if(c_trig1){total_trig1_accp++;}
@@ -5133,12 +5030,15 @@ void baseAnalyzer::EventLoop()
 	      //}
 	      
 	      
-	      //if(c_edtm){ total_edtm_accp_bcm_cut++;}
-	      // try adding a restriction on event type cut (>=4 for coincidences)
-	      
-	      if(c_edtm &&  gevtyp>=4){ total_edtm_accp_bcm_cut++;}
+	
 
-	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation)
+	      // during Feb 2023, Au197 data-taking, gate-widths were widened which casued a 2nd edtm peak to be within the time window, increasing the live time
+	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
+	      // the second edtm peak must also be cut out. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
+	      if(tgt_type=="Au197" && c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) { total_edtm_accp_bcm_cut++; }
+	      else if(c_edtm &&  gevtyp>=4) { total_edtm_accp_bcm_cut++;}
+	      
+	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation of coin trigger)
 	      if(c_trig1 && c_noedtm && gevtyp>=4) { total_trig1_accp_bcm_cut++; }
 	      if(c_trig2 && c_noedtm && gevtyp>=4) { total_trig2_accp_bcm_cut++; }
 	      if(c_trig3 && c_noedtm && gevtyp>=4) { total_trig3_accp_bcm_cut++; }
@@ -5146,49 +5046,31 @@ void baseAnalyzer::EventLoop()
 	      if(c_trig5 && c_noedtm && gevtyp>=4) { total_trig5_accp_bcm_cut++; }
 	      if(c_trig6 && c_noedtm && gevtyp>=4) { total_trig6_accp_bcm_cut++; }
 	      
-	      // Count SHMS Singles ONLY (particularly, only count T1 and T2)
+	      // ----------- Count SHMS Singles ONLY --------------
+	      // only makes sense if 1 shms singles trigger enabled (either T1 (shms 3/4) or T2 (shms e-lreal)
+	      // if both T1, T2 enabled simultaneously, then this complicates things in terms of pre-scale factors and event types
 
-	      //strictly select trig1 > 0 (and no other triggers) -- most CaFe runs did not have T1 enabled, but the some heep did
-	      if(c_noedtm && (gevtyp==1 || gevtyp==3)){
-		total_trig1_singles_accp++;
-	      }
+	      //strictly select singles triggers -- most CaFe runs did not have T1 enabled, but the some heep did
+	      if(c_trig1 && c_noedtm && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7  )){ total_trig1_singles_accp++; }
+	      if(c_trig2 && c_noedtm && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7  )){ total_trig2_singles_accp++; }
+	      
 
 	      //strictly SHMS event type to count EDTM singles (for live time singles) gevtp1: SHMS_event, gevtyp3: BOTH_SINGLES_event
-	      if(EDTM_tdcTimeRaw>2200. && EDTM_tdcTimeRaw<3500. && (gevtyp==1 || gevtyp==3)){
-		total_edtm_accp_bcm_cut_single++; // this is for the runs taken in aug with T1, and T4 enabled
+	      if(c_edtm && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7)){
+		total_edtm_accp_bcm_cut_single++; // this is for the runs taken in aug with singles trigger only
 	      }
-	      
-	      //strictly select trig2 > 0 (which is does require trig1>0, since trig2 is a subset of trig1)
-	      if(c_noedtm && (gevtyp==1 || gevtyp==3)){
-
-		// try some minimal cuts when counting singles (to make sure in is within spectrometer) -- check with Larry
-		if(c_accpCuts_shms){
-		  
-		  // count T2 accepted singles
-		  total_trig2_singles_accp++;
-		}
-
 		
-		// these are necessary in order to write collimator flag to skimmed singles root file
+		// these are necessary in order to write collimator flag to skimmed root file
 		shms_coll_cut_bool = false;
 		if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
-
-
-		// fill some histos (maybe can remove these later, once we figure how we want to count singles)
-		H_Q2_singles_noCUT                ->Fill( Q2 );
-		H_xbj_singles_noCUT               ->Fill( X );
-		H_nu_singles_noCUT                ->Fill( nu );
-
-		
-		// Fill singles tree skim
-		tree_skim_singles->Fill();
 
 		//calculate shms T2 singles track efficiency
 		if(good_shms_did){ p_did_singles++;}
 		if(good_shms_should){ p_should_singles++; }
 		
-	      }
-	      
+	    
+		//---------------------------------------------------------
+		
 	      
 	      //REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS
 	      if(c_noedtm)
@@ -5834,10 +5716,6 @@ void baseAnalyzer::EventLoop()
       multi_track_eff         = 1. - (multi_peak_counts / single_peak_counts);
       multi_track_eff_err     = sqrt( pow(multi_track_eff,2) * ( pow(single_peak_counts_err/single_peak_counts,2) + pow(multi_peak_counts_err/multi_peak_counts,2) ) );
 
-
-      //Save Singles Skimmed Tree
-      tree_skim_singles->SaveAs( data_OutputFileName_skim_singles.Data() );
-      delete tree_skim_singles;
       
       //Save Skimmed Tree
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );

@@ -82,23 +82,14 @@ def compare():
 
     # targets: Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
     # the phases represent progressions in analysis: phase0 -> baseline, phase1 -> coin. time window cut, phase2-> phase1+tighter ref time cut, phase3 -> phase2+ evt_type>=4 cut
+
+
+    #--------------------------
     
-    target='Be9'
-    file_arr= ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv'%(target),
-               '../../summary_files/rate_dependence_study/phase1/cafe_prod_%s_MF_report_summary.csv'%(target),
-               '../../summary_files/rate_dependence_study/phase2/cafe_prod_%s_MF_report_summary.csv'%(target),
-               '../../summary_files/rate_dependence_study/phase3/cafe_prod_%s_MF_report_summary.csv'%(target) ]
-
-    imarker = ['o', 's', '^', 'v']
-    icolor  = ['k', 'gray', 'b', 'g']
-    
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
-
-
     # define output file to write correction factors (change in relative yield vs. T2 rates)
 
     # output file to write summary file
-    ofname = 'cafe_relYield_corrections_%s.csv' % (target)
+    ofname = 'cafe_relYield_corrections.csv'
     ofile = open(ofname, 'w+')
     ofile.write('# CaFe Relative Yield Correction Factors (using MF kinematics) \n')
     ofile.write('# \n'
@@ -115,104 +106,157 @@ def compare():
                 )
     ofile.write('phase,target,deltaY,deltaY_err,deltaX,slope,slope_err\n') 
 
+    target = ['Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54', 'Au197']
+
     
-    for i, ifile in enumerate(file_arr):
+    # loop over each target
+    for t in np.arange(len(target)):
 
-        print('phase: ', i)
-        # get relevant header info (from ifile)
-        I                    = get_data('avg_current', ifile )
-        Q                    = get_data('charge', ifile)
-        T2_scl_rate          = get_data('T2_scl_rate', ifile)
-        T2_scl               = get_data('T2_scl_rate', ifile) * 1000. * get_data('beam_time', ifile) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
-        N                    = unumpy.uarray(get_data('real_Yield', ifile),  get_data('real_Yield_err', ifile) )
-        hms_trk_eff   = unumpy.uarray(get_data('hTrkEff',    ifile),  get_data('hTrkEff_err',    ifile) )
-        shms_trk_eff  = unumpy.uarray(get_data('pTrkEff',    ifile),  get_data('pTrkEff_err',    ifile) )
-        total_LT      = unumpy.uarray(get_data('tLT',        ifile),  get_data('tLT_err_Bi',     ifile) )
-        mult_trk_eff  = np.array(get_data('multi_track_eff', ifile) )
+        # read the summary files for each study phase     
+        file_arr= ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+                   '../../summary_files/rate_dependence_study/phase1/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+                   '../../summary_files/rate_dependence_study/phase2/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+                   '../../summary_files/rate_dependence_study/phase3/cafe_prod_%s_MF_report_summary.csv'%(target[t]) ]
         
-        # calcualte charge-normalized yield
-        Y     = N / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)              
-        relY  = Y / Y[0] 
+        imarker = ['o', 's', '^', 'v']
+        icolor  = ['k', 'gray', 'b', 'g']
+
+        # figure to plot relative yields vs. avg current and T2 rates
+        fig1, axs1 = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
         
-        Y_nom = unumpy.nominal_values(Y)
-        Y_err = unumpy.std_devs(Y)
-        
-        relY_nom = unumpy.nominal_values(relY)
-        relY_err = unumpy.std_devs(relY)
-        
-        #calculate T2 scaler counts / charge
-        T2    = T2_scl/Q 
-        relT2 = T2/T2[0]
-        
-        T2_nom = unumpy.nominal_values(T2)
-        T2_err = unumpy.std_devs(T2)
-        
-        relT2_nom = unumpy.nominal_values(relT2)
-        relT2_err = unumpy.std_devs(relT2)
 
-        # calculate the  difference in relative yield (y-axis) and difference in rates (x-axis)
-        # this gives the slope:  deltaY / deltaX which gives a correction factor
-        deltaY = max(relY) - min(relY)
-        deltaY_nom = unumpy.nominal_values(deltaY)  # fractional form (need to multiply by 100 to convert to %)
-        deltaY_err = unumpy.std_devs(deltaY)        # fractional form (need to multiply by 100 to convert to %)
-        deltaX = max(T2_scl_rate) - min(T2_scl_rate)  # kHz (range of T2 scalers)
-        slope= deltaY_nom / deltaX
-        slope_err = deltaY_err / deltaX
+        # loop over each phase study
+        for i, ifile in enumerate(file_arr):
 
-        ofile.write("%i, %s, %.3E, %.3E, %.3f, %.3E, %.3E \n" % (phase, target, ))
-             
-        print('-----------------------------\n')
-        print('target=', target)
-        print('relY_nom=',relY_nom)
-        print('relY_err=',relY_err)
-        print('T2_scl_rate=', T2_scl_rate)
-        print('deltaY_nom =', deltaY_nom)
-        print('deltaY_err =', deltaY_err)
-        print('deltaX [kHz]=',deltaX)
-        print('slope=', slope)
-        print('slope_err=', slope_err)
-        print('-----------------------------\n')
+            print('phase: ', i)
+            # get relevant header info (from ifile)
+            I                    = get_data('avg_current', ifile )
+            Q                    = get_data('charge', ifile)
+            T2_scl_rate          = get_data('T2_scl_rate', ifile)
+            T2_scl               = get_data('T2_scl_rate', ifile) * 1000. * get_data('beam_time', ifile) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
+            N                    = unumpy.uarray(get_data('real_Yield', ifile),  get_data('real_Yield_err', ifile) )
+            hms_trk_eff   = unumpy.uarray(get_data('hTrkEff',    ifile),  get_data('hTrkEff_err',    ifile) )
+            shms_trk_eff  = unumpy.uarray(get_data('pTrkEff',    ifile),  get_data('pTrkEff_err',    ifile) )
+            total_LT      = unumpy.uarray(get_data('tLT',        ifile),  get_data('tLT_err_Bi',     ifile) )
+            mult_trk_eff  = np.array(get_data('multi_track_eff', ifile) )
+            
+            # calcualte charge-normalized yield
+            Y     = N / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)              
+            relY  = Y / Y[0] 
+            
+            Y_nom = unumpy.nominal_values(Y)
+            Y_err = unumpy.std_devs(Y)
+            
+            relY_nom = unumpy.nominal_values(relY)
+            relY_err = unumpy.std_devs(relY)
+            
+            #calculate T2 scaler counts / charge
+            T2    = T2_scl/Q 
+            relT2 = T2/T2[0]
+            
+            T2_nom = unumpy.nominal_values(T2)
+            T2_err = unumpy.std_devs(T2)
+            
+            relT2_nom = unumpy.nominal_values(relT2)
+            relT2_err = unumpy.std_devs(relT2)
+            
+            # calculate the  difference in relative yield (y-axis) and difference in rates (x-axis)
+            # this gives the slope:  deltaY / deltaX which gives a correction factor
+            deltaY = max(relY) - min(relY)
+            deltaY_nom = unumpy.nominal_values(deltaY)  # fractional form (need to multiply by 100 to convert to %)
+            deltaY_err = unumpy.std_devs(deltaY)        # fractional form (need to multiply by 100 to convert to %)
+            deltaX = max(T2_scl_rate) - min(T2_scl_rate)  # kHz (range of T2 scalers)
+            slope= deltaY_nom / deltaX
+            slope_err = deltaY_err / deltaX
 
-        
-        total_LT_nom = unumpy.nominal_values(total_LT )
-        total_LT_err = unumpy.std_devs(total_LT )
+            # write numerical values to file
+            ofile.write("%i, %s, %.3E, %.3E, %.3f, %.3E, %.3E \n" % (i, target[t], deltaY_nom, deltaY_err, deltaX, slope, slope_err))
+            
+            print('-----------------------------\n')
+            print('target=', target)
+            print('relY_nom=',relY_nom)
+            print('relY_err=',relY_err)
+            print('T2_scl_rate=', T2_scl_rate)
+            print('deltaY_nom =', deltaY_nom)
+            print('deltaY_err =', deltaY_err)
+            print('deltaX [kHz]=',deltaX)
+            print('slope=', slope)
+            print('slope_err=', slope_err)
+            print('-----------------------------\n')
+            
+            
+            total_LT_nom = unumpy.nominal_values(total_LT )
+            total_LT_err = unumpy.std_devs(total_LT )
 
-        ax = axs[0]
-        #plt.subplot(1, 2, 1)
-        #plot relative yield for files 1, 2
-        ax.errorbar(I, relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
-        #plt.errorbar(I, total_LT_nom, total_LT_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
- 
-        ax.set_ylabel('Relative Yield', fontsize=18)
-        #plt.ylabel('EDTM Live Time', fontsize=18)
+            # ---------------------------------------------------------------
+            #  PLOT relative yileds vs (avg current or rate) for each phase
+            # ---------------------------------------------------------------
+            
+            ax1 = axs1[0]
+            ax1.errorbar(I, relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
+            ax1.set_ylabel('Relative Yield', fontsize=18)
+            ax1.set_xlabel('Average Current [uA]', fontsize=18)
+            ax1.tick_params(axis='x', labelsize=14)
+            ax1.tick_params(axis='y', labelsize=14)
+            ax1.grid(True)
 
-        ax.set_xlabel('Average Current [uA]', fontsize=18)
-        #ax.set_xticks(fontsize=14)
-        ax.tick_params(axis='x', labelsize=14)
-        ax.tick_params(axis='y', labelsize=14)
+            ax1 = axs1[1]            
+            ax1.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')            
+            ax1.set_xlabel('T2 Scaler Rate [kHz]', fontsize=18)
+            ax1.tick_params(axis='x', labelsize=14)
+            ax1.tick_params(axis='y', labelsize=14)
+            ax1.grid(True)
+            
+            fig1.tight_layout() 
 
-        #plt.yticks(fontsize=14)
-        #plt.grid(True)
-        ax.grid(True)
-        ax = axs[1]
-        #plt.subplot(1, 2, 2)
-        #plot relative T2 scalers for files 1, 2
+            #----------------------------------------------------------------
 
-        ax.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
-        #plt.errorbar(  T2_scl_rate , total_LT_nom, total_LT_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
-     
+            
+            
+        #plt.legend()
+        plt.show()
+
+
+def plot_correction():
+
+    # input file to read relative yield corr. factors
+    ifname = 'cafe_relYield_corrections.csv'
     
-        ax.set_xlabel('T2 Scaler Rate [kHz]', fontsize=18)
-        plt.xticks(fontsize=14)
-        plt.yticks(fontsize=14)
-        plt.grid(True)
-                 
+    # read .csv file
+    df = pd.read_csv(ifname, comment='#')
+    
+    # require phase 3 (filter data frame)
+    df3 = df[df['phase']==3]
+    
+    
+    fig, axs = plt.subplots(2)
+    fig.suptitle('Rate Dependence Correction')
+    axs[0].errorbar(df3['deltaX'], df3['deltaY'], df3['deltaY_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
+    axs[0].set_ylabel(r'$\Delta$Y', fontsize=18)
+    axs[0].set_xlabel(r'$\Delta$X [kHz]', fontsize=18)
+    axs[0].tick_params(axis='x', labelsize=14)
+    axs[0].tick_params(axis='y', labelsize=14)
+    axs[0].grid(True)
+
+    tgt = df3['target']
+    dX = np.array(df3['deltaX'])
+    dY = np.array(df3['deltaY'])
+
+   
+    axs[1].errorbar(tgt, df3['slope'], df3['slope_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
+    axs[1].set_ylabel(r'slope', fontsize=18)
+    axs[1].set_xlabel(r'target', fontsize=18)
+    axs[1].tick_params(axis='x', labelsize=14)
+    axs[1].tick_params(axis='y', labelsize=14)
+    axs[1].grid(True)
+
+    print(tgt)
     fig.tight_layout() 
-    #plt.legend()
     plt.show()
 
 
+# calling function to compare different phases of the rate-dependece study
+#compare()
 
 
-# calling the relevant functions
-compare()
+plot_correction()
