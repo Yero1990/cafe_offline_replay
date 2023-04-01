@@ -115,6 +115,7 @@ void baseAnalyzer::Init(){
   
   //-----Initialize Histogram Pointers-----
 
+  
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
   h_total = NULL;         //dummy histo to store hsitogram sum
@@ -127,6 +128,11 @@ void baseAnalyzer::Init(){
   //---------------------------------------------------------------
   //Detector Histograms (DATA ONLY) --- PID / TRACKING EFFICIENCY
   //---------------------------------------------------------------
+
+  // raw edtm / coin time histos (double peak study)
+  H_raw_ctime      = NULL;
+  H_raw_ctime_edtm = NULL;
+  H_raw_edtm       = NULL;
   
   //Coincidence Time
   H_ep_ctime_total  = NULL;
@@ -732,6 +738,11 @@ baseAnalyzer::~baseAnalyzer()
   // Detector Histogram Pointers
   //-----------------------------
 
+  // raw edtm / coin time histos (double peak study)
+  delete H_raw_ctime;       H_raw_ctime      = NULL;
+  delete H_raw_ctime_edtm;  H_raw_ctime_edtm = NULL;
+  delete H_raw_edtm;        H_raw_edtm       = NULL;
+  
   //-Coin. Time-
   delete H_ep_ctime_total; H_ep_ctime_total   = NULL;
   delete H_ep_ctime_real; H_ep_ctime_real   = NULL;
@@ -2301,6 +2312,7 @@ void baseAnalyzer::CreateHist()
 
   quality_HList = new TList();
 
+  
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
   h_total = new TH1F();         //dummy histo to store hsitogram sum
@@ -2309,10 +2321,16 @@ void baseAnalyzer::CreateHist()
   h2_total = new TH2F();        //dummy histo to store hsitogram sum
   h2_i     = new TH2F();       //dummy histo to store ith histogram from list
 
-  
+
   //--------------------------------------------------------------------
   //---------HISTOGRAM CATEGORY: Particle Identification (PID)----------
   //--------------------------------------------------------------------
+
+  // raw edmt / coin time histos (double peak study)
+  H_raw_ctime      = new TH1F("H_raw_ctime", "T2-T3 raw coin. time (edtm==0)", 500, -200, 1200);
+  H_raw_ctime_edtm = new TH1F("H_raw_ctime_edtm", "T2-T3 raw coin. time (edtm>0)", 500, -200, 1200);
+  H_raw_edtm       = new TH1F("H_raw_edtm", "EDTM TDC Time Raw time", 500, -200, 6000);
+  
   
   //Coincidence HISTOS
   H_ep_ctime_real   = new TH1F("H_ep_ctime_real", "ep Coincidence Time; ep Coincidence Time [ns]; Counts ", coin_nbins, coin_xmin, coin_xmax);
@@ -2347,6 +2365,11 @@ void baseAnalyzer::CreateHist()
   
   
   //Add PID Histos to TList
+  pid_HList->Add( H_raw_ctime );
+  pid_HList->Add( H_raw_ctime_edtm );
+  pid_HList->Add( H_raw_edtm );
+  
+  
   pid_HList->Add(H_ep_ctime_total);
   pid_HList->Add(H_ep_ctime_real);
   
@@ -5037,16 +5060,27 @@ void baseAnalyzer::EventLoop()
 	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
 	      // the second edtm peak must also be cut out. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
 	      
-	      //if(tgt_type=="Au197" && c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) { 
-		//cout << "tgt_type Au197" << endl;
-		//cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl;
-		//cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl;
-		//total_edtm_accp_bcm_cut++; }
+	      if(tgt_type=="Au197") {
+
+		if( c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) {
+
+		  H_raw_ctime_edtm->Fill( TRIG2_tdcTimeRaw-TRIG3_tdcTimeRaw );
+		  H_raw_ctime->Fill( EDTM_tdcTimeRaw );
+		  
+		  //cout << "tgt_type Au197" << endl;
+		  //cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl;
+		  //cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl;
+		  total_edtm_accp_bcm_cut++;
+		}
+
+		else if( c_noedtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0)) {
+		  H_raw_ctime->Fill( TRIG2_tdcTimeRaw-TRIG3_tdcTimeRaw );
+
+		}
+		
+	      } // end Au197 requirement
 	      
-	      if(c_edtm &&  gevtyp>=4) { 
-		//cout << "other target type" << endl;
-		//cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl; 
-		//cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl; 
+	      else if(c_edtm &&  gevtyp>=4) { 
 		total_edtm_accp_bcm_cut++;
 	      }
 	      

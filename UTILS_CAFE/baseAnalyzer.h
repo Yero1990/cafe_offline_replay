@@ -764,6 +764,7 @@ protected:
 
   //------------CREATE HISTOGRAMS--------------
 
+  
   //Create Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
   TH1F* h_total = 0;     //dummy histo to store hsitogram sum
@@ -772,6 +773,11 @@ protected:
   TH2F* h2_total = 0;   //dummy histo to store hsitogram sum
   TH2F* h2_i = 0;       //dummy histo to store ith histogram from list
 
+  // raw edmt / coin time histos (double peak study)
+  TH1F* H_raw_ctime = 0;
+  TH1F* H_raw_ctime_edtm = 0;
+  TH1F* H_raw_edtm = 0;
+  
   //----------------------------------------------------------------
   // DATA QUALITY CHECK / CUTS STUDY Histograms
   //----------------------------------------------------------------
