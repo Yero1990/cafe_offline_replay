@@ -1873,6 +1873,7 @@ void baseAnalyzer::ReadReport()
     N = 118; 
     Z = 79;   
     A = N+Z;    
+    T = T_Au197;
   }
   else{
     cout << "Target mass (amu) mis-match of >1E-6 between this script and standard.kinematics . . . Check target mass is set correctly in standard.kinematics file !" << endl;
@@ -5035,8 +5036,19 @@ void baseAnalyzer::EventLoop()
 	      // during Feb 2023, Au197 data-taking, gate-widths were widened which casued a 2nd edtm peak to be within the time window, increasing the live time
 	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
 	      // the second edtm peak must also be cut out. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
-	      if(tgt_type=="Au197" && c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) { total_edtm_accp_bcm_cut++; }
-	      else if(c_edtm &&  gevtyp>=4) { total_edtm_accp_bcm_cut++;}
+	      
+	      //if(tgt_type=="Au197" && c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) { 
+		//cout << "tgt_type Au197" << endl;
+		//cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl;
+		//cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl;
+		//total_edtm_accp_bcm_cut++; }
+	      
+	      if(c_edtm &&  gevtyp>=4) { 
+		//cout << "other target type" << endl;
+		//cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl; 
+		//cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl; 
+		total_edtm_accp_bcm_cut++;
+	      }
 	      
 	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation of coin trigger)
 	      if(c_trig1 && c_noedtm && gevtyp>=4) { total_trig1_accp_bcm_cut++; }
