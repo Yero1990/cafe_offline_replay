@@ -31,13 +31,18 @@
                           ; Data taken with fields set by field00.f or later should set to 2000.
 ; These offsets are determined from elastic ep data.
 ; sets hpcentral = hpcentral * ( 1. + hpcentral_offset / 100. ) 
-; central field  correction determined by Holly for CaFe, Mar 27 2023
-  hpcentral_offset = -0.1
+   hpcentral_offset = 0.
+; central field  correction determined by Holly for CaFe, Mar 27 2023 ( 1. + hpcentral_offset / 100. ) = 0.999
+;  hpcentral_offset = -0.1
+
+; assumed that the discrepancy in Em was entirely due to final proton momentum Pm
+; the derivative dEm / dPf = -Pf / sqrt(Mp**2 + Pf**2) was used to determine new correction factor 
+; ( 1. + hpcentral_offset / 100. ) = 0.9977706592223272 (new) * 0.999 (existing) = 0.9967728885631049
+hpcentral_offset = -0.3227
 
 ; htheta_lab=htheta_lab + hthetacentral_offset/degree 
-
-  hthetacentral_offset = 0.0 ; (rad) 
-  h_oopcentral_offset = 0.0  ; (rad)
+hthetacentral_offset = 0.0  ; (rad) 
+h_oopcentral_offset = 0.0  ; (rad)
 
 
 

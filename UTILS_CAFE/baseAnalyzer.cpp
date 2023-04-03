@@ -1376,9 +1376,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
       temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
       //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
-      data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
 
 	//Check if ROOTfile exists
       in_file.open(data_InputFileName.Data());
@@ -1393,9 +1393,9 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      //data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS1_pruning/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
-      data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
 
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -5065,8 +5065,8 @@ void baseAnalyzer::EventLoop()
 		if( c_edtm &&  gevtyp>=4 && !(pEL_LO_tdcTimeRaw==0 && pEL_HI_tdcTimeRaw>0) ) {
 
 		  H_raw_ctime_edtm->Fill( TRIG2_tdcTimeRaw-TRIG3_tdcTimeRaw );
-		  H_raw_ctime->Fill( EDTM_tdcTimeRaw );
-		  
+		
+		  H_raw_edtm->Fill(EDTM_tdcTimeRaw);
 		  //cout << "tgt_type Au197" << endl;
 		  //cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl;
 		  //cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl;
@@ -5081,6 +5081,8 @@ void baseAnalyzer::EventLoop()
 	      } // end Au197 requirement
 	      
 	      else if(c_edtm &&  gevtyp>=4) { 
+		H_raw_ctime_edtm->Fill( TRIG2_tdcTimeRaw-TRIG3_tdcTimeRaw ); 
+		H_raw_edtm->Fill(EDTM_tdcTimeRaw); 
 		total_edtm_accp_bcm_cut++;
 	      }
 	      
