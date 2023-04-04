@@ -11,6 +11,6 @@ hpathlength_central = 2430
 
 rraster_num_signals = 4
 
-# The following were defined in REPLAY.PARAM
+; The following were defined in REPLAY.PARAM
 ;h_recon_coeff_filename =    "DATFILES/hms_recon_coeff.dat" 
 h_recon_coeff_filename =    "DATFILES/hms_recon_coeff_opt2018.dat"

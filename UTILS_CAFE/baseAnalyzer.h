@@ -1386,7 +1386,8 @@ protected:
   Double_t total_trig5_accp_bcm_cut = 0;
   Double_t total_trig6_accp_bcm_cut = 0;
   Double_t total_edtm_accp_bcm_cut = 0;
-  Double_t total_edtm_accp_bcm_cut_single = 0;
+  Double_t total_edtm_accp_bcm_cut_shms_single = 0;
+  Double_t total_edtm_accp_bcm_cut_hms_single = 0;
   Double_t total_trig_accp_bcm_cut_single; //generic acc. trig
   Double_t total_trig_accp_bcm_cut_coin; //generic acc. trig
 

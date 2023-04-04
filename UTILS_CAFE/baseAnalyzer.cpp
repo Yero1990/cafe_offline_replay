@@ -5087,12 +5087,12 @@ void baseAnalyzer::EventLoop()
 	      }
 	      
 	      //Count Accepted TRIG1-6 events (without EDTM and with bcm current cut: to be used in the computer live time calculation of coin trigger)
-	      if(c_trig1 && c_noedtm && gevtyp>=4) { total_trig1_accp_bcm_cut++; }
-	      if(c_trig2 && c_noedtm && gevtyp>=4) { total_trig2_accp_bcm_cut++; }
-	      if(c_trig3 && c_noedtm && gevtyp>=4) { total_trig3_accp_bcm_cut++; }
-	      if(c_trig4 && c_noedtm && gevtyp>=4) { total_trig4_accp_bcm_cut++; }
-	      if(c_trig5 && c_noedtm && gevtyp>=4) { total_trig5_accp_bcm_cut++; }
-	      if(c_trig6 && c_noedtm && gevtyp>=4) { total_trig6_accp_bcm_cut++; }
+	      if(c_trig1 && c_noedtm ) { total_trig1_accp_bcm_cut++; }
+	      if(c_trig2 && c_noedtm ) { total_trig2_accp_bcm_cut++; }
+	      if(c_trig3 && c_noedtm ) { total_trig3_accp_bcm_cut++; }
+	      if(c_trig4 && c_noedtm ) { total_trig4_accp_bcm_cut++; }
+	      if(c_trig5 && c_noedtm ) { total_trig5_accp_bcm_cut++; }
+	      if(c_trig6 && c_noedtm ) { total_trig6_accp_bcm_cut++; }
 	      
 	      // ----------- Count SHMS Singles ONLY --------------
 	      // only makes sense if 1 shms singles trigger enabled (either T1 (shms 3/4) or T2 (shms e-lreal)
@@ -5105,7 +5105,12 @@ void baseAnalyzer::EventLoop()
 
 	      //strictly SHMS event type to count EDTM singles (for live time singles) gevtp1: SHMS_event, gevtyp3: BOTH_SINGLES_event
 	      if(c_edtm && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7)){
-		total_edtm_accp_bcm_cut_single++; // this is for the runs taken in aug with singles trigger only
+		total_edtm_accp_bcm_cut_shms_single++; // this counts only edtm which passed the pre-scale condition for 1,3,5,7 (shms)
+	      }
+
+	      //strictly HMS event type to count EDTM singles (for live time singles) gevtp2: HMS_event, gevtyp3: BOTH_SINGLES_event
+	      if(c_edtm && (gevtyp==2 || gevtyp==3 || gevtyp==6 || gevtyp==7)){
+		total_edtm_accp_bcm_cut_hms_single++; // this counts only edtm which passed the pre-scale condition for 2,3,6,7 (hms)
 	      }
 		
 		// these are necessary in order to write collimator flag to skimmed root file
@@ -6338,37 +6343,53 @@ void baseAnalyzer::CalcEff()
   cpuLT_trig5_err_Bay = sqrt( (total_trig5_accp_bcm_cut * Ps5_factor + 1)*(total_trig5_accp_bcm_cut * Ps5_factor + 2)/((total_trig5_scaler_bcm_cut + 2)*(total_trig5_scaler_bcm_cut + 3)) - pow((total_trig5_accp_bcm_cut * Ps5_factor + 1),2)/pow((total_trig5_scaler_bcm_cut + 2),2) );
   cpuLT_trig6_err_Bay = sqrt( (total_trig6_accp_bcm_cut * Ps6_factor + 1)*(total_trig6_accp_bcm_cut * Ps6_factor + 2)/((total_trig6_scaler_bcm_cut + 2)*(total_trig6_scaler_bcm_cut + 3)) - pow((total_trig6_accp_bcm_cut * Ps6_factor + 1),2)/pow((total_trig6_scaler_bcm_cut + 2),2) );
   //cout << "cpuLT_trig5_err_Bay = " << cpuLT_trig5_err_Bay  << endl;
-  //Calculated total EDTM Live Time
-  tLT_trig1 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps1_factor);  
-  tLT_trig2 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps2_factor);  
-  tLT_trig3 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps3_factor);  
-  tLT_trig4 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps4_factor);  
+
+
+  // ----- singles total EDTM live time calculation -------
+  // assumes trigger config: T1 (shms 3/4), T2 (shms el real), T3 (hms 3/4), T4 (hms el real), T5 (hms 3/4 x shms el-real), T6 (hms 3/4 x shms 3/4)
+  // calculate total live times for singles triggers (the accepted edtm were counted with evt typ cuts specific for hms/shms)
+  tLT_trig1 = total_edtm_accp_bcm_cut_shms_single / (total_edtm_scaler_bcm_cut / Ps1_factor);
+  tLT_trig2 = total_edtm_accp_bcm_cut_shms_single / (total_edtm_scaler_bcm_cut / Ps2_factor);
+  tLT_trig3 = total_edtm_accp_bcm_cut_hms_single  / (total_edtm_scaler_bcm_cut / Ps3_factor);
+  tLT_trig4 = total_edtm_accp_bcm_cut_hms_single  / (total_edtm_scaler_bcm_cut / Ps4_factor);
+
+  tLT_trig1_err_Bi = sqrt( total_edtm_accp_bcm_cut_shms_single * (1. - (total_edtm_accp_bcm_cut_shms_single ) / total_edtm_scaler_bcm_cut ) ) * Ps1_factor / total_edtm_scaler_bcm_cut; 
+  tLT_trig2_err_Bi = sqrt( total_edtm_accp_bcm_cut_shms_single * (1. - (total_edtm_accp_bcm_cut_shms_single ) / total_edtm_scaler_bcm_cut ) ) * Ps2_factor / total_edtm_scaler_bcm_cut; 
+  tLT_trig3_err_Bi = sqrt( total_edtm_accp_bcm_cut_hms_single  * (1. - (total_edtm_accp_bcm_cut_hms_single  ) / total_edtm_scaler_bcm_cut ) ) * Ps3_factor / total_edtm_scaler_bcm_cut; 
+  tLT_trig4_err_Bi = sqrt( total_edtm_accp_bcm_cut_hms_single  * (1. - (total_edtm_accp_bcm_cut_hms_single  ) / total_edtm_scaler_bcm_cut ) ) * Ps4_factor / total_edtm_scaler_bcm_cut; 
+  
+  tLT_trig1_err_Bay = sqrt( (total_edtm_accp_bcm_cut_shms_single * Ps1_factor + 1)*(total_edtm_accp_bcm_cut_shms_single * Ps1_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut_shms_single * Ps1_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  tLT_trig2_err_Bay = sqrt( (total_edtm_accp_bcm_cut_shms_single * Ps2_factor + 1)*(total_edtm_accp_bcm_cut_shms_single * Ps2_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut_shms_single * Ps2_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  tLT_trig3_err_Bay = sqrt( (total_edtm_accp_bcm_cut_hms_single  * Ps3_factor + 1)*(total_edtm_accp_bcm_cut_hms_single  * Ps3_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut_hms_single  * Ps3_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  tLT_trig4_err_Bay = sqrt( (total_edtm_accp_bcm_cut_hms_single  * Ps4_factor + 1)*(total_edtm_accp_bcm_cut_hms_single  * Ps4_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut_hms_single  * Ps4_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  //--------------------------------
+  
+  // ------ Calculated total EDTM Live Time (for coin. trigger only) --------
+  //tLT_trig1 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps1_factor);  
+  //tLT_trig2 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps2_factor);  
+  //tLT_trig3 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps3_factor);  
+  //tLT_trig4 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps4_factor);  
   tLT_trig5 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps5_factor);  
   tLT_trig6 = total_edtm_accp_bcm_cut / (total_edtm_scaler_bcm_cut / Ps6_factor);  
 
   //Calculate EDTM Live Time Error (Use Binomial Error)
-  tLT_trig1_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps1_factor / total_edtm_scaler_bcm_cut;
-  tLT_trig2_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps2_factor / total_edtm_scaler_bcm_cut;
-  tLT_trig3_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps3_factor / total_edtm_scaler_bcm_cut;
-  tLT_trig4_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps4_factor / total_edtm_scaler_bcm_cut;
+  //tLT_trig1_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps1_factor / total_edtm_scaler_bcm_cut;
+  //tLT_trig2_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps2_factor / total_edtm_scaler_bcm_cut;
+  //tLT_trig3_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps3_factor / total_edtm_scaler_bcm_cut;
+  //tLT_trig4_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps4_factor / total_edtm_scaler_bcm_cut;
   tLT_trig5_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps5_factor / total_edtm_scaler_bcm_cut;
   tLT_trig6_err_Bi = sqrt( total_edtm_accp_bcm_cut * (1. - (total_edtm_accp_bcm_cut )/total_edtm_scaler_bcm_cut ) ) * Ps6_factor / total_edtm_scaler_bcm_cut;
 
-  if(analysis_cut=="heep_singles"){
-    tLT_trig2 = total_edtm_accp_bcm_cut_single / (total_edtm_scaler_bcm_cut / Ps2_factor);
-    tLT_trig2_err_Bi = sqrt( total_edtm_accp_bcm_cut_single * (1. - (total_edtm_accp_bcm_cut_single )/total_edtm_scaler_bcm_cut ) ) * Ps2_factor / total_edtm_scaler_bcm_cut; 
-    tLT_trig2_err_Bay = sqrt( (total_edtm_accp_bcm_cut_single * Ps2_factor + 1)*(total_edtm_accp_bcm_cut_single * Ps2_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps2_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
-
-  }
-
   //Calculate EDTM Live Time Error (Use Bayesian Error)
-  tLT_trig1_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps1_factor + 1)*(total_edtm_accp_bcm_cut * Ps1_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps1_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
-  tLT_trig2_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps2_factor + 1)*(total_edtm_accp_bcm_cut * Ps2_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps2_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
-  tLT_trig3_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps3_factor + 1)*(total_edtm_accp_bcm_cut * Ps3_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps3_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
-  tLT_trig4_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps4_factor + 1)*(total_edtm_accp_bcm_cut * Ps4_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps4_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  //tLT_trig1_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps1_factor + 1)*(total_edtm_accp_bcm_cut * Ps1_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps1_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  //tLT_trig2_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps2_factor + 1)*(total_edtm_accp_bcm_cut * Ps2_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps2_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  //tLT_trig3_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps3_factor + 1)*(total_edtm_accp_bcm_cut * Ps3_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps3_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
+  //tLT_trig4_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps4_factor + 1)*(total_edtm_accp_bcm_cut * Ps4_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps4_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
   tLT_trig5_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps5_factor + 1)*(total_edtm_accp_bcm_cut * Ps5_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps5_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
   tLT_trig6_err_Bay = sqrt( (total_edtm_accp_bcm_cut * Ps6_factor + 1)*(total_edtm_accp_bcm_cut * Ps6_factor + 2)/((total_edtm_scaler_bcm_cut + 2)*(total_edtm_scaler_bcm_cut + 3)) - pow((total_edtm_accp_bcm_cut * Ps6_factor + 1),2)/pow((total_edtm_scaler_bcm_cut + 2),2) );
   
+  //---------------------------------------------------------------------------
+
   //Ensure that if Ps_factor = -1 (trigger input OFF), then live times default to -1.0
   if(Ps1_factor==-1) { cpuLT_trig1 = -1.0, tLT_trig1 = -1.0; }
   if(Ps2_factor==-1) { cpuLT_trig2 = -1.0, tLT_trig2 = -1.0; }
@@ -7880,7 +7901,7 @@ void baseAnalyzer::WriteOfflineReport()
     out_file << "                                     " << endl;
     out_file << Form("edtm_scaler   :  %.3f  ",         total_edtm_scaler_bcm_cut ) << endl;
     out_file << Form("edtm_accepted :  %.3f  ",         total_edtm_accp_bcm_cut) << endl;
-    out_file << Form("edtm_accepted_singles :  %.3f  ", total_edtm_accp_bcm_cut_single ) << endl;
+    out_file << Form("edtm_accepted_shms_singles :  %.3f  ", total_edtm_accp_bcm_cut_shms_single ) << endl;
     out_file << "                                     " << endl;
     out_file << "# pre-scale factors (-1: trigger OFF)                 " << endl;
     out_file << Form("Ps1_factor: %.1f", Ps1_factor) << endl;
