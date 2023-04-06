@@ -89,15 +89,15 @@ def compare():
     # define output file to write correction factors (change in relative yield vs. T2 rates)
 
     # output file to write summary file
-    ofname = 'cafe_relYield_corrections.csv'
+    ofname = 'cafe_relYield_corrections_pass2.csv'
     ofile = open(ofname, 'w+')
     ofile.write('# CaFe Relative Yield Correction Factors (using MF kinematics) \n')
     ofile.write('# \n'
                 '# Header Definitions: \n'
-                '# phase#       : 0 -> baseline (pruning)   \n'
-                '# phase#       : 1 -> 0 + added the T2,T3 TDC raw time window cuts (tcoin param)   \n'
-                '# phase#       : 2 -> 1 + added tighter reference time cuts on HMS/SHMS to try and recover more lost coincidences    \n'
-                '# phase#       : 3 -> 2 + added an event type cut (g.evtyp>=4) to properly select ALL coincidences   \n'
+                #'# phase#       : 0 -> baseline (pruning)   \n'
+                #'# phase#       : 1 -> 0 + added the T2,T3 TDC raw time window cuts (tcoin param)   \n'
+                #'# phase#       : 2 -> 1 + added tighter reference time cuts on HMS/SHMS to try and recover more lost coincidences    \n'
+                #'# phase#       : 3 -> 2 + added an event type cut (g.evtyp>=4) to properly select ALL coincidences   \n'
                 '# deltaY       : difference in relative charge-norm, eff.-corrected data yield between lowest and highest T2 rate runs \n'
                 '# deltaY_err   : error in deltaY \n'
                 '# deltaX       : difference between lowest and highest T2 rates [kHz] \n'
@@ -112,14 +112,19 @@ def compare():
     # loop over each target
     for t in np.arange(len(target)):
 
-        # read the summary files for each study phase     
-        file_arr= ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
-                   '../../summary_files/rate_dependence_study/phase1/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
-                   '../../summary_files/rate_dependence_study/phase2/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
-                   '../../summary_files/rate_dependence_study/phase3/cafe_prod_%s_MF_report_summary.csv'%(target[t]) ]
+        # read the summary files for each study phase   (only for pass 1)
+        # file_arr= ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+        #           '../../summary_files/rate_dependence_study/phase1/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+        #           '../../summary_files/rate_dependence_study/phase2/cafe_prod_%s_MF_report_summary.csv'%(target[t]),
+        #           '../../summary_files/rate_dependence_study/phase3/cafe_prod_%s_MF_report_summary.csv'%(target[t]) ]
+
+        # imarker = ['o', 's', '^', 'v']
+        # icolor  = ['k', 'gray', 'b', 'g']
         
-        imarker = ['o', 's', '^', 'v']
-        icolor  = ['k', 'gray', 'b', 'g']
+        # pass 2
+        file_arr = ['../../summary_files/pass2/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
+        imarker = ['v']
+        icolor  = ['g']
 
         # figure to plot relative yields vs. avg current and T2 rates
         fig1, axs1 = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
@@ -128,6 +133,7 @@ def compare():
         # loop over each phase study
         for i, ifile in enumerate(file_arr):
 
+            
             print('phase: ', i)
             # get relevant header info (from ifile)
             I                    = get_data('avg_current', ifile )
@@ -220,30 +226,32 @@ def compare():
 def plot_correction():
 
     # input file to read relative yield corr. factors
-    ifname = 'cafe_relYield_corrections.csv'
+    ifname = 'cafe_relYield_corrections_pass2.csv'
     
     # read .csv file
     df = pd.read_csv(ifname, comment='#')
     
-    # require phase 3 (filter data frame)
-    df3 = df[df['phase']==3]
-    
+    # require phase 3 (filter data frame) -- pass1
+    #df_phase = df[df['phase']==3]
+
+    # require phase 0 (filter data frame) -- pass2
+    df_phase = df[df['phase']==0]
     
     fig, axs = plt.subplots(2)
     fig.suptitle('Rate Dependence Correction')
-    axs[0].errorbar(df3['deltaX'], df3['deltaY'], df3['deltaY_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
+    axs[0].errorbar(df_phase['deltaX'], df_phase['deltaY'], df_phase['deltaY_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
     axs[0].set_ylabel(r'$\Delta$Y', fontsize=18)
     axs[0].set_xlabel(r'$\Delta$X [kHz]', fontsize=18)
     axs[0].tick_params(axis='x', labelsize=14)
     axs[0].tick_params(axis='y', labelsize=14)
     axs[0].grid(True)
 
-    tgt = df3['target']
-    dX = np.array(df3['deltaX'])
-    dY = np.array(df3['deltaY'])
+    tgt = df_phase['target']
+    dX = np.array(df_phase['deltaX'])
+    dY = np.array(df_phase['deltaY'])
 
    
-    axs[1].errorbar(tgt, df3['slope'], df3['slope_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
+    axs[1].errorbar(tgt, df_phase['slope'], df_phase['slope_err'], marker='o', markersize=8, linestyle='None', color='g', mec='k')
     axs[1].set_ylabel(r'slope', fontsize=18)
     axs[1].set_xlabel(r'target', fontsize=18)
     axs[1].tick_params(axis='x', labelsize=14)
@@ -256,7 +264,6 @@ def plot_correction():
 
 
 # calling function to compare different phases of the rate-dependece study
-#compare()
-
+compare()
 
 plot_correction()

@@ -1,0 +1,111 @@
+# CaFe Current / Rate Dependence Studies
+# Date: March 06, 2023
+#
+# C. Yero
+#
+# Brief: A dependency of the charge-normalized yield on average beam current (and T2 scaler rates)
+#        was found for CaFe mean-field runs for every target, which exhibited similar slopes in relative
+#        yield drop per beam currnet (or T2 rates). This study shows that most of this dependency is due to
+#	 accidental hits blocking the "good hits" that actually formed a coincidence. This effect is amplified
+#	 with higher beam currents (i.e., higher rates),  as there are more accidentals blocking the "good hits".
+#	 The effect is mostly from the SHMS (e- arm) trigger T2, rather than the HMS (hadron arm) T3, as the
+#	 SHMS is a forward angles (8.3 deg) and high momentum (-8.55 GeV/c)
+# 
+#   Technical Details of how the coincidence blocking happens:
+# ----------------------------------------------------------------
+#  When a coincidence is made: T5 = T2 (SHMS) x T3 (HMS),  the signal (T5) is sent to the trigger interface (TI)
+#  The TI then accepts the signal and propagates it across all readout crates (ROCs) in HMS/SHMS. The modules in
+#  each crate (ADCs, TDCs), are notified and emit a "look-back window", typically a few microseconds (~1000 ns) in
+#  which each TDC channel in the module reads out all the possible hits within the window, and selects the 1st hit
+#  as the "good hit". For single hits, it can only be the "good hit", however, if there are multiple hits, such as
+#  accidentals at higher rates, if the accidental came before the "good hit", then the accidental is selected. This
+#  is the reason why reference time / time window cuts are done first in the analysis. 
+#
+#  With respect to the coincidence formation of a coincidence signal by the analyzer (HCANA), for the CaFe, it uses the
+#  T2 (T.coin.pTRIG2_ROC{1,2}_tdcTimeRaw) and T3 (T.coin.pTRIG3_ROC{1,2}_tdcTimeRaw) to make the raw coincidence time
+#  signal, and applies pathlength correction afterwards. Therefore, a time window cut MUST also be placed on these variables
+#  to ensure the "good hit" is selected. Keep in mind that the "good hit" could be either real or accidental coincidence
+#  in which case, it will just show up in the normal coincidence time spectrum either in the prompt peak or spaced apart by
+#  intervals of 2 or 4 ns bunch structures. For CaFe, we have determined the proper cut to be made on the T2, T3 and the number
+#  of good hits is expected to increase.
+#
+#  Technical Details of this Study
+# -----------------------------------
+# This study consist of variation of parameters to quantify the effect on the relative yield as a function of
+# T2 rates and beam current. The analyzed report ouputs with details of analysis cuts and other useful run info
+# can be found (on ifarm) at:
+#
+# CAFE_OUTPUT/REPORT/rate_dependence_study/ 
+#
+# This study was done for three cases:
+#
+# (0) existing configuration (no changes) -- baseline 
+#
+# (1) applied T2, T3 raw tdc Time cuts for each scenario: (modified t_coin_TdcTimeWindowMin/Max on PARAM/TRIG/fall22/tcoin_fall22.param) 
+#
+# (2) in addition to (1), I applied a tighter reference time cut on SHMS/HMS ( help recover additional lost events) 
+#    ( modified  PARAM/TRIG/fall22/tcoin_fall22.param, PARAM/SHMS/GEN/fall22/p_reftime_cut_cafe.param )
+
+# Header definitions:
+# (only statistical errors considered)
+#
+# Ynorm =  counts  / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
+# Ynorm_err = sqrt(counts) / ( Q * htrk_eff * ptrk_eff * total_lt * multi_trk_eff )
+# relY = Ynorm / Ynorm (@ lowest current)
+# relY_err = Ynorm_err / Ynorm (@ lowest current) --> f=A/B ---> df_err = |f| * srt( (dA/A)**2 + (dB/B)**2 ) 
+
+** NOTE: need to study drop in yield fADC deadtime effects (P. Bosted)
+
+Study (0)
+run    target kin avg_I [uA]  T2_rate [kHz]  counts     Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  Ynorm  Ynorm_err  relY  relY_err
+
+
+
+Study (1a) applied T2,T3 tdcTimeRaw cuts (from tcoin_fall22.param) +  >5 uA beam current cut
+run    target kin avg_I [uA]  T2_rate [kHz]  counts	Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  Ynorm     Ynorm_err  relY    relY_err
+16983  Be9    MF  23.293      68.375  	     97378.383	88.640	0.996	 0.981	   0.939     0.9840	    1216.868  3.8995  	 1       0.003204
+17099  Be9    MF  31.439      94.375	     13438.092	12.477	0.996	 0.976	   0.931     0.9724	    1223.837  10.557	 1.005	 0.00867
+17100  Be9    MF  59.767      183.587	     28398.250	27.552	0.996	 0.966	   0.938     0.9554	    1195.401  7.0936	 0.982	 0.00582
+
+16984  B10    MF  28.477      49.990	     50257.566	75.951	0.997	 0.984	   0.941     0.9881	    725.4160  3.2358	 1 	 0.0044
+17101  B10    MF  56.091      101.271	     28160.566	44.108	0.996	 0.976	   0.943     0.9740	    715.0628  4.2611	 0.985	 0.00587
+
+16991  B11    MF  38.817      74.830	     132542.432	214.126	0.997	 0.980	   0.938     0.9811	    688.4116  1.8909	 1	 0.00274  
+16986  B11    MF  45.412      88.072	     11276.408	18.176	0.997	 0.980	   0.933     0.9763	    697.0859  6.5644	 1.0126	 0.00953   	    
+17102  B11    MF  62.751      123.223	     17777.448	30.245	0.996	 0.975	   0.932     0.9706	    669.1071  5.0183	 0.9719	 0.00728
+
+16977  C12    MF  28.110      48.889	     52025.816	88.735	0.997	 0.983	   0.944     0.9884	    641.1660  2.8110	 1	 0.00438
+17098  C12    MF  57.504      102.973	     18877.842	33.415	0.996	 0.976	   0.932     0.9735	    640.5453  4.66201	 0.9990	 0.00727
+------
+20786  C12    MF  18.738      33.638	     17274.750	31.668	0.994	 0.984	   0.913     0.9913	    616.217   4.6884     1       0.00760
+20785  C12    MF  26.125      47.124	     20633.132	37.491	0.995	 0.981	   0.920     0.9879	    620.362   4.3187	 1.0067
+20787  C12    MF  33.555      61.002	     16234.092	30.362	0.994	 0.979	   0.919     0.9830	    608.218   4.7735	 0.9870
+20788  C12    MF  38.869      70.869	     15848.763	28.956	0.993	 0.979	   0.921     0.9827	    622.077   4.9413	 1.0095
+
+16980  Ca40   MF  28.056      67.154	     44750.500	94.417	0.996	 0.978	   0.936     0.9848	    527.868   2.4953     1       0.00472
+17097  Ca40   MF  58.049      147.530	     23967.211	54.170	0.996	 0.965	   0.932     0.9658	    511.409   3.3033	 0.9688	 0.00625
+
+17093  Ca48   MF  28.909      92.979	     23989.632	49.769	0.997	 0.975	   0.937     0.9784	    540.8898  3.4921	 1
+17094  Ca48   MF  33.392      108.263	     5976.092	12.680	0.997	 0.972	   0.934     0.9750	    534.0539  6.9083	 0.9873
+17096  Ca48   MF  59.882      203.739	     43800.473	98.674	0.995	 0.955	   0.934     0.9537	    524.4341  2.50582	 0.96957
+
+16982  Fe54   MF  21.781      23.655 	     20268.408	104.138	0.996	 0.986	   0.947     0.9941	    210.5203  1.47871	 1
+16981  Fe54   MF  27.728      30.226	     34332.553	181.279	0.997	 0.984	   0.948     0.9925	    205.1773  1.10732	 0.97462
+
+20799  Au197  MF  31.386      35.251	     4906.776	61.127	0.996	 0.980	   0.982     0.9910	    84.50698
+20798  Au197  MF  32.223      36.196	     6579.105	81.813	0.995	 0.980	   0.983     0.9907	    84.68366
+20793  Au197  MF  37.257      42.130	     6321.132	79.179	0.995	 0.979	   0.983     0.9898	    84.23219
+20789  Au197  MF  37.425      42.265	     956.342	11.220	0.993	 0.979	   0.919     0.9892	    96.44701
+20797  Au197  MF  37.658      42.616	     6807.132	83.166	0.995	 0.979	   0.985     0.9890	    86.25416
+
+Study (1b)
+run  target kin avg_I [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  Ynorm  Ynorm_err  relY  relY_err
+
+Study (2)
+run  target kin avg_I [uA]  T2_rate [kHz]  counts  Q [mC]  htrk_eff ptrk_eff  total_lt  multi_trk_eff  Ynorm  Ynorm_err  relY  relY_err
+
+
+TO -DO
+ 1) look at relative yield for beam currents for SRC (plot average beam currents for every run)
+
+2) plot delta_yield (in %) vs. delta_rate (kHz) delta_yield: black_curve - 1,  and blue_curve-1, separately deltas_rate (highest-lowest) rate
