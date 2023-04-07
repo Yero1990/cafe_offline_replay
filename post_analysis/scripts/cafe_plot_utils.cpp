@@ -26,7 +26,7 @@ void cafe_plot_utils(){
   
   double total_charge    = get_header("total_charge", "B11", "SRC"   );
   double total_yield     = get_header("real_yield", "Be9", "SRC"     );
-  double total_yield_err = get_header("real_yield_err", "B10", "MF" );
+   double total_yield_err = get_header("real_yield_err", "B10", "MF" );
 
   double hms_trk_err     = get_header("hms_trk_eff", "B11", "SRC" );
   double hms_trk_err_err = get_header("hms_trk_eff_err", "LD2", "SRC" );

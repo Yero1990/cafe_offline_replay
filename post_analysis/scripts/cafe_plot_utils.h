@@ -40,7 +40,7 @@ double get_header(string header="", string target="", string kin=""){
 
   //SUMMARY_FILES_DIR
   // set generic .csv file name
-  string file_csv = Form(SUMMARY_FILES_DIR"pass1/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+  string file_csv = Form(SUMMARY_FILES_DIR"pass2/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
   cout << Form("FILE TO OPEN: %s", file_csv.c_str()) << endl;
 
@@ -154,7 +154,7 @@ double get_header(string header="", string target="", string kin=""){
 
 
   // set generic .csv file name
-  string file_csv = Form(SUMMARY_FILES_DIR"pass1/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+  string file_csv = Form(SUMMARY_FILES_DIR"pass2/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
   // find parameters in .csv. files (usually commented lines above header in .csv file)
 
@@ -564,7 +564,7 @@ void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", st
   for (int i=0; i<tgt.size(); i++){
 
     // generic file name with specific target, kinematic
-    fname = Form(ANALYZED_COMBINED"pass1/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
+    fname = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
 
     cout << Form("FILE TO OPEN: %s", fname.c_str()) << endl;
 
@@ -704,8 +704,8 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   cout << "" << endl;
   
   // set .root file names 
-  string fname_A = Form(ANALYZED_COMBINED"pass1/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
-  string fname_B = Form(ANALYZED_COMBINED"pass1/cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
+  string fname_A = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
+  string fname_B = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
 
   cout << Form("FILES TO OPEN: \n%s\n%s", fname_A.c_str(), fname_B.c_str() ) << endl;
 
