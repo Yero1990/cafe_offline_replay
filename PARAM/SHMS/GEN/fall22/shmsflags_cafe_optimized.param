@@ -20,19 +20,13 @@ ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset
 ; The following offsets are applied to the central kinematic variables (in radians)
 ;      ptheta_lab=htheta_lab + pthetacentral_offset/degree 
 
-; pthetacentral_offset = 0.
-; p_oopcentral_offset = 0.
+pthetacentral_offset = 0.
+p_oopcentral_offset = 0.
 
-; Arpil 01, 2023 CY offset in in-plane central angle determined from cafe run 16962 using                                                                        
-; derivative dW/dth_e, comparing data with simc, and out-of-plane offset determined from
-; Pmy_simc -Pmy_data / (8.55*0.99) --> offset in radians, missing momentum Y-component 
 
-pthetacentral_offset = 0.0004  ; determined from derivative, dW= W_simc-W_data = -0.0054 GeV
-p_oopcentral_offset =  0.00054819 ; determined from Pm-Y component difference between data/simc
-
-;  SHMS central momentum offset determined from optics taken on Aug 2022 (for cafe)
-; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )
+; SHMS central momentum offset determined from optics taken on Aug 2022 (for cafe)
+; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. ) = 0.9979 
 ; ppcentral_offset = 0
-ppcentral_offset = -0.3  ; momentum correction determine by Holly
+ppcentral_offset = -0.21  
 
 
