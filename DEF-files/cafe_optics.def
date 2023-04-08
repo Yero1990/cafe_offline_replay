@@ -2,6 +2,7 @@ block g.*
 
 block H.kin.*
 block H.react.*
+block H.gtr.p
 block H.gtr.dp
 block H.gtr.ph
 block H.gtr.th
@@ -14,6 +15,7 @@ block P.react.*
 block P.ngcer.npe*
 block P.hgcer.npe*
 block P.cal.e*
+block P.gtr.p
 block P.gtr.dp 
 block P.gtr.ph
 block P.gtr.th
