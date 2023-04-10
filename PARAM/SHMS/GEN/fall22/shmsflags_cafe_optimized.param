@@ -23,10 +23,9 @@ ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset
 pthetacentral_offset = 0.
 p_oopcentral_offset = 0.
 
+ 
+; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  
+ppcentral_offset = 0
 
-; SHMS central momentum offset determined from optics taken on Aug 2022 (for cafe)
-; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. ) = 0.9979 
-; ppcentral_offset = 0
-ppcentral_offset = -0.21  
 
 
