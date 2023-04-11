@@ -20,7 +20,7 @@ void make_plots(){
   //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
   //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
   
-  const int nplots = 13;
+  const int nplots = 14;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -29,8 +29,8 @@ void make_plots(){
  
   for(int i=0; i<nplots; i++){
 
-    if(i!=6) continue;
-    
+    if(i!=13) continue;
+    /*
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
       H_data[i]=new TH1F("H_shms_kf", "SHMS e- momentum", 100,9,10.5);
@@ -166,7 +166,7 @@ void make_plots(){
       H_simc[i]=new TH1F("H_tarx_simc", "x-target (lab)", 100, 0., 0.4);
       H_simc[i]->SetLineColor(kRed);
       fdata->cd();
-      T->Draw("P.react.x>>H_tarx(100,0.,0.4)", data_cuts, "normhistE"); 
+      T->Draw("-1*P.react.x>>H_tarx(100,0.,0.4)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
       fsimc->cd();
       SNT->Draw("tar_x>>H_tarx_simc(100,0.,0.4)", simc_cuts, "normhistEsames");
     }
@@ -181,6 +181,68 @@ void make_plots(){
       fsimc->cd();
       SNT->Draw("tar_y>>H_tary_simc(100,-0.2,0.2)", simc_cuts, "normhistEsames");
     }	
+    */
+      
+      if(i==13) {
+
+	// calculated energy transfer nu, as a function of the e- angle:
+	// nu_calc = Eb**2 * (1 - cos (theta_e) ) / ( Mp + Eb * ( 1 - cos(theta_e) ) )
+
+	// calculated e- scat angle as a function of nu
+	// cos (the_calc) =  (Eb**2  - Eb * nu - nu * Mp) / ( Eb * (Eb-nu) )
+
+	
+	c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+	
+	fdata->cd();
+
+	c[i]->Divide(2,2);
+
+	// overlay energy transfer, nu measured and calculated
+	c[i]->cd(1);
+	T->Draw("P.kin.primary.nu >> H_nu_meas_data(100, 0, 5)",   data_cuts); 
+	T->Draw("10.549*10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.549*(1. - cos(P.kin.primary.scat_ang_rad) )) >> H_nu_calc_data(100,0,5)",   data_cuts, "sames"); 
+
+	// plots nu_meas - nu_cal  vs. theta_e
+	c[i]->cd(2);
+	T->Draw("(P.kin.primary.nu - ( 10.549*10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) )  )):P.kin.primary.scat_ang_deg  >> H_dnu_vs_theta_e_data(100, 5, 12, 100,-0.2,0.2)",   data_cuts, "colz"); 
+
+	// overlay e- scat. angle, the measured and calculated
+	c[i]->cd(3);
+	T->Draw("P.kin.primary.scat_ang_deg >> H_the_meas_data(100, 5, 12)",   data_cuts); 
+	T->Draw("acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14 >> H_the_calc_data(100, 5, 12)",   data_cuts, "sames"); 
+
+	c[i]->cd(4);
+	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
+	
+	// ----------- SIMC-----
+	TCanvas *c2 = new TCanvas("c2", "", 900, 700);
+	
+	fsimc->cd();
+	c2->Divide(2,2);
+
+	// overlay energy transfer, nu measured and calculated
+	c2->cd(1);
+	SNT->Draw("nu >> H_nu_meas_simc(100,0,5)", simc_cuts, "histE");
+	SNT->Draw("( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) )))  >> nu_calc_simc(100,0,5)", simc_cuts, "histEsames");
+
+	// plots nu_meas - nu_cal  vs. theta_e
+	c2->cd(2);
+	SNT->Draw("(nu - ( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) ) ) )):theta_e*180/3.14  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
+
+	// overlay e- scat. angle, the measured and calculated
+	c2->cd(3);
+	SNT->Draw("theta_e * 180./TMath::Pi() >> H_the_meas_simc(100, 5, 12)",   simc_cuts); 
+	SNT->Draw("acos(( (10.549*10.549) - (10.549 * nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./3.14 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
+
+	c2->cd(4);
+	SNT->Draw("(theta_e * 180./TMath::Pi() - acos(( (10.549*10.549) - (10.549*nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./TMath::Pi()):nu >> H_dthe_vs_nu_simc(100,0.6,2, 100, -0.3,0.3)", simc_cuts, "colz");
+
+
+	// NOTE: simc collimator calculatrion
+	// SNT->Draw("(tar_x - e_xptar*e_zv*cos(6.8*3.14/180.) + e_xptar*253):(e_ytar + e_yptar*253.-(0.019+40.*.01*0.052)*e_delta+(0.00019+40*.01*.00052)*e_delta*e_delta)>>(100,-15,15,100,-15,15)", "Weight*(e_delta>0)", "colz")
+      }
+
     
   }
 
