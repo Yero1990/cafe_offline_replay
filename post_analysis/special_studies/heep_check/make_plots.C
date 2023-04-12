@@ -1,8 +1,19 @@
 void make_plots(){
 
+
+  
   // e- angle: 6.8 deg
-  TString data_fname="initial/cafe_replay_optics_16036_500000.root ";
-  TString simc_fname="initial/cafe_heep_singles_kin0_rad.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
+
+  // e- angle: 7.495 deg
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin1_rad.root";
+
+  
+  // e- angle: 8.295 deg
+  TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
+  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -15,12 +26,12 @@ void make_plots(){
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
   TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.8&&(Q2/(2.*0.938*nu)<1.1))";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
   //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
   //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
   
-  const int nplots = 14;
+  const int nplots = 15;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -28,9 +39,7 @@ void make_plots(){
 
  
   for(int i=0; i<nplots; i++){
-
-    if(i!=13) continue;
-    /*
+    
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
       H_data[i]=new TH1F("H_shms_kf", "SHMS e- momentum", 100,9,10.5);
@@ -113,7 +122,7 @@ void make_plots(){
     fdata->cd();
       T->Draw("P.kin.primary.W>>H_W(100,0.85,1.05)", data_cuts, "normhistEsames");
     }
-
+    
     if(i==7) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
       H_data[i]=new TH1F("H_xbj", "x-Bjorken", 100, 0.8,1.1);
@@ -125,7 +134,7 @@ void make_plots(){
       SNT->Draw("Q2/(2.*0.938*nu)>>H_xbj_simc(100,0.8,1.1)", simc_cuts, "normhistEsames");
 
     }
-
+    
     if(i==8) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
       H_data[i]=new TH1F("H_Q2", "Q2", 100, 0,4);
@@ -181,7 +190,7 @@ void make_plots(){
       fsimc->cd();
       SNT->Draw("tar_y>>H_tary_simc(100,-0.2,0.2)", simc_cuts, "normhistEsames");
     }	
-    */
+    
       
       if(i==13) {
 
@@ -241,8 +250,39 @@ void make_plots(){
 
 	// NOTE: simc collimator calculatrion
 	// SNT->Draw("(tar_x - e_xptar*e_zv*cos(6.8*3.14/180.) + e_xptar*253):(e_ytar + e_yptar*253.-(0.019+40.*.01*0.052)*e_delta+(0.00019+40*.01*.00052)*e_delta*e_delta)>>(100,-15,15,100,-15,15)", "Weight*(e_delta>0)", "colz")
-      }
 
+      }
+    
+      
+    if(i==14) {
+
+
+      TCanvas *c1 = new TCanvas("c1", "recons correlations", 900, 700);      
+      c1->Divide(3,2);
+
+      // DATA
+      fdata->cd();
+      c1->cd(1);
+      T->Draw("P.gtr.dp:P.gtr.th>>H_shms_delta_vs_xptar(100, -0.07, 0.07, 100,0,22)", data_cuts, "colz");  
+      c1->cd(2);
+      T->Draw("P.gtr.dp:P.gtr.ph>>H_shms_delta_vs_yptar(100, -0.07, 0.07, 100,0,22)", data_cuts, "colz");  
+      c1->cd(3);
+      T->Draw("P.gtr.dp:P.gtr.y>>H_shms_delta_vs_ytar(100, -2, 2, 100,0,22)", data_cuts, "colz");  
+      
+      
+
+      // SIMC
+      fsimc->cd();
+      c1->cd(4);
+      SNT->Draw("e_delta:e_xptar>>H_shms_delta_vs_xptar_simc(100, -0.07, 0.07, 100,0,22)", simc_cuts, "colz");  
+      c1->cd(5);
+      SNT->Draw("e_delta:e_yptar>>H_shms_delta_vs_yptar_simc(100, -0.07, 0.07, 100,0,22)", simc_cuts, "colz");  
+      c1->cd(6);
+      SNT->Draw("e_delta:e_ytar>>H_shms_delta_vs_ytar_simc(100, -2, 2, 100,0,22)", simc_cuts, "colz");  
+      
+
+    }
+    
     
   }
 
