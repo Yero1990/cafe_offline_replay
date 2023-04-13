@@ -12,8 +12,27 @@ void make_plots(){
 
   
   // e- angle: 8.295 deg
-  TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
+
+  
+  // ------- XBPM flipped sign (opposite to HCANA) --------
+  
+  // e- angle: 6.8 deg
+  TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
+  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad_xbpmFlip.root";
+
+  // e- angle: 7.495 deg
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin1_rad_xbpmFlip.root";
+
+  
+  // e- angle: 8.295 deg
+  
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad_xbpmFlip.root";
+
+
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -28,10 +47,11 @@ void make_plots(){
   TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
   TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
+  
   //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
   //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
   
-  const int nplots = 15;
+  const int nplots = 16;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -42,7 +62,7 @@ void make_plots(){
   
   for(int i=0; i<nplots; i++){
 
-    if(i!=10) continue;
+    if( (i!=15) ) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -167,9 +187,9 @@ void make_plots(){
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
      
       fdata->cd();
-      T->Draw("-1*P.react.x>>H_tarx(100,-0.4,0.)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
+      T->Draw("P.react.x>>H_tarx(100,-0.4,0.5)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
       fsimc->cd();
-      SNT->Draw("tar_x>>H_tarx_simc(100,-0.4,0.)", simc_cuts, "normhistEsames");
+      SNT->Draw("tar_x>>H_tarx_simc(100,-0.4,0.5)", simc_cuts, "normhistEsames");
     }
     
     if(i==12) {
@@ -275,7 +295,20 @@ void make_plots(){
 
     }
     
-    
+
+    if(i==15) {
+      c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+      
+      fdata->cd();
+      T->Draw("P.react.z>>H_tarz(100,-15,15)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
+      fsimc->cd();
+      //SNT->Draw("tar_z>>H_tarz_simc(100,-10,10)", simc_cuts, "normhistEsames");
+      SNT->Draw("e_zv>>H_tarz_simc(100,-15,15)", simc_cuts, "normhistEsames");
+
+    }
+	
   }
+
+  
 
 }
