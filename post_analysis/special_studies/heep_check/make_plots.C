@@ -3,8 +3,8 @@ void make_plots(){
 
   
   // e- angle: 6.8 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
+  TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
+  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
@@ -12,8 +12,8 @@ void make_plots(){
 
   
   // e- angle: 8.295 deg
-  TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -37,14 +37,15 @@ void make_plots(){
 
   TCanvas *c[nplots];
 
- 
+
+  
+  
   for(int i=0; i<nplots; i++){
+
+    if(i!=1) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
-      H_data[i]=new TH1F("H_shms_kf", "SHMS e- momentum", 100,9,10.5);
-      H_simc[i]=new TH1F("H_shms_kf_simc", "SHMS e- momentum", 100,9,10.5);     
-      H_simc[i]->SetLineColor(kRed);
       fdata->cd();
       T->Draw("P.gtr.p>>H_shms_kf(100,9,10.5)", data_cuts, "normhistE");
       fsimc->cd();
@@ -57,9 +58,7 @@ void make_plots(){
     
     if(i==1) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS #delta", 900, 700);
-      H_data[i]=new TH1F("H_shms_delta", "", 100, 0., 22);
-      H_simc[i]=new TH1F("H_shms_delta_simc", "", 100, 0., 22);
-      H_simc[i]->SetLineColor(kRed);
+  
       fdata->cd();
       T->Draw("P.gtr.dp>>H_shms_delta(100,0,22)", data_cuts, "normhistE");  
       fsimc->cd();
@@ -68,23 +67,18 @@ void make_plots(){
     
     if(i==2) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS xptar", 900, 700);
-      H_data[i]=new TH1F("H_shms_xptar", "", 100,-0.06,0.06);
-      H_simc[i]=new TH1F("H_shms_xptar_simc", "", 100,-0.06,0.06);
+    
      
       fdata->cd();
       T->Draw("P.gtr.th>>H_shms_xptar(100,-0.06,0.06)", data_cuts, "normhistE");
-       c[i]->Modified();c[i]->Update();
       fsimc->cd();
-       H_simc[i]->SetLineColor(kRed);
       SNT->Draw("e_xptar>>H_shms_xptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
       
     }
     
     if(i==3) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS yptar", 900, 700);
-      H_data[i]=new TH1F("H_shms_yptar", "", 100,-0.06,0.06);
-      H_simc[i]=new TH1F("H_shms_yptar_simc", "", 100,-0.06,0.06);
-      H_simc[i]->SetLineColor(kRed);
+    
       fdata->cd();
       T->Draw("P.gtr.ph>>H_shms_yptar(100,-0.06,0.06)", data_cuts, "normhistE");
       fsimc->cd();
@@ -171,13 +165,11 @@ void make_plots(){
 
     if(i==11) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
-      H_data[i]=new TH1F("H_tarx", "x-target (lab)'", 100, 0., 0.4);
-      H_simc[i]=new TH1F("H_tarx_simc", "x-target (lab)", 100, 0., 0.4);
-      H_simc[i]->SetLineColor(kRed);
+     
       fdata->cd();
-      T->Draw("-1*P.react.x>>H_tarx(100,0.,0.4)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
+      T->Draw("-1*P.react.x>>H_tarx(100,-0.4,0.)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
       fsimc->cd();
-      SNT->Draw("tar_x>>H_tarx_simc(100,0.,0.4)", simc_cuts, "normhistEsames");
+      SNT->Draw("tar_x>>H_tarx_simc(100,-0.4,0.)", simc_cuts, "normhistEsames");
     }
     
     if(i==12) {
