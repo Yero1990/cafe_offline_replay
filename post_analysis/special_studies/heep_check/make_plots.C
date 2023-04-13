@@ -3,8 +3,8 @@ void make_plots(){
 
   
   // e- angle: 6.8 deg
-  TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
@@ -12,8 +12,8 @@ void make_plots(){
 
   
   // e- angle: 8.295 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
+  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -42,7 +42,7 @@ void make_plots(){
   
   for(int i=0; i<nplots; i++){
 
-    if(i!=1) continue;
+    if(i!=10) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
