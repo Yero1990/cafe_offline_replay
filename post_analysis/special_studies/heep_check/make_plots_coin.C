@@ -4,7 +4,7 @@ void make_plots_coin(){
 
   // e- angle: 8.3 deg (run 16962)
   TString data_fname="~/ROOTfiles/cafe_replay_optics_16962_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_coin_kin0_rad.root";
+  TString simc_fname="~/ROOTfiles/cafe_heep_coin_kin0_rad_xbpmFlip.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -16,14 +16,14 @@ void make_plots_coin(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp>=4";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
 
   
   //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
   //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
   
-  const int nplots = 16;
+  const int nplots = 28;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -34,7 +34,7 @@ void make_plots_coin(){
   
   for(int i=0; i<nplots; i++){
 
-     if(i!=15) continue;
+    if(i!=26) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -46,7 +46,6 @@ void make_plots_coin(){
 
     }
     
-
     
     if(i==1) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS #delta", 900, 700);
@@ -105,7 +104,7 @@ void make_plots_coin(){
       H_simc[i]->SetLineColor(kRed);
       fsimc->cd();
       SNT->Draw("W>>H_W_simc(100,0.85,1.05)", simc_cuts, "normhistE");
-    fdata->cd();
+      fdata->cd();
       T->Draw("P.kin.primary.W>>H_W(100,0.85,1.05)", data_cuts, "normhistEsames");
     }
     
@@ -147,25 +146,23 @@ void make_plots_coin(){
       H_simc[i]=new TH1F("H_nu_simc", "energy transfer, E-E'", 100, 0.,2);
       H_simc[i]->SetLineColor(kRed);
       fdata->cd();
-      T->Draw("P.kin.primary.nu>>H_nu(100,0.,2)", data_cuts, "normhistE"); 
+      T->Draw("P.kin.primary.nu>>H_nu(200,0.,2)", data_cuts, "normhistE"); 
       fsimc->cd();
-      SNT->Draw("nu>>H_nu_simc(100,0.,2)", simc_cuts, "normhistEsames");
+      SNT->Draw("nu>>H_nu_simc(200,0.,2)", simc_cuts, "normhistEsames");
     }
 
     if(i==11) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
      
       fdata->cd();
-      T->Draw("-1*P.react.x>>H_tarx(100,-0.4,0.)", data_cuts, "normhistE");  // need negative sign applied in data to make directo comparisong to SIMC beam target X (different coord.)
+      T->Draw("P.react.x>>H_tarx(100,0.,0.4)", data_cuts, "normhistE");  
       fsimc->cd();
-      SNT->Draw("tar_x>>H_tarx_simc(100,-0.4,0.)", simc_cuts, "normhistEsames");
+      SNT->Draw("tar_x>>H_tarx_simc(100,0.,0.4)", simc_cuts, "normhistEsames");
     }
     
     if(i==12) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
-      H_data[i]=new TH1F("H_tary", "y-target (lab)'", 100, -0.2, 0.2);
-      H_simc[i]=new TH1F("H_tary_simc", "y-target (lab)", 100, -0.2, 0.2);
-      H_simc[i]->SetLineColor(kRed);
+
       fdata->cd();
       T->Draw("P.react.y>>H_tary(100,-0.2,0.2)", data_cuts, "normhistE"); 
       fsimc->cd();
@@ -274,7 +271,144 @@ void make_plots_coin(){
       SNT->Draw("e_zv>>H_tarz_simc(100,-15,15)", simc_cuts, "normhistEsames");
 
     }
+
+
+
+  //--------------------------- proton side ---------------
+
+  if(i==16) {
+    c[i] = new TCanvas(Form("c%i",i), "HMS #delta", 900, 700);
+    
+    fdata->cd();
+    T->Draw("H.gtr.dp>>H_hms_delta(100,-12,12)", data_cuts, "normhistE");  
+    fsimc->cd();
+    SNT->Draw("h_delta>>H_hms_delta_simc(100,-12,22)", simc_cuts, "normhistEsames");  
+  }
+  
+  if(i==17) {
+    c[i] = new TCanvas(Form("c%i",i), "HMS xptar", 900, 700);
+    
+    
+    fdata->cd();
+    T->Draw("H.gtr.th>>H_hms_xptar(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("h_xptar>>H_hms_xptar_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");  
+    
+  }
+  
+  if(i==18) {
+    c[i] = new TCanvas(Form("c%i",i), "HMS yptar", 900, 700);
+    
+    fdata->cd();
+    T->Draw("H.gtr.ph>>H_hms_yptar(100,-0.06,0.06)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("h_yptar>>H_hms_yptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
+    
+  }
+  
+  if(i==19) {
+    c[i] = new TCanvas(Form("c%i",i), "HMS ytar", 900, 700);
+    fdata->cd();
+    T->Draw("H.gtr.y>>H_hms_ytar(100,-7,7)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("h_ytar>>H_hms_ytar_simc(100,-7,7)", simc_cuts, "normhistEsames");  
     
   }
 
+  if(i==20) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("(H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14>>H_thp(100,45,55)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("theta_p*180/3.14>>H_thp_simc(100,45,55)", simc_cuts, "normhistEsames");
+    
+  }
+  
+  
+  if(i==21) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("H.kin.secondary.emiss>>H_Em(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("Em>>H_Em_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    
+  }
+  
+  
+  if(i==22) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("H.kin.secondary.pmiss_x>>H_Pmx(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("-1.*Pmx>>H_Pmx_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    
+  }
+  
+  
+  if(i==23) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("H.kin.secondary.pmiss_y>>H_Pmy(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("Pmy>>H_Pmy_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    
+  }
+  
+  if(i==24) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("H.kin.secondary.pmiss_z>>H_Pmz(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("-1*Pmz>>H_Pmz_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    
+  }
+
+  
+  if(i==25) {
+    c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+    fdata->cd();
+    T->Draw("H.gtr.p>>H_Pf(200,1.5,2.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("h_pf/1000.>>H_Pf_simc(200,1.5,2.1)", simc_cuts, "normhistEsames");
+    
+  }
+
+
+    if(i==26) {
+
+      // calculate dP = (Pcalc - Pmeas)   and dP / Pmeas : Pcalc (Eb, theta_p), Pmeas (delta),  Pcalc independent of delta
+      // Pcalc formula only applies for the proton momentum of elastic hydrogen reactions h(e,e'p)
+
+      // Pcalc =  2*Mp*Eb(Eb+Mp)*cos(theta_p) / ( Mp**2 + 2*Mp*Eb + Eb**2*sin^2(theta_p)  ) 
+      
+    c[i] = new TCanvas(Form("c%i",i), "", 1200, 800);
+
+    fdata->cd();
+    T->Draw("( 2*0.938272*10.54935*(10.54935+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.54935 + pow(10.54935,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) >>H_dPf(100,-0.1,0.1)", data_cuts, "normhistE");
+    fsimc->cd();
+    SNT->Draw("( 2*0.938272*10.54935*(10.54935+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.54935 + pow(10.54935,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) >>H_dPf_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+
+    // ---------- dP vs. theta_p
+    TCanvas *c_dPf = new TCanvas("c_dPf", "", 1200, 800);
+    c_dPf->Divide(2,1);
+
+    c_dPf->cd(1);
+    fdata->cd();
+    T->Draw("( 2*0.938272*10.54935*(10.54935+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.54935 + pow(10.54935,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) : ((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14) >>H_dPf_vs_theta_p(100,45,55, 100,-0.2,0.2)", data_cuts, "colz");
+
+    c_dPf->cd(2);
+    fsimc->cd();
+    SNT->Draw("( 2*0.938272*10.54935*(10.54935+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.54935 + pow(10.54935,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) : theta_p*180/3.14 >>H_dPf_vs_theta_p_simc(100,45,55,100,-0.2,0.2)", simc_cuts, "colz");
+
+    //fsimc->cd();
+    
+    //SNT->Draw("h_pf/1000.>>H_Pf_simc(200,1.5,2.1)", simc_cuts, "normhistEsames");
+    
+  }
+  
+  
+  //-------------------------------------------------------
+  
+  }
+  
 }

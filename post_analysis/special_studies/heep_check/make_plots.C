@@ -53,10 +53,6 @@ void make_plots(){
   TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
   TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
-  
-  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
-  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
-  
   const int nplots = 16;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
@@ -68,7 +64,7 @@ void make_plots(){
   
   for(int i=0; i<nplots; i++){
 
-    if( ((i!=0) && (i!=9)) ) continue;
+    //if( ((i!=0) && (i!=9)) ) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);

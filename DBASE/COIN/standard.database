@@ -38,5 +38,9 @@ g_ctp_parm_filename       = "DBASE/COIN/GEN/general_cafe_fall22.param"
 g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_fall22.param"
 g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_fall22.param"
 
-; xem heep elastics
+; deuteron experiment heep elastics scan
+20841 - 20870
+g_ctp_parm_filename       = "DBASE/COIN/GEN/general_cafe_fall22.param"
+g_ctp_calib_filename      = "DBASE/COIN/GEN/det_calib_cafe_fall22.param"
+g_ctp_cuts_filename       = "DBASE/COIN/GEN/det_cuts_cafe_fall22.param"
 
