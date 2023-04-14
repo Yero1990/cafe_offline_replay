@@ -1,5 +1,12 @@
 void make_plots(){
 
+  // delta : data-simc
+  /*             [rad]       [cm]        [GeV]       [deg]      [GeV]
+    kin----------dyptar------dytar---------dE'--------dthe-------dW------
+    kin0       -0.00236     0.2405       0.0451      -0.134    -0.0191
+    kin1       -0.00180     0.2401       0.0445      -0.162    -0.0200
+    kin2       -0.00245     0.2004       0.0450      -0.199    -0.0192
+   */
 
   
   // e- angle: 6.8 deg
@@ -28,7 +35,6 @@ void make_plots(){
 
   
   // e- angle: 8.295 deg
-  
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
   //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad_xbpmFlip.root";
 
@@ -62,7 +68,7 @@ void make_plots(){
   
   for(int i=0; i<nplots; i++){
 
-    if( (i!=15) ) continue;
+    if( ((i!=0) && (i!=9)) ) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -100,9 +106,9 @@ void make_plots(){
       c[i] = new TCanvas(Form("c%i",i), "SHMS yptar", 900, 700);
     
       fdata->cd();
-      T->Draw("P.gtr.ph>>H_shms_yptar(100,-0.06,0.06)", data_cuts, "normhistE");
+      T->Draw("P.gtr.ph>>H_shms_yptar(200,-0.06,0.06)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("e_yptar>>H_shms_yptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
+      SNT->Draw("e_yptar>>H_shms_yptar_simc(200,-0.06,0.06)", simc_cuts, "normhistEsames");  
 
     }
 
@@ -162,25 +168,19 @@ void make_plots(){
 
     if(i==9) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
-      H_data[i]=new TH1F("H_the", "e- angle", 100, 4.5,11);
-      H_simc[i]=new TH1F("H_the_simc", "e- angle", 100, 4.5,11);
-      H_simc[i]->SetLineColor(kRed);
       fdata->cd();
-      T->Draw("P.kin.primary.scat_ang_deg>>H_the(100,4.5,11)", data_cuts, "normhistE");
+      T->Draw("P.kin.primary.scat_ang_deg>>H_the(200,4.5,11)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("theta_e*180/3.14>>H_the_simc(100,4.5,11)", simc_cuts, "normhistEsames");
+      SNT->Draw("theta_e*180/3.14159265359>>H_the_simc(200,4.5,11)", simc_cuts, "normhistEsames");
 
     }
 
     if(i==10) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
-      H_data[i]=new TH1F("H_nu", "energy transfer, E-E'", 100, 0.,2);
-      H_simc[i]=new TH1F("H_nu_simc", "energy transfer, E-E'", 100, 0.,2);
-      H_simc[i]->SetLineColor(kRed);
       fdata->cd();
-      T->Draw("P.kin.primary.nu>>H_nu(100,0.,2)", data_cuts, "normhistE"); 
+      T->Draw("P.kin.primary.nu>>H_nu(200,0.4,1.4)", data_cuts, "normhistE"); 
       fsimc->cd();
-      SNT->Draw("nu>>H_nu_simc(100,0.,2)", simc_cuts, "normhistEsames");
+      SNT->Draw("nu>>H_nu_simc(200,0.4,1.4)", simc_cuts, "normhistEsames");
     }
 
     if(i==11) {
@@ -231,10 +231,10 @@ void make_plots(){
 	// overlay e- scat. angle, the measured and calculated
 	c[i]->cd(3);
 	T->Draw("P.kin.primary.scat_ang_deg >> H_the_meas_data(100, 5, 12)",   data_cuts); 
-	T->Draw("acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14 >> H_the_calc_data(100, 5, 12)",   data_cuts, "sames"); 
+	T->Draw("acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14159265359 >> H_the_calc_data(100, 5, 12)",   data_cuts, "sames"); 
 
 	c[i]->cd(4);
-	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
+	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14159265359):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
 	
 	// ----------- SIMC-----
 	TCanvas *c2 = new TCanvas("c2", "", 900, 700);
@@ -249,19 +249,19 @@ void make_plots(){
 
 	// plots nu_meas - nu_cal  vs. theta_e
 	c2->cd(2);
-	SNT->Draw("(nu - ( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) ) ) )):theta_e*180/3.14  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
+	SNT->Draw("(nu - ( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) ) ) )):theta_e*180/3.14159265359  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
 
 	// overlay e- scat. angle, the measured and calculated
 	c2->cd(3);
 	SNT->Draw("theta_e * 180./TMath::Pi() >> H_the_meas_simc(100, 5, 12)",   simc_cuts); 
-	SNT->Draw("acos(( (10.549*10.549) - (10.549 * nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./3.14 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
+	SNT->Draw("acos(( (10.549*10.549) - (10.549 * nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./3.14159265359 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
 
 	c2->cd(4);
 	SNT->Draw("(theta_e * 180./TMath::Pi() - acos(( (10.549*10.549) - (10.549*nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./TMath::Pi()):nu >> H_dthe_vs_nu_simc(100,0.6,2, 100, -0.3,0.3)", simc_cuts, "colz");
 
 
 	// NOTE: simc collimator calculatrion
-	// SNT->Draw("(tar_x - e_xptar*e_zv*cos(6.8*3.14/180.) + e_xptar*253):(e_ytar + e_yptar*253.-(0.019+40.*.01*0.052)*e_delta+(0.00019+40*.01*.00052)*e_delta*e_delta)>>(100,-15,15,100,-15,15)", "Weight*(e_delta>0)", "colz")
+	// SNT->Draw("(tar_x - e_xptar*e_zv*cos(6.8*3.14159265359/180.) + e_xptar*253):(e_ytar + e_yptar*253.-(0.019+40.*.01*0.052)*e_delta+(0.00019+40*.01*.00052)*e_delta*e_delta)>>(100,-15,15,100,-15,15)", "Weight*(e_delta>0)", "colz")
 
       }
     
