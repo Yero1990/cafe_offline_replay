@@ -26,8 +26,8 @@ void make_plots(){
   // ------- XBPM flipped sign (opposite to HCANA) --------
   
   // e- angle: 6.8 deg
-  TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad_xbpmFlip.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
+  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad_xbpmFlip.root";
 
   // e- angle: 7.495 deg
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
@@ -38,7 +38,14 @@ void make_plots(){
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
   //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad_xbpmFlip.root";
 
-
+  // e- angle: 7.704 deg (run 20867), delta_shms = +12 %
+  TString data_fname="~/ROOTfiles/deut_heep_singles/cafe_replay_optics_20867_100000.root ";
+  TString simc_fname="~/ROOTfiles/deut_heep_singles/d2_heep_scan_singles_rad_+12.root";
+  
+  // e- angle: 14.153 deg (run 20844), delta_shms = -8 %
+  //TString data_fname="~/ROOTfiles/deut_heep_singles/cafe_replay_optics_20844_500000.root ";
+  //TString simc_fname="~/ROOTfiles/deut_heep_singles/d2_heep_scan_singles_-8.root";
+  
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -233,26 +240,26 @@ void make_plots(){
 	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14159265359):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
 	
 	// ----------- SIMC-----
-	TCanvas *c2 = new TCanvas("c2", "", 900, 700);
+	TCanvas *c2_kin_corr = new TCanvas("c2_kin_corr", "", 900, 700);
 	
 	fsimc->cd();
-	c2->Divide(2,2);
+	c2_kin_corr->Divide(2,2);
 
 	// overlay energy transfer, nu measured and calculated
-	c2->cd(1);
+	c2_kin_corr->cd(1);
 	SNT->Draw("nu >> H_nu_meas_simc(100,0,5)", simc_cuts, "histE");
 	SNT->Draw("( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) )))  >> nu_calc_simc(100,0,5)", simc_cuts, "histEsames");
 
 	// plots nu_meas - nu_cal  vs. theta_e
-	c2->cd(2);
+	c2_kin_corr->cd(2);
 	SNT->Draw("(nu - ( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) ) ) )):theta_e*180/3.14159265359  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
 
 	// overlay e- scat. angle, the measured and calculated
-	c2->cd(3);
+	c2_kin_corr->cd(3);
 	SNT->Draw("theta_e * 180./TMath::Pi() >> H_the_meas_simc(100, 5, 12)",   simc_cuts); 
 	SNT->Draw("acos(( (10.549*10.549) - (10.549 * nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./3.14159265359 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
 
-	c2->cd(4);
+	c2_kin_corr->cd(4);
 	SNT->Draw("(theta_e * 180./TMath::Pi() - acos(( (10.549*10.549) - (10.549*nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./TMath::Pi()):nu >> H_dthe_vs_nu_simc(100,0.6,2, 100, -0.3,0.3)", simc_cuts, "colz");
 
 
@@ -265,27 +272,27 @@ void make_plots(){
     if(i==14) {
 
 
-      TCanvas *c1 = new TCanvas("c1", "recons correlations", 900, 700);      
-      c1->Divide(3,2);
+      TCanvas *c1_recon_corr = new TCanvas("c1_recon_corr", "recons correlations", 900, 700);      
+      c1_recon_corr->Divide(3,2);
 
       // DATA
       fdata->cd();
-      c1->cd(1);
+      c1_recon_corr->cd(1);
       T->Draw("P.gtr.dp:P.gtr.th>>H_shms_delta_vs_xptar(100, -0.07, 0.07, 100,0,22)", data_cuts, "colz");  
-      c1->cd(2);
+      c1_recon_corr->cd(2);
       T->Draw("P.gtr.dp:P.gtr.ph>>H_shms_delta_vs_yptar(100, -0.07, 0.07, 100,0,22)", data_cuts, "colz");  
-      c1->cd(3);
+      c1_recon_corr->cd(3);
       T->Draw("P.gtr.dp:P.gtr.y>>H_shms_delta_vs_ytar(100, -2, 2, 100,0,22)", data_cuts, "colz");  
       
       
 
       // SIMC
       fsimc->cd();
-      c1->cd(4);
+      c1_recon_corr->cd(4);
       SNT->Draw("e_delta:e_xptar>>H_shms_delta_vs_xptar_simc(100, -0.07, 0.07, 100,0,22)", simc_cuts, "colz");  
-      c1->cd(5);
+      c1_recon_corr->cd(5);
       SNT->Draw("e_delta:e_yptar>>H_shms_delta_vs_yptar_simc(100, -0.07, 0.07, 100,0,22)", simc_cuts, "colz");  
-      c1->cd(6);
+      c1_recon_corr->cd(6);
       SNT->Draw("e_delta:e_ytar>>H_shms_delta_vs_ytar_simc(100, -2, 2, 100,0,22)", simc_cuts, "colz");  
       
 
