@@ -1,0 +1,85 @@
+#include "../../../UTILS_CAFE/UTILS/parse_utils.h"
+#include <iostream>
+#include <string>
+#include <vector>
+void read_syst_csv()
+{
+
+  string csv_file = "cafe_systematics_cuts_file.csv";
+
+  ifstream myFileStream(csv_file.c_str());
+
+  if(!myFileStream.is_open()){
+    cout << Form("File %s failed to open",csv_file.c_str()) << endl; 
+  }
+
+
+  // define the cut min/max values (the cut variables would already
+  // exist in the baseAnalyzer code, but in this testing code, they
+  // must be defined
+  int ientry;
+  
+  Double_t c_MF_Q2_min;
+  Double_t c_MF_Q2_max;
+  
+  Double_t c_MF_Pm_min;
+  Double_t c_MF_Pm_max;
+
+  Double_t c_d2MF_Em_min;
+  Double_t c_d2MF_Em_max;
+
+  Double_t c_MF_Em_min;
+  Double_t c_MF_Em_max;
+
+  Double_t c_SRC_Q2_min;
+  Double_t c_SRC_Q2_max;
+
+  Double_t c_SRC_Pm_min;
+  Double_t c_SRC_Pm_max;
+
+  Double_t c_SRC_Xbj_min;
+  Double_t c_SRC_Xbj_max;
+
+  Double_t c_SRC_thrq_min;
+  Double_t c_SRC_thrq_max;
+  
+  string line;
+  vector<string> parsed_header;
+ 
+  
+  int row_cnt = 0;
+  string col_str;
+  double row_value;
+  
+  // read the file: line by line
+  while(getline(myFileStream, line)) {
+
+    stringstream ss(line);
+
+    // ignore comments
+    if(line[0]=='#') continue;
+
+
+
+    //parsed vector, whose elemetnts are the column headers
+    parsed_header = parse_line(line, ','); // returns a vector of strings separated by a comma
+
+    stod(parsed_header[0]);
+    //col_str = parsed_header[0];
+    
+    // get the entire row index
+    //getline(ss, col_str, ',');
+    //cout << col_str << endl;
+
+    //ientry = stoi(col_str);
+    
+    // row counter
+    row_cnt++;
+
+    
+  } // end loop over line
+
+
+  
+  
+}
