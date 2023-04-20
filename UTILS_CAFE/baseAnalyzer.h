@@ -63,7 +63,7 @@ public:
   void MakePlots();
   Double_t GetLuminosity(TString user_input="");
 
-    
+  
   //hms/shms dc calibration quality monitoring constanta
   static const Int_t dc_PLANES = 12;
   const string hdc_pl_names[dc_PLANES] = {"1u1", "1u2", "1x1", "1x2", "1v2", "1v1", "2v1", "2v2", "2x2", "2x1", "2u2", "2u1"};

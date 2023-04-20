@@ -5777,6 +5777,30 @@ void baseAnalyzer::EventLoop()
     }//END DATA ANALYSIS
 
 
+  // -------------------------
+  // CaFe Data Systematics
+  // -------------------------
+  if(analysis_type=="data_systematics"){
+
+
+    // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
+      GetPeak();
+
+      cout << "Analyzing DATA SYSTEMATICS STUDY | nentries -->  " << nentries << endl;
+
+      for(int ientry=0; ientry<nentries; ientry++)
+	{
+	  
+	  tree->GetEntry(ientry);
+
+	}
+
+
+
+    
+  }
+
+  //
   
   if(analysis_type=="simc")
     {
