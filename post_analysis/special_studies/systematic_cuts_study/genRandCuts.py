@@ -15,50 +15,52 @@ ofile.write('# \n'
             '# xbj_min,max     : x-bjorken (SRC) \n'
             '# thrq_min,max    : recoil nucleon angle relative to q-vector (SRC) [deg] \n'
             '# Pm_min,max_src  : Missing Momentum (SRC) [GeV/c] \n'
-
-            
+            '# hms/shms_coll   : HMS/SHMS collimator scale factor cut variation\n'
+            '#'
             )
-ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src\n') 
+ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll\n') 
 
 
 #----------------------------------------------------------------
-# Set standard CaFe cuts (mu) +/-  sigma to randomly generate
+# Set standard CaFe cuts (mu) +/-  2sigma to randomly generate
 # a value around the about the central cut
 
 # Q2 (same random cut for MF, SRC)
 Q2_min_mu = 1.8
-Q2_min_sig = 0.1
+Q2_min_sig = 0.05
 
-# Emiss lower bound (MF) :  -20 +/- 5 MeV
+# Emiss lower bound (MF) :  -20 MeV (fixed)
 Em_min_mu_mf = -0.02
-Em_min_sig_mf = 0.005
 
-# Emiss upper bound (MF) : 100 +/- 10
-Em_max_mu_mf = 0.1
-Em_max_sig_mf = 0.01
+# Emiss upper bound (MF) : 90 +/- 2.5 MeV
+Em_max_mu_mf = 0.09
+Em_max_sig_mf = 0.0025
 
 # cut variation only needed for Pmax_mf (MF)
-Pm_max_mf_mu = 250
-Pm_max_mf_sig = 10.
+Pm_max_mf_mu = 0.270
+Pm_max_mf_sig = 0.01
+
+# hms/shms collimator (vary scalee factor by sig=4%
+hms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+hms_coll_sig = 0.04  # 4% variation in the scaler factor 
+
+shms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+shms_coll_sig = 0.04  # 4% variation in the scaler factor 
 
 # x-Bjorken (SRC) : 1.2 +/- 0.1
 xbj_min_mu = 1.2
-xbj_min_sig = 0.1
+xbj_min_sig = 0.05
 
-# th_rq (SRC) : 40 +/- 3
+# th_rq (SRC) : 40 +/- 4 deg
 thrq_max_mu = 40
-thrq_max_sig = 3.
-
-# should a systematic variation be made on Pmiss ?
-
-
+thrq_max_sig = 2.
 
 # cut variation for both min/max Pm (SRC)
-Pm_min_src_mu = 300
-Pm_min_src_sig = 10.
+Pm_min_src_mu = 0.350
+Pm_min_src_sig = 0.01
 
-Pm_max_src_mu = 700
-Pm_max_src_sig = 10.
+Pm_max_src_mu = 0.70
+Pm_max_src_sig = 0.05
 
 # ---------------------------------------------------------------
 
@@ -67,10 +69,13 @@ Pm_max_src_sig = 10.
 entries = 1000
 
 # get random cut from randoom gaussian sample
+hms_coll       = np.random.normal(hms_coll_mu, hms_coll_sig, entries)
+shms_coll      = np.random.normal(shms_coll_mu, shms_coll_sig, entries)
+
 Q2_min       = np.random.normal(Q2_min_mu,    Q2_min_sig, entries)
 Q2_max       = 100.  # fixed upper limit
 
-Em_min_mf    = np.random.normal(Em_min_mu_mf, Em_min_sig_mf, entries)
+Em_min_mf    = Em_min_mu_mf  # fixed lower limit 
 Em_max_mf    = np.random.normal(Em_max_mu_mf, Em_max_sig_mf, entries)
 
 xbj_min_src  = np.random.normal(xbj_min_mu,   xbj_min_sig, entries)
@@ -87,46 +92,53 @@ Pm_max_src   = np.random.normal(Pm_max_src_mu, Pm_max_src_sig, entries)
 
 for i in range(entries):
     # write random cuts to a .txt file
-    ofile.write("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f \n" % (i, Q2_min[i], Q2_max,Em_min_mf[i],Em_max_mf[i],Pm_min_mf,Pm_max_mf[i],xbj_min_src[i],xbj_max_src,thrq_min_src,thrq_max_src[i],Pm_min_src[i],Pm_max_src[i] ))
+    ofile.write("%i,%.3f, %.3f, %.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f \n" % (i, Q2_min[i], Q2_max,Em_min_mf,Em_max_mf[i],Pm_min_mf,Pm_max_mf[i],xbj_min_src[i],xbj_max_src,thrq_min_src,thrq_max_src[i],Pm_min_src[i],Pm_max_src[i], hms_coll[i], shms_coll[i] ))
 ofile.close()
 
 #--------------------------------------------------
 # prepare subplots for histogramming random cuts
-fig, axs = plt.subplots(nrows=2, ncols=4)
+fig, axs = plt.subplots(nrows=3, ncols=3)
 
-axs[0, 0].hist(Q2_min, 100, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
+nbins = 70
+axs[0,0].hist(Q2_min, nbins, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
 axs[0,0].set_title(r'4-Momentum Transfer, $Q^{2}_{min}$')
 axs[0,0].set_xlabel(r'$Q^{2}_{min}$ [GeV$^{2}$]')
 
-axs[0, 1].hist(Em_min_mf, 100, density=True, histtype='stepfilled', facecolor='lightskyblue', alpha=0.75)
-axs[0, 1].set_title(r'Missing Energy, $E^{MF}_{miss, min}$')
-axs[0, 1].set_xlabel(r'$E_{m}$ [GeV]')
+
+axs[0, 1].hist(Em_max_mf, nbins, density=True, histtype='stepfilled', facecolor='dodgerblue', alpha=0.75)
+axs[0, 1].set_title(r'Missing Energy, $E^{MF}_{miss, max}$')
+axs[0, 1].set_xlabel(r'$E_{miss}$ [GeV]')
+
+axs[0, 2].hist(Pm_max_mf, nbins, density=True, histtype='stepfilled', facecolor='tomato', alpha=0.75)
+axs[0, 2].set_title(r'Missing Momentum, $P^{MF}_{miss, max}$')
+axs[0, 2].set_xlabel(r'$P_{miss, max}$ [GeV/c]')
 
 
-axs[0, 2].hist(Em_max_mf, 100, density=True, histtype='stepfilled', facecolor='dodgerblue', alpha=0.75)
-axs[0, 2].set_title(r'Missing Energy, $E^{MF}_{miss, max}$')
-axs[0, 2].set_xlabel(r'$E_{miss}$ [GeV]')
-
-axs[0, 3].hist(Pm_max_mf, 100, density=True, histtype='stepfilled', facecolor='tomato', alpha=0.75)
-axs[0, 3].set_title(r'Missing Momentum, $P^{MF}_{miss, max}$')
-axs[0, 3].set_xlabel(r'$P_{miss, max}$ [GeV/c]')
-
-
-axs[1, 0].hist(xbj_min_src, 100, density=True, histtype='stepfilled', facecolor='gold', alpha=0.75)
+axs[1, 0].hist(xbj_min_src, nbins, density=True, histtype='stepfilled', facecolor='gold', alpha=0.75)
 axs[1, 0].set_title(r'x-Bjorken, $x_{Bj,min}$')
 axs[1, 0].set_xlabel(r'$x_{Bj, min}$')
 
-axs[1, 1].hist(thrq_max_src, 100, density=True, histtype='stepfilled', facecolor='crimson', alpha=0.75)
+axs[1, 1].hist(thrq_max_src, nbins, density=True, histtype='stepfilled', facecolor='crimson', alpha=0.75)
 axs[1, 1].set_title(r'recoil angle, $\theta_{rq,min}$')
 axs[1, 1].set_xlabel(r'$\theta_{rq,min} [deg]$')
 
-axs[1, 2].hist(Pm_min_src, 100, density=True, histtype='stepfilled', facecolor='lime', alpha=0.75)
+axs[1, 2].hist(Pm_min_src, nbins, density=True, histtype='stepfilled', facecolor='lime', alpha=0.75)
 axs[1, 2].set_title(r'Missing Momentum, $P^{SRC}_{miss, min}$')
 axs[1, 2].set_xlabel(r'$P^{SRC}_{miss, min}$ [GeV/c]')
 
-axs[1, 3].hist(Pm_max_src, 100, density=True, histtype='stepfilled', facecolor='forestgreen', alpha=0.75)
-axs[1, 3].set_title(r'Missing Momentum, $P^{SRC}_{miss, max}$')
-axs[1, 3].set_xlabel(r'$P^{SRC}_{miss, max}$ [GeV/c]')
+axs[2, 0].hist(Pm_max_src, nbins, density=True, histtype='stepfilled', facecolor='forestgreen', alpha=0.75)
+axs[2, 0].set_title(r'Missing Momentum, $P^{SRC}_{miss, max}$')
+axs[2, 0].set_xlabel(r'$P^{SRC}_{miss, max}$ [GeV/c]')
+
+axs[2, 1].hist(hms_coll, nbins, density=True, histtype='stepfilled', facecolor='gray', alpha=0.75)
+axs[2, 1].set_title(r'HMS Collimator')
+axs[2, 1].set_xlabel(r'Scale Factor')
+
+axs[2, 2].hist(shms_coll, nbins, density=True, histtype='stepfilled', facecolor='silver', alpha=0.75)
+axs[2, 2].set_title(r'SHMS Collimator')
+axs[2, 2].set_xlabel(r'Scale Factor')
+
+
 
 fig.tight_layout()
 plt.show()
