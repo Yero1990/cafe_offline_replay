@@ -5782,24 +5782,40 @@ void baseAnalyzer::EventLoop()
   // -------------------------
   if(analysis_type=="data_systematics"){
 
+    
 
+    // ----- should loop over systematic cuts gaus-generated  entries 
+
+    // ----for each entry, read the set of random cuts-----
+
+    // hms_scale = // make sure to read variation of the hms scale here, this value will be used read by CollimatorStudy() method
+    // shms_scale= //
+
+
+    
     // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
-      GetPeak();
+    //GetPeak();
 
+      // set collimator geometry for cuts
+      //CollimatorStudy();
+
+      
       cout << "Analyzing DATA SYSTEMATICS STUDY | nentries -->  " << nentries << endl;
 
       for(int ientry=0; ientry<nentries; ientry++)
 	{
 	  
-	  tree->GetEntry(ientry);
+	  //	  tree->GetEntry(ientry);
 
 	}
 
 
 
     
-  }
+  } // end data_systematics
 
+
+  
   //
   
   if(analysis_type=="simc")
