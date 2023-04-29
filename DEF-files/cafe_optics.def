@@ -9,6 +9,8 @@ block H.gtr.th
 block H.gtr.x
 block H.gtr.y
 block H.dc.*_fp
+block H.extcor.xsieve 
+block H.extcor.xsieve 
 
 block P.kin.*
 block P.react.*   
@@ -23,3 +25,5 @@ block P.gtr.x
 block P.gtr.y
 block P.dc.*_fp
 block P.rb.raster*
+block P.extcor.xsieve
+block P.extcor.ysieve 

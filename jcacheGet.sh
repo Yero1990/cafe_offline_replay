@@ -29,6 +29,7 @@ echo ${run}
 #mss="/mss/hallc/spring17/raw/${spec}_all_0${run}.dat"
 #mss="/mss/hallc/c-polhe3/raw/${spec}_all_${run}.dat"                                
 mss="/mss/hallc/c-cafe-2022/raw/${spec}_all_${run}.dat"
+#mss="/mss/hallc/c-pionlt/raw/${spec}_all_${run}.dat" 
 #mss="/mss/hallc/xem2/raw/${spec}_all_${run}.dat"
 
 jcacheCMD="jcache get ${mss} -e cyero002@gmail.com -x"
