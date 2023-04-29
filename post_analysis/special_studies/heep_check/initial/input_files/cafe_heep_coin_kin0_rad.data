@@ -85,8 +85,8 @@
      targ%fr_pattern  =  3		!  raster pattern: 1=square, 2=circular, 3=real square
      targ%fr1  =  0.1			!  horizontal size OR inner radius(2)
      targ%fr2  =  0.1			!  vertical size OR outer radius(2)
-     targ%xoffset  =  -0.2357		!  target x-offset (cm): +x = beam right   (Beam Position, XBPM, if use same sign as data xbpm_tar, mult -1.* data xbpm_tar) 
-     targ%yoffset  =  -0.01399		!  target y-offset (cm): +y = up           (Beam Position, YBPM, same sign as ybpm_tar)
+     targ%xoffset  =  0.03167		!  target x-offset (cm): +x = beam right   (Beam Position, XBPM, if use same sign as data xbpm_tar, mult -1.* data xbpm_tar) 
+     targ%yoffset  =  -0.01526		!  target y-offset (cm): +y = up           (Beam Position, YBPM, same sign as ybpm_tar)
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    					!   zreal = znominal + zoffset
 /

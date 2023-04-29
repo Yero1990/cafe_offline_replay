@@ -1,0 +1,23 @@
+# summary of fit beam positions, and initial kinematic variables and offsets for h(e,e') singles CaFe/deuteron
+# no angle/momentum offsets applied in data or simc
+# data automatically calculates beam-position offset, mispointing
+# simc has beam position offset, but no mispointing applied (as ztarget looked fine)
+# dkf    : final e- momentum kf_data - kf_simc [GeV/c] (determined by "eye" from kf histogram)
+# dth_e  : e- scat angle,  th_e_data - th_e_simc [deg]
+# dXptar :  e- relative out-of-plane angle [rad] Xptar_data - Xptar_simc
+# dYptar :  e- relative in-of-plane angle  [rad] Yptar_data - Yptar_simc
+# dYtar  :  e- arm recon at target [rad] Ytar_data  - Ytar_simc
+# dW     :  invariant mass difference [GeV], W_data - W_simc
+
+# kf_central = -8.55 GeV/c
+run    shms_delta  shms_angle  xbpm        ybpm        dXptar   dYptar   dYtar   dkf      dth_e     dW
+16026  15          6.8	       -0.03119   -0.01546     0	-0.0024	 0	 0.0449	  -0.1298   -0.0278
+16028  13          7.495       -0.03367	  -0.01478     0	-0.0024	 0	 0.0449	  -0.129    -0.0294
+16036  10          8.295       -0.032	  -0.0149      0	-0.0018  0	 0.045	  -0.1299   -0.0300
+20844  -8	   14.153      0.05484	  -0.03897
+20847  -4	   12.94       0.05552	  -0.0389
+20856   0	   11.705      0.05507	  -0.03858
+20859   4	   10.435      0.05498	  -0.03847
+20862   8	   9.125       0.05497	  -0.03847
+20867   12	   7.704       0.05489	  -0.03893
+	

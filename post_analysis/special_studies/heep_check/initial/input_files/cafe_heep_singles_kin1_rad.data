@@ -85,15 +85,15 @@
      targ%fr_pattern  =  3		!  raster pattern: 1=square, 2=circular, 3=real square
      targ%fr1  =  0.1			!  horizontal size OR inner radius(2)
      targ%fr2  =  0.1			!  vertical size OR outer radius(2)
-     targ%xoffset  =  -0.2366		!  target x-offset (cm): +x = beam right   (Beam Position, XBPM, EPICS (opposite of hcana))
-     targ%yoffset  =  -0.01387		!  target y-offset (cm): +y = up     (Beam Position, YBPM)
+     targ%xoffset  =  0.03367		!  target x-offset (cm): +x = beam right (Beam Position, XBPM, if use same sign as data xbpm_tar, mult -1.* data xbpm_tar)    
+     targ%yoffset  =  -0.01478		!  target y-offset (cm): +y = up         (Beam Position, YBPM, same sign as ybpm_tar) 
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    					!   zreal = znominal + zoffset
 /
 
  &E_ARM_OFFSET
-     spec%e%offset%x  =  0.0		!  x offset (cm) -0.126 
-     spec%e%offset%y  =  0.0		!  y offset (cm)  0.06
+     spec%e%offset%x  =  0.126		!  x offset (cm) -0.126 
+     spec%e%offset%y  =  0.06		!  y offset (cm)  0.06
      spec%e%offset%z  =  0.0		!  z offset (cm)
      spec%e%offset%xptar  =  0.0        !  xptar offset (mr)
      spec%e%offset%yptar  =  0.0        !  yptar offset (mr)

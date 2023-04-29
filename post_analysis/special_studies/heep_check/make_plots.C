@@ -3,12 +3,13 @@ void make_plots(){
   // delta : data-simc
   /*             [rad]       [cm]        [GeV]       [deg]      [GeV]
     kin----------dyptar------dytar---------dE'--------dthe-------dW------
-    kin0       -0.00236     0.2405       0.0451      -0.134    -0.0191
-    kin1       -0.00180     0.2401       0.0445      -0.162    -0.0200
-    kin2       -0.00245     0.2004       0.0450      -0.199    -0.0192
+    kin0      
+    kin1      
+    kin2       
    */
 
-  
+
+  //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg
   //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
   //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
@@ -23,28 +24,14 @@ void make_plots(){
   //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad.root";
 
   
-  // ------- XBPM flipped sign (opposite to HCANA) --------
-  
-  // e- angle: 6.8 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad_xbpmFlip.root";
-
-  // e- angle: 7.495 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin1_rad_xbpmFlip.root";
-
-  
-  // e- angle: 8.295 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16036_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin0_rad_xbpmFlip.root";
-
+  //------ deuteron exp h(e,e') singles -----
   // e- angle: 7.704 deg (run 20867), delta_shms = +12 %
-  TString data_fname="~/ROOTfiles/deut_heep_singles/cafe_replay_optics_20867_100000.root ";
-  TString simc_fname="~/ROOTfiles/deut_heep_singles/d2_heep_scan_singles_rad_+12.root";
+  //TString data_fname="~/ROOTfiles/cafe_replay_optics_20867_500000.root ";
+  //TString simc_fname="~/ROOTfiles/d2_heep_scan_singles_rad_+12.root";
   
   // e- angle: 14.153 deg (run 20844), delta_shms = -8 %
-  //TString data_fname="~/ROOTfiles/deut_heep_singles/cafe_replay_optics_20844_500000.root ";
-  //TString simc_fname="~/ROOTfiles/deut_heep_singles/d2_heep_scan_singles_-8.root";
+  TString data_fname="~/ROOTfiles/cafe_replay_optics_20844_500000.root ";
+  TString simc_fname="~/ROOTfiles/d2_heep_scan_singles_rad_-8.root";
   
 
   
@@ -57,8 +44,8 @@ void make_plots(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
+  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
+  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
   const int nplots = 16;
   TH1F *H_data[nplots];
@@ -71,7 +58,17 @@ void make_plots(){
   
   for(int i=0; i<nplots; i++){
 
-    //if( ((i!=0) && (i!=9)) ) continue;
+    // only plot tarx,y,z
+    // if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+
+    // only plot xptar, yptar, ytar, delta
+    //if( (i!=1) && (i!=2) && (i!=3) && (i!=4) ) continue;
+
+    // 2d correlations
+    //if(i!=14) continue;
+
+    // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
+    if( (i!=0) &&  (i!=6) && (i!=7) && (i!=8) && (i!=9) && (i!=10)  ) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -309,9 +306,10 @@ void make_plots(){
       SNT->Draw("e_zv>>H_tarz_simc(100,-15,15)", simc_cuts, "normhistEsames");
 
     }
-	
-  }
 
+    
+  }
+  
   
 
 }

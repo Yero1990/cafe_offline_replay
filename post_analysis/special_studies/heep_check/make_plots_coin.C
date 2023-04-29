@@ -4,7 +4,7 @@ void make_plots_coin(){
 
   // e- angle: 8.3 deg (run 16962)
   TString data_fname="~/ROOTfiles/cafe_replay_optics_16962_500000.root ";
-  TString simc_fname="~/ROOTfiles/cafe_heep_coin_kin0_rad_xbpmFlip.root";
+  TString simc_fname="~/ROOTfiles/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -20,8 +20,6 @@ void make_plots_coin(){
   TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
 
   
-  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
-  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22)";
   
   const int nplots = 28;
   TH1F *H_data[nplots];
@@ -34,14 +32,24 @@ void make_plots_coin(){
   
   for(int i=0; i<nplots; i++){
 
+
+     // only plot tarx,y,z
+     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+
+    // only plot xptar,yptar,ytar,delta
+    //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
+
+    // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25)   ) continue;
+
     if(i!=26) continue;
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
       fdata->cd();
-      T->Draw("P.gtr.p>>H_shms_kf(100,9,10.5)", data_cuts, "normhistE");
+      T->Draw("P.gtr.p>>H_shms_kf(200,9,10.5)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("e_pf/1000.>>H_shms_kf_simc(100,9,10.5)", simc_cuts, "normhistEsames");
+      SNT->Draw("e_pf/1000.>>H_shms_kf_simc(200,9,10.5)", simc_cuts, "normhistEsames");
       
 
     }
@@ -51,9 +59,9 @@ void make_plots_coin(){
       c[i] = new TCanvas(Form("c%i",i), "SHMS #delta", 900, 700);
   
       fdata->cd();
-      T->Draw("P.gtr.dp>>H_shms_delta(100,0,22)", data_cuts, "normhistE");  
+      T->Draw("P.gtr.dp>>H_shms_delta(200,0,22)", data_cuts, "normhistE");  
       fsimc->cd();
-      SNT->Draw("e_delta>>H_shms_delta_simc(100,0,22)", simc_cuts, "normhistEsames");  
+      SNT->Draw("e_delta>>H_shms_delta_simc(200,0,22)", simc_cuts, "normhistEsames");  
     }
     
     if(i==2) {
@@ -61,9 +69,9 @@ void make_plots_coin(){
     
      
       fdata->cd();
-      T->Draw("P.gtr.th>>H_shms_xptar(100,-0.06,0.06)", data_cuts, "normhistE");
+      T->Draw("P.gtr.th>>H_shms_xptar(200,-0.06,0.06)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("e_xptar>>H_shms_xptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
+      SNT->Draw("e_xptar>>H_shms_xptar_simc(200,-0.06,0.06)", simc_cuts, "normhistEsames");  
       
     }
     
@@ -71,9 +79,9 @@ void make_plots_coin(){
       c[i] = new TCanvas(Form("c%i",i), "SHMS yptar", 900, 700);
     
       fdata->cd();
-      T->Draw("P.gtr.ph>>H_shms_yptar(100,-0.06,0.06)", data_cuts, "normhistE");
+      T->Draw("P.gtr.ph>>H_shms_yptar(200,-0.02,0.02)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("e_yptar>>H_shms_yptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
+      SNT->Draw("e_yptar>>H_shms_yptar_simc(200,-0.02,0.02)", simc_cuts, "normhistEsames");  
 
     }
 
@@ -83,9 +91,9 @@ void make_plots_coin(){
       H_simc[i]=new TH1F("H_shms_ytar_simc", "", 100,-2,2);
       H_simc[i]->SetLineColor(kRed);
       fdata->cd();
-      T->Draw("P.gtr.y>>H_shms_ytar(100,-2,2)", data_cuts, "normhistE");
+      T->Draw("P.gtr.y>>H_shms_ytar(200,-2,2)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("e_ytar>>H_shms_ytar_simc(100,-2,2)", simc_cuts, "normhistEsames");  
+      SNT->Draw("e_ytar>>H_shms_ytar_simc(200,-2,2)", simc_cuts, "normhistEsames");  
 
     }
       
@@ -155,9 +163,9 @@ void make_plots_coin(){
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
      
       fdata->cd();
-      T->Draw("P.react.x>>H_tarx(100,0.,0.4)", data_cuts, "normhistE");  
+      T->Draw("P.react.x>>H_tarx(100,-0.2,0.2)", data_cuts, "normhistE");  
       fsimc->cd();
-      SNT->Draw("tar_x>>H_tarx_simc(100,0.,0.4)", simc_cuts, "normhistEsames");
+      SNT->Draw("tar_x>>H_tarx_simc(100,-0.2,0.2)", simc_cuts, "normhistEsames");
     }
     
     if(i==12) {
@@ -280,9 +288,9 @@ void make_plots_coin(){
     c[i] = new TCanvas(Form("c%i",i), "HMS #delta", 900, 700);
     
     fdata->cd();
-    T->Draw("H.gtr.dp>>H_hms_delta(100,-12,12)", data_cuts, "normhistE");  
+    T->Draw("H.gtr.dp>>H_hms_delta(200,-12,12)", data_cuts, "normhistE");  
     fsimc->cd();
-    SNT->Draw("h_delta>>H_hms_delta_simc(100,-12,22)", simc_cuts, "normhistEsames");  
+    SNT->Draw("h_delta>>H_hms_delta_simc(200,-12,22)", simc_cuts, "normhistEsames");  
   }
   
   if(i==17) {
@@ -290,9 +298,9 @@ void make_plots_coin(){
     
     
     fdata->cd();
-    T->Draw("H.gtr.th>>H_hms_xptar(100,-0.1,0.1)", data_cuts, "normhistE");
+    T->Draw("H.gtr.th>>H_hms_xptar(200,-0.1,0.1)", data_cuts, "normhistE");
     fsimc->cd();
-    SNT->Draw("h_xptar>>H_hms_xptar_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");  
+    SNT->Draw("h_xptar>>H_hms_xptar_simc(200,-0.1,0.1)", simc_cuts, "normhistEsames");  
     
   }
   
@@ -300,18 +308,18 @@ void make_plots_coin(){
     c[i] = new TCanvas(Form("c%i",i), "HMS yptar", 900, 700);
     
     fdata->cd();
-    T->Draw("H.gtr.ph>>H_hms_yptar(100,-0.06,0.06)", data_cuts, "normhistE");
+    T->Draw("H.gtr.ph>>H_hms_yptar(200,-0.06,0.06)", data_cuts, "normhistE");
     fsimc->cd();
-    SNT->Draw("h_yptar>>H_hms_yptar_simc(100,-0.06,0.06)", simc_cuts, "normhistEsames");  
+    SNT->Draw("h_yptar>>H_hms_yptar_simc(200,-0.06,0.06)", simc_cuts, "normhistEsames");  
     
   }
   
   if(i==19) {
     c[i] = new TCanvas(Form("c%i",i), "HMS ytar", 900, 700);
     fdata->cd();
-    T->Draw("H.gtr.y>>H_hms_ytar(100,-7,7)", data_cuts, "normhistE");
+    T->Draw("H.gtr.y>>H_hms_ytar(200,-7,7)", data_cuts, "normhistE");
     fsimc->cd();
-    SNT->Draw("h_ytar>>H_hms_ytar_simc(100,-7,7)", simc_cuts, "normhistEsames");  
+    SNT->Draw("h_ytar>>H_hms_ytar_simc(200,-7,7)", simc_cuts, "normhistEsames");  
     
   }
 
@@ -404,11 +412,11 @@ void make_plots_coin(){
     
     //SNT->Draw("h_pf/1000.>>H_Pf_simc(200,1.5,2.1)", simc_cuts, "normhistEsames");
     
-  }
+    }
   
   
   //-------------------------------------------------------
   
-  }
-  
+}
+
 }

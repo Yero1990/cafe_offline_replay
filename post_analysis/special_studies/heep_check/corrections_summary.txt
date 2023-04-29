@@ -1,0 +1,26 @@
+Used h(e,e'p) cafe run 16962 to determine step-by-step corrections applied.
+After each step, a replay of both data/simc is done prior to next iteration
+for the changes to take effect
+
+sub-directory structure (step number)
+
+initial/ (step1)
+---------------------
+-> no angle. / momentum corrections or offsets on either spec. arm
+-> data has mispointing + beam_offsets applied automatically
+-> simc only has beam_offsets applied
+
+corrections determined
+-> from proton momentum difference, Pdiff = Pcalc-Pmeas, a correction
+factor of : hms_fcorr =  0.9977 was determined for HMS proton momentum,
+Pf_corr = Pf_uncorr * hms_fcorr = 1.820 * 0.9977 = 1.816 
+ 
+-> HMS Ytar also seems a bit off, might be due to mispointing not being
+applied in SIMC ()
+
+step 2
+--------
+-> applied HMS momentum correction Pf_corr to both data/simc
+-> applied HMS mispointing to SIMC (to fix hms Ytar alignment)
+
+

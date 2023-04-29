@@ -85,8 +85,8 @@
      targ%fr_pattern  =  3		!  raster pattern: 1=square, 2=circular, 3=real square
      targ%fr1  =  0.1			!  horizontal size OR inner radius(2)
      targ%fr2  =  0.1			!  vertical size OR outer radius(2)
-     targ%xoffset  =  -0.2354		!  target x-offset (cm): +x = beam right   (Beam Position, XBPM, EPICS (opposite of hcana))  add a '-' sign to data histo when plotting tar_x
-     targ%yoffset  =  -0.0141		!  target y-offset (cm): +y = up          (Beam Position, YBPM)
+     targ%xoffset  =  0.03119		!  target x-offset (cm): +x = beam right  (Beam Position, XBPM, use opposite sign to HCANA xbpm_tar) 
+     targ%yoffset  =  -0.01546		!  target y-offset (cm): +y = up          (Beam Position, YBPM, use same sign as HCANA ybpm_tar)
      targ%zoffset  =  0.0		!  target z-offset (cm): +z = downstream
    					!   zreal = znominal + zoffset
 /
