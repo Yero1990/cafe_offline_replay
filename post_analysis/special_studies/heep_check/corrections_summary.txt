@@ -16,11 +16,27 @@ factor of : hms_fcorr =  0.9977 was determined for HMS proton momentum,
 Pf_corr = Pf_uncorr * hms_fcorr = 1.820 * 0.9977 = 1.816 
  
 -> HMS Ytar also seems a bit off, might be due to mispointing not being
-applied in SIMC ()
+
 
 step 2
 --------
--> applied HMS momentum correction Pf_corr to both data/simc
+-> applied HMS momentum correction to both data/simc (0.9977)
 -> applied HMS mispointing to SIMC (to fix hms Ytar alignment)
+-> applied SHMS out-of-plane central angle offset
+(based on Pmy component offset)
+p_oopcentral_offset = +0.002711 [rad]
 
+step 3
+--------
+Found dEmiss ~31 MeV offset in Emiss and dE'=~30 MeV offset in SHMS e- momentum,
+and given that final protom momentum correction was determined previously,
+implied that the remaining shift in Emiss was entirely due to e- momentum,
+NOT beam energy
 
+In addition, the measured shift (from fit) in invariant mass was dW ~ 37 MeV,
+From its derivative, dW= -Eb/E’*dE’, and also since we measured dE'~30 MeV,
+the expected offset in dW ~ -10.549/8.55 * 30 ~ -37 MeV ! ! ! This is precisely
+the observed offset in dW, which means the entire offset in dW was due to E', and not
+Ebeam or e- scat angle
+
+-> applied SHMS momentum correction to both data/simc (0.9968)
