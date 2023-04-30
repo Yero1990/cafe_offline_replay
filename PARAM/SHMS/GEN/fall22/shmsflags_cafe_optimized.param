@@ -21,7 +21,7 @@ ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset
 ; The following offsets are applied to the central kinematic variables (in radians)
 ;      ptheta_lab=htheta_lab + pthetacentral_offset/degree 
 
-pthetacentral_offset = 0.
+pthetacentral_offset = 0 
 p_oopcentral_offset = 0.
 
  

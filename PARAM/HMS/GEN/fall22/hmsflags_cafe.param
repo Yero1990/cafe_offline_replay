@@ -15,7 +15,7 @@
 ;  plots will be screwed up.
 
 hdelta_offset = 0.       ; (%)   hdelta_tar = hdelta_tar + hdelta_offset
-htheta_offset = 0.  ; (rad) hyp_tar = hyp_tar + htheta_offset
+htheta_offset = 0.0  ; (rad) hyp_tar = hyp_tar + htheta_offset 
 hphi_offset  = 0.  ; (rad) hxp_tar = hxp_tar + hphi_offset
 
 
@@ -38,8 +38,8 @@ hpcentral_offset = -0.229
 
 
 ; htheta_lab=htheta_lab + hthetacentral_offset/degree 
-hthetacentral_offset = 0.0  ; (rad) 
-h_oopcentral_offset = 0.002711  ; (rad)
+hthetacentral_offset = 0  ;   (rad)  added offset to align Pmx (+ 0.1 deg offset from central angle)
+h_oopcentral_offset = 0.002711  ; (rad) to algin Pmy component
 
 
 
