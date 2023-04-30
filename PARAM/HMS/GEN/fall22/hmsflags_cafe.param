@@ -39,7 +39,7 @@ hpcentral_offset = -0.229
 
 ; htheta_lab=htheta_lab + hthetacentral_offset/degree 
 hthetacentral_offset = 0.0  ; (rad) 
-h_oopcentral_offset = 0.0  ; (rad)
+h_oopcentral_offset = 0.002711  ; (rad)
 
 
 
