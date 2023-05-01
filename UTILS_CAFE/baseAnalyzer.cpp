@@ -5781,39 +5781,155 @@ void baseAnalyzer::EventLoop()
   // CaFe Data Systematics
   // -------------------------
   if(analysis_type=="data_systematics"){
-
-    
-
-    // ----- should loop over systematic cuts gaus-generated  entries 
-
-    // ----for each entry, read the set of random cuts-----
-
-    // hms_scale = // make sure to read variation of the hms scale here, this value will be used read by CollimatorStudy() method
-    // shms_scale= //
-
-
     
     // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
-    //GetPeak();
+    // to be used to centering coin time peak (should only need to be called once,
+    // and not every time an entry from the systematics cuts file is called, as the
+    // variables used here do not depend on the cuts being varied
+    GetPeak();
 
-      // set collimator geometry for cuts
-      //CollimatorStudy();
 
       
-      cout << "Analyzing DATA SYSTEMATICS STUDY | nentries -->  " << nentries << endl;
-
-      for(int ientry=0; ientry<nentries; ientry++)
-	{
-	  
-	  //	  tree->GetEntry(ientry);
-
-	}
-
-
+    // set file to be read with all the cuts variations
+    string csv_file = "cafe_systematics_cuts_file.csv";
+    
+    ifstream myFileStream(csv_file.c_str());
+    
+    if(!myFileStream.is_open()){
+      cout << Form("File %s failed to open",csv_file.c_str()) << endl; 
+    }
 
     
-  } // end data_systematics
+    // set variable names to keep track of read lines from systematics cuts file
+    int ientry;
+    string line;
+    vector<string> parsed_header;
+    int row_cnt = 0;
+    string col_str;
+    double row_value;
+    bool debug = true;
 
+    
+    
+
+    //---------------------------------------------------------
+    // ----- loop over each entry of the systematic cuts file
+    //---------------------------------------------------------
+    
+    // read the file: line by line
+    while(getline(myFileStream, line)) {
+      
+      stringstream ss(line);
+      
+      // ignore comments
+      if(line[0]=='#') continue;
+            
+      //parsed vector, whose elemetnts are the column headers
+      parsed_header = parse_line(line, ','); // returns a vector of strings separated by a comma
+      
+      // read each of the cuts for each entry
+      ientry = atoi(parsed_header[0].c_str()) ;
+      
+      c_MF_Q2_min = atof(parsed_header[1].c_str());
+      c_MF_Q2_max = atof(parsed_header[2].c_str());
+      
+      c_d2MF_Em_min = atof(parsed_header[3].c_str());
+      c_d2MF_Em_max = atof(parsed_header[4].c_str());
+      
+      c_MF_Em_min   = atof(parsed_header[3].c_str());
+      c_MF_Em_max   = atof(parsed_header[4].c_str());
+      
+      c_MF_Pm_min  = atof(parsed_header[5].c_str());
+      c_MF_Pm_max  = atof(parsed_header[6].c_str());
+      
+      c_SRC_Q2_min = atof(parsed_header[1].c_str());
+      c_SRC_Q2_max = atof(parsed_header[2].c_str());
+      
+      c_SRC_Xbj_min = atof(parsed_header[7].c_str());
+      c_SRC_Xbj_max = atof(parsed_header[8].c_str());
+      
+      c_SRC_thrq_min  = atof(parsed_header[9].c_str());
+      c_SRC_thrq_max  = atof(parsed_header[10].c_str());
+      
+      c_SRC_Pm_min =  atof(parsed_header[11].c_str());
+      c_SRC_Pm_max =  atof(parsed_header[12].c_str());
+      
+      hms_scale  =  atof(parsed_header[13].c_str());
+      shms_scale =  atof(parsed_header[14].c_str());
+      
+      
+      if(debug){
+	cout << Form("ientry: %i ", ientry) << endl;
+	cout << Form("Q2_min,max_mf: %.3f, %.3f ",    c_MF_Q2_min,    c_MF_Q2_max    ) << endl;
+	cout << Form("Em_min,max_mf: %.3f, %.3f ",    c_MF_Em_min,    c_MF_Em_max    ) << endl;
+	cout << Form("Pm_min,max_mf: %.3f, %.3f ",    c_MF_Pm_min,    c_MF_Pm_max    ) << endl;
+	
+	cout << Form("Q2_min,max_src: %.3f, %.3f ",   c_SRC_Q2_min,   c_SRC_Q2_max   ) << endl;
+	cout << Form("Xbj_min,max_src: %.3f, %.3f ",  c_SRC_Xbj_min,  c_SRC_Xbj_max  ) << endl;
+	cout << Form("thrq_min,max_src: %.3f, %.3f ", c_SRC_thrq_min, c_SRC_thrq_max ) << endl;
+	cout << Form("Pm_min,max_src: %.3f, %.3f ",   c_SRC_Pm_min,   c_SRC_Pm_max   ) << endl;
+	
+	cout << Form("hms_scale, shms_scale: %.3f, %.3f ",  hms_scale, shms_scale    ) << endl;
+      }
+      
+      
+  
+      
+      // set collimator geometry for cuts
+      // for each entry, a different hms_scale, shms_scale will be obtained from the gaussian-generated random sample
+      // and be used to scale the collimators 
+      CollimatorStudy();
+      
+      
+      cout << "Analyzing DATA SYSTEMATICS STUDY | nentries -->  " << nentries << endl;
+      
+      for(int jentry=0; jentry<nentries; jentry++)
+	{
+	  
+	  tree->GetEntry(jentry);
+
+	  
+	  //--------------CALCULATED KINEMATICS VARIABLES (IF THEY ARE NOT ALREADY DONE IN HCANA)-----------
+
+	  th_x = xangle - th_e;  //detected hadron angle for each particle
+	  MM2 = MM*MM;           //Missing Mass Squared
+ 	  ztar_diff = htar_z - etar_z;  //reaction vertex z difference
+	  
+	  if( (tgt_type!="LH2") || (tgt_type!="LD2")){
+	    MM_red = MM - ((tgt_mass - MH_amu)* amu2GeV);
+	    MM = MM_red;
+	  }
+
+	  
+	  // Calculate special missing energy to cut on background @ SRC kinematics (only for online analysis) Em = nu - Tp - T_n (for A>2 nuclei)	 
+	  Em_src = nu - Tx - (sqrt(MN*MN + Pm*Pm) - MN); // assume kinetic energy of recoil system is that of a spectator SRC nucleon 
+
+	  // get center coin time peak (obtained from GetPeak() method)
+	  epCoinTime_center       = epCoinTime-ctime_offset_peak_val;
+	  epCoinTime_center_notrk = epCoinTime_notrk - ctime_offset_peak_notrk_val;
+
+
+
+
+
+	  
+
+      
+
+	} // end loop over data events
+      
+
+      
+      // keep track of each row count in the systematics cut file
+      row_cnt++;
+      
+    } // end loop over each entry of the systematics cut file
+    
+  } // end analysis_type == data_systematics requirement
+  
+  
+  //-----------------------------------
+  //-----------------------------------
 
   
   //

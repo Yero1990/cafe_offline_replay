@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+
+// prototype code for implementing systematics studies to cafe analysis code
+
 using namespace std;
 void read_syst_csv()
 {
@@ -46,6 +49,9 @@ void read_syst_csv()
   Double_t c_SRC_Pm_min;
   Double_t c_SRC_Pm_max;
 
+  Double_t hms_scale;
+  Double_t shms_scale;
+  
   string line;
   vector<string> parsed_header;
  
@@ -56,12 +62,13 @@ void read_syst_csv()
   bool debug = true;
 
 
-  // this while loop shoul be outside the data event loop, such that for each instance of the
+  // this while loop should be outside the data event loop, such that for each instance of the
   // random cut combination, a loop over all events is done, and the corresponding integrated Pmiss
   // and binned Pmiss are extracted for each systematic cut combination 
 
   // NOTE: when implementing in baseAnalyzer, should consider creating a separate event loop method,
-  // EventLoopSystematics(), which would be for precisely these studies, and would be de-cluttered of the
+  // EventLoopSystematics(), or add a new requirement flag: e.g., analysis_type=="data_systematics" within the
+  // EventLoop() methods, which would be for precisely these studies, and would be de-cluttered of the
   // other unnecessary variable / processes done inside the normal event loop
   
   
@@ -84,11 +91,11 @@ void read_syst_csv()
     c_MF_Q2_min = atof(parsed_header[1].c_str());
     c_MF_Q2_max = atof(parsed_header[2].c_str());
 
-    c_MF_Em_min   = atof(parsed_header[3].c_str());
     c_d2MF_Em_min = atof(parsed_header[3].c_str());
-
-    c_MF_Em_max   = atof(parsed_header[4].c_str());
     c_d2MF_Em_max = atof(parsed_header[4].c_str());
+    
+    c_MF_Em_min   = atof(parsed_header[3].c_str());
+    c_MF_Em_max   = atof(parsed_header[4].c_str());
 
     c_MF_Pm_min  = atof(parsed_header[5].c_str());
     c_MF_Pm_max  = atof(parsed_header[6].c_str());
@@ -105,7 +112,10 @@ void read_syst_csv()
     c_SRC_Pm_min =  atof(parsed_header[11].c_str());
     c_SRC_Pm_max =  atof(parsed_header[12].c_str());
 
-
+    hms_scale  =  atof(parsed_header[13].c_str());
+    shms_scale =  atof(parsed_header[14].c_str());
+    
+    
     if(debug){
       cout << Form("ientry: %i ", ientry) << endl;
       cout << Form("Q2_min,max_mf: %.3f, %.3f ",    c_MF_Q2_min,    c_MF_Q2_max    ) << endl;
@@ -116,6 +126,8 @@ void read_syst_csv()
       cout << Form("Xbj_min,max_src: %.3f, %.3f ",  c_SRC_Xbj_min,  c_SRC_Xbj_max  ) << endl;
       cout << Form("thrq_min,max_src: %.3f, %.3f ", c_SRC_thrq_min, c_SRC_thrq_max ) << endl;
       cout << Form("Pm_min,max_src: %.3f, %.3f ",   c_SRC_Pm_min,   c_SRC_Pm_max   ) << endl;
+
+      cout << Form("hms_scale, shms_scale: %.3f, %.3f ",  hms_scale, shms_scale    ) << endl;
     }
     
     row_cnt++;
