@@ -21,7 +21,7 @@ void make_plots_coin(){
 
   
   
-  const int nplots = 28;
+  const int nplots = 29;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -414,7 +414,15 @@ void make_plots_coin(){
     //SNT->Draw("h_pf/1000.>>H_Pf_simc(200,1.5,2.1)", simc_cuts, "normhistEsames");
     
     }
-  
+    
+    if(i==27) {
+      c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
+      fdata->cd();
+      T->Draw("H.kin.secondary.pmiss>>H_Pm(100,-0.1,0.1)", data_cuts, "normhistE");
+      fsimc->cd();
+      SNT->Draw("Pm>>H_Pmx_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    
+  }
   
   //-------------------------------------------------------
   
