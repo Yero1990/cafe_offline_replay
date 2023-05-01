@@ -3,8 +3,8 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/step3/cafe_replay_optics_16962_500000.root ";
-  TString simc_fname="~/ROOTfiles/step3/cafe_heep_coin_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/step4/cafe_replay_optics_16962_500000.root";
+  TString simc_fname="~/ROOTfiles/step4/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -34,16 +34,16 @@ void make_plots_coin(){
 
 
      // only plot tarx,y,z
-     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+     if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
     //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
 
-    //plot only kinematics (kf, th_e, Q2, xbj, nu, W)
-    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25)   ) continue;
+    //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
-    // plot pcalc-pmeas
-    if(i!=26) continue;
+
+
     
     if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -418,9 +418,9 @@ void make_plots_coin(){
     if(i==27) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
       fdata->cd();
-      T->Draw("H.kin.secondary.pmiss>>H_Pm(100,-0.1,0.1)", data_cuts, "normhistE");
+      T->Draw("H.kin.secondary.pmiss>>H_Pm(150,-0.01,0.05)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("Pm>>H_Pmx_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+      SNT->Draw("Pm>>H_Pm_simc(150,-0.01,0.05)", simc_cuts, "normhistEsames");
     
   }
   

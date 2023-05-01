@@ -59,7 +59,7 @@ void make_plots(){
   for(int i=0; i<nplots; i++){
 
     // only plot tarx,y,z
-    // if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+    if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar, yptar, ytar, delta
     //if( (i!=1) && (i!=2) && (i!=3) && (i!=4) ) continue;
@@ -68,9 +68,9 @@ void make_plots(){
     //if(i!=14) continue;
 
     // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
-    if( (i!=0) &&  (i!=6) && (i!=7) && (i!=8) && (i!=9) && (i!=10)  ) continue;
+    //if( (i!=0) &&  (i!=6) && (i!=7) && (i!=8) && (i!=9) && (i!=10)  ) continue;
     
-    if(i==0) {
+   if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
       fdata->cd();
       T->Draw("P.gtr.p>>H_shms_kf(100,9,10.5)", data_cuts, "normhistE");

@@ -1,0 +1,70 @@
+Used h(e,e'p) cafe run 16962 to determine step-by-step corrections applied.
+After each step, a replay of both data/simc is done prior to next iteration
+for the changes to take effect
+
+sub-directory structure (step number)
+
+initial/ (step1)
+---------------------
+-> no angle. / momentum corrections or offsets on either spec. arm
+-> data has mispointing + beam_offsets applied automatically
+-> simc only has beam_offsets applied
+
+corrections determined
+-> from proton momentum difference, Pdiff = Pcalc-Pmeas, a correction
+factor of : hms_fcorr =  0.9977 was determined for HMS proton momentum,
+Pf_corr = Pf_uncorr * hms_fcorr = 1.820 * 0.9977 = 1.816 
+ 
+-> HMS Ytar also seems a bit off, might be due to mispointing not being
+
+
+step 2
+--------
+-> applied HMS momentum correction to both data/simc (0.9977)
+-> applied HMS mispointing to SIMC (to fix hms Ytar alignment)
+-> applied SHMS out-of-plane central angle offset
+(based on Pmy component offset)
+p_oopcentral_offset = +0.002711 [rad]
+
+step 3
+--------
+Found dEmiss ~31 MeV offset in Emiss and dE'=~30 MeV offset in SHMS e- momentum,
+and given that final protom momentum correction was determined previously,
+implied that the remaining shift in Emiss was entirely due to e- momentum,
+NOT beam energy
+
+In addition, the measured shift (from fit) in invariant mass was dW ~ 37 MeV,
+From its derivative, dW= -Eb/E’*dE’, and also since we measured dE'~30 MeV,
+the expected offset in dW ~ -10.549/8.55 * 30 ~ -37 MeV ! ! ! This is precisely
+the observed offset in dW, which means the entire offset in dW was due to E', and not
+Ebeam or e- scat angle
+
+-> applied SHMS momentum correction to both data/simc (0.9968)
+
+after step3 corrections,
+* data Emiss is still low by ~1 MeV, and W, Pmx, Pmz are not perfectly aligned (W ~ 3 MeV, Pmx ~ 3 MeV, Pmz ~ 1.4 MeV data off from simc)
+* approach:
+--> lower e- momentum by ~1 MeV to align Emiss, (replay data and check, i.e., step4)
+--> find HMS(p)/SHMS(e-) angle offsets that best align W, Pmx, Pmz, this can be achieved via the following equations:
+
+for h(e,e'p) since we know Pmiss x,y,z is zero, then we can write (by simple momentum conservation of e-p scattering)
+Pmx = E'*sin(theta_e) - pf*sin(theta_p)         
+Pmz = Eb - E'*cos(theta_e) - pf*cos(theta_p)  
+
+taking the full derivatives (2 equations, 2 unkowns -> dtheta_e, dtheta_p):
+dPmx = E'*cos(theta_e)*dtheta_e - pf*cos(theta_p)dtheta_p
+dPmz = E'*sin(theta_e)*dtheta_e + pf*sin(theta_p)dtheta_p
+
+where dPmx, dPmz --> (Pmx,z_data - Pmx,z_simc) ,   dtheta_e,p --> (theta_e,p_data - theta_e,p_simc)
+the correction in angle would then be:  theta_e,p_corrected = theta_e,p_data - dtheta_e,p
+
+
+
+step4
+-------
+Lowering SHMS (e-) momentum by 1 GeV had the following effects:
+--> aligned Emiss, W, and Pmz
+--> shifted Ytar simc towards smaller values (need to apply SHMS mispointing to check if it improves)
+--> Pmx is still offset (need to check whether SHMS mispointing will help, otherwise, will need to
+find optimal theta_e, theta_p offsets in angle)
+
