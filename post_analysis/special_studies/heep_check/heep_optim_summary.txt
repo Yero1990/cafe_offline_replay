@@ -43,8 +43,13 @@ Ebeam or e- scat angle
 
 after step3 corrections,
 * data Emiss is still low by ~1 MeV, and W, Pmx, Pmz are not perfectly aligned (W ~ 3 MeV, Pmx ~ 3 MeV, Pmz ~ 1.4 MeV data off from simc)
+
 * approach:
+
+in the next step (step4)
 --> lower e- momentum by ~1 MeV to align Emiss, (replay data and check, i.e., step4)
+
+then the following step (step5)
 --> find HMS(p)/SHMS(e-) angle offsets that best align W, Pmx, Pmz, this can be achieved via the following equations:
 
 for h(e,e'p) since we know Pmiss x,y,z is zero, then we can write (by simple momentum conservation of e-p scattering)
@@ -62,9 +67,8 @@ the correction in angle would then be:  theta_e,p_corrected = theta_e,p_data - d
 
 step4
 -------
-Lowering SHMS (e-) momentum by 1 GeV had the following effects:
---> aligned Emiss, W, and Pmz
---> shifted Ytar simc towards smaller values (need to apply SHMS mispointing to check if it improves)
---> Pmx is still offset (need to check whether SHMS mispointing will help, otherwise, will need to
-find optimal theta_e, theta_p offsets in angle)
+Lowering SHMS (e-) momentum by 1 MeV had the following effects:
+--> aligned Emiss and Pmz
+--> Pmx and W are still offset
+( will need to find optimal theta_e, theta_p offsets in angle using the set of eqautions)
 
