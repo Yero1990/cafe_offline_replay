@@ -100,5 +100,55 @@ sub-directory structure (step number)
 
 -----> In the directory ./optim_with_Eb_shift
 
+-------
 step1:
+-------
 
+-> Beam energy shiftef by +4 MeV (within uncertainty) 10549.355-> 10553.355 GeV
+-> no momentum corrections
+-> out-of-plane angle offset applied to align Pmy
+-> data has mispointing + beam_offsets applied automatically
+-> simc has HMS_mispointing + beam_offsets applied
+
+corrections determined (to be applied before next step):
+-> from proton momentum difference, Pdiff = Pcalc-Pmeas, a correction
+factor of : hms_fcorr =  0.9977 was determined for HMS proton momentum,
+Pf_corr = Pf_uncorr * hms_fcorr = 1.820 * 0.9977 = 1.8158 
+
+-------
+step2:
+-------
+-> HMS Momentum correction: 1.820 -> 1815.8 GeV 
+-> Em data shifted ~4 MeV closer to simc (~ data is still ~27 MeV lower than simc) 
+—> Pcalc-Pmeas difference between data/simc        is now ~ 2e-4 GeV (proton momentum well known) 
+
+In summary:
+—> relative to SIMC, the data is offset by: W ~ -34 MeV offset, Em ~ -27 MeV offset, Pmx ~  +19 MeV, Pmz ~ +15 MeV
+
+Given that proton momentum and beam energy have already been shifted, the remaining difference in Emiss is due to E'
+
+From the Emiss derivatives,
+dEm = -dE'
+
+Therefore, the corrected e- momentum is:
+E'_corr =  E' + dE' = E' (1 + dE'/E') = E' (1 - dEm/E')
+Given that dEm = 27.3 MeV and E' = 8550 MeV/c, then the correction factor is :  fcorr = 1 - (27.3/8550.) = 0.9968
+
+-------
+step3:
+-------
+SHMS momentum changed:  8.55 -> 8.5226 GeV/c
+—> W is aligned (offset ~1e-4 GeV)
+—> Em data is +2.8 MeV too high
+—> Pmx data is -6.63 MeV too low —> Pmz data is -1.3 MeV too low  Eb and E’ would have to change such
+   As to keep W aligned, and shift Em lower,  and Pmx, Pmz higher
+
+-------
+step4:
+-------
+Using dW derivatives,  it was determined that by lowering Eb by -8 MeV
+(at the lower limit of the Eb +/- 4 MeV uncertainty), and by lowering 
+Ef by 5 MeV,  would generate equal and opposite offsets in W, but also
+would shift Emiss by 2.8 MeV lower to be aligned with SIMC. This seemed
+to have  Worked, however,  Pmx, is still not aligned.  
+Could it be due to an angle offset in proton arm ?
