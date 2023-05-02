@@ -92,8 +92,8 @@
 /
 
  &E_ARM_OFFSET
-     spec%e%offset%x  =  0.126		!  x offset (cm) Mispointing_x  -0.126
-     spec%e%offset%y  =  0.06		!  y offset (cm) Mispointing_y  0.06
+     spec%e%offset%x  =  0.0		!  x offset (cm) Mispointing_x  -0.126
+     spec%e%offset%y  =  0.0		!  y offset (cm) Mispointing_y  0.06
      spec%e%offset%z  =  0.0		!  z offset (cm)
      spec%e%offset%xptar  =  0.0        !  xptar offset (mr)
      spec%e%offset%yptar  =  0.0        !  yptar offset (mr)

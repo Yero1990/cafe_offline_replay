@@ -34,13 +34,13 @@ void make_plots_coin(){
 
 
      // only plot tarx,y,z
-     if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+     // if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
     //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
-    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
+    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
 
 
