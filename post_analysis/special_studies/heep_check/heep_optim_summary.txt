@@ -2,7 +2,11 @@ Used h(e,e'p) cafe run 16962 to determine step-by-step corrections applied.
 After each step, a replay of both data/simc is done prior to next iteration
 for the changes to take effect
 
+
+
 sub-directory structure (step number)
+
+-----> In the directory ./optim_steps
 
 initial/ (step1)
 ---------------------
@@ -68,7 +72,33 @@ the correction in angle would then be:  theta_e,p_corrected = theta_e,p_data - d
 step4
 -------
 Lowering SHMS (e-) momentum by 1 MeV had the following effects:
---> aligned Emiss and Pmz
---> Pmx and W are still offset
-( will need to find optimal theta_e, theta_p offsets in angle using the set of eqautions)
+--> aligned Emiss and Pmz (Pmz is ~ 0.8 MeV off)
+--> Pmx and W are still offset by ~ 4 MeV and 2 MeV respectively
+
+** At this point, if we change e- angle to make W line up, the Pmx
+will be offset even further, but if we change the proton angle, W
+will be left the same, and Pmx will shift,
+
+From the beam energy measurement, we know: 10.549355 +/- 0.0041371  GeV/c
+so there is a dE ~ 4 MeV uncertainty in beam energy
+
+*** Suggested next steps:  start the optimization procedure over but with
+a higher beam
+
+
+
+------------------------------------------------------------------------
+START Re-optimization procedure by + 4 MeV on beam energy
+------------------------------------------------------------------------
+
+Shift the beam energy by +4 MeV, and start procedure to determine if
+we get better agreement between data/simc W, Pmx
+(start with the determine out-of-plane offset as well as the HMS mispointings, as these will not affect this alignment)
+
+
+sub-directory structure (step number)
+
+-----> In the directory ./optim_with_Eb_shift
+
+step1:
 
