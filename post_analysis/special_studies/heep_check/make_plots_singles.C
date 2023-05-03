@@ -43,12 +43,13 @@ void make_plots_singles(){
 
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
-  
-  //TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
-  //TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
-  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&g.evtyp==1";
-  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22)";
+  // for run 16962, (e,e'p) are mostly in SHMS angular range: xptar(P.gtr.th): (-0.015, 0.015) rad,  yptar(P.gtr.ph): (-0.01, 0.01) rad
+  // therefore, if using singles run 16036, which was taken at the same kinematics, this range MUST be selected for W to line up between singles/coin data
+  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.015&&abs(P.gtr.ph)<0.01";
+  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.015&&abs(e_yptar)<0.01)";
+
+
 
   const int nplots = 16;
   TH1F *H_data[nplots];
@@ -65,13 +66,13 @@ void make_plots_singles(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar, yptar, ytar, delta
-    if( (i!=1) && (i!=2) && (i!=3) && (i!=4) ) continue;
+    //if( (i!=1) && (i!=2) && (i!=3) && (i!=4) ) continue;
 
     // 2d correlations
     //if(i!=14) continue;
 
     // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
-    //if( (i!=0) &&  (i!=6) && (i!=9) ) continue;
+    if( (i!=0) &&  (i!=6) && (i!=9) ) continue;
     
    if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
