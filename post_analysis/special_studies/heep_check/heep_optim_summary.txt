@@ -151,4 +151,6 @@ Using dW derivatives,  it was determined that by lowering Eb by -8 MeV
 Ef by 5 MeV,  would generate equal and opposite offsets in W, but also
 would shift Emiss by 2.8 MeV lower to be aligned with SIMC. This seemed
 to have  Worked, however,  Pmx, is still not aligned.  
-Could it be due to an angle offset in proton arm ?
+Trying to align Pmx,
+--> if proton angle is offset ro align Pmx, it would cause an offset in proton momentum difference (Pcalc-Pmeas)
+--> if e- angle is offset to align Pmx, it would offset W significantly

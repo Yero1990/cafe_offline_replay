@@ -34,10 +34,12 @@ dEf = dW_2 / dW_dEf
 
 delta = dEb - dEf
 
+dthe = 0.00052982939
+dW = dW_dthe * dthe
 print('dW_dEb = %.3f \n' % (dW_dEb),
       'dW_dEf = %.3f \n' % (dW_dEf),
       'dW_dthe = %.3f \n' % (dW_dthe),
-
+      'dth_e = %.5f [rad]-> dW = %.5f [GeV]\n' % (dthe, dW),
       'dEb = %.4f-> dW = %.4f [GeV] \n' % (dEb, dW_1),
       'dEf = %.4f-> dW = %.4f [GeV] \n' % (dEf, dW_2),
       'dEb - dEf = %.4f \n' % (delta)
