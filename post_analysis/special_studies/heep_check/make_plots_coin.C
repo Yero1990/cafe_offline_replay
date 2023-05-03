@@ -3,8 +3,8 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/Eb_shift_study/step5/cafe_replay_optics_16962_100000.root";
-  TString simc_fname="~/ROOTfiles/Eb_shift_study/step5/cafe_heep_coin_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_coin_optim/init/cafe_replay_optics_16962_500000.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/init/cafe_heep_coin_kin0_rad_withMisPoint.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -37,10 +37,10 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-    //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
+    if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
-    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
 
 
@@ -393,9 +393,9 @@ void make_plots_coin(){
     c[i] = new TCanvas(Form("c%i",i), "", 1200, 800);
 
     fdata->cd();
-    T->Draw("( 2*0.938272*10.545*(10.545+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.545 + pow(10.545,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) >>H_dPf(100,-0.1,0.1)", data_cuts, "normhistE");
+    T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) >>H_dPf(100,-0.1,0.1)", data_cuts, "normhistE");
     fsimc->cd();
-    SNT->Draw("( 2*0.938272*10.545*(10.545+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.545 + pow(10.545,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) >>H_dPf_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+    SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) >>H_dPf_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
 
     // ---------- dP vs. theta_p
     TCanvas *c_dPf = new TCanvas("c_dPf", "", 1200, 800);
@@ -403,11 +403,11 @@ void make_plots_coin(){
 
     c_dPf->cd(1);
     fdata->cd();
-    T->Draw("( 2*0.938272*10.545*(10.545+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.545 + pow(10.545,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) : ((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14) >>H_dPf_vs_theta_p(100,45,55, 100,-0.2,0.2)", data_cuts, "colz");
+    T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) : ((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14) >>H_dPf_vs_theta_p(100,45,55, 100,-0.2,0.2)", data_cuts, "colz");
 
     c_dPf->cd(2);
     fsimc->cd();
-    SNT->Draw("( 2*0.938272*10.545*(10.545+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.545 + pow(10.545,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) : theta_p*180/3.14 >>H_dPf_vs_theta_p_simc(100,45,55,100,-0.2,0.2)", simc_cuts, "colz");
+    SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) : theta_p*180/3.14 >>H_dPf_vs_theta_p_simc(100,45,55,100,-0.2,0.2)", simc_cuts, "colz");
 
     //fsimc->cd();
     

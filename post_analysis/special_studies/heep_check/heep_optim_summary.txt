@@ -154,3 +154,16 @@ to have  Worked, however,  Pmx, is still not aligned.  
 Trying to align Pmx,
 --> if proton angle is offset ro align Pmx, it would cause an offset in proton momentum difference (Pcalc-Pmeas)
 --> if e- angle is offset to align Pmx, it would offset W significantly
+
+
+
+------------------------------------------------------------------------
+START Re-optimization procedure using h(e,e') singles ONLY,
+Use run 16036 which has same SHMS kin. as cafe coincidence run 16962
+------------------------------------------------------------------------
+
+-------
+step1:
+-------
+use central beam energy Eb = 10.54935 +/- 0.004 GeV
+use central SHMS momentum (8.55 GeV) / angle (8.295 deg) without any offsets
