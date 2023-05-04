@@ -20,7 +20,7 @@ void make_plots_singles(){
 
   
   // e- angle: 8.295 deg
-  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_500000.root ";
+  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_-1_nominalEb.root";
   TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin0_rad.root";
 
   
@@ -46,8 +46,8 @@ void make_plots_singles(){
 
   // for run 16962, (e,e'p) are mostly in SHMS angular range: xptar(P.gtr.th): (-0.015, 0.015) rad,  yptar(P.gtr.ph): (-0.01, 0.01) rad
   // therefore, if using singles run 16036, which was taken at the same kinematics, this range MUST be selected for W to line up between singles/coin data
-  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.015&&abs(P.gtr.ph)<0.01";
-  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.015&&abs(e_yptar)<0.01)";
+  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.025&&abs(P.gtr.ph)<0.025";
+  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.025&&abs(e_yptar)<0.025)";
 
 
 
