@@ -5184,7 +5184,7 @@ void baseAnalyzer::EventLoop()
 		    }
 
 		  } // end raw coin time cut (w/out tracking)
-		      
+		   
 		  
 		  // -- NO CUTS HISTOS --
 		  H_ep_ctime_noCUT          ->Fill( epCoinTime-ctime_offset_peak_val );
@@ -5774,6 +5774,10 @@ void baseAnalyzer::EventLoop()
       tree_skim->SaveAs( data_OutputFileName_skim.Data() );
       delete tree_skim;
 
+
+      //Call the randoms subtraction method 
+      RandSub();
+      
     }//END DATA ANALYSIS
 
 
@@ -5807,11 +5811,23 @@ void baseAnalyzer::EventLoop()
     int row_cnt = 0;
     string col_str;
     double row_value;
-    bool debug = true;
+    bool debug = true;    
 
+    // Open / write header for output numerical file (where integrated counts per systematic cut entry will be stored)
     
-    
+    // Create and open a text file
+    ofstream out_sys(Form("cafe_systematics_%s_%s.txt", tgt_type.Data(), analysis_cut.Data()));
 
+    // Write header to file
+    out_sys << Form("# CaFe %s %s Systematics Cuts Summary", tgt_type.Data(), analysis_cut.Data() ) << endl;
+    out_sys << "# entry -> id for a particular combination of random gaussian-generated data analysis cuts  " << endl;
+    out_sys << "# real_yield -> randoms-subtracted, integrated missing-momentum counts" << endl;
+    out_sys << "# rand_yield -> randoms (accidentals selected) yield integrated missing-momentum counts" << endl;
+    out_sys << "# total_yield -> total (reals+randoms) integrated missing-momentum counts" << endl;
+    out_sys << "entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield_total_yield_err" << endl;
+
+  
+    
     //---------------------------------------------------------
     // ----- loop over each entry of the systematic cuts file
     //---------------------------------------------------------
@@ -5909,22 +5925,444 @@ void baseAnalyzer::EventLoop()
 	  epCoinTime_center_notrk = epCoinTime_notrk - ctime_offset_peak_notrk_val;
 
 
+	  //--------------DEFINE CUTS--------------------
+	  
+	  //CUTS USED IN EDTM LIVE TIME CALCULATION
+	  c_noedtm = EDTM_tdcTimeRaw == 0.;
+	  c_edtm   = EDTM_tdcTimeRaw  > 0.;
+	  c_trig1  = TRIG1_tdcTimeRaw > 0.;
+	  c_trig2  = TRIG2_tdcTimeRaw > 0.;
+	  c_trig3  = TRIG3_tdcTimeRaw > 0.;
+	  c_trig4  = TRIG4_tdcTimeRaw > 0.;
+	  c_trig5  = TRIG5_tdcTimeRaw > 0.;
+	  c_trig6  = TRIG6_tdcTimeRaw > 0.;
 
+	  c_notrig1  = TRIG1_tdcTimeRaw == 0.;
+	  c_notrig2  = TRIG2_tdcTimeRaw == 0.;
+	  c_notrig3  = TRIG3_tdcTimeRaw == 0.;
+	  c_notrig4  = TRIG4_tdcTimeRaw == 0.;
+	  c_notrig5  = TRIG5_tdcTimeRaw == 0.;
+	  c_notrig6  = TRIG6_tdcTimeRaw == 0.;
+
+	  
+	  //=====CUTS USED IN TRACKING EFFICIENCY CALCULATION=====
+
+	  //CUTS: HMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
+
+	  //Require at least a minimum number of track(s) 
+	  if(hdc_ntrk_cut_flag){c_hdc_ntrk = hdc_ntrack >= c_hdc_ntrk_min;}
+	  else{
+	    cout <<
+	      "********************************\n"
+	      "TRACKING EFFICIENCY ERROR: \n"
+	      "Must set hdc_ntrk_cut_flag = 1 \n"
+	      "See " <<  Form("%s", input_CutFileName.Data()) << "\n"
+	      "********************************"<< endl;
+	    
+	    //"*********************************************************" << endl;
+	    gSystem->Exit(0);}
+
+	  //Require a "Good Scintillator Hit" in the Fiducial Hodoscopoe Region
+	  if(hScinGood_cut_flag){c_hScinGood = hhod_GoodScinHit==1;}
+	  else{c_hScinGood=1;} //1 means allow all events (i.e., do not put hScinGood cut other than 1)
+
+	  //Require HMS Cherenkov Cut (for electron or hadron selection)
+	  if(hcer_cut_flag){c_hcer_NPE_Sum = hcer_npesum >= c_hnpeSum_min && hcer_npesum <= c_hnpeSum_max;}
+	  else{c_hcer_NPE_Sum=1;}
+
+	  //Require HMS Calorimeter Cut (for additional electron or hadron selection)
+	  if(hetotnorm_cut_flag){c_hetotnorm = hcal_etotnorm >= c_hetotnorm_min && hcal_etotnorm <= c_hetotnorm_max;}
+	  else{c_hetotnorm=1;}
+
+	  //Require HMS Hodoscope Beta Cut (no track-biased) (for electron or hadron selection)
+	  if(hBeta_notrk_cut_flag){c_hBeta_notrk = hhod_beta_ntrk >= c_hBetaNtrk_min && hhod_beta_ntrk <= c_hBetaNtrk_max;}
+	  else{c_hBeta_notrk=1;}
+
+
+	  //CUTS: SHMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
+
+	  //Require at least a minimum number of track(s) 
+	  //if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack == c_pdc_ntrk_min;} // C.Y. Jan 2023 require ONLY onw track for now, to study track efficiency
+	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
+	  else{
+	    cout <<
+	      "********************************\n"
+	      "TRACKING EFFICIENCY ERROR: \n"
+	      "Must set pdc_ntrk_cut_flag = 1 \n"
+	      "See " <<  Form("%s", input_CutFileName.Data()) << "\n"
+	      "********************************"<< endl;
+	    
+	    //"*********************************************************" << endl;
+	    gSystem->Exit(0);}
+
+	  //Require a "Good Scintillator Hit" in the Fiducial Hodoscopoe Region
+	  if(pScinGood_cut_flag){c_pScinGood = phod_GoodScinHit==1;}
+	  else{c_pScinGood=1;} //1 means allow all events (do not put hScinGood cut)
+
+	  //Require SHMS Noble Gas Cherenkov Cut (for electron or hadron selection)
+	  if(pngcer_cut_flag){c_pngcer_NPE_Sum = pngcer_npesum >= c_pngcer_npeSum_min &&  pngcer_npesum <= c_pngcer_npeSum_max;}
+	  else{c_pngcer_NPE_Sum=1;}
+
+	  //Require SHMS Heavy Gas Cherenkov Cut (for electron or hadron selection)
+	  if(phgcer_cut_flag){c_phgcer_NPE_Sum = phgcer_npesum >= c_phgcer_npeSum_min &&  phgcer_npesum <= c_phgcer_npeSum_max;}
+	  else{c_phgcer_NPE_Sum=1;}
+	  
+	  //Require SHMS Calorimeter Cut (for additional electron or hadron selection)
+	  if(petotnorm_cut_flag){c_petotnorm = pcal_etotnorm >= c_petotnorm_min && pcal_etotnorm <= c_petotnorm_max;}
+	  else{c_petotnorm=1;}
+
+	  //Require SHMS Hodoscope Beta Cut (no track-biased) (for electron or hadron selection)
+	  if(pBeta_notrk_cut_flag){c_pBeta_notrk = phod_beta_ntrk >= c_pBetaNtrk_min && phod_beta_ntrk <= c_pBetaNtrk_max;}
+	  else{c_pBeta_notrk=1;}
+
+	  
+	  //====DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC, except PID & COIN TIME CUTS on detectors)====
+
+	  // CUTS (SPECIFIC TO DATA)
+	 
+	  // -- proton coincidence time cut ----
+	  if(ePctime_cut_flag) {
+
+	    // main coincidence time window cut
+	    eP_ctime_cut = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max;
+
+	    // accidental coincidence (left/right of main coin. peak selected) as samples
+	    eP_ctime_cut_rand_L = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_max_L && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_min_L ;
+	    eP_ctime_cut_rand_R = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min_R && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max_R ;	    
+	    
+	    eP_ctime_cut_rand =  eP_ctime_cut_rand_L || eP_ctime_cut_rand_R;
+
+
+	  }
+	  else{
+	    eP_ctime_cut=1;
+	    eP_ctime_cut_rand =1;
+	  }
+	  
+	  //----PID Cuts---- 
+	  //SHMS calorimeter total normalized track energy
+	  if(petot_trkNorm_pidCut_flag) {cpid_petot_trkNorm = pcal_etottracknorm>=cpid_petot_trkNorm_min && pcal_etottracknorm<=cpid_petot_trkNorm_max;}
+	  else{cpid_petot_trkNorm=1;}
+
+	  //SHMS Noble Gas Cherenkov
+	  if(pngcer_pidCut_flag) {cpid_pngcer_NPE_Sum = pngcer_npesum>=cpid_pngcer_npeSum_min && pngcer_npesum<=cpid_pngcer_npeSum_max;}
+	  else{cpid_pngcer_NPE_Sum=1;}
+
+	  //SHMS Heavy Gas Cherenkov
+	  if(phgcer_pidCut_flag) {cpid_phgcer_NPE_Sum = phgcer_npesum>=cpid_phgcer_npeSum_min && phgcer_npesum<=cpid_phgcer_npeSum_max;}
+	  else{cpid_phgcer_NPE_Sum=1;}
+	  
+	  //SHMS Number of Tracks
+	  if(pntrack_cut_flag) {c_pntrack = pdc_ntrack==pntracks;}
+	  else{c_pntrack=1;}
+	  
+	  c_pidCuts_shms = cpid_petot_trkNorm && cpid_pngcer_NPE_Sum && cpid_phgcer_NPE_Sum && c_pntrack;
+	  
+	  //HMS calorimeter total normalized track energy
+	  if(hetot_trkNorm_pidCut_flag) {cpid_hetot_trkNorm = hcal_etottracknorm>=cpid_hetot_trkNorm_min && hcal_etottracknorm<=cpid_hetot_trkNorm_max;}
+	  else{cpid_hetot_trkNorm=1;}
+
+	  //HMS Gas Cherenkov
+	  if(hcer_pidCut_flag) {cpid_hcer_NPE_Sum = hcer_npesum>=cpid_hcer_npeSum_min && hcer_npesum<=cpid_hcer_npeSum_max;}
+	  else{cpid_hcer_NPE_Sum=1;}
+
+	  c_pidCuts_hms = cpid_hetot_trkNorm && cpid_hcer_NPE_Sum;
+
+	  // combined hms/shms pid cuts 
+	  c_pidCuts = c_pidCuts_shms && c_pidCuts_hms;
+
+
+	   //----Acceptance Cuts----
+
+	  // hadron arm
+	  if(hdelta_cut_flag){c_hdelta = h_delta>=c_hdelta_min && h_delta<=c_hdelta_max;} 
+	  else{c_hdelta=1;}
+
+	  if(hxptar_cut_flag){c_hxptar = h_xptar>=c_hxptar_min && h_xptar<=c_hxptar_max;} 
+	  else{c_hxptar=1;}
+
+	  if(hyptar_cut_flag){c_hyptar = h_yptar>=c_hyptar_min && h_yptar<=c_hyptar_max;} 
+	  else{c_hyptar=1;}
+
+	  //Collimator CUTS
+	  if(hmsCollCut_flag)  { hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);}
+	  else{hmsColl_Cut=1;}
+	  
+	  c_accpCuts_hms = c_hdelta && c_hxptar && c_hyptar && hmsColl_Cut;
+	  
+	  // electron arm
+	  if(edelta_cut_flag){c_edelta = e_delta>=c_edelta_min && e_delta<=c_edelta_max;} 
+	  else{c_edelta=1;} 
+
+	  if(exptar_cut_flag){c_exptar = e_xptar>=c_exptar_min && e_xptar<=c_exptar_max;} 
+	  else{c_exptar=1;}
+
+	  if(eyptar_cut_flag){c_eyptar = e_yptar>=c_eyptar_min && e_yptar<=c_eyptar_max;} 
+	  else{c_eyptar=1;}
+
+	  //Collimator Cuts
+	  if(shmsCollCut_flag) { shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);}
+	  else{shmsColl_Cut=1;}
+	  
+	  c_accpCuts_shms = c_edelta && c_exptar && c_eyptar && shmsColl_Cut;
+  
+	  // z-reaction vertex difference
+	  if(ztarDiff_cut_flag){c_ztarDiff = ztar_diff>=c_ztarDiff_min && ztar_diff<=c_ztarDiff_max;} 
+	  else{c_ztarDiff=1;}
+
+	  // combined hms/shms acceptance cuts 
+	  c_accpCuts = c_accpCuts_hms && c_accpCuts_shms && c_ztarDiff;
+	  
+	  //----Specialized Kinematics Cuts----
+
+	  // H(e,e'p) Kinematics
+	  
+	  //Q2
+	  if(Q2_heep_cut_flag){c_heep_Q2 = Q2>=c_heep_Q2_min && Q2<=c_heep_Q2_max;}
+	  else{c_heep_Q2=1;}
+
+	  //xbj
+	  if(xbj_heep_cut_flag){c_heep_xbj = X>=c_heep_xbj_min && X<=c_heep_xbj_max;}
+	  else{c_heep_xbj=1;}
+	  
+	  //Missing Energy, Em
+	  if(Em_heep_cut_flag){c_heep_Em = Em>=c_heep_Em_min && Em<=c_heep_Em_max;}
+	  else{c_heep_Em=1;}
+
+	  //Invariant Mass, W
+	  if(W_heep_cut_flag){c_heep_W = W>=c_heep_W_min && W<=c_heep_W_max;}
+	  else{c_heep_W=1;}
+
+	  //Missing Mass, MM = sqrt( E_recoil^2 - P_miss ^2 )
+	  if(MM_heep_cut_flag){c_heep_MM = MM>=c_heep_MM_min && MM<=c_heep_MM_max;}
+	  else{c_heep_MM=1;}
+
+
+	  // H(e,e'p) singles ( e- trigger only)
+	  c_kinHeepSing_Cuts = c_heep_Q2 && c_heep_W && c_heep_xbj;
+
+	  // H(e,e'p) coin ( e- + p coin. trigger )
+	  c_kinHeepCoin_Cuts = c_heep_Q2 && c_heep_xbj && c_heep_Em && c_heep_W && c_heep_MM;
+	  
+	  // CaFe A(e,e'p) Mean-Field (MF) Kinematic Cuts
+
+	  // Q2
+	  if(Q2_MF_cut_flag){c_MF_Q2 = Q2>=c_MF_Q2_min && Q2<=c_MF_Q2_max;}
+	  else{c_MF_Q2=1;}
+
+	  // Pm
+	  if(Pm_MF_cut_flag){c_MF_Pm = Pm>=c_MF_Pm_min && Pm<=c_MF_Pm_max;}
+	  else{c_MF_Pm=1;}
+
+	  // Em ( require this cut ONLY for deuteron)
+	  if(Em_d2MF_cut_flag && tgt_type=="LD2"){c_d2MF_Em = Em_nuc>=c_d2MF_Em_min && Em_nuc <= c_d2MF_Em_max;}
+	  else{c_d2MF_Em=1;}
+
+	  // Em ( require this cut ONLY for A>2 nuclei)
+	  if(Em_MF_cut_flag && tgt_type!="LD2"){c_MF_Em = Em_nuc >= c_MF_Em_min && Em_nuc <= c_MF_Em_max;}
+	  else{c_MF_Em=1;}
+
+	  // theta_rq
+	  if(thrq_MF_cut_flag){c_MF_thrq = th_rq/dtr >= c_MF_thrq_min && th_rq/dtr <= c_MF_thrq_max;}
+	  else{c_MF_thrq=1;}
+
+	  
+	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
 
 
 	  
+	  // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts
+
+	  // Q2
+	  if(Q2_SRC_cut_flag){c_SRC_Q2 = Q2>=c_SRC_Q2_min && Q2<=c_SRC_Q2_max;}
+	  else{c_SRC_Q2=1;}
+
+	  // Pm
+	  if(Pm_SRC_cut_flag){c_SRC_Pm = Pm>=c_SRC_Pm_min && Pm<=c_SRC_Pm_max;}
+	  else{c_SRC_Pm=1;}
+
+	  // Xbj
+	  if(Xbj_SRC_cut_flag){c_SRC_Xbj = X >= c_SRC_Xbj_min && X <= c_SRC_Xbj_max;}
+	  else{c_SRC_Xbj=1;}
+	  
+	  // theta_rq
+	  if(thrq_SRC_cut_flag){c_SRC_thrq = th_rq/dtr >= c_SRC_thrq_min && th_rq/dtr <= c_SRC_thrq_max;}
+	  else{c_SRC_thrq=1;}
+	  
+	  // Em ( require this cut ONLY for deuteron)
+	  if(Em_d2SRC_cut_flag && tgt_type=="LD2"){c_d2SRC_Em = Em_nuc>=c_d2SRC_Em_min && Em_nuc <= c_d2SRC_Em_max;}
+	  else{c_d2SRC_Em=1;}
+
+	  // Em ( require this cut ONLY for A>2 nuclei)
+	  if(Em_SRC_cut_flag && tgt_type!="LD2"){c_SRC_Em = Em_src>0. && Em_nuc <= Em_src; // put lower bound on Em_src cut
+	    //cout << "c_SRC_Em = " << c_SRC_Em << endl;
+	  }
+	  else{c_SRC_Em=1;}
+	  
+
+	  c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq && c_d2SRC_Em && c_SRC_Em;
+
+
+	 
+			  	 
+	  // ----- Combine All CUTS -----
+
+	  // user pre-determined analysis kinematics cuts
+
+	  if(analysis_cut=="lumi"){ 
+	    c_baseCuts =  e_delta>=-10. && e_delta<=22. && c_pidCuts_shms;
+	  }
+	  else if(analysis_cut=="optics"){  // will need to call Holly's script that generates optics plots (from raw ROOTfile)
+	    c_baseCuts =  c_pidCuts_shms;
+	  }
+	  else if(analysis_cut=="heep_singles"){
+	    c_baseCuts =  c_accpCuts_shms && c_pidCuts_shms && c_kinHeepSing_Cuts && pdc_TheRealGolden==1 && (eP_ctime_cut=1) && (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7); //setting eP_ctime=1 guarantees cut will always pass (i.e. turned coin time cut OFF)
+	  }
+	  else if(analysis_cut=="heep_coin"){
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinHeepCoin_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
+	  }
+	  else if(analysis_cut=="MF"){
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinMF_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
+	  }
+	  else if(analysis_cut=="SRC"){
+	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
+	  }
+	  
+	  
+	  
+	  //====END: DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC)===
+
+	  
+	  //----------------------Check If BCM Current is within limits---------------------
+
+	  if(evt_flag_bcm[scal_read]==1)
+	    {
+	   	    
+		//---------------------------------------------------------
+		
+	      
+	      //REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS
+	      if(c_noedtm)
+		{
+	        
+		  //----------------------Fill DATA Histograms-----------------------
+
+		  
+		   // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
+		  if(c_baseCuts){
+
+		    // full (reals + accidentals) coin. time spectrum with all other cuts   
+		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
+		  
+		    
+
+		      // select "TRUE COINCIDENCE " (electron-proton from same "beam bunch" form a coincidence)
+		    if(eP_ctime_cut)
+		      {
+
+			//Coincidence Time		      
+			H_ep_ctime_real->Fill(epCoinTime-ctime_offset_peak_val); // fill coin. time and apply the offset
+
+
+			H_W       ->  Fill (W);       
+			H_Q2      ->  Fill (Q2);      
+			H_xbj     ->  Fill (X);     
+			H_nu      ->  Fill (nu);      
+			H_q       ->  Fill (q);       
+			H_Em      ->  Fill (Em);      
+			H_Em_nuc  ->  Fill (Em_nuc);  
+			H_Pm      ->  Fill (Pm);      
+			H_MM      ->  Fill (MM);      
+			H_thxq    ->  Fill (th_xq/dtr);    
+			H_thrq    ->  Fill (ph_xq/dtr); 
+
+			
+		      }
+		    
+		    // select "ACCIDENTAL COINCIDENCE BACKGROUND" left/right of main coin. peak as a sample to estimate background underneath main coin. peak
+		    // background underneath main peak: electron-proton from same "beam bunch" form a random ("un-correlated") coincidence
+		    
+		    if(ePctime_cut_flag && eP_ctime_cut_rand)		      
+		      {
+				// Only histograms of selected variables of interest will be filled with coincidence accidantal background (for background subtraction)
+			
+			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset_peak_val );
+			H_W_rand       ->  Fill (W);       
+			H_Q2_rand      ->  Fill (Q2);      
+			H_xbj_rand     ->  Fill (X);     
+			H_nu_rand      ->  Fill (nu);      
+			H_q_rand       ->  Fill (q);       
+			H_Em_rand      ->  Fill (Em);      
+			H_Em_nuc_rand  ->  Fill (Em_nuc);  
+			H_Pm_rand      ->  Fill (Pm);      
+			H_MM_rand      ->  Fill (MM);      
+			H_thxq_rand    ->  Fill (th_xq/dtr);    
+			H_thrq_rand    ->  Fill (ph_xq/dtr);  
+		      }
+		    
+		    
+
+		  } //----------------------END: Fill DATA Histograms-----------------------	
+
+
+		} //------END: REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS-----
+
+	    } //-----END: BCM Current Cut------
+
+	  //Increment Scaler Read if event == scaler_evt_perlimit for that scaler read
+	  if(gevnum==scal_evt_num[scal_read]){ scal_read++; }
+	  
+
+	} //END DATA EVENT LOOP
+	    
+
+      //Call the randoms subtraction method TO SUBTRACT RANDOM COINCIDENCES underneath real coincidences
+      RandSub();
+
+
+      //------------------------------------------------------------------------------------
+      // Here write the integrated Pm counts as well as the binned Pm counts to file
+      //------------------------------------------------------------------------------------
+
+      out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",ientry, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err,Pm_total, Pm_total_err) << endl;
+
+
+      //------------------------------------------------------------------------------------
+
 
       
-
-	} // end loop over data events
       
-
+      //-----------------------------------------------------------------------------------------------
+      // RESET THE HISTOGRAMS BEFORE LOOP OVER EVENTS FOR NEXT ENTRY in the systematics cuts files
+      //-----------------------------------------------------------------------------------------------
+      H_ep_ctime_total    ->Reset();
+      H_ep_ctime_real     ->Reset();
+      H_ep_ctime_rand     ->Reset();
+      H_ep_ctime_rand_sub ->Reset();
       
-      // keep track of each row count in the systematics cut file
+      H_W       -> Reset();    H_W_rand       -> Reset();    H_W_rand_sub       -> Reset();
+      H_Q2      -> Reset();    H_Q2_rand      -> Reset();    H_Q2_rand_sub      -> Reset();
+      H_xbj     -> Reset();    H_xbj_rand     -> Reset();    H_xbj_rand_sub     -> Reset();
+      H_nu      -> Reset();    H_nu_rand      -> Reset();    H_nu_rand_sub      -> Reset();
+      H_q       -> Reset();    H_q_rand       -> Reset();    H_q_rand_sub       -> Reset();
+      H_Em      -> Reset();    H_Em_rand      -> Reset();    H_Em_rand_sub      -> Reset();
+      H_Em_nuc  -> Reset();    H_Em_nuc_rand  -> Reset();    H_Em_nuc_rand_sub  -> Reset();
+      H_Pm      -> Reset();    H_Pm_rand      -> Reset();    H_Pm_rand_sub      -> Reset();
+      H_MM      -> Reset();    H_MM_rand      -> Reset();    H_MM_rand_sub      -> Reset();
+      H_thxq    -> Reset();    H_thxq_rand    -> Reset();    H_thxq_rand_sub    -> Reset();
+      H_thrq    -> Reset();    H_thrq_rand    -> Reset();    H_thrq_rand_sub    -> Reset();
+      //-----------------------------------------------------------------------------------------------
+      
+      // keep track of each row entry in the systematics cut file
       row_cnt++;
       
     } // end loop over each entry of the systematics cut file
-    
+
+
+
+    // close output systematics file
+    out_sys.close();
+      
   } // end analysis_type == data_systematics requirement
   
   
@@ -6423,8 +6861,12 @@ void baseAnalyzer::CollimatorStudy()
 //_______________________________________________________________________________
 void baseAnalyzer::CalcEff()
 {
+
   cout << "Calling Base CalcEff() . . . " << endl;
 
+  if(analysis_type!="data") return;
+  
+    
   //Brief: In this method, the total charge, live time, tracking efficiencies are calculated
 
   //Calculate Average BCM Current                                                  
@@ -9252,7 +9694,8 @@ void baseAnalyzer::run_data_analysis()
 
  
   CalcEff();
-  ApplyWeight();
+  //ApplyWeight(); // this method only calls RandSub(), its best to call RandSub() withint the relevant parts of the EventLoop() method,
+  // at the end (outside of the actual loop entries)
 
   WriteHist();
   WriteOfflineReport();
