@@ -26,11 +26,4 @@ p_oopcentral_offset = 0.
 
  
 ; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  
-;ppcentral_offset = 0
-
-;  ( 1. + ppcentral_offset / 100. ) = 0.9968
-ppcentral_offset = -0.3199
-
-; lower e- momentum by ~1 MeV to fine-tune align Emiss data to simc (from cafe h(e,e'p) run 16962)
-;  ( 1. + ppcentral_offset / 100. ) = 0.99668
-ppcentral_offset = -0.3319
+ppcentral_offset = 0

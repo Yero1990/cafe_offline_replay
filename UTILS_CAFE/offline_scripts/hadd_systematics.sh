@@ -29,9 +29,9 @@ tgt=$1
 kin=$2
 
 # set generic path name of runlist to be read
-filename="${tgt}_${kin}.txt"
+filename="runlist/${tgt}_${kin}.txt"
 
-# set output file containign the actual .root filenames to be combined
+# set output file containing the actual .root filenames to be combined
 ofile="${tgt}_${kin}_filelist.txt"
 
 # set generif output filename for the combined root files
@@ -46,8 +46,8 @@ then
     # loop over each run to create a list of runs
     for run in $(cat $filename) ; do    
 	
-	# set generic .root file name
-	ifile="cafe_replay_run_${run}.root"
+	# set generic .root file name (of existing file)
+	ifile="../cafe_replay_prod_${run}_-1.root"
 
 	# write the .root file names to file
 	echo "$ifile" >> "$ofile"
@@ -66,7 +66,7 @@ else
     for run in $(cat $filename) ; do    
 	
 	# set generic .root file name
-	ifile="cafe_replay_run_${run}.root"
+	ifile="../cafe_replay_prod_${run}_-1.root"
 
 	# write the .root file names to file
 	echo "$ifile" >> "$ofile"

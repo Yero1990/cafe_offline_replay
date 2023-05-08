@@ -33,12 +33,13 @@ hphi_offset  = 0.  ; (rad) hxp_tar = hxp_tar + hphi_offset
 
 
 ; sets hpcentral = hpcentral * ( 1. + hpcentral_offset / 100. ) 
-; hpcentral_offset = 0. (initial, step0 of cafe optimization), determined corr. factor: ( 1. + hpcentral_offset / 100. ) = 0.9977
-hpcentral_offset = -0.229
+;hpcentral_offset = 0. 
 
+; ( 1. + hpcentral_offset / 100. ) = 0.9977 (determined from heep 16962)
+hpcentral_offset = 0
 
 ; htheta_lab=htheta_lab + hthetacentral_offset/degree 
-hthetacentral_offset = 0  ;   (rad)  added offset to align Pmx (+ 0.1 deg offset from central angle)
+hthetacentral_offset = 0.0  ;   (rad)  
 h_oopcentral_offset = 0.002711  ; (rad) to algin Pmy component
 
 
