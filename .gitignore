@@ -19,6 +19,7 @@
 !post_analysis/special_studies/track_efficiency_study/documentation/*.pdf
 !post_analysis/special_studies/b4c_subtraction/*
 !post_analysis/special_studies/ca48_contamination/slides/*.key
+!UTILS_CAFE/runlist/*
 
 # Directories
 RAID
