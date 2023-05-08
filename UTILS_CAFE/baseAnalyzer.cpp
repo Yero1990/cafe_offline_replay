@@ -10,12 +10,26 @@ Date Created: August 22, 2020
 using namespace std;
 
 //_______________________________________________________________________________
-baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string mode="", string earm="", string ana_type="", string ana_cuts="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0 )
-  : run(irun), evtNum(ievt), daq_mode(mode), e_arm_name(earm), analysis_type(ana_type), analysis_cut(ana_cuts), helicity_flag(hel_flag), bcm_type(bcm_name), bcm_thrs(thrs), trig_type_single(trig_single), trig_type_coin(trig_coin), combine_runs_flag(combine_flag)   //initialize member list 
+baseAnalyzer::baseAnalyzer( int irun=-1, int ievt=-1, string itgt="", string mode="", string earm="", string ana_type="", string ana_cuts="", Bool_t hel_flag=0, string bcm_name="", double thrs=-1, string trig_single="", string trig_coin="", Bool_t combine_flag=0 )
+  : run(irun), evtNum(ievt), tgt_type(itgt), daq_mode(mode), e_arm_name(earm), analysis_type(ana_type), analysis_cut(ana_cuts), helicity_flag(hel_flag), bcm_type(bcm_name), bcm_thrs(thrs), trig_type_single(trig_single), trig_type_coin(trig_coin), combine_runs_flag(combine_flag)   //initialize member list 
 {
   
   cout << "Calling BaseConstructor " << endl;
 
+  //determine if run number is given, otherwise, tgt_type will be used instead
+  if(irun==-1){
+    cout << "-----> NO RUN-NUMBER WAS PROVIDED !" << endl;
+
+    if(itgt.length() != 0){
+      cout << Form("Reding target type insead: %s \n", tgt_type.Data() ) << endl;  
+    }
+    else {
+      cout << "No run number or target name provided ! \n Exiting NOW . . . \n" << endl;
+      gSystem->Exit(0);
+    }
+
+  }
+  
   //determine if the replay is a sample of full production based on number of events replayed
   if(evtNum==-1){
     replay_type="prod";
@@ -1365,7 +1379,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
   TString temp; //temporary string placeholder
 
 
-  if(analysis_type=="data"){
+  if(analysis_type=="data" || analysis_type=="systematics"){
 
     //-------------------------------
     //----INPUTS (USER READS IN)-----
@@ -1373,22 +1387,36 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
     if(set_input_fnames) {
 
-      //Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
-      temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
-      //data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
-      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
-      //data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
 
+      
+      // Define input root / .report file for systematics analysis (this file may will be a combined .root file over multiple runs to make analysis simpler)
+      if(analysis_type=="systematics") {
+	
+	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data()); /// make sure file with this generic name exists
+	data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
+	
+      }
+      
+
+      if(analysis_type=="data") {
+	//Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
+	temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
+	//data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
+	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+	//data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
+	//data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+	
 	//Check if ROOTfile exists
-      in_file.open(data_InputFileName.Data());
-      cout << "in_file.fail() --> " << in_file.fail() << endl;
-      if(in_file.fail()){
-	cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;
-	cout << "Exiting NOW !" << endl;
+	in_file.open(data_InputFileName.Data());
+	cout << "in_file.fail() --> " << in_file.fail() << endl;
+	if(in_file.fail()){
+	  cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;
+	  cout << "Exiting NOW !" << endl;
 	gSystem->Exit(0);
-      }  
+	}  
       in_file.close();
+      
+      
       
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
@@ -1396,7 +1424,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
-
+      
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
       cout << "in_file.fail() --> " << in_file.fail() << endl;
@@ -1406,6 +1434,8 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	gSystem->Exit(0);
       }
       in_file.close();
+      
+      } // end =="data" requirement
 
     }
     
@@ -5784,7 +5814,7 @@ void baseAnalyzer::EventLoop()
   // -------------------------
   // CaFe Data Systematics
   // -------------------------
-  if(analysis_type=="data_systematics"){
+  if(analysis_type=="systematics"){
     
     // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
     // to be used to centering coin time peak (should only need to be called once,
@@ -6363,7 +6393,7 @@ void baseAnalyzer::EventLoop()
     // close output systematics file
     out_sys.close();
       
-  } // end analysis_type == data_systematics requirement
+  } // end analysis_type == systematics requirement
   
   
   //-----------------------------------
