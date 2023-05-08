@@ -40,6 +40,7 @@ public:
   void ScalerEventLoop(); //bcm current cut threshold in uA units
   void ReadTree();
   void CreateSkimTree();
+  void CreateScalerSkimTree();  
   void CreateSinglesSkimTree();
   void EventLoop();
   void CalcEff();
@@ -1362,6 +1363,7 @@ protected:
   //----------DATA-RELATED VARIABLES-----------
   TTree *tree;
   TTree *tree_skim;
+  TTree *tree_scl_skim;   
   Long64_t nentries;
   
   //Set-Up counters for accepted singles triggers

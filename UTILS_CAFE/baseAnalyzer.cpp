@@ -113,6 +113,7 @@ void baseAnalyzer::Init(){
   //Initialize TTree Pointers
   tree        = NULL;
   tree_skim   = NULL;
+  tree_scl_skim   = NULL; 
   scaler_tree = NULL;
 
   //Initialize Scaler Pointer
@@ -1392,9 +1393,32 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       // Define input root / .report file for systematics analysis (this file may will be a combined .root file over multiple runs to make analysis simpler)
       if(analysis_type=="systematics") {
 	
-	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data()); /// make sure file with this generic name exists
-	data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
+	cout << "analysis_type : " << analysis_type.Data() << endl;
+	cout << "target: " << tgt_type.Data() << endl;
+	cout << "analysis_cut: " << analysis_cut.Data() << endl;
+ 	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data() ); /// make sure file with this generic name exists
 	
+	//Check if ROOTfile exists                                                                                                                                                                                                              
+        in_file.open(data_InputFileName.Data());                                                                                                                                                                                                     
+        cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                                   
+        if(in_file.fail()){                                                                                                                                                                                                                   
+          cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;                                                                                                                                                    
+          cout << "Exiting NOW !" << endl;                                                                                                                                                                                             
+	  gSystem->Exit(0);                                                                                                                                                                                                                             
+        }                                                                                                                                                                                                                                      
+	in_file.close(); 
+
+	data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
+	//Check if REPORTFile exists                                                                                                                                                                                                               
+	in_file.open(data_InputReport.Data());                                                                                                                                                                                                            
+	cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                                       
+	if(in_file.fail()){                                                                                                                                                                                                                              
+	  cout << Form("REPORTFile: %s does NOT exist ! ! !", data_InputReport.Data()) << endl;                                                                                                                                                        
+	  cout << "Exiting NOW !" << endl;                                                                                                                                                                                                               
+	  gSystem->Exit(0);                                                                                                                                                                                                                         
+	}                                                                                                                                                                                                                                                
+	in_file.close(); 
+
       }
       
 
@@ -1403,8 +1427,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
 	//data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
 	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
-	//data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d_phase6.root", run, evtNum);
-	//data_InputFileName = Form("ROOTfiles/prod/cafe_replay_prod_%d_%d.root", run, evtNum);
+	//data_InputFileName = Form("ROOTfiles/sample/cafe_replay_sample_%d_%d.root", run, evtNum);      	
 	
 	//Check if ROOTfile exists
 	in_file.open(data_InputFileName.Data());
@@ -1422,8 +1445,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
       data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
-      //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_prod_%d_%d.report", run, evtNum);
-      //data_InputReport = Form("REPORT_OUTPUT/prod/cafe_prod_%d_%d.report", run, evtNum);
+      //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_sample_%d_%d.report", run, evtNum);  
       
       //Check if REPORTFile exists
       in_file.open(data_InputReport.Data());
@@ -1801,6 +1823,7 @@ void baseAnalyzer::ReadReport()
   // Read Target Mass
   temp = FindString("Target_Mass_amu",  data_InputReport.Data())[0];
   temp_var = stod(split(temp, ':')[1]);
+  cout << "target mass ---> " << temp_var << endl;
 
   double max_diff = 1e-6;
   
@@ -3412,6 +3435,7 @@ void baseAnalyzer::ReadScalerTree()
   evt_flag_bcm = new Int_t[scal_entries]; //store 0 or 1, to determine which scaler read passed cut
   scal_evt_num = new Int_t[scal_entries]; //store event associated with scaler read
   
+  
   if(daq_mode=="coin")
     {
       //SetBranchAddress
@@ -3442,6 +3466,8 @@ void baseAnalyzer::ReadScalerTree()
       scaler_tree->SetBranchAddress("P.pTRIG5.scaler",&TRIG5_scaler);
       scaler_tree->SetBranchAddress("P.pTRIG6.scaler",&TRIG6_scaler);
       scaler_tree->SetBranchAddress("P.EDTM.scaler",  &EDTM_scaler);
+      
+   
     }
   else if(daq_mode=="singles")
     {
@@ -3475,9 +3501,9 @@ void baseAnalyzer::ReadScalerTree()
       scaler_tree->SetBranchAddress(Form("%s.%sTRIG6.scaler",eArm.Data(), e_arm.Data() ),      &TRIG6_scaler);
       scaler_tree->SetBranchAddress(Form("%s.EDTM.scaler",eArm.Data() ),                       &EDTM_scaler);
     }
-  
-   
-  
+
+
+  CreateScalerSkimTree();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   cout << "Ending ReadScalerTree() . . . " << endl;
   
 }
@@ -3505,7 +3531,8 @@ void baseAnalyzer::ScalerEventLoop()
   for (int i = 0; i < scal_entries; i++) 
     {
       scaler_tree->GetEntry(i);
-
+      
+     
       // Determine which bcm current to cut on (based on user input)
       if(bcm_type=="BCM1"){
 	Scal_BCM_current = Scal_BCM1_current;
@@ -3543,6 +3570,8 @@ void baseAnalyzer::ScalerEventLoop()
       
       scaler_tree->GetEntry(i);
       
+      tree_scl_skim->Fill();
+
       //Set Event Flag to FALSE (default)
       evt_flag_bcm[i] = 0;
       
@@ -3642,6 +3671,17 @@ void baseAnalyzer::ScalerEventLoop()
     
     } //End Scaler Read Loop
 
+                                                                                                                                                                                                                                                                       
+  //--- clone the scaler TTree to the skimmed file ----                                                                                                                                                                                           
+  //Save Skimmed Tree
+  outROOT = new TFile(data_OutputFileName_skim.Data(), "RECREATE");
+  outROOT->cd();
+  tree_scl_skim->Write();
+  //tree_scl_skim->SaveAs( data_OutputFileName_skim.Data() );                                                                                                                                                                                                                    
+  outROOT->Close();
+  delete tree_scl_skim; 
+  //----------------------------------------------------  
+
   // Set generic bcm info to be used in charge normalization based on user input
   if(bcm_type=="BCM1"){
     total_charge_bcm     = total_charge_bcm1;
@@ -3696,6 +3736,48 @@ void baseAnalyzer::ScalerEventLoop()
 
 
 
+//__________________________________________________________________________
+void baseAnalyzer::CreateScalerSkimTree()
+{
+  
+  // Method to create a skimmed version of the data TTree  
+  cout << "Calling Base CreateScalerSkimTree()  " << endl;
+
+  tree_scl_skim = new TTree("TSP", "Scaler Skimmed TTree");
+  tree_scl_skim->SetDirectory(0);
+  
+  // add branches (assumes the variables already exist, so this method must be called right after
+  // setting the branch addree of the
+
+
+ //SetBranchAddress
+  tree_scl_skim->Branch("evNumber", &Scal_evNum);
+  tree_scl_skim->Branch("P.BCM1.scalerCharge",  &Scal_BCM1_charge); 
+  tree_scl_skim->Branch("P.BCM1.scalerCurrent", &Scal_BCM1_current); 
+  tree_scl_skim->Branch("P.BCM2.scalerCharge",  &Scal_BCM2_charge); 
+  tree_scl_skim->Branch("P.BCM2.scalerCurrent", &Scal_BCM2_current); 
+  tree_scl_skim->Branch("P.BCM4A.scalerCharge",  &Scal_BCM4A_charge); 
+  tree_scl_skim->Branch("P.BCM4A.scalerCurrent", &Scal_BCM4A_current);
+  tree_scl_skim->Branch("P.BCM4B.scalerCharge",  &Scal_BCM4B_charge); 
+  tree_scl_skim->Branch("P.BCM4B.scalerCurrent", &Scal_BCM4B_current);
+  tree_scl_skim->Branch("P.BCM4C.scalerCharge",  &Scal_BCM4C_charge); 
+  tree_scl_skim->Branch("P.BCM4C.scalerCurrent", &Scal_BCM4C_current);
+  
+  tree_scl_skim->Branch("P.1MHz.scalerTime",&Scal_time);
+  tree_scl_skim->Branch("P.S1X.scaler",&S1X_scaler);
+  tree_scl_skim->Branch("P.S1Y.scaler",&S1Y_scaler);  
+  tree_scl_skim->Branch("P.S2X.scaler",&S2X_scaler);  
+  tree_scl_skim->Branch("P.S2Y.scaler",&S2Y_scaler);  
+  tree_scl_skim->Branch("P.pTRIG1.scaler",&TRIG1_scaler);
+  tree_scl_skim->Branch("P.pTRIG2.scaler",&TRIG2_scaler);
+  tree_scl_skim->Branch("P.pTRIG3.scaler",&TRIG3_scaler);
+  tree_scl_skim->Branch("P.pTRIG4.scaler",&TRIG4_scaler);
+  tree_scl_skim->Branch("P.pTRIG5.scaler",&TRIG5_scaler);
+  tree_scl_skim->Branch("P.pTRIG6.scaler",&TRIG6_scaler);
+  tree_scl_skim->Branch("P.EDTM.scaler",  &EDTM_scaler);
+
+
+}
 //__________________________________________________________________________
 void baseAnalyzer::CreateSkimTree()
 {
@@ -3936,7 +4018,7 @@ void baseAnalyzer::ReadTree()
   cout << "Calling Base ReadTree()  " << endl;
 
   
-  if(analysis_type=="data")
+  if(analysis_type=="data" || analysis_type=="systematics")
     {
 
       
@@ -5801,9 +5883,12 @@ void baseAnalyzer::EventLoop()
 
       
       //Save Skimmed Tree
-      tree_skim->SaveAs( data_OutputFileName_skim.Data() );
-      delete tree_skim;
-
+      outROOT = new TFile(data_OutputFileName_skim.Data(), "UPDATE");
+      outROOT->cd(); 
+      tree_skim->Write();  
+      //tree_skim->SaveAs( data_OutputFileName_skim.Data() );
+      outROOT->Close();
+      delete tree_skim;  
 
       //Call the randoms subtraction method 
       RandSub();
@@ -5825,7 +5910,7 @@ void baseAnalyzer::EventLoop()
 
       
     // set file to be read with all the cuts variations
-    string csv_file = "cafe_systematics_cuts_file.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -5876,6 +5961,10 @@ void baseAnalyzer::EventLoop()
       // read each of the cuts for each entry
       ientry = atoi(parsed_header[0].c_str()) ;
       
+      cout << "-------------------------" << endl;
+      cout << "systematics study entry: " << ientry << endl;
+      cout << "-------------------------" << endl;   
+
       c_MF_Q2_min = atof(parsed_header[1].c_str());
       c_MF_Q2_max = atof(parsed_header[2].c_str());
       
@@ -6342,6 +6431,7 @@ void baseAnalyzer::EventLoop()
 	  //Increment Scaler Read if event == scaler_evt_perlimit for that scaler read
 	  if(gevnum==scal_evt_num[scal_read]){ scal_read++; }
 	  
+	  cout << "DataEventLoop: " << std::setprecision(2) << double(ientry) / nentries * 100. << "  % " << std::flush << "\r";   
 
 	} //END DATA EVENT LOOP
 	    

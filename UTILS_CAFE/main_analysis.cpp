@@ -13,7 +13,7 @@ void main_analysis(int     run           = 3243,   int evtNum           = -1, TS
 
 
   // initialize baseAnalyzer (base class)
-  baseAnalyzer ba(run, evtNum, daq_mode.Data(), tgt_type.Data(), e_arm.Data(), analysis_type.Data(), analysis_cut.Data(),
+  baseAnalyzer ba(run, evtNum, tgt_type.Data(), daq_mode.Data(), e_arm.Data(), analysis_type.Data(), analysis_cut.Data(),
 		  hel_flag, bcm_type.Data(), bcm_thrs, trig_single.Data(),
 		  trig_coin.Data(), combine_runs);
 

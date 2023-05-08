@@ -271,31 +271,31 @@ if [ "${ana_type}" = "systematics" ]; then
 	exit 0
     fi
     
-	
-    if [[ -n ${run//[0-9]/} ]]; then
-	# if no run-number is detected order of arguments now is as follows: tgt_type, kin, (run number excluded)
-	# read 1st and 2nd arguments
-	tgt_type=$1
-	kin=$2
-	      
-	
-	# Default arguments (not required by user as input, unless the user sets as command-line arguments)
-	run=-1
-	evt=-1
-	daq_mode="coin"
-	e_arm="SHMS"
-	hel_flag=0
-	bcm_type="BCM1"
-	bcm_thrs=5.             # beam current threhsold cut > bcm_thrs [uA]
-	trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
-	trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
-	combine_runs=0         # use combine runs, if a list of runs is detected
-	
-	# cafe analysis script
-	prod_script="UTILS_CAFE/main_analysis.cpp"
-	
-	# command to run analysis script ( if doing SIMC, all arguments except e_arm, ana_type and ana_cu are irrelevant )
-	run_cafe="root -l -q -b  \"${prod_script}( ${run},    ${evt}, \\\"${tgt_type}\\\",          
+   
+    echo "no run number found"
+    # if no run-number is detected order of arguments now is as follows: tgt_type, kin, (run number excluded)
+    # read 1st and 2nd arguments
+    tgt_type=$1
+    ana_cut=$2
+    
+    
+    # Default arguments (not required by user as input, unless the user sets as command-line arguments)
+    run=-1
+    evt=-1
+    daq_mode="coin"
+    e_arm="SHMS"
+    hel_flag=0
+    bcm_type="BCM1"
+    bcm_thrs=5.             # beam current threhsold cut > bcm_thrs [uA]
+    trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
+    trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
+    combine_runs=0         # use combine runs, if a list of runs is detected
+    
+    # cafe analysis script
+    prod_script="UTILS_CAFE/main_analysis.cpp"
+    
+    # command to run analysis script ( if doing SIMC, all arguments except e_arm, ana_type and ana_cu are irrelevant )
+    run_cafe="root -l -q -b  \"${prod_script}( ${run},    ${evt}, \\\"${tgt_type}\\\",          
                                     \\\"${daq_mode}\\\",  \\\"${e_arm}\\\",  
                                    \\\"${ana_type}\\\", \\\"${ana_cut}\\\",
                                     ${hel_flag},                        
@@ -304,29 +304,22 @@ if [ "${ana_type}" = "systematics" ]; then
                      )\""
 
 	    
-	echo ""
-	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-	echo "" 
-	date
-	echo ""
-	echo ""
-	echo "Running CaFe Systematics Analysis on target ${tgt_type}, ${ana_cut}:"
-	echo " -> SCRIPT:  ${prod_script}"
-	echo " -> COMMAND: ${run_cafe}"
-	echo ""
-	echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
-	
-	sleep 2
-	eval ${run_cafe}
-
-    fi
+    echo ""
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+    echo "" 
+    date
+    echo ""
+    echo ""
+    echo "Running CaFe Systematics Analysis on target ${tgt_type}, ${ana_cut}:"
+    echo " -> SCRIPT:  ${prod_script}"
+    echo " -> COMMAND: ${run_cafe}"
+    echo ""
+    echo ":=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:="
+    
+    sleep 2
+    eval ${run_cafe}
+    
 fi
-		  
-
-
-
-
-
 
 # ===========================
 # SIMC Help Message / Usage
