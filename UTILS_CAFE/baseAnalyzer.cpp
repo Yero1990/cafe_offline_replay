@@ -5955,7 +5955,7 @@ void baseAnalyzer::EventLoop()
     out_sys << "# real_yield -> randoms-subtracted, integrated missing-momentum counts" << endl;
     out_sys << "# rand_yield -> randoms (accidentals selected) yield integrated missing-momentum counts" << endl;
     out_sys << "# total_yield -> total (reals+randoms) integrated missing-momentum counts" << endl;
-    out_sys << "entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield_total_yield_err" << endl;
+    out_sys << "entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield,total_yield_err" << endl;
 
   
     
@@ -5976,9 +5976,6 @@ void baseAnalyzer::EventLoop()
       
       // read each of the cuts for each entry
       ientry = atoi(parsed_header[0].c_str()) ;
-      
-      // only do 100 as a test
-      if(ientry>99) continue;
       
       cout << "-------------------------" << endl;
       cout << "systematics study entry: " << ientry << endl;

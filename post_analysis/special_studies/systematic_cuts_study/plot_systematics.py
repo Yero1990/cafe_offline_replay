@@ -17,7 +17,7 @@ idx_max = df_data[['real_yield']].idxmax()
 print('(idx, real_yield_min): (%i, %.1f)' % (idx_min, df_data['real_yield'].min() ) )
 print('(idx, real_yield_max): (%i, %.1f)' % (idx_max, df_data['real_yield'].max() ) )
 
-'''
+
 #Covert Panda dataframe to numpy
 df_numpy=df_data.to_numpy(dtype ='float32')
 
@@ -38,4 +38,4 @@ plt.xlabel('Integrated Missing Momentum')
 plt.title(title)
 
 plt.show()
-'''
+
