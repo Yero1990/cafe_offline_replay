@@ -4055,6 +4055,11 @@ void baseAnalyzer::ReadTree()
       
       if(daq_mode=="coin"){
 
+	if(analysis_type=="systematics"){
+	  tree->SetBranchAddress("CTime.epCoinTime_ROC2_center",           &epCoinTime_center      );
+	  tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);
+	}
+	
 	//Coincidence Time
 	tree->SetBranchAddress("CTime.epCoinTime_ROC2",  &epCoinTime);
 	tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack",  &epCoinTime_notrk); // used to cut on E/P (etotnorm) to account for multi-track events (without bias)
@@ -6143,11 +6148,11 @@ void baseAnalyzer::EventLoop()
 	  if(ePctime_cut_flag) {
 
 	    // main coincidence time window cut
-	    eP_ctime_cut = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max;
+	    eP_ctime_cut = (epCoinTime_center) >= ePctime_cut_min && (epCoinTime_center) <= ePctime_cut_max;
 
 	    // accidental coincidence (left/right of main coin. peak selected) as samples
-	    eP_ctime_cut_rand_L = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_max_L && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_min_L ;
-	    eP_ctime_cut_rand_R = (epCoinTime-ctime_offset_peak_val) >= ePctime_cut_min_R && (epCoinTime-ctime_offset_peak_val) <= ePctime_cut_max_R ;	    
+	    eP_ctime_cut_rand_L = (epCoinTime_center) >= ePctime_cut_max_L && (epCoinTime_center) <= ePctime_cut_min_L ;
+	    eP_ctime_cut_rand_R = (epCoinTime_center) >= ePctime_cut_min_R && (epCoinTime_center) <= ePctime_cut_max_R ;	    
 	    
 	    eP_ctime_cut_rand =  eP_ctime_cut_rand_L || eP_ctime_cut_rand_R;
 
@@ -6371,7 +6376,7 @@ void baseAnalyzer::EventLoop()
 		  if(c_baseCuts){
 
 		    // full (reals + accidentals) coin. time spectrum with all other cuts   
-		    H_ep_ctime_total->Fill(epCoinTime-ctime_offset_peak_val); 
+		    H_ep_ctime_total->Fill(epCoinTime_center); 
 		  
 		    
 
@@ -6380,7 +6385,7 @@ void baseAnalyzer::EventLoop()
 		      {
 
 			//Coincidence Time		      
-			H_ep_ctime_real->Fill(epCoinTime-ctime_offset_peak_val); // fill coin. time and apply the offset
+			H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
 
 
 			H_W       ->  Fill (W);       
@@ -6405,7 +6410,7 @@ void baseAnalyzer::EventLoop()
 		      {
 				// Only histograms of selected variables of interest will be filled with coincidence accidantal background (for background subtraction)
 			
-			H_ep_ctime_rand->  Fill ( epCoinTime-ctime_offset_peak_val );
+			H_ep_ctime_rand->  Fill ( epCoinTime_center );
 			H_W_rand       ->  Fill (W);       
 			H_Q2_rand      ->  Fill (Q2);      
 			H_xbj_rand     ->  Fill (X);     
