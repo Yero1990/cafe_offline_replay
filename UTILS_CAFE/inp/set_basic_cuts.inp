@@ -231,7 +231,7 @@ c_MF_Q2_max = 100.
 # Missing Momentum [GeV]
 Pm_MF_cut_flag = 1
 c_MF_Pm_min = 0.0
-c_MF_Pm_max = 0.250
+c_MF_Pm_max = 0.270
 
 # in-plane recoil (undetected) angle, theta_rq [deg]
 thrq_MF_cut_flag = 0
@@ -242,12 +242,12 @@ c_MF_thrq_max = 60.
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied IF-AND-ONLY-IF the deuterium target is used)
 Em_d2MF_cut_flag = 1
 c_d2MF_Em_min = -0.02
-c_d2MF_Em_max = 0.1
+c_d2MF_Em_max = 0.09
 
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied ONLY for A>2 nuclei)
 Em_MF_cut_flag = 1
 c_MF_Em_min = -0.02
-c_MF_Em_max = 0.1
+c_MF_Em_max = 0.09
 
 #---- CaFe-Specific A(e,e'p) SRC Kinematics Cuts -----
 
@@ -277,7 +277,7 @@ c_SRC_thrq_max = 40.
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied IF-AND-ONLY-IF the deuterium target is used)
 Em_d2SRC_cut_flag = 1
 c_d2SRC_Em_min = -0.02
-c_d2SRC_Em_max = 0.1
+c_d2SRC_Em_max = 0.09
 
 # Missing Energy [GeV] (provided *flag*=1, this cut will be applied for A>2 nuclei)
 # this is a dynamic cut on missing energy:  Em_nuc < Em_src, to reduce background.
