@@ -1396,11 +1396,12 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	cout << "analysis_type : " << analysis_type.Data() << endl;
 	cout << "target: " << tgt_type.Data() << endl;
 	cout << "analysis_cut: " << analysis_cut.Data() << endl;
- 	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data() ); /// make sure file with this generic name exists
-	
+ 	//data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data() ); /// make sure file with this generic name exists
+     
+	data_InputFileName = Form("CAFE_OUTPUT/ROOT/cafe_prod_%s_%s_skimmed.root", tgt_type.Data(), analysis_cut.Data() );
 	//Check if ROOTfile exists                                                                                                                                                                                                              
-        in_file.open(data_InputFileName.Data());                                                                                                                                                                                                     
-        cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                                   
+        in_file.open(data_InputFileName.Data());                                                                                                                          
+        cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                      
         if(in_file.fail()){                                                                                                                                                                                                                   
           cout << Form("ROOTFile: %s does NOT exist ! ! !", data_InputFileName.Data()) << endl;                                                                                                                                                    
           cout << "Exiting NOW !" << endl;                                                                                                                                                                                             
@@ -1408,8 +1409,12 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
         }                                                                                                                                                                                                                                      
 	in_file.close(); 
 
-	data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
-	//Check if REPORTFile exists                                                                                                                                                                                                               
+	//data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
+       
+	data_InputReport = "/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_16983_-1.report"; 
+
+	cout << "data_InputReport: " << data_InputReport.Data() << endl;
+	//Check if REPORTFile exists                                                                              
 	in_file.open(data_InputReport.Data());                                                                                                                                                                                                            
 	cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                                       
 	if(in_file.fail()){                                                                                                                                                                                                                              
@@ -5910,7 +5915,7 @@ void baseAnalyzer::EventLoop()
     // to be used to centering coin time peak (should only need to be called once,
     // and not every time an entry from the systematics cuts file is called, as the
     // variables used here do not depend on the cuts being varied
-    GetPeak();
+    //GetPeak();
 
 
       
@@ -5966,8 +5971,11 @@ void baseAnalyzer::EventLoop()
       // read each of the cuts for each entry
       ientry = atoi(parsed_header[0].c_str()) ;
       
+    
+      
       cout << "-------------------------" << endl;
       cout << "systematics study entry: " << ientry << endl;
+      cout << "SystematicEntry Completed: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << endl;
       cout << "-------------------------" << endl;   
 
       c_MF_Q2_min = atof(parsed_header[1].c_str());
@@ -6044,9 +6052,10 @@ void baseAnalyzer::EventLoop()
 	  // Calculate special missing energy to cut on background @ SRC kinematics (only for online analysis) Em = nu - Tp - T_n (for A>2 nuclei)	 
 	  Em_src = nu - Tx - (sqrt(MN*MN + Pm*Pm) - MN); // assume kinetic energy of recoil system is that of a spectator SRC nucleon 
 
+	 
 	  // get center coin time peak (obtained from GetPeak() method)
-	  epCoinTime_center       = epCoinTime-ctime_offset_peak_val;
-	  epCoinTime_center_notrk = epCoinTime_notrk - ctime_offset_peak_notrk_val;
+	  //epCoinTime_center       = epCoinTime-ctime_offset_peak_val;
+	  //epCoinTime_center_notrk = epCoinTime_notrk - ctime_offset_peak_notrk_val;
 
 
 	  //--------------DEFINE CUTS--------------------
@@ -6386,8 +6395,9 @@ void baseAnalyzer::EventLoop()
 
 			//Coincidence Time		      
 			H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
-
-
+			
+		     
+		       
 			H_W       ->  Fill (W);       
 			H_Q2      ->  Fill (Q2);      
 			H_xbj     ->  Fill (X);     
@@ -6436,8 +6446,8 @@ void baseAnalyzer::EventLoop()
 	  //Increment Scaler Read if event == scaler_evt_perlimit for that scaler read
 	  if(gevnum==scal_evt_num[scal_read]){ scal_read++; }
 	  
-	  cout << "DataEventLoop: " << std::setprecision(2) << double(ientry) / nentries * 100. << "  % " << std::flush << "\r";   
-
+	  cout << "DataEventLoop: " << std::setprecision(2) << double(jentry) / nentries * 100. << "  % " << std::flush << "\r";   
+	 
 	} //END DATA EVENT LOOP
 	    
 
@@ -6454,7 +6464,29 @@ void baseAnalyzer::EventLoop()
 
       //------------------------------------------------------------------------------------
 
-
+      // ---------------- write histos of a given entry to file ----------------------------                                                   
+      outROOT = new TFile(Form("CAFE_OUTPUT/ROOT/test_systematics_histos_entry%d.root", ientry), "RECREATE");                                  
+                                                                                                                                               
+      outROOT->cd();                                                                                                                           
+      H_Q2->Write();                                                                                                                           
+      outROOT->mkdir("kin_plots");                                                                                                             
+      outROOT->mkdir("accp_plots");                                                                                                            
+      outROOT->mkdir("rand_plots");                                                                                                            
+      outROOT->mkdir("randSub_plots");                                                                                                         
+                                                                                                                                               
+      outROOT->cd("kin_plots");                                                                                                                
+      kin_HList->Write();                                                                                                                      
+                                                                                                                                               
+      outROOT->cd("accp_plots");                                                                                                               
+      accp_HList->Write();                                                                                                                     
+                                                                                                                                               
+      outROOT->cd("rand_plots");                                                                                                               
+      rand_HList->Write();                                                                                                                     
+                                                                                                                                               
+      outROOT->cd("randSub_plots");                                                                                                            
+      randSub_HList->Write();                                                                                                                  
+      outROOT->Close();                                                                                                                        
+      //--------------------------------   
       
       
       //-----------------------------------------------------------------------------------------------
@@ -6478,9 +6510,39 @@ void baseAnalyzer::EventLoop()
       H_thrq    -> Reset();    H_thrq_rand    -> Reset();    H_thrq_rand_sub    -> Reset();
       //-----------------------------------------------------------------------------------------------
       
+      //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << std::flush << "\r";
+
+      /*
+      // ---------------- write histos of a given entry to file ----------------------------
+      outROOT = new TFile(Form("CAFE_OUTPUT/ROOT/test_systematics_histos_entry%d.root", ientry), "RECREATE");  
+
+      outROOT->cd();
+      H_Q2->Write();      
+      outROOT->mkdir("kin_plots"); 
+      outROOT->mkdir("accp_plots");  
+      outROOT->mkdir("rand_plots");
+      outROOT->mkdir("randSub_plots");  
+
+      outROOT->cd("kin_plots");
+      kin_HList->Write(); 
+
+      outROOT->cd("accp_plots"); 
+      accp_HList->Write(); 
+
+      outROOT->cd("rand_plots");  
+      rand_HList->Write();   
+
+      outROOT->cd("randSub_plots");  
+      randSub_HList->Write();   
+      outROOT->Close();
+      //--------------------------------
+      */
       // keep track of each row entry in the systematics cut file
       row_cnt++;
       
+      
+
+
     } // end loop over each entry of the systematics cut file
 
 
