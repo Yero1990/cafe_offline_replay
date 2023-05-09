@@ -1,0 +1,14 @@
+# CaFe Systematics Cuts File
+# 
+# Header Definitions: 
+# entry           : entry to identify each of the gaussian random-generated cuts below
+# Q2_min,max      : 4-momentum transfer (MF,SRC) [GeV^2] 
+# Em_min,max_mf   : Missing Energy (MF) [GeV] 
+# Pm_min,max_mf   : Missing Momentum (MF) [GeV/c] 
+# xbj_min,max     : x-bjorken (SRC) 
+# thrq_min,max    : recoil nucleon angle relative to q-vector (SRC) [deg] 
+# Pm_min,max_src  : Missing Momentum (SRC) [GeV/c] 
+# hms/shms_coll   : HMS/SHMS collimator scale factor cut variation
+#entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll
+0.0,0.0,100.000,-100.,100.,0.000,100.,0,100.000,0.000,360.,0.,100.,1,1 
+997,1.883,100.000,-0.020,0.090,0.000,0.280,1.183,100.000,0.000,37.329,0.358,0.706,0.995,0.980 

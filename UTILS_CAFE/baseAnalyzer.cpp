@@ -3817,7 +3817,7 @@ void baseAnalyzer::CreateSkimTree()
   tree_skim->Branch("T.coin.pTRIG4_ROC2_tdcTimeRaw",&TRIG4_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG5_ROC2_tdcTimeRaw",&TRIG5_tdcTimeRaw);
   tree_skim->Branch("T.coin.pTRIG6_ROC2_tdcTimeRaw",&TRIG6_tdcTimeRaw);
-  tree_skim->Branch("T.coin.pEDTM_ROC2_tdcTimeRaw" ,&EDTM_tdcTimeRaw);
+  tree_skim->Branch("T.coin.pEDTM_tdcTimeRaw" ,&EDTM_tdcTimeRaw);
   
 
   //e- 4-vector components
@@ -4040,6 +4040,12 @@ void baseAnalyzer::ReadTree()
       
       //---------------SetBranchAddress-----------------
 
+
+      //if(analysis_type=="systematics"){                                                                                                                   
+      //tree->SetBranchAddress("CTime.epCoinTime_ROC2_center",           &epCoinTime_center      );                                                        
+      //tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);                                                        
+      //}  
+
       // Global Variables
       tree->SetBranchAddress("g.evtyp",&gevtyp);
       tree->SetBranchAddress("g.evnum",&gevnum);
@@ -4060,10 +4066,10 @@ void baseAnalyzer::ReadTree()
       
       if(daq_mode=="coin"){
 
-	if(analysis_type=="systematics"){
-	  tree->SetBranchAddress("CTime.epCoinTime_ROC2_center",           &epCoinTime_center      );
-	  tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);
-	}
+	if(analysis_type=="systematics"){                                                                     
+	  tree->SetBranchAddress("CTime.epCoinTime_ROC2_center",           &epCoinTime_center      );                               
+	  tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);                                           
+	} 
 	
 	//Coincidence Time
 	tree->SetBranchAddress("CTime.epCoinTime_ROC2",  &epCoinTime);
@@ -4383,9 +4389,9 @@ void baseAnalyzer::ReadTree()
       // Call function to create singles skimmed version of data tree
       //CreateSinglesSkimTree();
       
-      
+  
     } //END DATA SET BRANCH ADDRESS
-
+    
   
   else if(analysis_type=="simc")
     {
@@ -5920,7 +5926,7 @@ void baseAnalyzer::EventLoop()
 
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -5971,7 +5977,8 @@ void baseAnalyzer::EventLoop()
       // read each of the cuts for each entry
       ientry = atoi(parsed_header[0].c_str()) ;
       
-    
+      // only do 100 as a test
+      if(ientry>99) continue;
       
       cout << "-------------------------" << endl;
       cout << "systematics study entry: " << ientry << endl;
@@ -7069,12 +7076,21 @@ void baseAnalyzer::CollimatorStudy()
 
   cout << "Calling CollimatorStudy() . . . " << endl;
   
+  // reset HMS/SHMS collimator sizes (in case this function gets called multiple times)
+  // to avoid accidentally changing the collimator size
+  hms_hsize = 4.575;  //cm 
+  hms_vsize = 11.646;    
+  shms_hsize = 17.;  //cm 
+  shms_vsize = 25.;   
+
   //Scaling the HMS/SHMS Collimator Cuts
   hms_hsize = hms_scale*hms_hsize;  //The scale factor is read from set_heep_cuts.inp
   hms_vsize = hms_scale*hms_vsize;
   
   shms_hsize = shms_scale*shms_hsize;
   shms_vsize = shms_scale*shms_vsize;  
+
+  cout << Form("hms_hsize, hms_vsize : %.3f, %.3f ", hms_hsize, hms_vsize) << endl; 
 
   //Define HMS Collimator Shape
   hms_Coll_gCut = new TCutG("hmsCollCut", 8 );
