@@ -3,7 +3,7 @@
 # real_yield -> randoms-subtracted, integrated missing-momentum counts
 # rand_yield -> randoms (accidentals selected) yield integrated missing-momentum counts
 # total_yield -> total (reals+randoms) integrated missing-momentum counts
-entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield_total_yield_err
+entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield,total_yield_err
 0,103411.487,321.652,36.513,3.466,103448.000,321.633
 1,167682.868,409.597,65.132,4.629,167748.000,409.571
 2,139807.669,373.998,50.329,4.069,139858.000,373.976

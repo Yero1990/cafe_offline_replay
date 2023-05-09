@@ -5920,7 +5920,7 @@ void baseAnalyzer::EventLoop()
 
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -6396,8 +6396,22 @@ void baseAnalyzer::EventLoop()
 			//Coincidence Time		      
 			H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
 			
-		     
-		       
+		     	//Fill HMS Detectors
+			H_hCerNpeSum->Fill(hcer_npesum);
+			H_hCalEtotNorm->Fill(hcal_etotnorm);
+			H_hCalEtotTrkNorm->Fill(hcal_etottracknorm);
+			H_hHodBetaNtrk->Fill(hhod_beta_ntrk);
+			H_hHodBetaTrk->Fill(hhod_beta);
+			
+			//Fill SHMS Detectors
+			H_pNGCerNpeSum->Fill(pngcer_npesum);
+			H_pHGCerNpeSum->Fill(phgcer_npesum);
+			H_pCalEtotNorm->Fill(pcal_etotnorm);
+			H_pCalEtotTrkNorm->Fill(pcal_etottracknorm);
+			H_pHodBetaNtrk->Fill(phod_beta_ntrk);
+			H_pHodBetaTrk->Fill(phod_beta);
+
+			// ----  histograms that will be used in randoms subtraction -----
 			H_W       ->  Fill (W);       
 			H_Q2      ->  Fill (Q2);      
 			H_xbj     ->  Fill (X);     
@@ -6410,6 +6424,57 @@ void baseAnalyzer::EventLoop()
 			H_thxq    ->  Fill (th_xq/dtr);    
 			H_thrq    ->  Fill (ph_xq/dtr); 
 
+			//Other relevant Primary / Secondary Kinematics
+			H_the    ->Fill(th_e/dtr);
+			H_kf     ->Fill(kf);
+			H_thx    ->Fill(th_x/dtr);
+			H_Pf     ->Fill(Pf);
+
+			
+			//----------------------------------------------------------------------
+			//---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
+			//----------------------------------------------------------------------
+			//Fill SPECTROMETER  ACCEPTANCE
+			H_exfp       ->Fill(e_xfp);
+			H_eyfp       ->Fill(e_yfp);
+			H_expfp      ->Fill(e_xpfp);
+			H_eypfp      ->Fill(e_ypfp);
+			
+			H_eytar      ->Fill(e_ytar);
+			H_exptar     ->Fill(e_xptar);
+			H_eyptar     ->Fill(e_yptar);
+			H_edelta     ->Fill(e_delta);
+			
+			H_hxfp       ->Fill(h_xfp);
+			H_hyfp       ->Fill(h_yfp);
+			H_hxpfp      ->Fill(h_xpfp);
+			H_hypfp      ->Fill(h_ypfp);
+			
+			H_hytar       ->Fill(h_ytar);
+			H_hxptar      ->Fill(h_xptar);
+			H_hyptar      ->Fill(h_yptar);
+			H_hdelta      ->Fill(h_delta);
+			
+			H_htar_x       ->Fill(htar_x);
+			H_htar_y       ->Fill(htar_y);
+			H_htar_z       ->Fill(htar_z);
+			H_etar_x       ->Fill(etar_x);
+			H_etar_y       ->Fill(etar_y);
+			H_etar_z       ->Fill(etar_z);
+			H_ztar_diff    ->Fill(ztar_diff);
+			
+			H_hXColl      ->Fill(hXColl);
+			H_hYColl      ->Fill(hYColl);
+			H_eXColl      ->Fill(eXColl);
+			H_eYColl      ->Fill(eYColl);
+			
+			H_hXColl_vs_hYColl  ->Fill(hYColl, hXColl);
+			H_eXColl_vs_eYColl  ->Fill(eYColl, eXColl);
+			
+			H_hxfp_vs_hyfp  ->Fill(h_yfp, h_xfp);
+			H_exfp_vs_eyfp  ->Fill(e_yfp, e_xfp);
+
+			
 			
 		      }
 		    
