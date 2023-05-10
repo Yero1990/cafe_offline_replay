@@ -1398,7 +1398,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	cout << "analysis_cut: " << analysis_cut.Data() << endl;
  	//data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data() ); /// make sure file with this generic name exists
      
-	data_InputFileName = Form("CAFE_OUTPUT/ROOT/cafe_prod_%s_%s_skimmed.root", tgt_type.Data(), analysis_cut.Data() );
+	data_InputFileName = Form("SYSTEMATICS/cafe_systematics_%s_%s.root", tgt_type.Data(), analysis_cut.Data() );
 	//Check if ROOTfile exists                                                                                                                                                                                                              
         in_file.open(data_InputFileName.Data());                                                                                                                          
         cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                      
@@ -1411,7 +1411,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
 	//data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
        
-	data_InputReport = "/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_16983_-1.report"; 
+	data_InputReport = Form("SYSTEMATICS/cafe_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data() ); 
 
 	cout << "data_InputReport: " << data_InputReport.Data() << endl;
 	//Check if REPORTFile exists                                                                              
@@ -6534,7 +6534,7 @@ void baseAnalyzer::EventLoop()
       //------------------------------------------------------------------------------------
 
       // ---------------- write histos of a given entry to file ----------------------------                                                   
-      outROOT = new TFile(Form("CAFE_OUTPUT/ROOT/test_systematics_histos_entry%d.root", ientry), "RECREATE");                                  
+      outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), ientry), "RECREATE");                                  
                                                                                                                                                
       outROOT->cd();                                                                                                                           
       H_Q2->Write();                                                                                                                           

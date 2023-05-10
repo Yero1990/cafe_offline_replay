@@ -28,8 +28,10 @@ fi
 tgt=$1   
 kin=$2
 
+HCREPLAY="/work/hallc/c-cafe-2022/$USER/cafe_offline_replay" 
+
 # set generic path name of runlist to be read
-filename="runlist/${tgt}_${kin}.txt"
+filename="${HCREPLAY}/UTILS_CAFE/runlist/${tgt}_${kin}.txt"
 
 # set output file containing the actual .root filenames to be combined
 ofile="${tgt}_${kin}_filelist.txt"
@@ -47,7 +49,7 @@ then
     for run in $(cat $filename) ; do    
 	
 	# set generic .root file name (of existing file)
-	ifile="../cafe_replay_prod_${run}_-1.root"
+	ifile="./cafe_prod_${tgt}_${kin}_${run}_-1_skimmed.root"
 
 	# write the .root file names to file
 	echo "$ifile" >> "$ofile"
@@ -65,8 +67,8 @@ else
     # loop over each run to create a list of runs
     for run in $(cat $filename) ; do    
 	
-	# set generic .root file name
-	ifile="../cafe_replay_prod_${run}_-1.root"
+	# set generic .root file name (of existing file)  
+	ifile="./cafe_prod_${tgt}_${kin}_${run}_-1_skimmed.root" 
 
 	# write the .root file names to file
 	echo "$ifile" >> "$ofile"
