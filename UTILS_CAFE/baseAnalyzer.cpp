@@ -5947,7 +5947,7 @@ void baseAnalyzer::EventLoop()
     // Open / write header for output numerical file (where integrated counts per systematic cut entry will be stored)
     
     // Create and open a text file
-    ofstream out_sys(Form("cafe_systematics_%s_%s.txt", tgt_type.Data(), analysis_cut.Data()));
+    ofstream out_sys(Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()));
 
     // Write header to file
     out_sys << Form("# CaFe %s %s Systematics Cuts Summary", tgt_type.Data(), analysis_cut.Data() ) << endl;

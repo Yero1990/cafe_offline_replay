@@ -6,7 +6,7 @@ from scipy.stats import norm
 from scipy.optimize import curve_fit
 from scipy import asarray as ar,exp
 
-fname='cafe_systematics_Be9_MF.csv'
+fname='cafe_systematics_Be9_SRC.csv'
 df_data = pd.read_csv(fname, comment='#')
 
 
@@ -14,8 +14,10 @@ df_data = pd.read_csv(fname, comment='#')
 idx_min = df_data[['real_yield']].idxmin()
 idx_max = df_data[['real_yield']].idxmax()
 
-print('(idx, real_yield_min): (%i, %.1f)' % (idx_min, df_data['real_yield'].min() ) )
-print('(idx, real_yield_max): (%i, %.1f)' % (idx_max, df_data['real_yield'].max() ) )
+
+
+#print('(idx, real_yield_min): (%i, %.1f)' % (idx_min, df_data['real_yield'].min() ) )
+#print('(idx, real_yield_max): (%i, %.1f)' % (idx_max, df_data['real_yield'].max() ) )
 
 
 #Covert Panda dataframe to numpy
@@ -31,7 +33,7 @@ xmin, xmax = plt.xlim()
 x = np.linspace(xmin, xmax, 100)
 y = norm.pdf(x, mu, std)
 plt.plot(x, y, 'r', linewidth=2)
-title = r'Be9 MF: $\mu$={:.2f}, $\sigma$= {:.2f}'.format(mu, std)
+title = r'Be9 SRC: $\mu$={:.2f}, $\sigma$= {:.2f}'.format(mu, std)
 
 plt.ylabel('Frequency')
 plt.xlabel('Integrated Missing Momentum')
