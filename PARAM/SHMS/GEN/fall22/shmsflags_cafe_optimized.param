@@ -26,4 +26,9 @@ p_oopcentral_offset = 0.
 
  
 ; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  
-ppcentral_offset = 0
+; ppcentral_offset = 0
+
+
+; May 11, 2023: from Holly's delta optim
+; ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  = 0.9969
+ppcentral_offset = -0.31
