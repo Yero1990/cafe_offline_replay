@@ -3,8 +3,8 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/heep_coin_optim/init/cafe_replay_optics_16962_500000.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/init/cafe_heep_coin_kin0_rad_withMisPoint.root";
+  TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_500000.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -16,8 +16,8 @@ void make_plots_coin(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
   
   
@@ -37,7 +37,7 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-    if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) ) continue;
+     if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
     //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
@@ -197,19 +197,19 @@ void make_plots_coin(){
 	// overlay energy transfer, nu measured and calculated
 	c[i]->cd(1);
 	T->Draw("P.kin.primary.nu >> H_nu_meas_data(100, 0, 5)",   data_cuts); 
-	T->Draw("10.545*10.545*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.545*(1. - cos(P.kin.primary.scat_ang_rad) )) >> H_nu_calc_data(100,0,5)",   data_cuts, "sames"); 
+	T->Draw("10.549*10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.549*(1. - cos(P.kin.primary.scat_ang_rad) )) >> H_nu_calc_data(100,0,5)",   data_cuts, "sames"); 
 
 	// plots nu_meas - nu_cal  vs. theta_e
 	c[i]->cd(2);
-	T->Draw("(P.kin.primary.nu - ( 10.545*10.545*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.545*(1. - cos(P.kin.primary.scat_ang_rad) ) )  )):P.kin.primary.scat_ang_deg  >> H_dnu_vs_theta_e_data(100, 5, 12, 100,-0.2,0.2)",   data_cuts, "colz"); 
+	T->Draw("(P.kin.primary.nu - ( 10.549*10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) / ( 0.938272 + 10.549*(1. - cos(P.kin.primary.scat_ang_rad) ) )  )):P.kin.primary.scat_ang_deg  >> H_dnu_vs_theta_e_data(100, 5, 12, 100,-0.2,0.2)",   data_cuts, "colz"); 
 
 	// overlay e- scat. angle, the measured and calculated
 	c[i]->cd(3);
 	T->Draw("P.kin.primary.scat_ang_deg >> H_the_meas_data(100, 5, 12)",   data_cuts); 
-	T->Draw("acos(( (10.545*10.545) - (10.545*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.545*(10.545 - P.kin.primary.nu)) )*180./3.14 >> H_the_calc_data(100, 5, 12)",   data_cuts, "sames"); 
+	T->Draw("acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14 >> H_the_calc_data(100, 5, 12)",   data_cuts, "sames"); 
 
 	c[i]->cd(4);
-	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.545*10.545) - (10.545*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.545*(10.545 - P.kin.primary.nu)) )*180./3.14):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
+	T->Draw("(P.kin.primary.scat_ang_deg - acos(( (10.549*10.549) - (10.549*P.kin.primary.nu) - (P.kin.primary.nu * 0.938272) ) / (10.549*(10.549 - P.kin.primary.nu)) )*180./3.14):P.kin.primary.nu >> H_dthe_vs_nu_data(100,0.6,2, 100, -0.3,0.3)", data_cuts, "colz");
 	
 	// ----------- SIMC-----
 	TCanvas *c2 = new TCanvas("c2", "", 900, 700);
@@ -220,19 +220,19 @@ void make_plots_coin(){
 	// overlay energy transfer, nu measured and calculated
 	c2->cd(1);
 	SNT->Draw("nu >> H_nu_meas_simc(100,0,5)", simc_cuts, "histE");
-	SNT->Draw("( 10.545*10.545*(1. - cos(theta_e) ) / ( 0.938272 + 10.545*(1. - cos(theta_e) )))  >> nu_calc_simc(100,0,5)", simc_cuts, "histEsames");
+	SNT->Draw("( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) )))  >> nu_calc_simc(100,0,5)", simc_cuts, "histEsames");
 
 	// plots nu_meas - nu_cal  vs. theta_e
 	c2->cd(2);
-	SNT->Draw("(nu - ( 10.545*10.545*(1. - cos(theta_e) ) / ( 0.938272 + 10.545*(1. - cos(theta_e) ) ) )):theta_e*180/3.14  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
+	SNT->Draw("(nu - ( 10.549*10.549*(1. - cos(theta_e) ) / ( 0.938272 + 10.549*(1. - cos(theta_e) ) ) )):theta_e*180/3.14  >> H_dnu_simc(100, 5, 12, 100,-0.2,0.2)", simc_cuts, "colz");
 
 	// overlay e- scat. angle, the measured and calculated
 	c2->cd(3);
 	SNT->Draw("theta_e * 180./TMath::Pi() >> H_the_meas_simc(100, 5, 12)",   simc_cuts); 
-	SNT->Draw("acos(( (10.545*10.545) - (10.545 * nu) - (nu * 0.938272) ) / (10.545*(10.545 - nu)) )*180./3.14 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
+	SNT->Draw("acos(( (10.549*10.549) - (10.549 * nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./3.14 >> H_the_calc_simc(100, 5, 12)",   simc_cuts, "sames"); 
 
 	c2->cd(4);
-	SNT->Draw("(theta_e * 180./TMath::Pi() - acos(( (10.545*10.545) - (10.545*nu) - (nu * 0.938272) ) / (10.545*(10.545 - nu)) )*180./TMath::Pi()):nu >> H_dthe_vs_nu_simc(100,0.6,2, 100, -0.3,0.3)", simc_cuts, "colz");
+	SNT->Draw("(theta_e * 180./TMath::Pi() - acos(( (10.549*10.549) - (10.549*nu) - (nu * 0.938272) ) / (10.549*(10.549 - nu)) )*180./TMath::Pi()):nu >> H_dthe_vs_nu_simc(100,0.6,2, 100, -0.3,0.3)", simc_cuts, "colz");
 
 
 	// NOTE: simc collimator calculatrion
@@ -423,6 +423,40 @@ void make_plots_coin(){
       SNT->Draw("Pm>>H_Pm_simc(150,-0.01,0.05)", simc_cuts, "normhistEsames");
     
   }
+
+
+    if(i==28) {
+
+
+      TCanvas *c1_recon_corr = new TCanvas("W_recon_corr", "W recons correlations", 900, 700);      
+      c1_recon_corr->Divide(4,2);
+
+      // DATA
+      fdata->cd();
+      c1_recon_corr->cd(1);
+      T->Draw("P.kin.primary.W:P.gtr.th>>H_shms_W_vs_xptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(2);
+      T->Draw("P.kin.primary.W:P.gtr.ph>>H_shms_W_vs_yptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(3);
+      T->Draw("P.kin.primary.W:P.gtr.y>>H_shms_W_vs_ytar(100, -2, 2, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(4);
+      T->Draw("P.kin.primary.W:P.gtr.dp>>H_shms_W_vs_delta(100, 0, 22, 100,0.9,1.)", data_cuts, "colz");  
+      
+      
+
+      // SIMC
+      fsimc->cd();
+      c1_recon_corr->cd(5);
+      SNT->Draw("W:e_xptar>>H_shms_W_vs_xptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(6);
+      SNT->Draw("W:e_yptar>>H_shms_W_vs_yptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(7);
+      SNT->Draw("W:e_ytar>>H_shms_W_vs_ytar_simc(100, -2, 2, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(8);
+      SNT->Draw("W:e_delta>>H_shms_W_vs_delta_simc(100, 0, 22, 100,0.9,1.)", simc_cuts, "colz");  
+      
+
+    }
   
   //-------------------------------------------------------
   

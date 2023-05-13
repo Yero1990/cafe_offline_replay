@@ -11,17 +11,17 @@ void make_plots_singles(){
 
   //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16026_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin2_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
-  //TString data_fname="~/ROOTfiles/cafe_replay_optics_16028_500000.root ";
-  //TString simc_fname="~/ROOTfiles/cafe_heep_singles_kin1_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16028_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin1_rad.root";
 
   
   // e- angle: 8.295 deg
-  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_-1_nominalEb.root";
-  TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin0_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin0_rad.root";
 
   
   //------ deuteron exp h(e,e') singles -----
@@ -46,12 +46,14 @@ void make_plots_singles(){
 
   // for run 16962, (e,e'p) are mostly in SHMS angular range: xptar(P.gtr.th): (-0.015, 0.015) rad,  yptar(P.gtr.ph): (-0.01, 0.01) rad
   // therefore, if using singles run 16036, which was taken at the same kinematics, this range MUST be selected for W to line up between singles/coin data
-  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.025&&abs(P.gtr.ph)<0.025";
-  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.025&&abs(e_yptar)<0.025)";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+
+  //TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
+  //TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
 
-
-  const int nplots = 16;
+  const int nplots = 17;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -66,13 +68,13 @@ void make_plots_singles(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar, yptar, ytar, delta
-    //if( (i!=1) && (i!=2) && (i!=3) && (i!=4) ) continue;
+    if( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16)) continue;
 
     // 2d correlations
     //if(i!=14) continue;
 
     // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
-    if( (i!=0) &&  (i!=6) && (i!=9) ) continue;
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=7) ) continue;
     
    if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -310,6 +312,42 @@ void make_plots_singles(){
       SNT->Draw("e_zv>>H_tarz_simc(100,-15,15)", simc_cuts, "normhistEsames");
 
     }
+
+
+    if(i==16) {
+
+
+      TCanvas *c1_recon_corr = new TCanvas("W_recon_corr", "W recons correlations", 900, 700);      
+      c1_recon_corr->Divide(4,2);
+
+      // DATA
+      fdata->cd();
+      c1_recon_corr->cd(1);
+      T->Draw("P.kin.primary.W:P.gtr.th>>H_shms_W_vs_xptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(2);
+      T->Draw("P.kin.primary.W:P.gtr.ph>>H_shms_W_vs_yptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(3);
+      T->Draw("P.kin.primary.W:P.gtr.y>>H_shms_W_vs_ytar(100, -2, 2, 100,0.9,1.)", data_cuts, "colz");  
+      c1_recon_corr->cd(4);
+      T->Draw("P.kin.primary.W:P.gtr.dp>>H_shms_W_vs_delta(100, 0, 22, 100,0.9,1.)", data_cuts, "colz");  
+      
+      
+
+      // SIMC
+      fsimc->cd();
+      c1_recon_corr->cd(5);
+      SNT->Draw("W:e_xptar>>H_shms_W_vs_xptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(6);
+      SNT->Draw("W:e_yptar>>H_shms_W_vs_yptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(7);
+      SNT->Draw("W:e_ytar>>H_shms_W_vs_ytar_simc(100, -2, 2, 100,0.9,1.)", simc_cuts, "colz");  
+      c1_recon_corr->cd(8);
+      SNT->Draw("W:e_delta>>H_shms_W_vs_delta_simc(100, 0, 22, 100,0.9,1.)", simc_cuts, "colz");  
+      
+
+    }
+
+    
 
     
   }
