@@ -3,8 +3,8 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_500000.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_coin_optim/step2/cafe_replay_optics_16962_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step2/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -16,9 +16,11 @@ void make_plots_coin(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
   
   
   const int nplots = 29;
@@ -37,10 +39,10 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-     if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
+    // if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
-    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
+    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
 
 

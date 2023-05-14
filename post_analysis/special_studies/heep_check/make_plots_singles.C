@@ -11,17 +11,17 @@ void make_plots_singles(){
 
   //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg
-  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin2_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16026_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16028_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin1_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16028_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin1_rad.root";
 
   
   // e- angle: 8.295 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin0_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
 
   
   //------ deuteron exp h(e,e') singles -----
@@ -46,11 +46,11 @@ void make_plots_singles(){
 
   // for run 16962, (e,e'p) are mostly in SHMS angular range: xptar(P.gtr.th): (-0.015, 0.015) rad,  yptar(P.gtr.ph): (-0.01, 0.01) rad
   // therefore, if using singles run 16036, which was taken at the same kinematics, this range MUST be selected for W to line up between singles/coin data
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
-  //TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
-  //TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
+  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
+  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
 
   const int nplots = 17;
