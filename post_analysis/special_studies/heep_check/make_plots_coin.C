@@ -3,8 +3,10 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/heep_coin_optim/step2/cafe_replay_optics_16962_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step2/cafe_heep_coin_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
+  //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_eyptar_minus0p5mr.root";
+  //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_hyptar_plus1mr.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -16,11 +18,11 @@ void make_plots_coin(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
-  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
-  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
+  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
+  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
   
   
   const int nplots = 29;
@@ -39,10 +41,10 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-    // if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
+    if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
-    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
 
 
@@ -391,30 +393,41 @@ void make_plots_coin(){
       // Pcalc formula only applies for the proton momentum of elastic hydrogen reactions h(e,e'p)
 
       // Pcalc =  2*Mp*Eb(Eb+Mp)*cos(theta_p) / ( Mp**2 + 2*Mp*Eb + Eb**2*sin^2(theta_p)  ) 
+
       
-    c[i] = new TCanvas(Form("c%i",i), "", 1200, 800);
-
-    fdata->cd();
-    T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) >>H_dPf(100,-0.1,0.1)", data_cuts, "normhistE");
-    fsimc->cd();
-    SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) >>H_dPf_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
-
-    // ---------- dP vs. theta_p
-    TCanvas *c_dPf = new TCanvas("c_dPf", "", 1200, 800);
-    c_dPf->Divide(2,1);
-
-    c_dPf->cd(1);
-    fdata->cd();
-    T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) : ((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14) >>H_dPf_vs_theta_p(100,45,55, 100,-0.2,0.2)", data_cuts, "colz");
-
-    c_dPf->cd(2);
-    fsimc->cd();
-    SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) : theta_p*180/3.14 >>H_dPf_vs_theta_p_simc(100,45,55,100,-0.2,0.2)", simc_cuts, "colz");
-
-    //fsimc->cd();
+      c[i] = new TCanvas(Form("c%i",i), "", 1200, 800);
+      
+      fdata->cd();
+      T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) >>H_dPf(100,-0.1,0.1)", data_cuts, "normhistE");
+      fsimc->cd();
+      SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) >>H_dPf_simc(100,-0.1,0.1)", simc_cuts, "normhistEsames");
+      
+      // ---------- dP vs. theta_p
+      TCanvas *c_dPf = new TCanvas("c_dPf", "", 1200, 800);
+      c_dPf->Divide(2,1);
+      
+      c_dPf->cd(1);
+      fdata->cd();
+      T->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)),2) )  -  H.gtr.p ) : ((H.kin.secondary.xangle-P.kin.primary.scat_ang_rad)*180/3.14) >>H_dPf_vs_theta_p(100,45,55, 100,-0.2,0.2)", data_cuts, "colz");
+      
+      c_dPf->cd(2);
+      fsimc->cd();
+      SNT->Draw("( 2*0.938272*10.549*(10.549+0.938272)*cos(theta_p) / ( pow(0.938272,2) + 2*0.938272*10.549 + pow(10.549,2)* pow(sin(theta_p),2) )  -  h_pf/1000. ) : theta_p*180/3.14 >>H_dPf_vs_theta_p_simc(100,45,55,100,-0.2,0.2)", simc_cuts, "colz");
+      
+      
+      //--------------kf_calc - fk_meas
+      
+      // calculate dkf = (kf_calc - kf_meas), calculated electron momentum    
+      // kf_calc formula only applies for the electron of elastic hydrogen reactions h(e,e'p)
+      // kf_calc = Mp * Eb / (Mp + 2.*Eb* sin^2(theta_e/2.) )
+      
+      TCanvas *c_dkf = new TCanvas("c_dkf", "", 1200, 800);
+      fdata->cd();
+      T->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(P.kin.primary.scat_ang_rad/2.), 2) )) - P.gtr.p)>>H_dkf(100,-0.1,0.1)", data_cuts, "normhistE");
+      fsimc->cd();
+      SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.) >>H_dkf_simc(100,-10,0.1)",simc_cuts, "normhistEsames" );
     
-    //SNT->Draw("h_pf/1000.>>H_Pf_simc(200,1.5,2.1)", simc_cuts, "normhistEsames");
-    
+      
     }
     
     if(i==27) {

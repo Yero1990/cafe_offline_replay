@@ -11,8 +11,8 @@ void make_plots_singles(){
 
   //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg
-  TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16026_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin2_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16026_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
   //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16028_-1.root";
@@ -20,8 +20,8 @@ void make_plots_singles(){
 
   
   // e- angle: 8.295 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
 
   
   //------ deuteron exp h(e,e') singles -----
@@ -46,14 +46,14 @@ void make_plots_singles(){
 
   // for run 16962, (e,e'p) are mostly in SHMS angular range: xptar(P.gtr.th): (-0.015, 0.015) rad,  yptar(P.gtr.ph): (-0.01, 0.01) rad
   // therefore, if using singles run 16036, which was taken at the same kinematics, this range MUST be selected for W to line up between singles/coin data
-  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
-  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
-  TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
-  TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
+  //TCut data_cuts = "P.gtr.dp>-10&&P.gtr.dp<22&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&g.evtyp==1";
+  //TCut simc_cuts = "Weight*(e_delta>-10&&e_delta<22&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1))";
 
 
-  const int nplots = 17;
+  const int nplots = 18;
   TH1F *H_data[nplots];
   TH1F *H_simc[nplots];
 
@@ -68,13 +68,13 @@ void make_plots_singles(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar, yptar, ytar, delta
-    if( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16)) continue;
+    //if( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16)) continue;
 
     // 2d correlations
     //if(i!=14) continue;
 
     // plot only kinematics (kf, th_e, Q2, xbj, nu, W)
-    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=7) ) continue;
+    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=7) && (i!=17)) continue;
     
    if(i==0) {
       c[i] = new TCanvas(Form("c%i",i), "SHMS e- momentum", 900, 900);
@@ -347,6 +347,22 @@ void make_plots_singles(){
 
     }
 
+    
+    if(i==17) {
+    //--------------kf_calc - fk_meas
+      
+      // calculate dkf = (kf_calc - kf_meas), calculated electron momentum    
+      // kf_calc formula only applies for the electron of elastic hydrogen reactions h(e,e'p)
+      // kf_calc = Mp * Eb / (Mp + 2.*Eb* sin^2(theta_e/2.) )
+      
+      TCanvas *c_dkf = new TCanvas("c_dkf", "", 1200, 800);
+      fdata->cd();
+      T->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(P.kin.primary.scat_ang_rad/2.), 2) )) - P.gtr.p)>>H_dkf(100,-0.1,0.1)", data_cuts, "normhistE");
+      fsimc->cd();
+      SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.) >>H_dkf_simc(100,-10,0.1)",simc_cuts, "normhistEsames" );
+    
+
+    }
     
 
     
