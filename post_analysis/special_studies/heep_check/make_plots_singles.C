@@ -11,17 +11,17 @@ void make_plots_singles(){
 
   //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16026_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin2_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16028_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin1_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16028_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin1_rad.root";
 
   
   // e- angle: 8.295 deg
-  TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16036_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin0_rad.root";
 
   
   //------ deuteron exp h(e,e') singles -----
@@ -360,7 +360,17 @@ void make_plots_singles(){
       T->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(P.kin.primary.scat_ang_rad/2.), 2) )) - P.gtr.p)>>H_dkf(100,-0.1,0.1)", data_cuts, "normhistE");
       fsimc->cd();
       SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.) >>H_dkf_simc(100,-10,0.1)",simc_cuts, "normhistEsames" );
+
+      TCanvas *c_2dkf = new TCanvas("c_2dkf", "", 1200, 800);
+      c_2dkf->Divide(2,1);
+      fdata->cd();
+      c_2dkf->cd(1);
+      T->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(P.kin.primary.scat_ang_rad/2.), 2) )) - P.gtr.p):P.kin.primary.scat_ang_deg>>H_2dkf(100,6,10,100,-0.1,0.1)", data_cuts, "colz");
+      fsimc->cd();
+      c_2dkf->cd(2);
+      SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.):(theta_e*180/3.14) >>H_2dkf_simc(100,6,10,100,-0.1,0.1)",simc_cuts, "colz" );
     
+
 
     }
     

@@ -3,10 +3,10 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
+  TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_500000.root";
   //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_eyptar_minus0p5mr.root";
   //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_hyptar_plus1mr.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad.root";
 
   
   TFile *fdata = new TFile(data_fname, "READ");
@@ -41,12 +41,12 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-    if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
+    //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
 
     //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
     //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
 
-
+    if((i!=26)) continue;
 
     
     if(i==0) {
@@ -427,7 +427,15 @@ void make_plots_coin(){
       fsimc->cd();
       SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.) >>H_dkf_simc(100,-10,0.1)",simc_cuts, "normhistEsames" );
     
-      
+      TCanvas *c_2dkf = new TCanvas("c_2dkf", "", 1200, 800);
+      c_2dkf->Divide(2,1);
+      fdata->cd();
+      c_2dkf->cd(1);
+      T->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(P.kin.primary.scat_ang_rad/2.), 2) )) - P.gtr.p):P.kin.primary.scat_ang_deg>>H_2dkf(100,6,10,100,-0.1,0.1)", data_cuts, "colz");
+      fsimc->cd();
+      c_2dkf->cd(2);
+      SNT->Draw("(( 0.938272*10.549 / (0.938272 + 2.*10.549 * pow(sin(theta_e/2.), 2) )) - e_pf/1000.):(theta_e*180/3.14) >>H_2dkf_simc(100,6,10,100,-0.1,0.1)",simc_cuts, "colz" );
+    
     }
     
     if(i==27) {
