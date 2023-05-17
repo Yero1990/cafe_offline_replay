@@ -26,8 +26,10 @@ void calculate_kinematics(){
 
   
   TString filename="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_500000.root";
-  TString simc_filename="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad.root";
-
+  //TString simc_filename="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad.root";
+  //TString simc_filename="~/ROOTfiles/cafe_heep_coin_kin0_rad.root";
+  TString simc_filename="~/ROOTfiles/cafe_heep_coin_kin0_rad_noeloss.root";
+  
   //Read ROOTfile
   TFile *fdata = new TFile(filename.Data(), "READ");
   TFile *fsimc = new TFile(simc_filename.Data(), "READ");

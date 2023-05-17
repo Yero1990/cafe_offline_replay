@@ -1,9 +1,10 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import sys
 
 #output file to write cuts file
-ofname = 'cafe_systematics_cuts_file_test.csv' 
+ofname = 'post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv' 
 ofile = open(ofname, 'w+')
 ofile.write('# CaFe Systematics Cuts File\n')
 ofile.write('# \n'
@@ -26,29 +27,36 @@ ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min
 # a value around the about the central cut
 
 # Q2 (same random cut for MF, SRC)
-Q2_min_mu = 1.8
+#Q2_min_mu = 1.8
+Q2_min_mu = float(sys.argv[1])
 Q2_min_sig = 0.05
 
 # Emiss lower bound (MF) :  -20 MeV (fixed)
-Em_min_mu_mf = -0.02
+#Em_min_mu_mf = -0.02
+Em_min_mu_mf = float(sys.argv[2])
 
 # Emiss upper bound (MF) : 90 +/- 2.5 MeV
-Em_max_mu_mf = 0.09
+# Em_max_mu_mf = 0.09
+Em_max_mu_mf = float(sys.argv[3])
 Em_max_sig_mf = 0.0025
 
 # cut variation only needed for Pmax_mf (MF)
-Pm_max_mf_mu = 0.270
+# Pm_max_mf_mu = 0.270
+Pm_max_mf_mu = float(sys.argv[4])
 Pm_max_mf_sig = 0.01
 
 # hms/shms collimator (vary scalee factor by sig=4%
-hms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+# hms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+hms_coll_mu = float(sys.argv[5])
 hms_coll_sig = 0.04  # 4% variation in the scaler factor 
 
-shms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+#shms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
+shms_coll_mu = float(sys.argv[6])
 shms_coll_sig = 0.04  # 4% variation in the scaler factor 
 
 # x-Bjorken (SRC) : 1.2 +/- 0.1
-xbj_min_mu = 1.2
+# xbj_min_mu = 1.2
+xbj_min_mu = float(sys.argv[7])
 xbj_min_sig = 0.05
 
 # th_rq (SRC) : 40 +/- 4 deg

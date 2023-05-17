@@ -4041,11 +4041,6 @@ void baseAnalyzer::ReadTree()
       //---------------SetBranchAddress-----------------
 
 
-      //if(analysis_type=="systematics"){                                                                                                                   
-      //tree->SetBranchAddress("CTime.epCoinTime_ROC2_center",           &epCoinTime_center      );                                                        
-      //tree->SetBranchAddress("CTime.CoinTime_RAW_ROC2_NoTrack_center", &epCoinTime_center_notrk);                                                        
-      //}  
-
       // Global Variables
       tree->SetBranchAddress("g.evtyp",&gevtyp);
       tree->SetBranchAddress("g.evnum",&gevnum);
@@ -5924,9 +5919,14 @@ void baseAnalyzer::EventLoop()
     //GetPeak();
 
 
+    // call function that generates systematics cuts files (it takes central cut values  as input)
+    //string cmd=Form("python ./post_analysis/special_studies/systematic_cuts_study/genRandCutsv2.py %.3f", Q2_min);
+    //gSystem->Exec(cmd.c_str());
+
+    
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
