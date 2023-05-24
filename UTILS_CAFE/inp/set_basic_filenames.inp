@@ -23,8 +23,9 @@ output_REPORTPattern          = CAFE_OUTPUT/REPORT/cafe_%s_%s_%s_report_%d_%d.tx
 # Set Input SIMC File Name Path
 # input_file can be "rad" or "norad" since same kinematics is assumed
 #----------------------------------
-input_file_simc                   = ../hallc_simulations/infiles/cafe_heep_coin_rad.data
-input_ROOTfilePattern_simc_rad    = ../hallc_simulations/worksim/cafe_heep_coin_rad.root
+input_file_simc                   = ../hallc_simulations/infiles/cafe_heep_coin_kin0_rad.data
+input_ROOTfilePattern_simc_rad    = ../hallc_simulations/worksim/cafe_heep_coin_kin0_rad_hmsColl_Scatt_1cm.root
+#input_ROOTfilePattern_simc_rad    = ../hallc_simulations/worksim/cafe_heep_coin_kin0_rad_hmsColl_noScatt_0cm.root
 input_ROOTfilePattern_simc_norad  = ../hallc_simulations/worksim/cafe_heep_coin_norad.root
 
 #-----------------------------------

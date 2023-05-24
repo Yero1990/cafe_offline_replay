@@ -327,22 +327,14 @@ fi
 
 if [ "${ana_type}" = "simc" ]; then
     
-    if [ -z "$2" ] || [ -z "$3" ]; then     
+    if [ $# -eq 0 ]; then     
 	
+	# Display help output if no argument specified
 	printSIMCHelpMsg	
-	exit 0
-	# fool-proof make sure only options: bcm_calib, lumi, optics, heep_singles, heep_coin, MF, SRC are used
-    elif [ [ "$ana_cut" != "heep_singles" ] ||  [ "$ana_cut" != "heep_coin" ] || [ "$ana_cut" != "MF" ] || [ "$ana_cut" != "SRC" ] ]; then 
-	echo "" 
-    else
-	printSIMCHelpMsg	
-	exit 0
     fi
 
-    if [ -z "$3" ]; then 
-	evtNum=-1
-    fi
-
+    ana_cut=$1
+    
     # Default arguments (not required by user as input, unless the user sets as command-line arguments)
     daq_mode="coin"
     e_arm="SHMS"
@@ -352,17 +344,14 @@ if [ "${ana_type}" = "simc" ]; then
     trig_single="trig2"    # singles trigger type to apply pre-scale factor in FullWeight, i.e. hist->Scale(Ps2_factor) 
     trig_coin="trig5"      # coin. trigger type to apply pre-scale factor in FullWeight, i.e., hist->Scale(Ps5_factor)
     combine_runs=0
-    
+
+    echo "${ana_type}"
     # cafe analysis script
-    prod_script="UTILS_CAFE/main_analysis.cpp"
+    prod_script="UTILS_CAFE/main_simc_analysis.cpp"
     
     # command to run analysis script ( if doing SIMC, all arguments except e_arm, ana_type and ana_cu are irrelevant )
-    run_cafe="root -l -q -b  \"${prod_script}( ${runNum},    ${evtNum},           
-            	                           \\\"${daq_mode}\\\",  \\\"${e_arm}\\\",  
-                   	                    \\\"${ana_type}\\\", \\\"${ana_cut}\\\",
-                            	      	        ${hel_flag},                        
-                                   		\\\"${bcm_type}\\\", ${bcm_thrs},
-                                   		\\\"${trig_single}\\\", \\\"${trig_coin}\\\", ${combine_runs}
+    run_cafe="root -l -q -b  \"${prod_script}( \\\"${e_arm}\\\",  
+                   	                    \\\"${ana_type}\\\", \\\"${ana_cut}\\\"
                      			     )\""
     
     # Start data  analysis

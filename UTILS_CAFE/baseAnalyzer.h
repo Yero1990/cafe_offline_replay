@@ -1299,7 +1299,11 @@ protected:
   TH2F *H_hxfp_vs_hyfp;
   TH2F *H_exfp_vs_eyfp;
   
-
+  //kinematics vs. acceptance
+  TH2F *H_Pm_vs_exptar;
+  TH2F *H_Pm_vs_eyptar;
+  
+  
   // ------- Selected Histograms for Random Coincidence Background Subtraction --------
 
   // NOTE: Nomenclature clarification 

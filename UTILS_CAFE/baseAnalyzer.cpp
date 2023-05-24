@@ -312,7 +312,10 @@ void baseAnalyzer::Init(){
   H_hxfp_vs_hyfp    = NULL;
   H_exfp_vs_eyfp    = NULL;
 
-
+  //kinematics vs. acceptance
+  H_Pm_vs_exptar   = NULL;
+  H_Pm_vs_eyptar   = NULL;
+  
   //----------------------------------
   // Selected Histograms for Random
   // Coincidence Background Subtraction
@@ -923,7 +926,9 @@ baseAnalyzer::~baseAnalyzer()
   //Hour-Glass Shape
   delete H_hxfp_vs_hyfp;        H_hxfp_vs_hyfp    = NULL;
   delete H_exfp_vs_eyfp;        H_exfp_vs_eyfp    = NULL;
-
+  //kinematics vs. acceptance
+  delete H_Pm_vs_exptar;        H_Pm_vs_exptar   = NULL;
+  delete H_Pm_vs_eyptar;        H_Pm_vs_eyptar   = NULL;
   //----------------------------------
   // Selected Histograms for Random
   // Coincidence Background Subtraction
@@ -1380,6 +1385,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
   TString temp; //temporary string placeholder
 
 
+
   if(analysis_type=="data" || analysis_type=="systematics"){
 
     //-------------------------------
@@ -1497,17 +1503,20 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     } 
 
   }
-  
+
+
   //==========================================
   //     READ TRACKING EFFICIENCY CUTS
   //==========================================
 
   if(set_input_fnames) {
     
+    cout << Form("file %s ", input_CutFileName.Data()) << endl;
     //HMS Tracking Efficiency Cut Flags / Limits
     hdc_ntrk_cut_flag = stoi(split(FindString("hdc_ntrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
+
     c_hdc_ntrk_min = stod(split(FindString("c_hdc_ntrk_min", input_CutFileName.Data())[0], '=')[1]);
-    
+
     hScinGood_cut_flag = stoi(split(FindString("hScinGood_cut_flag", input_CutFileName.Data())[0], '=')[1]);
     
     hcer_cut_flag = stoi(split(FindString("hcer_cut_flag", input_CutFileName.Data())[0], '=')[1]);
@@ -1543,11 +1552,11 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     pBeta_notrk_cut_flag = stoi(split(FindString("pBeta_notrk_cut_flag", input_CutFileName.Data())[0], '=')[1]);
     c_pBetaNtrk_min = stod(split(FindString("c_pBetaNtrk_min", input_CutFileName.Data())[0], '=')[1]);
     c_pBetaNtrk_max = stod(split(FindString("c_pBetaNtrk_max", input_CutFileName.Data())[0], '=')[1]);
-    
-    
+
+
     //==========================================
     
-    
+
     //==========================================
     //     READ Data/SIMC ANALYSIS CUTS
     //==========================================
@@ -1728,7 +1737,6 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     c_ztarDiff_min = stod(split(FindString("c_ztarDiff_min", input_CutFileName.Data())[0], '=')[1]);
     c_ztarDiff_max = stod(split(FindString("c_ztarDiff_max", input_CutFileName.Data())[0], '=')[1]);
     
-    
     // =====================
     //  SIMC
     //======================
@@ -1744,7 +1752,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
   } //end: set_input_fname flag
   
-  
+
   if(set_output_fnames) {
     
     //----------------------------------------
@@ -1800,14 +1808,14 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
     if(analysis_type=="simc"){
       // Read SIMC input file central values during online analysis (to be used in calculations later,
       // ultimately will only need to read from data report, since both data/simc will be equivalent kinematics)
-      
+
       tgt_mass_simc    = stod(split(split(FindString("targ%A", simc_ifile.Data())[0], '=')[1], '!')[0]);   //amu
       beam_energy_simc = stod(split(split(FindString("Ebeam", simc_ifile.Data())[0], '=')[1], '!')[0]);    //MeV
       hms_p_simc       = stod(split(split(FindString("spec%p%P", simc_ifile.Data())[0], '=')[1], '!')[0]); //MeV
       hms_angle_simc   = stod(split(split(FindString("spec%p%theta", simc_ifile.Data())[0], '=')[1], '!')[0]); //deg
       shms_p_simc      = stod(split(split(FindString("spec%e%P", simc_ifile.Data())[0], '=')[1], '!')[0]); //MeV
       shms_angle_simc  = stod(split(split(FindString("spec%e%theta", simc_ifile.Data())[0], '=')[1], '!')[0]); //deg
-      
+
     }
 
   
@@ -2651,7 +2659,10 @@ void baseAnalyzer::CreateHist()
   H_hxfp_vs_hyfp  = new TH2F("H_hxfp_vs_hyfp", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", h_arm_name.Data()),  hyfp_nbins, hyfp_xmin, hyfp_xmax, hxfp_nbins, hxfp_xmin, hxfp_xmax);
   H_exfp_vs_eyfp  = new TH2F("H_exfp_vs_eyfp", Form("%s  X_{fp} vs. Y_{fp}; Y_{fp} [cm]; X_{fp} [cm]", e_arm_name.Data()),  eyfp_nbins, eyfp_xmin, eyfp_xmax, exfp_nbins, exfp_xmin, exfp_xmax);
 
-  
+  //kinematics vs. acceptance
+  H_Pm_vs_exptar  = new TH2F("H_Pm_vs_exptar", "Pm vs.  X'_{tar}",  exptar_nbins, exptar_xmin, exptar_xmax, Pm_nbins, Pm_xmin, Pm_xmax);
+  H_Pm_vs_eyptar  = new TH2F("H_Pm_vs_eyptar", "Pm vs.  Y'_{tar}",  eyptar_nbins, eyptar_xmin, eyptar_xmax, Pm_nbins, Pm_xmin, Pm_xmax);
+
   //Add ACCP Histos to TList
   accp_HList->Add( H_exfp       );
   accp_HList->Add( H_eyfp       );
@@ -2692,6 +2703,8 @@ void baseAnalyzer::CreateHist()
   accp_HList->Add( H_hxfp_vs_hyfp  );
   accp_HList->Add( H_exfp_vs_eyfp  );
 
+  accp_HList->Add( H_Pm_vs_exptar  );
+  accp_HList->Add( H_Pm_vs_eyptar  );
 
   
   //---------------------------------------------------------------------
@@ -5822,7 +5835,9 @@ void baseAnalyzer::EventLoop()
 			
 			H_hxfp_vs_hyfp  ->Fill(h_yfp, h_xfp);
 			H_exfp_vs_eyfp  ->Fill(e_yfp, e_xfp);
-			
+
+			H_Pm_vs_exptar  ->Fill(e_xptar, Pm);
+			H_Pm_vs_eyptar  ->Fill(e_yptar, Pm);
 			
 		      } // end TRUE COINCIDENCE time cut
 
@@ -6955,7 +6970,10 @@ void baseAnalyzer::EventLoop()
 	    
 	    H_hxfp_vs_hyfp  ->Fill(h_yfp, h_xfp, FullWeight);
 	    H_exfp_vs_eyfp  ->Fill(e_yfp, e_xfp, FullWeight);
-	    
+
+	    H_Pm_vs_exptar  ->Fill(e_xptar, Pm, FullWeight);
+	    H_Pm_vs_eyptar  ->Fill(e_yptar, Pm, FullWeight);
+			
 	  }
 	  
 	  cout << "SIMCEventLoop: " << std::setprecision(2) << double(ientry) / nentries * 100. << "  % " << std::flush << "\r"; 
