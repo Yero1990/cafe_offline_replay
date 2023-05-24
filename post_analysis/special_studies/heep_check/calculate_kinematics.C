@@ -27,7 +27,9 @@ void calculate_kinematics(){
 
   // coincidence
   TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";
+
 
   // e- angle: 6.8 deg
   //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
@@ -391,6 +393,7 @@ void calculate_kinematics(){
   H_dthp          ->DrawNormalized("histEsames");
 
 
+  
   TCanvas *c_p = new TCanvas("c_p", "", 1000,1200);
   c_p->Divide(2,3);
 
@@ -429,6 +432,6 @@ void calculate_kinematics(){
   H_Pmx_vs_exptar_simc->Draw("colz");
   c_2d->cd(4);
   H_Pmz_vs_exptar_simc->Draw("colz");
-
+  
   
 }
