@@ -15,20 +15,20 @@ pdelta_offset = 0.0;   (%)   hdelta_tar = hdelta_tar + hdelta_offset
 
 ; relative offsets 
 pphi_offset   = 0.0 ; (rad) hxp_tar = hxp_tar + hphi_offset 
-ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset 
-
+;ptheta_offset = 0.0 ; (rad) hyp_tar = hyp_tar + htheta_offset 
+ptheta_offset = -2.0e-4 ; (rad) determined from thp_calc(Eb, the, k)-thp_meas for run 16962
 
 ; The following offsets are applied to the central kinematic variables (in radians)
 ;      ptheta_lab=htheta_lab + pthetacentral_offset/degree 
 
 pthetacentral_offset = 0 
-p_oopcentral_offset = 0.
+p_oopcentral_offset = 0.0
 
  
 ; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  
-ppcentral_offset = 0
+; ppcentral_offset = 0
 
 
-; May 13, 2023: using W offset from run 16036 / 16962 
-; ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  = 0.9967
-; ppcentral_offset = -0.329
+; May 17, 2023: using W offset from run 16036 / 16962 
+; ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  = 0.9979
+ppcentral_offset = -0.21

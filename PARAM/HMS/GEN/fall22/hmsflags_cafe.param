@@ -33,14 +33,15 @@ hphi_offset  = 0.  ; (rad) hxp_tar = hxp_tar + hphi_offset
 
 
 ; sets hpcentral = hpcentral * ( 1. + hpcentral_offset / 100. ) 
-hpcentral_offset = 0. 
+; hpcentral_offset = 0. 
 
-; ( 1. + hpcentral_offset / 100. ) = 0.9976 (determined from heep 16962)
-; hpcentral_offset = -0.239
+;  ( 1. + hpcentral_offset / 100. ) = 0.9976 (determined from heep 16962)
+hpcentral_offset = -0.24
+
 
 ; htheta_lab=htheta_lab + hthetacentral_offset/degree 
-hthetacentral_offset = 0.0  ;   (rad)  
-h_oopcentral_offset = 0.002711  ; (rad) to algin Pmy component
+hthetacentral_offset = 0.  ;   (rad)  
+h_oopcentral_offset = 0.004  ; (rad) to align Pmy component
 
 
 

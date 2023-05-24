@@ -29,4 +29,4 @@ SHMS_CentralPathLen = 18.1*100   ; 18.1 m (or 1810 cm)
 ; p_recon_coeff_filename = "DATFILES/cafe_optics_optimized_fall22.dat"
 
 ; Holly's optimized matrix for CaFe (May 17, 2023) - refitted to mostly remove xptar dependence on W
-p_recon_coeff_filename = "DATFILES/cafe_optics_optimized_fall22_finetune_May17_2023.dat"
+p_recon_coeff_filename = "DATFILES/cafe_optics_optimized_fall22_finetune.dat"
