@@ -26,23 +26,22 @@ void calculate_kinematics(){
 
 
   // coincidence
-  TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";
+  //TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";
 
 
   // e- angle: 6.8 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin2_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16026_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16028_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin1_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16028_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin1_rad.root";
 
   
   // e- angle: 8.295 deg
-  //TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16036_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin0_rad.root";
 
   //Read ROOTfile
   TFile *fdata = new TFile(data_fname.Data(), "READ");
@@ -104,7 +103,7 @@ void calculate_kinematics(){
   // data histograms
   TH1F *H_kf_calc  = new TH1F("H_kf_calc", "", 100, 8.5,10);
   TH1F *H_kf_meas  = new TH1F("H_kf_meas", "", 100, 8.5,10);
-  TH1F *H_dkf      = new TH1F("H_dkf", "", 100, -0.05,0.05);
+  TH1F *H_dkf      = new TH1F("H_dkf", "", 50, -0.05,0.05);
   TH2F *H2_dkf_v_the  = new TH2F("H2_dkf_v_the", "", 100,5,11, 100, -0.05,0.05);
 
 	          
@@ -120,7 +119,7 @@ void calculate_kinematics(){
   // simc histograms
   TH1F *H_kf_calc_simc  = new TH1F("H_kf_calc_simc", "", 100, 8.5,10);
   TH1F *H_kf_meas_simc  = new TH1F("H_kf_meas_simc", "", 100, 8.5,10);
-  TH1F *H_dkf_simc      = new TH1F("H_dkf_simc", "", 100, -0.05,0.05);
+  TH1F *H_dkf_simc      = new TH1F("H_dkf_simc", "", 50, -0.05,0.05);
   TH2F *H2_dkf_v_the_simc  = new TH2F("H2_dkf_v_the_simc", "", 100,5,11, 100, -0.05,0.05);
 	          
   TH1F *H_Pf_calc_simc  = new TH1F("H_Pf_calc_simc", "", 100, 1.3,3.3);
@@ -197,13 +196,13 @@ void calculate_kinematics(){
       Bool_t base_cuts_singles;
       Bool_t base_cuts_singles_noaccp;
 
-      base_cuts = (xbj > 0.9) && (xbj < 1.1) && Em<0.1 && shms_delta>0 && abs(hms_delta)<10. && abs(e_xptar)<0.01 && abs(e_yptar)<0.01  ;
+      base_cuts = (xbj > 0.9) && (xbj < 1.1) && Em<0.1 && shms_delta>0 && abs(hms_delta)<10. && abs(e_xptar)<0.01 && abs(e_yptar)<0.01;
       base_cuts_noaccp = (xbj > 0.9) && (xbj < 1.1) && Em<0.1 && shms_delta>0 && abs(hms_delta)<10.;
 
       base_cuts_singles = (xbj > 0.9) && (xbj < 1.1) && shms_delta>0 && abs(e_xptar)<0.01 && abs(e_yptar)<0.01 ;
       base_cuts_singles_noaccp = (xbj > 0.9) && (xbj < 1.1) && shms_delta>0 ;
 
-      if(base_cuts){
+      if(base_cuts_singles){
 	// fill histograms
 	H_kf_calc -> Fill(kf_calc);
 	H_kf_meas -> Fill(kf);
@@ -220,7 +219,7 @@ void calculate_kinematics(){
 	H_dthp     -> Fill(dthp);
       }
       
-      if(base_cuts_noaccp){
+      if(base_cuts_singles_noaccp){
 	H2_dkf_v_the -> Fill(th_e/dtr, dkf);
 	H2_dPf_v_thp ->Fill(th_p/dtr, dPf);
       }
@@ -319,7 +318,7 @@ void calculate_kinematics(){
       base_cuts_singles = (xbj > 0.9) && (xbj < 1.1) && shms_delta>0 && abs(e_xptar)<0.01 && abs(e_yptar)<0.01;
       base_cuts_singles_noaccp = (xbj > 0.9) && (xbj < 1.1) && shms_delta>0;
 
-      if(base_cuts){
+      if(base_cuts_singles){
 	// fill histograms
 	H_kf_calc_simc -> Fill(kf_calc);
 	H_kf_meas_simc -> Fill(kf);
@@ -334,7 +333,7 @@ void calculate_kinematics(){
 	H_dthp_simc     -> Fill(dthp); // radians
       }
 
-       if(base_cuts_noaccp){
+       if(base_cuts_singles_noaccp){
 	 H2_dkf_v_the_simc -> Fill(th_e/dtr, dkf);
 	 H2_dPf_v_thp_simc ->Fill(th_p/dtr, dPf);
        }
@@ -393,7 +392,7 @@ void calculate_kinematics(){
   H_dthp          ->DrawNormalized("histEsames");
 
 
-  
+  /*
   TCanvas *c_p = new TCanvas("c_p", "", 1000,1200);
   c_p->Divide(2,3);
 
@@ -432,6 +431,6 @@ void calculate_kinematics(){
   H_Pmx_vs_exptar_simc->Draw("colz");
   c_2d->cd(4);
   H_Pmz_vs_exptar_simc->Draw("colz");
-  
+  */
   
 }

@@ -6,9 +6,17 @@ void make_plots_coin(){
   TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
   //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_eyptar_minus0p5mr.root";
   //TString data_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_replay_optics_16962_100000_hyptar_plus1mr.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";
-  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";  // no hms collimator interaction (set to 0 in input file)
   
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad_0p0_hMispointNeg_eMispointPos.root"; // WRONG mispong sign (found it HMS/SHMS  were way off, but ztar is ok)
+
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad_0p0_hMispointPos_eMispointNeg.root"; // hytar_aligned, hyptar_aligned, hxptar_simc>hxptar_data,
+  //e_ytar_simc>e_ytar_data, eyptar_aligned, exptar_alinged, tarz_simc < tarz_data
+
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad_0p0_hMispointPos_eMispointXNegYPos.root"; // e_ytar still off, as well as tar_z
+
+  //TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad_0p0_hMispointPos_NOeMispoint.root";
+
   
   TFile *fdata = new TFile(data_fname, "READ");
   TFile *fsimc = new TFile(simc_fname, "READ");
@@ -19,11 +27,11 @@ void make_plots_coin(){
   fsimc->cd();
   TTree *SNT = (TTree*)fsimc->Get("SNT");
   
-   TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
-  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
+  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4&&abs(P.gtr.th)<0.01&&abs(P.gtr.ph)<0.01";
+  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1&&abs(e_xptar)<0.01&&abs(e_yptar)<0.01)";
 
-  //TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
-  //TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
+  TCut data_cuts = "P.gtr.dp>0&&P.gtr.dp<22&&abs(H.gtr.dp)<10.&&P.cal.etottracknorm>0.8&&P.kin.primary.x_bj>0.9&&P.kin.primary.x_bj<1.1&&H.kin.secondary.emiss<0.1&&g.evtyp>=4";
+  TCut simc_cuts = "Weight*(e_delta>0&&e_delta<22&&abs(h_delta)<10.&&(Q2/(2.*0.938*nu))>0.9&&(Q2/(2.*0.938*nu)<1.1)&&Em<0.1)";
   
   
   const int nplots = 30;
@@ -42,12 +50,13 @@ void make_plots_coin(){
     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
-    // if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
+    //if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
 
-    //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm,  pcal-pmeas, )
-    if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=26) && (i!=27)  ) continue;
+    //plot only kinematics (kf, th_e, Q2, xbj, nu, W, Em, Pmx,y,z, Pm )
+    //if( (i!=0) &&  (i!=6) && (i!=9) && (i!=20) &&  (i!=21) && (i!=22) && (i!=23) && (i!=24) && (i!=25) && (i!=27) &&  (i!=29) ) continue;
 
     //if((i!=26)) continue;
+    if((i!=28)) continue;
     //if((i!=29)) continue;
     
     
@@ -443,9 +452,9 @@ void make_plots_coin(){
     if(i==27) {
       c[i] = new TCanvas(Form("c%i",i), "", 900, 700);
       fdata->cd();
-      T->Draw("H.kin.secondary.pmiss>>H_Pm(150,-0.01,0.05)", data_cuts, "normhistE");
+      T->Draw("H.kin.secondary.pmiss>>H_Pm(100,-0.01,0.05)", data_cuts, "normhistE");
       fsimc->cd();
-      SNT->Draw("Pm>>H_Pm_simc(150,-0.01,0.05)", simc_cuts, "normhistEsames");
+      SNT->Draw("Pm>>H_Pm_simc(100,-0.01,0.05)", simc_cuts, "normhistEsames");
     
   }
 
@@ -453,32 +462,32 @@ void make_plots_coin(){
     if(i==28) {
 
 
-      TCanvas *c1_recon_corr = new TCanvas("W_recon_corr", "W recons correlations", 900, 700);      
+      TCanvas *c1_recon_corr = new TCanvas("W_recon_corr", "W recons correlations", 1500, 700);      
       c1_recon_corr->Divide(4,2);
 
       // DATA
       fdata->cd();
       c1_recon_corr->cd(1);
-      T->Draw("P.kin.primary.W:P.gtr.th>>H_shms_W_vs_xptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      T->Draw("P.kin.primary.W:P.gtr.th>>H_shms_W_vs_xptar(100, -0.015, 0.015, 100,0.9,1.)", data_cuts, "colz");  
       c1_recon_corr->cd(2);
-      T->Draw("P.kin.primary.W:P.gtr.ph>>H_shms_W_vs_yptar(100, -0.07, 0.07, 100,0.9,1.)", data_cuts, "colz");  
+      T->Draw("P.kin.primary.W:P.gtr.ph>>H_shms_W_vs_yptar(100, -0.015, 0.015, 100,0.9,1.)", data_cuts, "colz");  
       c1_recon_corr->cd(3);
-      T->Draw("P.kin.primary.W:P.gtr.y>>H_shms_W_vs_ytar(100, -2, 2, 100,0.9,1.)", data_cuts, "colz");  
+      T->Draw("P.kin.primary.W:P.gtr.y>>H_shms_W_vs_ytar(100, -1.5, 1.5, 100,0.9,1.)", data_cuts, "colz");  
       c1_recon_corr->cd(4);
-      T->Draw("P.kin.primary.W:P.gtr.dp>>H_shms_W_vs_delta(100, 0, 22, 100,0.9,1.)", data_cuts, "colz");  
+      T->Draw("P.kin.primary.W:P.gtr.dp>>H_shms_W_vs_delta(100, 8, 12, 100,0.9,1.)", data_cuts, "colz");  
       
       
 
       // SIMC
       fsimc->cd();
       c1_recon_corr->cd(5);
-      SNT->Draw("W:e_xptar>>H_shms_W_vs_xptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      SNT->Draw("W:e_xptar>>H_shms_W_vs_xptar_simc(100, -0.015, 0.015, 100,0.9,1.)", simc_cuts, "colz");  
       c1_recon_corr->cd(6);
-      SNT->Draw("W:e_yptar>>H_shms_W_vs_yptar_simc(100, -0.07, 0.07, 100,0.9,1.)", simc_cuts, "colz");  
+      SNT->Draw("W:e_yptar>>H_shms_W_vs_yptar_simc(100, -0.015, 0.015, 100,0.9,1.)", simc_cuts, "colz");  
       c1_recon_corr->cd(7);
-      SNT->Draw("W:e_ytar>>H_shms_W_vs_ytar_simc(100, -2, 2, 100,0.9,1.)", simc_cuts, "colz");  
+      SNT->Draw("W:e_ytar>>H_shms_W_vs_ytar_simc(100, -1.5, 1.5, 100,0.9,1.)", simc_cuts, "colz");  
       c1_recon_corr->cd(8);
-      SNT->Draw("W:e_delta>>H_shms_W_vs_delta_simc(100, 0, 22, 100,0.9,1.)", simc_cuts, "colz");  
+      SNT->Draw("W:e_delta>>H_shms_W_vs_delta_simc(100, 8, 12, 100,0.9,1.)", simc_cuts, "colz");  
       
 
     }
@@ -489,6 +498,7 @@ void make_plots_coin(){
       TCanvas *c1_Pm_vs_recon = new TCanvas("Pm_recon_corr", "Pm recons correlations", 900, 700);      
       c1_Pm_vs_recon->Divide(4,2);
 
+      /*
       // DATA
       fdata->cd();
       c1_Pm_vs_recon->cd(1);
@@ -512,6 +522,32 @@ void make_plots_coin(){
       SNT->Draw("Pmy:e_xptar>>H_Pmy_vs_xptar_simc(100, -0.02, 0.02, 100,-0.1,0.1)", simc_cuts, "colz");  
       c1_Pm_vs_recon->cd(8);
       SNT->Draw("Pmz:e_xptar>>H_Pmz_vs_xptar_simc(100, -0.02, 0.02, 100,-0.1,0.1)", simc_cuts, "colz");  
+
+      */
+      
+      // DATA (Pm v. yptar)
+      fdata->cd();
+      c1_Pm_vs_recon->cd(1);
+      T->Draw("H.kin.secondary.pmiss:P.gtr.ph>>H_Pm_vs_yptar(100, -0.02, 0.02, 100,-0.01,0.05)", data_cuts, "colz");  
+      c1_Pm_vs_recon->cd(2);
+      T->Draw("H.kin.secondary.Prec_x:P.gtr.ph>>H_Pmx_vs_yptar(100, -0.02, 0.02, 100,-0.1,0.1)", data_cuts, "colz");  
+      c1_Pm_vs_recon->cd(3);
+      T->Draw("H.kin.secondary.Prec_y:P.gtr.ph>>H_Pmy_vs_vs_yptar(100, -0.02, 0.02, 100,-0.1,0.1)", data_cuts, "colz");  
+      c1_Pm_vs_recon->cd(4);
+      T->Draw("H.kin.secondary.Prec_z:P.gtr.ph>>H_Pmz_vs_yptar(100, -0.02, 0.02, 100,-0.1,0.1)", data_cuts, "colz");  
+      
+      
+
+      // SIMC
+      fsimc->cd();
+      c1_Pm_vs_recon->cd(5);
+      SNT->Draw("Pm:e_yptar>>H_Pm_vs_yptar_simc(100, -0.02, 0.02, 100,-0.01,0.05)", simc_cuts, "colz");  
+      c1_Pm_vs_recon->cd(6);
+      SNT->Draw("Pmx:e_yptar>>H_Pmx_vs_yptar_simc(100, -0.02, 0.02, 100,-0.1,0.1)", simc_cuts, "colz");  
+      c1_Pm_vs_recon->cd(7);
+      SNT->Draw("Pmy:e_yptar>>H_Pmy_vs_yptar_simc(100, -0.02, 0.02, 100,-0.1,0.1)", simc_cuts, "colz");  
+      c1_Pm_vs_recon->cd(8);
+      SNT->Draw("Pmz:e_yptar>>H_Pmz_vs_yptar_simc(100, -0.02, 0.02, 100,-0.1,0.1)", simc_cuts, "colz");  
       
 
     }

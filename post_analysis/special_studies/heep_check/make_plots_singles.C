@@ -11,17 +11,17 @@ void make_plots_singles(){
 
   //------ cafe h(e,e') singles ------
   // e- angle: 6.8 deg, delta_shms = +15 %
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16026_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin2_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16026_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin2_rad.root";
 
   // e- angle: 7.495 deg, delta_shms = +13 %
-  //TString data_fname="~/ROOTfiles/heep_singles/step1/cafe_replay_optics_16028_-1.root";
-  //TString simc_fname="~/ROOTfiles/heep_singles/step1/cafe_heep_singles_kin1_rad.root";
+  //TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16028_-1.root";
+  //TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin1_rad.root";
 
   
   // e- angle: 8.295 deg, delta_shms = +10 %
-  TString data_fname="~/ROOTfiles/heep_singles/step2/cafe_replay_optics_16036_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_singles/step2/cafe_heep_singles_kin0_rad.root";
+  TString data_fname="~/ROOTfiles/heep_singles/step4/cafe_replay_optics_16036_-1.root";
+  TString simc_fname="~/ROOTfiles/heep_singles/step4/cafe_heep_singles_kin0_rad.root";
 
   
   //------ deuteron exp h(e,e') singles -----
