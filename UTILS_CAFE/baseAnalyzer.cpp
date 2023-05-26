@@ -1042,7 +1042,7 @@ baseAnalyzer::~baseAnalyzer()
                                                                                                                                                  
   // 2d histos						     		   						     		     
   delete H_hxfp_vs_hyfp_noCUT;			     		   H_hxfp_vs_hyfp_noCUT = NULL;			     			     
-  delete H_exfp_vs_eyfp_noCUT;  			     		   H_exfp_vs_eyfp_noCUT = NULL;  			     		     
+  delete H_exfp_vs_eyfp_noCUT;  			     	   H_exfp_vs_eyfp_noCUT = NULL;  			     		     
   delete H_hXColl_vs_hYColl_noCUT;		     		   H_hXColl_vs_hYColl_noCUT = NULL;		     			     
   delete H_eXColl_vs_eYColl_noCUT;		     		   H_eXColl_vs_eYColl_noCUT = NULL;		     			     
   delete H_Em_nuc_vs_Pm_noCUT;			     		   H_Em_nuc_vs_Pm_noCUT = NULL;			     			     

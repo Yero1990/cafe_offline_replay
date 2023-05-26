@@ -261,7 +261,7 @@ c_SRC_Q2_max = 100.
 
 # Missing Momentum [GeV]
 Pm_SRC_cut_flag = 1
-c_SRC_Pm_min = 0.350
+c_SRC_Pm_min = 0.375
 c_SRC_Pm_max = 0.7
 
 # x-Bjorken

@@ -18,7 +18,7 @@ if [[ -z "$1" ]]; then
     echo "-----------------------------------------------------"
     echo ""
     echo "Usage: "
-    echo "./run_batch_template.sh runlist.txt MAXEVENTS"
+    echo "./run_batch_replay.sh runlist.txt MAXEVENTS"
     echo ""
     echo "runlist.txt : a simple text file with a list of "
     echo "run numbers (one run per line), assumed to be on:"
@@ -43,7 +43,8 @@ fi
 Workflow="cafe_replay_${USER}" # Change this as desired
 
 # Input run numbers, this just points to a file which is a list of run numbers, one number per line
-inputFile="${inputFile}${RunList}"
+#inputFile="${inputFile}${RunList}"
+inputFile="${RunList}" # full path 
 
 while true; do
     read -p "Do you wish to begin a new batch submission? (Please answer yes or no) " yn
