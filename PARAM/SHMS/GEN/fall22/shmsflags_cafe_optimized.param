@@ -22,7 +22,7 @@ ptheta_offset = -2.0e-4 ; (rad) determined from thp_calc(Eb, the, k)-thp_meas fo
 ;      ptheta_lab=htheta_lab + pthetacentral_offset/degree 
 
 pthetacentral_offset = 0 
-p_oopcentral_offset = 0.0
+p_oopcentral_offset = 0.0008   ; to align Pmy
 
  
 ; sets ppcentral = ppcentral * ( 1. + ppcentral_offset / 100. )  
