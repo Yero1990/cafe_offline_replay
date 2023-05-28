@@ -5926,14 +5926,51 @@ void baseAnalyzer::EventLoop()
   // CaFe Data Systematics
   // -------------------------
   if(analysis_type=="systematics"){
+
+
+    // Store the central cut values read from the cuts input file (since those values will be varies during systematics, the central one should be stored
+    // for systematic studies on each of the cuts separately, i.e., vary one cut while keeping the other cuts fixed, as well as vary all cuts simultaneously)
+
+
+    Double_t c_MF_Q2_min_cent    =  c_MF_Q2_min     ;   
+    Double_t c_MF_Q2_max_cent    =  c_MF_Q2_max     ;   
+    Bool_t   c_MF_Q2_cent;
     
-    // Get Coin. Time peak, beta peak, calorimeter peak, and dc residuals peak fit
-    // to be used to centering coin time peak (should only need to be called once,
-    // and not every time an entry from the systematics cuts file is called, as the
-    // variables used here do not depend on the cuts being varied
-    //GetPeak();
-
-
+    Double_t c_d2MF_Em_min_cent  =  c_d2MF_Em_min   ; 
+    Double_t c_d2MF_Em_max_cent  =  c_d2MF_Em_max   ; 
+    Bool_t   c_d2MF_Em_cent;
+    
+    Double_t c_MF_Em_min_cent    =  c_MF_Em_min     ;   
+    Double_t c_MF_Em_max_cent    =  c_MF_Em_max     ;   
+    Bool_t   c_MF_Em_cent;
+    
+    Double_t c_MF_Pm_min_cent    =  c_MF_Pm_min     ;   
+    Double_t c_MF_Pm_max_cent    =  c_MF_Pm_max     ;   
+    Double_t c_MF_Pm_cent;
+    
+    Double_t c_SRC_Q2_min_cent   =  c_SRC_Q2_min    ;  
+    Double_t c_SRC_Q2_max_cent   =  c_SRC_Q2_max    ;  
+    Bool_t   c_SRC_Q2_cent;
+    
+    Double_t c_SRC_Xbj_min_cent  =  c_SRC_Xbj_min   ; 
+    Double_t c_SRC_Xbj_max_cent  =  c_SRC_Xbj_max   ; 
+    Bool_t   c_SRC_Xbj_cent;
+    
+    Double_t c_SRC_thrq_min_cent =  c_SRC_thrq_min  ;
+    Double_t c_SRC_thrq_max_cent =  c_SRC_thrq_max  ;
+    Bool_t   c_SRC_thrq_cent;
+              		                 
+    Double_t c_SRC_Pm_min_cent   =  c_SRC_Pm_min    ;  
+    Double_t c_SRC_Pm_max_cent   =  c_SRC_Pm_max    ;      
+    Bool_t   c_SRC_Pm_cent;
+    
+    Double_t hms_scale_cent    =  hms_scale       ;
+    Bool_t   hmsColl_Cut_cent;
+    
+    Double_t shms_scale_cent   =  shms_scale      ;        
+    Bool_t   shmsColl_Cut_cent;
+    
+    
     // call function that generates systematics cuts files (it takes central cut values  as input)
     //string cmd=Form("python ./post_analysis/special_studies/systematic_cuts_study/genRandCutsv2.py %.3f", Q2_min);
     //gSystem->Exec(cmd.c_str());
@@ -5997,32 +6034,32 @@ void baseAnalyzer::EventLoop()
       cout << "SystematicEntry Completed: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << endl;
       cout << "-------------------------" << endl;   
 
-      c_MF_Q2_min = atof(parsed_header[1].c_str());
-      c_MF_Q2_max = atof(parsed_header[2].c_str());
+      c_MF_Q2_min    = atof(parsed_header[1].c_str());
+      c_MF_Q2_max    = atof(parsed_header[2].c_str());
       
-      c_d2MF_Em_min = atof(parsed_header[3].c_str());
-      c_d2MF_Em_max = atof(parsed_header[4].c_str());
+      c_d2MF_Em_min  = atof(parsed_header[3].c_str());
+      c_d2MF_Em_max  = atof(parsed_header[4].c_str());
       
-      c_MF_Em_min   = atof(parsed_header[3].c_str());
-      c_MF_Em_max   = atof(parsed_header[4].c_str());
+      c_MF_Em_min    = atof(parsed_header[3].c_str());
+      c_MF_Em_max    = atof(parsed_header[4].c_str());
       
-      c_MF_Pm_min  = atof(parsed_header[5].c_str());
-      c_MF_Pm_max  = atof(parsed_header[6].c_str());
+      c_MF_Pm_min    = atof(parsed_header[5].c_str());
+      c_MF_Pm_max    = atof(parsed_header[6].c_str());
       
-      c_SRC_Q2_min = atof(parsed_header[1].c_str());
-      c_SRC_Q2_max = atof(parsed_header[2].c_str());
+      c_SRC_Q2_min   = atof(parsed_header[1].c_str());
+      c_SRC_Q2_max   = atof(parsed_header[2].c_str());
       
-      c_SRC_Xbj_min = atof(parsed_header[7].c_str());
-      c_SRC_Xbj_max = atof(parsed_header[8].c_str());
+      c_SRC_Xbj_min  = atof(parsed_header[7].c_str());
+      c_SRC_Xbj_max  = atof(parsed_header[8].c_str());
       
-      c_SRC_thrq_min  = atof(parsed_header[9].c_str());
-      c_SRC_thrq_max  = atof(parsed_header[10].c_str());
+      c_SRC_thrq_min = atof(parsed_header[9].c_str());
+      c_SRC_thrq_max = atof(parsed_header[10].c_str());
       
-      c_SRC_Pm_min =  atof(parsed_header[11].c_str());
-      c_SRC_Pm_max =  atof(parsed_header[12].c_str());
+      c_SRC_Pm_min   = atof(parsed_header[11].c_str());
+      c_SRC_Pm_max   = atof(parsed_header[12].c_str());
       
-      hms_scale  =  atof(parsed_header[13].c_str());
-      shms_scale =  atof(parsed_header[14].c_str());
+      hms_scale      = atof(parsed_header[13].c_str());
+      shms_scale     = atof(parsed_header[14].c_str());
       
       
       if(debug){
@@ -6237,8 +6274,20 @@ void baseAnalyzer::EventLoop()
 	  else{c_hyptar=1;}
 
 	  //Collimator CUTS
-	  if(hmsCollCut_flag)  { hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);}
-	  else{hmsColl_Cut=1;}
+	  if(hmsCollCut_flag)  { hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);
+
+	    cout << Form("v1:hms_scale: %.1f", hms_scale) << endl;
+	    cout << Form("v1:hmsColl_cut: %i", hmsColl_Cut) << endl;
+	    
+	    // re-set hms scale to central value for setting standard hms collimator cut
+	    hms_scale = hms_scale_cent;  
+	    CollimatorStudy(); // call again 
+	    hmsColl_Cut_cent =  hms_Coll_gCut->IsInside(hYColl, hXColl);
+	      
+	    cout << Form("v2:hms_scale_cent: %.1f", hms_scale) << endl;
+	    cout << Form("v2:hmsColl_cut_cent: %i", hmsColl_Cut_cent) << endl;
+	  }
+	  else{hmsColl_Cut=1; hmsColl_Cut_cent=1;}
 	  
 	  c_accpCuts_hms = c_hdelta && c_hxptar && c_hyptar && hmsColl_Cut;
 	  
@@ -6253,8 +6302,15 @@ void baseAnalyzer::EventLoop()
 	  else{c_eyptar=1;}
 
 	  //Collimator Cuts
-	  if(shmsCollCut_flag) { shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);}
-	  else{shmsColl_Cut=1;}
+	  if(shmsCollCut_flag) { shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);
+
+	    // re-set shms scale to central value for setting standard shms collimator cut
+	    shms_scale = shms_scale_cent;  
+	    CollimatorStudy(); // call again 
+	    shmsColl_Cut_cent =  shms_Coll_gCut->IsInside(eYColl, eXColl);
+
+	  }
+	  else{shmsColl_Cut=1; shmsColl_Cut_cent=1;}
 	  
 	  c_accpCuts_shms = c_edelta && c_exptar && c_eyptar && shmsColl_Cut;
   
@@ -6386,19 +6442,63 @@ void baseAnalyzer::EventLoop()
 
 	  
 	  //----------------------Check If BCM Current is within limits---------------------
-
+	  
 	  if(evt_flag_bcm[scal_read]==1)
 	    {
-	   	    
-		//---------------------------------------------------------
-		
+	      
+	      //---------------------------------------------------------
+	      
 	      
 	      //REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS
 	      if(c_noedtm)
 		{
-	        
+		  
 		  //----------------------Fill DATA Histograms-----------------------
+		  
+		  
+		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
+		  
+	
 
+		  // c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
+		  // c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq && c_d2SRC_Em && c_SRC_Em;
+		  
+		  // generic cuts
+		  if(c_accpCuts && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
+
+		    
+		    if(analysis_cut=="MF"){
+
+		      // --- Pm variation ---
+		      
+		      
+		    }
+		    
+		    
+		    
+		    
+		    if(analysis_cut=="SRC"){
+		      
+		      // --- Pm variation ---
+
+		      
+		    }
+		    
+		    
+		  } // end generic
+		  
+		
+
+
+	 // --- Pm variation ---	    
+	// --- Q2 variation ---
+		  
+
+		  // --- Em variation ---
+
+		  //---------------------------------------------------------------------------------------------------
+		  
+		  
 		  
 		   // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  if(c_baseCuts){
@@ -6516,6 +6616,9 @@ void baseAnalyzer::EventLoop()
 			H_MM_rand      ->  Fill (MM);      
 			H_thxq_rand    ->  Fill (th_xq/dtr);    
 			H_thrq_rand    ->  Fill (ph_xq/dtr);  
+
+
+
 		      }
 		    
 		    
@@ -6548,6 +6651,13 @@ void baseAnalyzer::EventLoop()
 
       //------------------------------------------------------------------------------------
 
+
+      //Fill histogram for a given entry, where each entry filled is the yield (total counts after all cuts for that particula entry) binned, say in Pmiss
+      //H_syst->Fill(Pm_real, );
+
+
+
+      
       // ---------------- write histos of a given entry to file ----------------------------                                                   
       outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), ientry), "RECREATE");                                  
                                                                                                                                                
@@ -6596,31 +6706,6 @@ void baseAnalyzer::EventLoop()
       
       //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << std::flush << "\r";
 
-      /*
-      // ---------------- write histos of a given entry to file ----------------------------
-      outROOT = new TFile(Form("CAFE_OUTPUT/ROOT/test_systematics_histos_entry%d.root", ientry), "RECREATE");  
-
-      outROOT->cd();
-      H_Q2->Write();      
-      outROOT->mkdir("kin_plots"); 
-      outROOT->mkdir("accp_plots");  
-      outROOT->mkdir("rand_plots");
-      outROOT->mkdir("randSub_plots");  
-
-      outROOT->cd("kin_plots");
-      kin_HList->Write(); 
-
-      outROOT->cd("accp_plots"); 
-      accp_HList->Write(); 
-
-      outROOT->cd("rand_plots");  
-      rand_HList->Write();   
-
-      outROOT->cd("randSub_plots");  
-      randSub_HList->Write();   
-      outROOT->Close();
-      //--------------------------------
-      */
       // keep track of each row entry in the systematics cut file
       row_cnt++;
       
