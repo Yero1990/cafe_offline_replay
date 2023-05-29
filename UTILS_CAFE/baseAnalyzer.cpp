@@ -722,8 +722,24 @@ void baseAnalyzer::Init(){
     H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;
 
   }
+
+
+  // ----- SYSTEMATICS STUDIES HISTOGRAMS -------
+  H_systInt_dPm_min       = NULL;
+  H_systInt_dPm_max       = NULL;
   
-  //------------------------------------
+  H_syst_dPm_min          = NULL;
+  H_syst_dPm_min_rand     = NULL;
+  H_syst_dPm_min_rand_sub = NULL;
+
+  H_syst_dPm_max          = NULL;
+  H_syst_dPm_max_rand     = NULL;
+  H_syst_dPm_max_rand_sub = NULL;
+
+
+  
+  
+  //---------------------------------------------
 
 
 
@@ -1339,8 +1355,27 @@ baseAnalyzer::~baseAnalyzer()
     delete H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm ;	      H_cthrq_vs_Pm_ACCP_PID_CTIME_Q2_Xbj_thrq_Pm = NULL;	
                                                                                              
   }											     
-  											     
-  //------------------------------------						     
+
+  
+  // ----- SYSTEMATICS STUDIES HISTOGRAMS -------
+
+  delete H_systInt_dPm_min;    H_systInt_dPm_min       = NULL;   
+  delete H_systInt_dPm_max;    H_systInt_dPm_max       = NULL;
+
+  
+  delete H_syst_dPm_min_rand_sub; H_syst_dPm_min_rand_sub = NULL;
+  delete H_syst_dPm_min;          H_syst_dPm_min          = NULL;
+  delete H_syst_dPm_min_rand;     H_syst_dPm_min_rand     = NULL;
+                                         
+  delete H_syst_dPm_max;          H_syst_dPm_max          = NULL;
+  delete H_syst_dPm_max_rand;     H_syst_dPm_max_rand     = NULL;
+  delete H_syst_dPm_max_rand_sub; H_syst_dPm_max_rand_sub = NULL;
+
+
+  
+  
+  //---------------------------------------------
+
   
 
 }
@@ -2378,6 +2413,7 @@ void baseAnalyzer::CreateHist()
 
   quality_HList = new TList();
 
+  syst_HList = new TList();
   
   // Dummy histograms to store the ith and cumulative histograms (See CombineHistos() Method)
   //1D
@@ -3434,7 +3470,30 @@ void baseAnalyzer::CreateHist()
 
     }
     
+    //--------------------------------------------------------------------
+    //------------------ HISTOGRAM CATEGORY: SYSTEMATICS -----------------
+    //--------------------------------------------------------------------
+    H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min})",  Pm_nbins, Pm_xmin, Pm_xmax);
+    H_systInt_dPm_max            = new TH1F("H_systInt_dPm_max",  "P_{miss,syst} (#delta P_{miss,max})",  Pm_nbins, Pm_xmin, Pm_xmax);;
   
+    H_syst_dPm_min_rand_sub      = new TH1F("H_syst_dPm_min_rand_sub",  "P_{miss,syst.randSub} (#delta P_{miss,min})",  Pm_nbins, Pm_xmin, Pm_xmax);
+    H_syst_dPm_min               = new TH1F("H_syst_dPm_min",           "P_{miss,syst.total}    (#delta P_{miss,min}) ", Pm_nbins, Pm_xmin, Pm_xmax);
+    H_syst_dPm_min_rand          = new TH1F("H_syst_dPm_min_rand",      "P_{miss,syst.rand}    (#delta P_{miss,min})",  Pm_nbins, Pm_xmin, Pm_xmax);
+
+    H_syst_dPm_max_rand_sub     = new TH1F("H_syst_dPm_max_rand_sub",  "P_{miss,syst.randSub} (#delta P_{miss,max})",  Pm_nbins, Pm_xmin, Pm_xmax);
+    H_syst_dPm_max              = new TH1F("H_syst_dPm_max",           "P_{miss,syst.total}    (#delta P_{miss,max}) ", Pm_nbins, Pm_xmin, Pm_xmax);
+    H_syst_dPm_max_rand         = new TH1F("H_syst_dPm_max_rand",      "P_{miss,syst.rand}    (#delta P_{miss,max})",  Pm_nbins, Pm_xmin, Pm_xmax);
+
+    syst_HList->Add(  H_systInt_dPm_min         );
+    syst_HList->Add(  H_systInt_dPm_max         );
+    
+    syst_HList->Add(  H_syst_dPm_min_rand_sub   );
+    syst_HList->Add(  H_syst_dPm_min            );
+    syst_HList->Add(  H_syst_dPm_min_rand       );
+
+    syst_HList->Add(  H_syst_dPm_max_rand_sub   );
+    syst_HList->Add(  H_syst_dPm_max            );
+    syst_HList->Add(  H_syst_dPm_max_rand       );
   
 }
 //_______________________________________________________________________________
@@ -6350,64 +6409,64 @@ void baseAnalyzer::EventLoop()
 	  // CaFe A(e,e'p) Mean-Field (MF) Kinematic Cuts
 
 	  // Q2
-	  if(Q2_MF_cut_flag){c_MF_Q2 = Q2>=c_MF_Q2_min && Q2<=c_MF_Q2_max;
+	  if(Q2_MF_cut_flag){
+	    c_MF_Q2      = Q2>=c_MF_Q2_min      && Q2<=c_MF_Q2_max;
 	    c_MF_Q2_cent = Q2>=c_MF_Q2_min_cent && Q2<=c_MF_Q2_max_cent;
 	  }
-	  else{c_MF_Q2=1;  c_MF_Q2_cent; }
+	  else{c_MF_Q2=1;  c_MF_Q2_cent=1; }
 
 	  // Pm
-	  if(Pm_MF_cut_flag){c_MF_Pm = Pm>=c_MF_Pm_min && Pm<=c_MF_Pm_max;
+	  if(Pm_MF_cut_flag){
+	    c_MF_Pm      = Pm>=c_MF_Pm_min      && Pm<=c_MF_Pm_max;
 	    c_MF_Pm_cent = Pm>=c_MF_Pm_min_cent && Pm<=c_MF_Pm_max_cent;
 	  }
 	  else{c_MF_Pm=1; c_MF_Pm_cent=1;}
 
-	  // Em ( require this cut ONLY for deuteron)
-	  if(Em_d2MF_cut_flag && tgt_type=="LD2"){c_d2MF_Em = Em_nuc>=c_d2MF_Em_min && Em_nuc <= c_d2MF_Em_max;}
-	  else{c_d2MF_Em=1;}
-
-	  // Em ( require this cut ONLY for A>2 nuclei)
-	  if(Em_MF_cut_flag && tgt_type!="LD2"){c_MF_Em = Em_nuc >= c_MF_Em_min && Em_nuc <= c_MF_Em_max;}
-	  else{c_MF_Em=1;}
-
-	  // theta_rq
-	  if(thrq_MF_cut_flag){c_MF_thrq = th_rq/dtr >= c_MF_thrq_min && th_rq/dtr <= c_MF_thrq_max;}
-	  else{c_MF_thrq=1;}
+	  // Em
+	  if(Em_MF_cut_flag){
+	    c_MF_Em      = Em_nuc >= c_MF_Em_min      && Em_nuc <= c_MF_Em_max;
+	    c_MF_Em_cent = Em_nuc >= c_MF_Em_min_cent && Em_nuc <= c_MF_Em_max_cent;
+	  }
+	  else{c_MF_Em=1; c_MF_Em_cent=1;}
 
 	  
-	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
+	  c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_MF_Em;  
 
 
 	  
 	  // CaFe A(e,e'p) Short-Range Correlations (SRC) Kinematic Cuts
 
 	  // Q2
-	  if(Q2_SRC_cut_flag){c_SRC_Q2 = Q2>=c_SRC_Q2_min && Q2<=c_SRC_Q2_max;}
-	  else{c_SRC_Q2=1;}
+	  if(Q2_SRC_cut_flag){
+	    c_SRC_Q2      = Q2>=c_SRC_Q2_min      && Q2<=c_SRC_Q2_max;
+	    c_SRC_Q2_cent = Q2>=c_SRC_Q2_min_cent && Q2<=c_SRC_Q2_max_cent;
+	  }
+	  else{c_SRC_Q2=1; c_SRC_Q2_cent=1;}
 
 	  // Pm
-	  if(Pm_SRC_cut_flag){c_SRC_Pm = Pm>=c_SRC_Pm_min && Pm<=c_SRC_Pm_max;}
-	  else{c_SRC_Pm=1;}
+	  if(Pm_SRC_cut_flag){
+	    c_SRC_Pm      = Pm>=c_SRC_Pm_min      && Pm<=c_SRC_Pm_max;
+	    c_SRC_Pm_cent = Pm>=c_SRC_Pm_min_cent && Pm<=c_SRC_Pm_max_cent;
+	  }
+	  else{c_SRC_Pm=1; c_SRC_Pm_cent=1;}
 
 	  // Xbj
-	  if(Xbj_SRC_cut_flag){c_SRC_Xbj = X >= c_SRC_Xbj_min && X <= c_SRC_Xbj_max;}
-	  else{c_SRC_Xbj=1;}
+	  if(Xbj_SRC_cut_flag){
+	    c_SRC_Xbj      = X >= c_SRC_Xbj_min      && X <= c_SRC_Xbj_max;
+	    c_SRC_Xbj_cent = X >= c_SRC_Xbj_min_cent && X <= c_SRC_Xbj_max_cent;
+	  }
+	  else{c_SRC_Xbj=1; c_SRC_Xbj_cent=1;}
 	  
 	  // theta_rq
-	  if(thrq_SRC_cut_flag){c_SRC_thrq = th_rq/dtr >= c_SRC_thrq_min && th_rq/dtr <= c_SRC_thrq_max;}
-	  else{c_SRC_thrq=1;}
-	  
-	  // Em ( require this cut ONLY for deuteron)
-	  if(Em_d2SRC_cut_flag && tgt_type=="LD2"){c_d2SRC_Em = Em_nuc>=c_d2SRC_Em_min && Em_nuc <= c_d2SRC_Em_max;}
-	  else{c_d2SRC_Em=1;}
-
-	  // Em ( require this cut ONLY for A>2 nuclei)
-	  if(Em_SRC_cut_flag && tgt_type!="LD2"){c_SRC_Em = Em_src>0. && Em_nuc <= Em_src; // put lower bound on Em_src cut
-	    //cout << "c_SRC_Em = " << c_SRC_Em << endl;
+	  if(thrq_SRC_cut_flag){
+	    c_SRC_thrq      = th_rq/dtr >= c_SRC_thrq_min      && th_rq/dtr <= c_SRC_thrq_max;
+	    c_SRC_thrq_cent = th_rq/dtr >= c_SRC_thrq_min_cent && th_rq/dtr <= c_SRC_thrq_max_cent;
 	  }
-	  else{c_SRC_Em=1;}
+	  else{c_SRC_thrq=1; c_SRC_thrq_cent=1;}
+	  
 	  
 
-	  c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq && c_d2SRC_Em && c_SRC_Em;
+	  c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq;
 
 
 	 
@@ -6459,41 +6518,72 @@ void baseAnalyzer::EventLoop()
 		  
 	
 
-		  // c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_d2MF_Em && c_MF_Em && c_MF_thrq;
-		  // c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq && c_d2SRC_Em && c_SRC_Em;
+		  // c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_MF_Em;
+		  // c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq;
 		  
-		  // generic cuts
-		  if(c_accpCuts && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
-
+		  // generic cuts (that will remain constant)
+		  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
+		    
+		    
 		    
 		    if(analysis_cut=="MF"){
-
-		      // --- Pm variation ---
 		      
+		      // --- Pm max cut variation (while keeping other cuts at central value) ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && Pm>=c_MF_Pm_min_cent && (Pm<=c_MF_Pm_max) ){
+			
+			// select "TRUE COINCIDENCE " 
+			if(eP_ctime_cut) { H_syst_dPm_max->Fill(Pm) ; } 
+			
+			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_max_rand->Fill(Pm) ;}	
+			  
+		      }
+
+		      
+		      // --- Q2 min. variation (while keeping other cuts at central value) ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_MF_Q2_min) && Q2<=c_MF_Q2_max_cent && c_MF_Em_cent && c_MF_Pm_cent){ ;}
+		      
+		      // --- Em max, variation (while keeping other cuts at central value) ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent &&  Em_nuc >= c_MF_Em_min_cent && (Em_nuc <= c_MF_Em_max) && c_MF_Pm_cent){;}
+		      
+		      // --- hms collimator variation
+		      if(shmsColl_Cut_cent && hmsColl_Cut && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){;}
+		      
+		      // --- shms collimator variation
+		      if(shmsColl_Cut && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){;}
 		      
 		    }
-		    
-		    
 		    
 		    
 		    if(analysis_cut=="SRC"){
 		      
-		      // --- Pm variation ---
-
+		      
+		      // --- SRC Pm min. variation ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && (Pm>=c_SRC_Pm_min) && Pm<=c_SRC_Pm_max_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      
+		      // --- SRC Pm max. variation ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && Pm>=c_SRC_Pm_min_cent && (Pm<=c_SRC_Pm_max) && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      
+		      // --- SRC Q2 min. variation ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_SRC_Q2_min) && Q2<=c_SRC_Q2_max_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      
+		      // --- SRC Xbj min. variation ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && (X >= c_SRC_Xbj_min) && X <= c_SRC_Xbj_max_cent && c_SRC_thrq_cent) {;}
+		      
+		      // --- SRC thrq max. variation ---
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && th_rq/dtr >= c_SRC_thrq_min_cent && (th_rq/dtr <= c_SRC_thrq_max)) {;}
+		      
+		      // --- hms collimator variation
+		      if(shmsColl_Cut_cent && hmsColl_Cut && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      
+		      // --- shms collimator variation
+		      if(shmsColl_Cut && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      
 		      
 		    }
 		    
-		    
-		  } // end generic
+		  } // end base cuts for individual  systematic studies
 		  
-		
-
-
-	 // --- Pm variation ---	    
-	// --- Q2 variation ---
-		  
-
-		  // --- Em variation ---
 
 		  //---------------------------------------------------------------------------------------------------
 		  
@@ -6650,18 +6740,12 @@ void baseAnalyzer::EventLoop()
 
       //------------------------------------------------------------------------------------
 
-
-      //Fill histogram for a given entry, where each entry filled is the yield (total counts after all cuts for that particula entry) binned, say in Pmiss
-      //H_syst->Fill(Pm_real, );
-
-
-
       
       // ---------------- write histos of a given entry to file ----------------------------                                                   
       outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), ientry), "RECREATE");                                  
                                                                                                                                                
       outROOT->cd();                                                                                                                           
-      H_Q2->Write();                                                                                                                           
+                                                                                                                                
       outROOT->mkdir("kin_plots");                                                                                                             
       outROOT->mkdir("accp_plots");                                                                                                            
       outROOT->mkdir("rand_plots");                                                                                                            
@@ -6701,10 +6785,32 @@ void baseAnalyzer::EventLoop()
       H_MM      -> Reset();    H_MM_rand      -> Reset();    H_MM_rand_sub      -> Reset();
       H_thxq    -> Reset();    H_thxq_rand    -> Reset();    H_thxq_rand_sub    -> Reset();
       H_thrq    -> Reset();    H_thrq_rand    -> Reset();    H_thrq_rand_sub    -> Reset();
+
+      // systematics histos reset
+      H_syst_dPm_min          ->Reset();
+      H_syst_dPm_min_rand     ->Reset();
+      H_syst_dPm_min_rand_sub ->Reset();
+
+      H_syst_dPm_max          ->Reset();
+      H_syst_dPm_max_rand     ->Reset();
+      H_syst_dPm_max_rand_sub ->Reset();
+
+      
       //-----------------------------------------------------------------------------------------------
       
       //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << std::flush << "\r";
 
+
+      // --------------------------------------------------------------------------------------------
+      // ---------- Fill in the systematics histos integrated over all counts (per each cut entry)  --------
+      // --------------------------------------------------------------------------------------------
+      
+      syst_bin = H_systInt_dPm_max->FindBin( syst_dPm_max_real ); // find the bin number corresponding to the integrated counts (yield)
+      H_systInt_dPm_max->SetBinContent(syst_bin, syst_dPm_max_real);
+      H_systInt_dPm_max->SetBinError(syst_bin, syst_dPm_max_real_err);
+
+	
+      
       // keep track of each row entry in the systematics cut file
       row_cnt++;
       
@@ -6713,10 +6819,20 @@ void baseAnalyzer::EventLoop()
 
     } // end loop over each entry of the systematics cut file
 
-
-
     // close output systematics file
     out_sys.close();
+
+
+     // ---------------- Write Systematic Histos (over all cut entries) ----------------------------                                                   
+      outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_total.root", tgt_type.Data(), analysis_cut.Data()), "RECREATE");                                  
+                                                                                                                                               
+      outROOT->cd();                                                                                                                           
+                                                                                                                                
+      outROOT->mkdir("systematics");                                                                                                                                                                                                                                                                                                                                                                     
+      outROOT->cd("systematics");                                                                                                                
+      syst_HList->Write(); 
+      outROOT->Close(); 
+      // --------------------------------------------------------------------------------------------
       
   } // end analysis_type == systematics requirement
   
@@ -7114,6 +7230,12 @@ void baseAnalyzer::RandSub()
   H_thxq_rand     ->  Scale( P_scale_factor );
   H_thrq_rand     ->  Scale( P_scale_factor );
 
+  // systematics histograms
+  if(analysis_type=="systematics"){
+
+    H_syst_dPm_max_rand -> Scale( P_scale_factor );
+
+  }
   
   // -----Carry out the randoms subtraction------
   H_ep_ctime_rand_sub ->Add(H_ep_ctime_real  ,H_ep_ctime_rand , 1, -1);
@@ -7129,6 +7251,14 @@ void baseAnalyzer::RandSub()
   H_thxq_rand_sub    -> Add(H_thxq      ,H_thxq_rand     , 1, -1);
   H_thrq_rand_sub    -> Add(H_thrq      ,H_thrq_rand     , 1, -1);  
 
+    if(analysis_type=="systematics"){
+
+      // systematics histograms
+      H_syst_dPm_max_rand_sub -> Add(H_syst_dPm_max, H_syst_dPm_max_rand, 1, -1);
+
+    }
+
+  
       
   // Get Counts of "good events for saving to CaFe Report File"
   total_bins = H_W->GetNbinsX();  //Get total number of bins (excluding overflow) (same for total, reals randoms, provied same histo range)
@@ -7162,7 +7292,19 @@ void baseAnalyzer::RandSub()
   MM_total = H_MM          ->IntegralAndError(1, total_bins, MM_total_err);
   MM_real  = H_MM_rand_sub ->IntegralAndError(1, total_bins, MM_real_err);
   MM_rand  = H_MM_rand     ->IntegralAndError(1, total_bins, MM_rand_err);
-  
+
+
+    if(analysis_type=="systematics"){
+
+      // systematics (all counts are integrated over a missing momentum histogram, and the 'dPmax, dPmin, dEm_max, etc.'
+      // refers to the systematically varied cut while keeping all other cuts fixed, to investigate each cut sensitivity)
+      total_bins =  H_syst_dPm_max   ->GetNbinsX();
+      
+      syst_dPm_max_tot     =  H_syst_dPm_max          ->IntegralAndError(1, total_bins, syst_dPm_max_tot_err);
+      syst_dPm_max_real    =  H_syst_dPm_max_rand_sub ->IntegralAndError(1, total_bins, syst_dPm_max_real_err);
+      syst_dPm_max_rand    =  H_syst_dPm_max_rand     ->IntegralAndError(1, total_bins, syst_dPm_max_rand_err);
+
+    }
   
   
 }

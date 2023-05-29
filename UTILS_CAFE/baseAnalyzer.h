@@ -415,6 +415,11 @@ protected:
   Double_t single_peak_counts, single_peak_counts_err;
   Double_t multi_peak_counts,  multi_peak_counts_err;
   Double_t multi_track_eff,  multi_track_eff_err;
+
+  // SYSTEMATICS (define counting variables)
+  Double_t syst_dPm_max_tot,     syst_dPm_max_rand,     syst_dPm_max_real;
+  Double_t syst_dPm_max_tot_err, syst_dPm_max_rand_err, syst_dPm_max_real_err;
+
   
   //------------DECLARE HISTOGRAM BINNING VARIABLES-------------
   Double_t nbins;
@@ -1359,7 +1364,29 @@ protected:
   TH1F *H_thrq_rand;
   TH1F *H_thrq_rand_sub;
 
+
+
+  //------- SYSTEMATICS STUDIES HSITOGRAMS (total =  reals + randoms)
+
+  // variabled needed
+  int syst_bin;
+
+  // histogram for integrated quantities (e.g., intgrated H_syst_Pm_min_rand_sub, etc.)
+  TH1F *H_systInt_dPm_min;
+  TH1F *H_systInt_dPm_max;
+
   
+  // systematics by variying only lower bound of missing momentum (while keeping all other cuts fixed) for a particular entry cut combination
+  TH1F *H_syst_dPm_min;
+  TH1F *H_syst_dPm_min_rand;
+  TH1F *H_syst_dPm_min_rand_sub;
+
+  // systematics by variying only upper bound of missing momentum (while keeping all other cuts fixed)
+  TH1F *H_syst_dPm_max;
+  TH1F *H_syst_dPm_max_rand;
+  TH1F *H_syst_dPm_max_rand_sub;
+
+ 
   //-----------END CREATE HISTOGRAMS-----------
 
 
@@ -2265,6 +2292,9 @@ protected:
 
   TList * quality_HList; // store quality-check histos (will NOT be weighted or summed over all runs)
   TList * charge_HList;
+
+  TList * syst_HList; // to store systematics studies histos
+
   //---------------------------------------------
 
 
