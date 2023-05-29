@@ -6275,17 +6275,12 @@ void baseAnalyzer::EventLoop()
 
 	  //Collimator CUTS
 	  if(hmsCollCut_flag)  { hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);
-
-	    cout << Form("v1:hms_scale: %.1f", hms_scale) << endl;
-	    cout << Form("v1:hmsColl_cut: %i", hmsColl_Cut) << endl;
 	    
 	    // re-set hms scale to central value for setting standard hms collimator cut
 	    hms_scale = hms_scale_cent;  
 	    CollimatorStudy(); // call again 
 	    hmsColl_Cut_cent =  hms_Coll_gCut->IsInside(hYColl, hXColl);
 	      
-	    cout << Form("v2:hms_scale_cent: %.1f", hms_scale) << endl;
-	    cout << Form("v2:hmsColl_cut_cent: %i", hmsColl_Cut_cent) << endl;
 	  }
 	  else{hmsColl_Cut=1; hmsColl_Cut_cent=1;}
 	  
@@ -6355,12 +6350,16 @@ void baseAnalyzer::EventLoop()
 	  // CaFe A(e,e'p) Mean-Field (MF) Kinematic Cuts
 
 	  // Q2
-	  if(Q2_MF_cut_flag){c_MF_Q2 = Q2>=c_MF_Q2_min && Q2<=c_MF_Q2_max;}
-	  else{c_MF_Q2=1;}
+	  if(Q2_MF_cut_flag){c_MF_Q2 = Q2>=c_MF_Q2_min && Q2<=c_MF_Q2_max;
+	    c_MF_Q2_cent = Q2>=c_MF_Q2_min_cent && Q2<=c_MF_Q2_max_cent;
+	  }
+	  else{c_MF_Q2=1;  c_MF_Q2_cent; }
 
 	  // Pm
-	  if(Pm_MF_cut_flag){c_MF_Pm = Pm>=c_MF_Pm_min && Pm<=c_MF_Pm_max;}
-	  else{c_MF_Pm=1;}
+	  if(Pm_MF_cut_flag){c_MF_Pm = Pm>=c_MF_Pm_min && Pm<=c_MF_Pm_max;
+	    c_MF_Pm_cent = Pm>=c_MF_Pm_min_cent && Pm<=c_MF_Pm_max_cent;
+	  }
+	  else{c_MF_Pm=1; c_MF_Pm_cent=1;}
 
 	  // Em ( require this cut ONLY for deuteron)
 	  if(Em_d2MF_cut_flag && tgt_type=="LD2"){c_d2MF_Em = Em_nuc>=c_d2MF_Em_min && Em_nuc <= c_d2MF_Em_max;}
