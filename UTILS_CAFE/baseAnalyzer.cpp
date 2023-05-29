@@ -7179,8 +7179,8 @@ void baseAnalyzer::CollimatorStudy()
   // to avoid accidentally changing the collimator size
   hms_hsize = 4.575;  //cm 
   hms_vsize = 11.646;    
-  shms_hsize = 17.;  //cm 
-  shms_vsize = 25.;   
+  shms_hsize = 8.5;  //cm 
+  shms_vsize = 12.5;   
 
   //Scaling the HMS/SHMS Collimator Cuts
   hms_hsize = hms_scale*hms_hsize;  //The scale factor is read from set_heep_cuts.inp
