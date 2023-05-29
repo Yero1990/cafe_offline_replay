@@ -1437,7 +1437,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	//Define Input (.root) File Name Patterns (read principal raw ROOTfile from experiment)
 	//temp = trim(split(FindString("input_ROOTfilePattern", input_FileNamePattern.Data())[0], '=')[1]);
 	//data_InputFileName = Form(temp.Data(),  replay_type.Data(), replay_type.Data(), run, evtNum);
-	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
+	data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS3/ROOTfiles/cafe_replay_prod_%d_%d.root", run, evtNum);
 	//data_InputFileName = Form("ROOTfiles/sample/cafe_replay_sample_%d_%d.root", run, evtNum);      	
 	
 	//Check if ROOTfile exists
@@ -1455,7 +1455,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
       //Define Input (.report) File Name Pattern (read principal REPORTfile from experiment)
       //temp = trim(split(FindString("input_REPORTPattern", input_FileNamePattern.Data())[0], '=')[1]);
       //data_InputReport = Form(temp.Data(), replay_type.Data(), replay_type.Data(), run, evtNum);
-      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
+      data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS3/REPORT_OUTPUT/cafe_prod_%d_%d.report", run, evtNum);
       //data_InputReport = Form("REPORT_OUTPUT/sample/cafe_sample_%d_%d.report", run, evtNum);  
       
       //Check if REPORTFile exists
