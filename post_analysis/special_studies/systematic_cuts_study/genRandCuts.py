@@ -66,7 +66,7 @@ Pm_max_src_sig = 0.05
 
 
 # generate N random entries of cut ranges extracted from a gaussian sample
-entries = 5
+entries = 1000
 
 # get random cut from randoom gaussian sample
 hms_coll       = np.random.normal(hms_coll_mu, hms_coll_sig, entries)
@@ -96,6 +96,7 @@ for i in range(entries):
 ofile.close()
 
 #--------------------------------------------------
+'''
 # prepare subplots for histogramming random cuts
 fig, axs = plt.subplots(nrows=3, ncols=3)
 
@@ -143,7 +144,7 @@ axs[2, 2].set_xlabel(r'Scale Factor')
 fig.tight_layout()
 plt.show()
 #--------------------------------------------------
-
+'''
  
 '''
 # loop over all entries

@@ -727,6 +727,7 @@ void baseAnalyzer::Init(){
   // ----- SYSTEMATICS STUDIES HISTOGRAMS -------
 
   // -- integrated over all cut entries ---
+  H_systInt_total         = NULL;  
   H_systInt_dPm_min       = NULL;
   H_systInt_dPm_max       = NULL;
 
@@ -1362,7 +1363,7 @@ baseAnalyzer::~baseAnalyzer()
 
   
   // ----- SYSTEMATICS STUDIES HISTOGRAMS -------
-
+  delete H_systInt_total;      H_systInt_total         = NULL;   
   delete H_systInt_dPm_min;    H_systInt_dPm_min       = NULL;   
   delete H_systInt_dPm_max;    H_systInt_dPm_max       = NULL;
 
@@ -3500,10 +3501,11 @@ void baseAnalyzer::CreateHist()
 
     
     // integrated systematics (this is the integrated Pm histos filled for all cut entries, for a particular dkin cut sensitivity or the overall systematics)
-    H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min}); Integrated P_{miss} [GeV/c]; Entries; ",  500, 4500, 5500);
-    H_systInt_dPm_max            = new TH1F("H_systInt_dPm_max",  "P_{miss,syst} (#delta P_{miss,max}); Integrated P_{miss} [GeV/c]; Entries; ",  500, 4500, 5500);;
+    H_systInt_total              = new TH1F("H_systInt_total",  "P_{miss,syst} (total); Integrated P_{miss} [GeV/c]; Entries; ",  85, 0, 12000); // for SRC 
+    H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min}); Integrated P_{miss} [GeV/c]; Entries; ",  85, 0, 12000);
+    H_systInt_dPm_max            = new TH1F("H_systInt_dPm_max",  "P_{miss,syst} (#delta P_{miss,max}); Integrated P_{miss} [GeV/c]; Entries; ",  85, 0, 12000);;
 
-
+    syst_HList->Add(  H_systInt_total           ); 
     syst_HList->Add(  H_systInt_dPm_min         );
     syst_HList->Add(  H_systInt_dPm_max         );
     
@@ -6679,7 +6681,7 @@ void baseAnalyzer::EventLoop()
 			H_thx    ->Fill(th_x/dtr);
 			H_Pf     ->Fill(Pf);
 			
-			cout << "H_Pm COUNTS:  " << Pm << endl;   
+		      
 			
 			//----------------------------------------------------------------------
 			//---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
@@ -6777,6 +6779,7 @@ void baseAnalyzer::EventLoop()
       // --------------------------------------------------------------------------------------------
       
       syst_bin = H_systInt_dPm_max->FindBin( syst_dPm_max_real ); // find the bin number corresponding to the integrated counts (yield)
+      H_systInt_total->Fill(Pm_real);
       H_systInt_dPm_max->Fill(syst_dPm_max_real);
       //H_systInt_dPm_max->SetBinContent(syst_bin, 1); // for each entry, increment by 1 (e.g., if integrated Pm = 2340 for entry1 and 2542 for entry2,. . . then increment by +1 for eahch entry)
       //H_systInt_dPm_max->SetBinError(syst_bin, syst_dPm_max_real_err);

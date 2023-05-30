@@ -1371,7 +1371,8 @@ protected:
   // variabled needed
   int syst_bin;
 
-  // histogram for integrated quantities (e.g., intgrated H_syst_Pm_min_rand_sub, etc.)
+  // histogram for integrated quantities (e.g., intgrated H_syst_Pm_min_rand_sub, etc.)  
+  TH1F *H_systInt_total;
   TH1F *H_systInt_dPm_min;
   TH1F *H_systInt_dPm_max;
 
