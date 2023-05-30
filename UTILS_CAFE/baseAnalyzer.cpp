@@ -3473,8 +3473,8 @@ void baseAnalyzer::CreateHist()
     //--------------------------------------------------------------------
     //------------------ HISTOGRAM CATEGORY: SYSTEMATICS -----------------
     //--------------------------------------------------------------------
-    H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min})",  Pm_nbins, Pm_xmin, Pm_xmax);
-    H_systInt_dPm_max            = new TH1F("H_systInt_dPm_max",  "P_{miss,syst} (#delta P_{miss,max})",  Pm_nbins, Pm_xmin, Pm_xmax);;
+    H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min})",  500, 4500, 5500);
+    H_systInt_dPm_max            = new TH1F("H_systInt_dPm_max",  "P_{miss,syst} (#delta P_{miss,max})",  500, 4500, 5500);;
   
     H_syst_dPm_min_rand_sub      = new TH1F("H_syst_dPm_min_rand_sub",  "P_{miss,syst.randSub} (#delta P_{miss,min})",  Pm_nbins, Pm_xmin, Pm_xmax);
     H_syst_dPm_min               = new TH1F("H_syst_dPm_min",           "P_{miss,syst.total}    (#delta P_{miss,min}) ", Pm_nbins, Pm_xmin, Pm_xmax);
@@ -6066,8 +6066,8 @@ void baseAnalyzer::EventLoop()
     out_sys << "# real_yield -> randoms-subtracted, integrated missing-momentum counts" << endl;
     out_sys << "# rand_yield -> randoms (accidentals selected) yield integrated missing-momentum counts" << endl;
     out_sys << "# total_yield -> total (reals+randoms) integrated missing-momentum counts" << endl;
-    out_sys << "entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield,total_yield_err" << endl;
-
+    //out_sys << "entry,real_yield,real_yield_err,rand_yield,rand_yield_err,total_yield,total_yield_err" << endl;
+    out_sys << "entry,real_yield,real_yield_err,dPm_max,dPm_max_err" << endl;   
   
     
     //---------------------------------------------------------
@@ -6319,6 +6319,7 @@ void baseAnalyzer::EventLoop()
 	  // combined hms/shms pid cuts 
 	  c_pidCuts = c_pidCuts_shms && c_pidCuts_hms;
 
+	  //cout << "c_pidCuts: " << c_pidCuts << endl;    
 
 	   //----Acceptance Cuts----
 
@@ -6345,6 +6346,8 @@ void baseAnalyzer::EventLoop()
 	  
 	  c_accpCuts_hms = c_hdelta && c_hxptar && c_hyptar && hmsColl_Cut;
 	  
+	  //cout << "c_accpCuts_hms: " << c_accpCuts_hms << endl;   
+
 	  // electron arm
 	  if(edelta_cut_flag){c_edelta = e_delta>=c_edelta_min && e_delta<=c_edelta_max;} 
 	  else{c_edelta=1;} 
@@ -6367,14 +6370,16 @@ void baseAnalyzer::EventLoop()
 	  else{shmsColl_Cut=1; shmsColl_Cut_cent=1;}
 	  
 	  c_accpCuts_shms = c_edelta && c_exptar && c_eyptar && shmsColl_Cut;
-  
+	  //cout << "c_accpCuts_shms: " << c_accpCuts_shms << endl; 
+
 	  // z-reaction vertex difference
 	  if(ztarDiff_cut_flag){c_ztarDiff = ztar_diff>=c_ztarDiff_min && ztar_diff<=c_ztarDiff_max;} 
 	  else{c_ztarDiff=1;}
 
 	  // combined hms/shms acceptance cuts 
 	  c_accpCuts = c_accpCuts_hms && c_accpCuts_shms && c_ztarDiff;
-	  
+	  //cout << "c_accpCuts: " << c_accpCuts << endl;
+
 	  //----Specialized Kinematics Cuts----
 
 	  // H(e,e'p) Kinematics
@@ -6467,10 +6472,22 @@ void baseAnalyzer::EventLoop()
 	  
 
 	  c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq;
-
-
-	 
-			  	 
+	  
+	  
+	  /*
+	  cout << "c_SRC_Q2: " << c_SRC_Q2 << endl;
+	  cout << Form("(Q2, Q2_min, Q2_max) = (%.3f, %.3f, %.3f)", Q2, c_SRC_Q2_min, c_SRC_Q2_max) << endl;
+	  cout << "c_SRC_Pm: " << c_SRC_Pm << endl;
+	  cout << Form("(Pm, Pm_min, Pm_max) = (%.3f, %.3f, %.3f)", Pm, c_SRC_Pm_min, c_SRC_Pm_max) << endl;    
+	  cout << "c_SRC_Xbj: " << c_SRC_Xbj << endl;
+	  cout << Form("(Xbj, Xbj_min, Xbj_max) = (%.3f, %.3f, %.3f)", X, c_SRC_Xbj_min, c_SRC_Xbj_max) << endl;    
+	  cout << "c_SRC_thrq: " << c_SRC_thrq << endl;
+	  cout << Form("(thrq, thrq_min, thrq_max) = (%.3f, %.3f, %.3f)", (th_rq/dtr), c_SRC_thrq_min, c_SRC_thrq_max) << endl;    
+	  cout << "---------------" << endl;
+	  cout << "c_kinSRC_Cuts: " << c_kinSRC_Cuts << endl;
+	  cout << "---------------" << endl;
+	  cout << "" << endl;
+	  */
 	  // ----- Combine All CUTS -----
 
 	  // user pre-determined analysis kinematics cuts
@@ -6494,7 +6511,7 @@ void baseAnalyzer::EventLoop()
 	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  
-	  
+	  //cout << "c_baseCuts: " << c_baseCuts << endl;
 	  
 	  //====END: DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC)===
 
@@ -6518,14 +6535,13 @@ void baseAnalyzer::EventLoop()
 		  
 	
 
-		  // c_kinMF_Cuts = c_MF_Q2 && c_MF_Pm && c_MF_Em;
-		  // c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq;
-		  
+		 
 		  // generic cuts (that will remain constant)
 		  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
 		    
 		    
-		    
+		    //cout << "systematics level 1 : generic cuts" << endl;
+
 		    if(analysis_cut=="MF"){
 		      
 		      // --- Pm max cut variation (while keeping other cuts at central value) ---
@@ -6557,12 +6573,26 @@ void baseAnalyzer::EventLoop()
 		    
 		    if(analysis_cut=="SRC"){
 		      
+		      //cout << "systematics level 1 : generic cuts" << endl;   
 		      
 		      // --- SRC Pm min. variation ---
 		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && (Pm>=c_SRC_Pm_min) && Pm<=c_SRC_Pm_max_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
 		      
 		      // --- SRC Pm max. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && Pm>=c_SRC_Pm_min_cent && (Pm<=c_SRC_Pm_max) && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
+		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && Pm>=c_SRC_Pm_min_cent && (Pm<=c_SRC_Pm_max) && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+			//cout << Form("systematics level 2 : Pm, Pm_max_cut_central Pm_max variation cuts:%.3f, %.3f, %.3f",Pm, c_SRC_Pm_max_cent, c_SRC_Pm_max) << endl;  	
+			if(eP_ctime_cut) { 			
+			  cout << Form(" H_syst_dPm_max: Pm, %.3f", Pm) << endl;
+			  H_syst_dPm_max->Fill(Pm) ; 
+			} // select "TRUE COINCIDENCE "  
+			
+			if(ePctime_cut_flag && eP_ctime_cut_rand) { 	  
+			  cout << Form(" H_syst_dPm_max_rand: Pm, %.3f", Pm) << endl;   
+			  H_syst_dPm_max_rand->Fill(Pm) ;
+			}  // select "ACCIDENTAL COINCIDENCE BACKGROUND"    
+			
+		      }
 		      
 		      // --- SRC Q2 min. variation ---
 		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_SRC_Q2_min) && Q2<=c_SRC_Q2_max_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {;}
@@ -6591,7 +6621,7 @@ void baseAnalyzer::EventLoop()
 		  
 		   // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
 		  if(c_baseCuts){
-
+		    
 		    // full (reals + accidentals) coin. time spectrum with all other cuts   
 		    H_ep_ctime_total->Fill(epCoinTime_center); 
 		  
@@ -6637,7 +6667,8 @@ void baseAnalyzer::EventLoop()
 			H_kf     ->Fill(kf);
 			H_thx    ->Fill(th_x/dtr);
 			H_Pf     ->Fill(Pf);
-
+			
+			cout << "H_Pm COUNTS:  " << Pm << endl;   
 			
 			//----------------------------------------------------------------------
 			//---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
@@ -6730,13 +6761,21 @@ void baseAnalyzer::EventLoop()
       //Call the randoms subtraction method TO SUBTRACT RANDOM COINCIDENCES underneath real coincidences
       RandSub();
 
+      // --------------------------------------------------------------------------------------------
+      // ---------- Fill in the systematics histos integrated over all counts (per each cut entry)  --------
+      // --------------------------------------------------------------------------------------------
+      
+      syst_bin = H_systInt_dPm_max->FindBin( syst_dPm_max_real ); // find the bin number corresponding to the integrated counts (yield)
+      H_systInt_dPm_max->SetBinContent(syst_bin, syst_dPm_max_real);
+      H_systInt_dPm_max->SetBinError(syst_bin, syst_dPm_max_real_err);
+
 
       //------------------------------------------------------------------------------------
       // Here write the integrated Pm counts as well as the binned Pm counts to file
       //------------------------------------------------------------------------------------
 
-      out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",ientry, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err,Pm_total, Pm_total_err) << endl;
-
+      //out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",ientry, Pm_real, Pm_real_err, Pm_rand, Pm_rand_err,Pm_total, Pm_total_err) << endl;
+      out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f",ientry, Pm_real, Pm_real_err, syst_dPm_max_real, syst_dPm_max_real_err) << endl;        
 
       //------------------------------------------------------------------------------------
 
@@ -6798,17 +6837,7 @@ void baseAnalyzer::EventLoop()
       
       //-----------------------------------------------------------------------------------------------
       
-      //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << std::flush << "\r";
-
-
-      // --------------------------------------------------------------------------------------------
-      // ---------- Fill in the systematics histos integrated over all counts (per each cut entry)  --------
-      // --------------------------------------------------------------------------------------------
-      
-      syst_bin = H_systInt_dPm_max->FindBin( syst_dPm_max_real ); // find the bin number corresponding to the integrated counts (yield)
-      H_systInt_dPm_max->SetBinContent(syst_bin, syst_dPm_max_real);
-      H_systInt_dPm_max->SetBinError(syst_bin, syst_dPm_max_real_err);
-
+      //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 100 * 100. << "  % " << std::flush << "\r";
 	
       
       // keep track of each row entry in the systematics cut file
@@ -7274,7 +7303,7 @@ void baseAnalyzer::RandSub()
   Pm_total = H_Pm          ->IntegralAndError(1, total_bins, Pm_total_err);
   Pm_real  = H_Pm_rand_sub ->IntegralAndError(1, total_bins, Pm_real_err);
   Pm_rand  = H_Pm_rand     ->IntegralAndError(1, total_bins, Pm_rand_err);
-
+  cout << "Pm_real: " << Pm_real << endl;
   Pm_real_rate = Pm_real / total_time_bcm_cut;
 
   
@@ -7315,7 +7344,7 @@ void baseAnalyzer::CollimatorStudy()
 
   //Method to study various collimator cuts on the H(e,e'p) and D(e,e'p)n  Yield across Ytar, Y'tar, X'tar and delta
 
-  cout << "Calling CollimatorStudy() . . . " << endl;
+  //cout << "Calling CollimatorStudy() . . . " << endl;
   
   // reset HMS/SHMS collimator sizes (in case this function gets called multiple times)
   // to avoid accidentally changing the collimator size
@@ -7331,7 +7360,7 @@ void baseAnalyzer::CollimatorStudy()
   shms_hsize = shms_scale*shms_hsize;
   shms_vsize = shms_scale*shms_vsize;  
 
-  cout << Form("hms_hsize, hms_vsize : %.3f, %.3f ", hms_hsize, hms_vsize) << endl; 
+  //cout << Form("hms_hsize, hms_vsize : %.3f, %.3f ", hms_hsize, hms_vsize) << endl; 
 
   //Define HMS Collimator Shape
   hms_Coll_gCut = new TCutG("hmsCollCut", 8 );
@@ -7363,7 +7392,7 @@ void baseAnalyzer::CollimatorStudy()
   shms_Coll_gCut->SetPoint(7,  shms_hsize,    -shms_vsize/2.);
   shms_Coll_gCut->SetPoint(8,  shms_hsize,     shms_vsize/2.);
 
-  cout << "Ending CollimatorStudy() . . . " << endl;
+  // cout << "Ending CollimatorStudy() . . . " << endl;
 
 
 }

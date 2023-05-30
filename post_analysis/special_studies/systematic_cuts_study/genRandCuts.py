@@ -66,7 +66,7 @@ Pm_max_src_sig = 0.05
 
 
 # generate N random entries of cut ranges extracted from a gaussian sample
-entries = 1000
+entries = 5
 
 # get random cut from randoom gaussian sample
 hms_coll       = np.random.normal(hms_coll_mu, hms_coll_sig, entries)
