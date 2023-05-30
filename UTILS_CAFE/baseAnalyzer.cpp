@@ -6779,7 +6779,8 @@ void baseAnalyzer::EventLoop()
       // --------------------------------------------------------------------------------------------
       
       syst_bin = H_systInt_dPm_max->FindBin( syst_dPm_max_real ); // find the bin number corresponding to the integrated counts (yield)
-      H_systInt_dPm_max->SetBinContent(syst_bin, 1); // for each entry, increment by 1 (e.g., if integrated Pm = 2340 for entry1 and 2542 for entry2,. . . then increment by +1 for eahch entry)
+      H_systInt_dPm_max->Fill(syst_dPm_max_real);
+      //H_systInt_dPm_max->SetBinContent(syst_bin, 1); // for each entry, increment by 1 (e.g., if integrated Pm = 2340 for entry1 and 2542 for entry2,. . . then increment by +1 for eahch entry)
       //H_systInt_dPm_max->SetBinError(syst_bin, syst_dPm_max_real_err);
 
 
