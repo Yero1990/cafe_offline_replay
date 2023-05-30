@@ -6596,12 +6596,10 @@ void baseAnalyzer::EventLoop()
 		
 			//cout << Form("systematics level 2 : Pm, Pm_max_cut_central Pm_max variation cuts:%.3f, %.3f, %.3f",Pm, c_SRC_Pm_max_cent, c_SRC_Pm_max) << endl;  	
 			if(eP_ctime_cut) { 			
-			  cout << Form(" H_syst_dPm_max: Pm, %.3f", Pm) << endl;
 			  H_syst_dPm_max->Fill(Pm) ; 
 			} // select "TRUE COINCIDENCE "  
 			
 			if(ePctime_cut_flag && eP_ctime_cut_rand) { 	  
-			  cout << Form(" H_syst_dPm_max_rand: Pm, %.3f", Pm) << endl;   
 			  H_syst_dPm_max_rand->Fill(Pm) ;
 			}  // select "ACCIDENTAL COINCIDENCE BACKGROUND"    
 			
