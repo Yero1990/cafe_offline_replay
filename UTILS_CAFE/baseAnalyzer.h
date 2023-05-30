@@ -2293,7 +2293,8 @@ protected:
   TList * quality_HList; // store quality-check histos (will NOT be weighted or summed over all runs)
   TList * charge_HList;
 
-  TList * syst_HList; // to store systematics studies histos
+  TList * syst_entry_HList; // to store systematics studies histos per cut entry (this is more for debugging)
+  TList * syst_HList; // to store integrated (over all cut entries) systematics studies histos
 
   //---------------------------------------------
 
