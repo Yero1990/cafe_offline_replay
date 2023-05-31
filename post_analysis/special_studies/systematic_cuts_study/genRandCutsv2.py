@@ -3,6 +3,11 @@ import random
 import matplotlib.pyplot as plt
 import sys
 
+
+# User Arguments
+# ipython genRandCutsv2.py Q2_min Em_min_mf Em_max_mf Pm_max_mf hms_coll_scale shms_coll_scale xbj_min thrq_max Pm_min_src Pm_max_src
+# example: ipython genRandCutsv2.py 1.8 -0.02 0.09 0.270 1 1 1.2 40. 0.350 0.7 
+
 #output file to write cuts file
 ofname = 'post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv' 
 ofile = open(ofname, 'w+')
@@ -19,7 +24,7 @@ ofile.write('# \n'
             '# hms/shms_coll   : HMS/SHMS collimator scale factor cut variation\n'
             '#'
             )
-ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll\n') 
+ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src,hms_coll,shms_coll\n') 
 
 
 #----------------------------------------------------------------
@@ -60,21 +65,24 @@ xbj_min_mu = float(sys.argv[7])
 xbj_min_sig = 0.05
 
 # th_rq (SRC) : 40 +/- 4 deg
-thrq_max_mu = 40
+# thrq_max_mu = 40
+thrq_max_mu = float(sys.argv[8])
 thrq_max_sig = 2.
 
 # cut variation for both min/max Pm (SRC)
-Pm_min_src_mu = 0.350
+#Pm_min_src_mu = 0.350
+Pm_min_src_mu = float(sys.argv[9])
 Pm_min_src_sig = 0.01
 
-Pm_max_src_mu = 0.70
+#Pm_max_src_mu = 0.70
+Pm_max_src_mu = float(sys.argv[10])
 Pm_max_src_sig = 0.05
 
 # ---------------------------------------------------------------
 
 
 # generate N random entries of cut ranges extracted from a gaussian sample
-entries = 5
+entries = 1000
 
 # get random cut from randoom gaussian sample
 hms_coll       = np.random.normal(hms_coll_mu, hms_coll_sig, entries)
@@ -100,14 +108,14 @@ Pm_max_src   = np.random.normal(Pm_max_src_mu, Pm_max_src_sig, entries)
 
 for i in range(entries):
     # write random cuts to a .txt file
-    ofile.write("%i,%.3f, %.3f, %.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f \n" % (i, Q2_min[i], Q2_max,Em_min_mf,Em_max_mf[i],Pm_min_mf,Pm_max_mf[i],xbj_min_src[i],xbj_max_src,thrq_min_src,thrq_max_src[i],Pm_min_src[i],Pm_max_src[i], hms_coll[i], shms_coll[i] ))
+    ofile.write("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n" % (i, Q2_min[i], Q2_max,Em_min_mf,Em_max_mf[i],Pm_min_mf,Pm_max_mf[i],xbj_min_src[i],xbj_max_src,thrq_min_src,thrq_max_src[i],Pm_min_src[i],Pm_max_src[i], hms_coll[i], shms_coll[i] ))
 ofile.close()
 
 #--------------------------------------------------
 # prepare subplots for histogramming random cuts
 fig, axs = plt.subplots(nrows=3, ncols=3)
 
-nbins = 70
+nbins = 40
 axs[0,0].hist(Q2_min, nbins, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
 axs[0,0].set_title(r'4-Momentum Transfer, $Q^{2}_{min}$')
 axs[0,0].set_xlabel(r'$Q^{2}_{min}$ [GeV$^{2}$]')

@@ -416,9 +416,16 @@ protected:
   Double_t multi_peak_counts,  multi_peak_counts_err;
   Double_t multi_track_eff,  multi_track_eff_err;
 
-  // SYSTEMATICS (define counting variables)
-  Double_t syst_dPm_max_tot,     syst_dPm_max_rand,     syst_dPm_max_real;
-  Double_t syst_dPm_max_tot_err, syst_dPm_max_rand_err, syst_dPm_max_real_err;
+  // SYSTEMATICS (define  variables to count random-subtracted yield)
+  Double_t syst_total_real,   syst_total_real_err;
+  Double_t syst_dPm_min_real, syst_dPm_min_real_err;
+  Double_t syst_dPm_max_real, syst_dPm_max_real_err;
+  Double_t syst_dQ2_real,     syst_dQ2_real_err;
+  Double_t syst_dXbj_real,    syst_dXbj_real_err;
+  Double_t syst_dthrq_real,   syst_dthrq_real_err;
+  Double_t syst_dEm_real,     syst_dEm_real_err;
+  Double_t syst_dHcoll_real,  syst_dHcoll_real_err;
+  Double_t syst_dScoll_real,  syst_dScoll_real_err;
 
   
   //------------DECLARE HISTOGRAM BINNING VARIABLES-------------
@@ -1366,27 +1373,82 @@ protected:
 
 
 
-  //------- SYSTEMATICS STUDIES HSITOGRAMS (total =  reals + randoms)
+  //------- SYSTEMATICS STUDIES HSITOGRAMS 
 
-  // variabled needed
-  int syst_bin;
 
-  // histogram for integrated quantities (e.g., intgrated H_syst_Pm_min_rand_sub, etc.)  
+  //-----------------------------------------------------
+  // histograms of the yield integrated over all counts
+  // for the total and individual cut variations
+  //-----------------------------------------------------
+  // define fixed binning for integrated systematics histos
+  int syst_nbins     = 100;
+  Double_t syst_xmin = 0;
+  Double_t syst_xmax = 1000;
+  
+  // histogram for integrated quantities for total as well as cut-based variations (dPm, dEm, dXbj, dthrq, etc.)
   TH1F *H_systInt_total;
   TH1F *H_systInt_dPm_min;
   TH1F *H_systInt_dPm_max;
-
+  TH1F *H_systInt_dQ2;	 
+  TH1F *H_systInt_dXbj;	 
+  TH1F *H_systInt_dthrq; 
+  TH1F *H_systInt_dEm;	 
+  TH1F *H_systInt_dHcoll;
+  TH1F *H_systInt_dScoll;
   
-  // systematics by variying only lower bound of missing momentum (while keeping all other cuts fixed) for a particular entry cut combination
+  //-----------------------------------------------------
+  // histograms of the yield binned in missing momentum
+  // to be stored for each systematic cut entry for the total
+  // and individual cut variatons
+  //-----------------------------------------------------
+  
+  // no variation (use central cut values)
+  TH1F *H_syst_total;
+  TH1F *H_syst_total_rand;
+  TH1F *H_syst_total_rand_sub;
+
+  // vary lower bound of missing momentum (while keeping all other cuts fixed) for a particular entry cut combination
   TH1F *H_syst_dPm_min;
   TH1F *H_syst_dPm_min_rand;
   TH1F *H_syst_dPm_min_rand_sub;
 
-  // systematics by variying only upper bound of missing momentum (while keeping all other cuts fixed)
+  // vary upper bound of missing momentum (while keeping all other cuts fixed)
   TH1F *H_syst_dPm_max;
   TH1F *H_syst_dPm_max_rand;
   TH1F *H_syst_dPm_max_rand_sub;
 
+  // vary lower bound of Q2 (while keeping all other cuts fixed)
+  TH1F *H_syst_dQ2;
+  TH1F *H_syst_dQ2_rand;
+  TH1F *H_syst_dQ2_rand_sub;
+
+  // vary lower bound of Xbj (while keeping all other cuts fixed)
+  TH1F *H_syst_dXbj;
+  TH1F *H_syst_dXbj_rand;
+  TH1F *H_syst_dXbj_rand_sub;
+  
+  // vary upper bound of thrq (while keeping all other cuts fixed)
+  TH1F *H_syst_dthrq;
+  TH1F *H_syst_dthrq_rand;
+  TH1F *H_syst_dthrq_rand_sub;
+  
+  // vary upper bound of missing energy (while keeping all other cuts fixed)
+  TH1F *H_syst_dEm;
+  TH1F *H_syst_dEm_rand;
+  TH1F *H_syst_dEm_rand_sub;
+
+  // vary HMS collimator by +/- N % relative to geometrical size (while keeping all other cuts fixed)
+  TH1F *H_syst_dHcoll;
+  TH1F *H_syst_dHcoll_rand;
+  TH1F *H_syst_dHcoll_rand_sub;
+
+  // vary SHMS collimator by +/- N % relative to geometrical size (while keeping all other cuts fixed)
+  TH1F *H_syst_dScoll;
+  TH1F *H_syst_dScoll_rand;
+  TH1F *H_syst_dScoll_rand_sub;
+
+
+  
  
   //-----------END CREATE HISTOGRAMS-----------
 
