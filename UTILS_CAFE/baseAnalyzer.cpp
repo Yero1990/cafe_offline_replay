@@ -6168,7 +6168,7 @@ void baseAnalyzer::EventLoop()
     
     Double_t c_MF_Pm_min_cent    =  c_MF_Pm_min     ;   
     Double_t c_MF_Pm_max_cent    =  c_MF_Pm_max     ;   
-    Double_t c_MF_Pm_cent;
+    Bool_t   c_MF_Pm_cent;
     
     Double_t c_SRC_Q2_min_cent   =  c_SRC_Q2_min    ;  
     Double_t c_SRC_Q2_max_cent   =  c_SRC_Q2_max    ;  
@@ -6200,7 +6200,7 @@ void baseAnalyzer::EventLoop()
     
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -6216,7 +6216,7 @@ void baseAnalyzer::EventLoop()
     int row_cnt = 0;
     string col_str;
     double row_value;
-    bool debug = true;    
+    bool debug = false;    
 
     // Open / write header for output numerical file (where integrated counts per systematic cut entry will be stored)
     
@@ -6226,8 +6226,9 @@ void baseAnalyzer::EventLoop()
     // Write header to file
     out_sys << Form("# CaFe %s %s Systematics Cuts Summary", tgt_type.Data(), analysis_cut.Data() ) << endl;
     out_sys << "# entry -> id for a particular combination of random gaussian-generated data analysis cuts  " << endl;
-    out_sys << "# real_yield -> randoms-subtracted, integrated missing-momentum counts" << endl;
-    out_sys << "entry,Pm_real,Pm_real_err,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
+    out_sys << "# syst_total_real -> randoms-subtracted, integrated yield (varied all cuts simultaneously)" << endl;
+    out_sys << "# syst_dVAR_real,err -> randoms-subtracted integrated yield (kept all cuts at central value, and varied only VAR)" << endl;
+    out_sys << "entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
   
     
     //---------------------------------------------------------
@@ -6280,7 +6281,8 @@ void baseAnalyzer::EventLoop()
       hms_scale      = atof(parsed_header[13].c_str());
       shms_scale     = atof(parsed_header[14].c_str());
       
-      
+     
+
       if(debug){
 	cout << Form("ientry: %i ", ientry) << endl;
 	cout << Form("Q2_min,max_mf: %.3f, %.3f ",    c_MF_Q2_min,    c_MF_Q2_max    ) << endl;
@@ -6494,13 +6496,18 @@ void baseAnalyzer::EventLoop()
 	  else{c_hyptar=1;}
 
 	  //Collimator CUTS
-	  if(hmsCollCut_flag)  { hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);
+	  if(hmsCollCut_flag)  { 
 	    
+	    // re-set shms scale to variational cut value for setting variational hms coll. cut                                                                                         
+            hms_scale   = atof(parsed_header[13].c_str());
+	    CollimatorStudy(); // call again 
+	    hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);
+
 	    // re-set hms scale to central value for setting standard hms collimator cut
 	    hms_scale = hms_scale_cent;  
 	    CollimatorStudy(); // call again 
 	    hmsColl_Cut_cent =  hms_Coll_gCut->IsInside(hYColl, hXColl);
-	      
+	     
 	  }
 	  else{hmsColl_Cut=1; hmsColl_Cut_cent=1;}
 	  
@@ -6519,7 +6526,11 @@ void baseAnalyzer::EventLoop()
 	  else{c_eyptar=1;}
 
 	  //Collimator Cuts
-	  if(shmsCollCut_flag) { shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);
+	  if(shmsCollCut_flag) { 
+	    // re-set shms scale to variational cut value for setting variational shms coll. cut
+	    shms_scale     = atof(parsed_header[14].c_str()); 
+	    CollimatorStudy(); // call again 
+	    shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);
 
 	    // re-set shms scale to central value for setting standard shms collimator cut
 	    shms_scale = shms_scale_cent;  
@@ -6530,7 +6541,7 @@ void baseAnalyzer::EventLoop()
 	  else{shmsColl_Cut=1; shmsColl_Cut_cent=1;}
 	  
 	  c_accpCuts_shms = c_edelta && c_exptar && c_eyptar && shmsColl_Cut;
-	  //cout << "c_accpCuts_shms: " << c_accpCuts_shms << endl; 
+	
 
 	  // z-reaction vertex difference
 	  if(ztarDiff_cut_flag){c_ztarDiff = ztar_diff>=c_ztarDiff_min && ztar_diff<=c_ztarDiff_max;} 
@@ -6538,7 +6549,7 @@ void baseAnalyzer::EventLoop()
 
 	  // combined hms/shms acceptance cuts 
 	  c_accpCuts = c_accpCuts_hms && c_accpCuts_shms && c_ztarDiff;
-	  //cout << "c_accpCuts: " << c_accpCuts << endl;
+       
 
 	  //----Specialized Kinematics Cuts----
 
@@ -6690,12 +6701,33 @@ void baseAnalyzer::EventLoop()
 		  
 		  //----------------------Fill DATA Histograms-----------------------
 		  
-		  
-		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
-		  
-	
-
 		 
+		 
+		  /*
+		  cout << "TRUE COIN (v1)" <<  endl;  
+			  cout << "c_hdelta: " << c_hdelta << endl;
+			  cout << "c_hxptar: " << c_hxptar << endl; 
+			  cout << "c_hyptar: " << c_hyptar << endl; 
+			  cout << "c_edelta: " << c_edelta << endl;                                                                                                      
+			  cout << "c_exptar: " << c_exptar << endl;                                                                                                                             
+			  cout << "c_eyptar: " << c_eyptar << endl;
+			  cout << "c_pidCuts: " << c_pidCuts << endl;
+			  cout << "pdc_TheRealGolden " << pdc_TheRealGolden << endl;
+			  cout << "gevtyp>=4: " << gevtyp << endl;
+			  cout << "shmsColl_Cut_cent: " << shmsColl_Cut_cent << endl;
+			  cout << "hmsColl_Cut_cent: " << hmsColl_Cut_cent << endl;
+			  cout << "c_SRC_Q2_cent: " << c_SRC_Q2_cent << endl;
+			  cout << "c_SRC_Pm_cent: " << c_SRC_Pm_cent << endl;
+			  cout << "c_SRC_Xbj_cent: " << c_SRC_Xbj_cent << endl;
+			  cout << "c_SRC_thrq_cent:" << c_SRC_thrq_cent << endl;
+			  cout << "eP_ctime_cut:" << eP_ctime_cut << endl;
+			  cout << "-----------------------" << endl;
+			  cout << "c_baseCuts(v1): " << c_baseCuts << endl;
+			  cout << "" << endl;
+		  */
+
+		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
+		  	 
 		  // generic cuts (that will remain constant)
 		  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
 		    
@@ -6704,8 +6736,8 @@ void baseAnalyzer::EventLoop()
 
 		    if(analysis_cut=="MF"){
 
-		      // --- NO VARIATION (use central cut values) ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent ){
+		      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) ---
+		      if(shmsColl_Cut && hmsColl_Cut && c_MF_Q2 && c_MF_Em && c_MF_Pm ){
 			
 			// select "TRUE COINCIDENCE " 
 			if(eP_ctime_cut) { H_syst_total->Fill(Pm) ; } 
@@ -6779,11 +6811,13 @@ void baseAnalyzer::EventLoop()
 		    
 		    if(analysis_cut=="SRC"){
 
-		      // --- NO VARIATION (use central cut values) ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) --- 
+		      if(shmsColl_Cut && hmsColl_Cut && c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq) {
 
 			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) {  H_syst_total->Fill(Pm) ; }  
+			if(eP_ctime_cut) {  
+			  
+			  H_syst_total->Fill(Pm) ; }  
 
 			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
 			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_total_rand->Fill(Pm); }
@@ -6855,7 +6889,8 @@ void baseAnalyzer::EventLoop()
 		      
 		      // --- hms collimator variation
 		      if(shmsColl_Cut_cent && hmsColl_Cut && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
-
+			
+		     	
 			// select "TRUE COINCIDENCE " 
 			if(eP_ctime_cut) { H_syst_dHcoll->Fill(Pm) ; } 
 			
@@ -6896,7 +6931,7 @@ void baseAnalyzer::EventLoop()
 		      // select "TRUE COINCIDENCE " (electron-proton from same "beam bunch" form a coincidence)
 		    if(eP_ctime_cut)
 		      {
-			
+			//cout << "c_baseCuts(v2): " << c_baseCuts << endl; 
 			//Coincidence Time		      
 			H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
 			
@@ -7031,15 +7066,17 @@ void baseAnalyzer::EventLoop()
       // ---------- Fill in the systematics histos integrated over all counts (per each cut entry)  --------
       // --------------------------------------------------------------------------------------------
       
+      
+
       H_systInt_total   ->Fill(syst_total_real);
       H_systInt_dPm_min ->Fill(syst_dPm_min_real);
       H_systInt_dPm_max ->Fill(syst_dPm_max_real);
-      H_syst_dQ2        ->Fill(syst_dQ2_real);
-      H_syst_dXbj       ->Fill(syst_dXbj_real);
-      H_syst_dthrq      ->Fill(syst_dthrq_real);
-      H_syst_dEm        ->Fill(syst_dEm_real);
-      H_syst_dHcoll     ->Fill(syst_dHcoll_real);
-      H_syst_dScoll     ->Fill(syst_dScoll_real);
+      H_systInt_dQ2     ->Fill(syst_dQ2_real);
+      H_systInt_dXbj    ->Fill(syst_dXbj_real);
+      H_systInt_dthrq   ->Fill(syst_dthrq_real);
+      H_systInt_dEm     ->Fill(syst_dEm_real);
+      H_systInt_dHcoll  ->Fill(syst_dHcoll_real);
+      H_systInt_dScoll  ->Fill(syst_dScoll_real);
 
 
       //------------------------------------------------------------------------------------
@@ -7108,7 +7145,11 @@ void baseAnalyzer::EventLoop()
       H_thxq    -> Reset();    H_thxq_rand    -> Reset();    H_thxq_rand_sub    -> Reset();
       H_thrq    -> Reset();    H_thrq_rand    -> Reset();    H_thrq_rand_sub    -> Reset();
 
-      // systematics histos reset
+      // systematics histos reset (to be re-used for each new cut entry to fill histos)
+      H_syst_total            ->Reset();
+      H_syst_total_rand       ->Reset();
+      H_syst_total_rand_sub   ->Reset();
+
       H_syst_dPm_min          ->Reset();
       H_syst_dPm_min_rand     ->Reset();
       H_syst_dPm_min_rand_sub ->Reset();
@@ -7117,7 +7158,31 @@ void baseAnalyzer::EventLoop()
       H_syst_dPm_max_rand     ->Reset();
       H_syst_dPm_max_rand_sub ->Reset();
 
+      H_syst_dQ2              ->Reset();
+      H_syst_dQ2_rand         ->Reset();
+      H_syst_dQ2_rand_sub     ->Reset();
+
+      H_syst_dXbj              ->Reset();
+      H_syst_dXbj_rand         ->Reset();
+      H_syst_dXbj_rand_sub     ->Reset();
       
+      H_syst_dthrq              ->Reset();
+      H_syst_dthrq_rand         ->Reset();
+      H_syst_dthrq_rand_sub     ->Reset();
+      
+      H_syst_dEm              ->Reset();
+      H_syst_dEm_rand         ->Reset();
+      H_syst_dEm_rand_sub     ->Reset();
+      
+      H_syst_dHcoll              ->Reset();
+      H_syst_dHcoll_rand         ->Reset();
+      H_syst_dHcoll_rand_sub     ->Reset();
+      
+      H_syst_dScoll              ->Reset();
+      H_syst_dScoll_rand         ->Reset();
+      H_syst_dScoll_rand_sub     ->Reset();
+
+
       //-----------------------------------------------------------------------------------------------
       
       //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 100 * 100. << "  % " << std::flush << "\r";
@@ -7603,7 +7668,6 @@ void baseAnalyzer::RandSub()
   Pm_total = H_Pm          ->IntegralAndError(1, total_bins, Pm_total_err);
   Pm_real  = H_Pm_rand_sub ->IntegralAndError(1, total_bins, Pm_real_err);
   Pm_rand  = H_Pm_rand     ->IntegralAndError(1, total_bins, Pm_rand_err);
-  cout << "Pm_real: " << Pm_real << endl;
   Pm_real_rate = Pm_real / total_time_bcm_cut;
 
   
