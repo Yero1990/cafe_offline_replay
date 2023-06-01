@@ -1,3 +1,15 @@
+# Header Definitions: \n'
+# target       : target name analyzed 
+# ( <target>_corr) is corrected for contamination (Ca48) or impurity (B10,B11)
+# kin          : kinematics analyzed 
+# beam_time    : beam-on-target time [s] 
+# avg_current  : average beam current [uA]
+# total_charge : cumulative charge (over all runs) [mC] 
+# yield        : yield (counts integrated over Pm) with all data-analysis cuts applied 
+# yield_corr   : yield corrected for inefficiencies (hms/shms tracking + live_time)
+# yield_norm   : corrected yield (yield_corr) normalized by (total_charge transpacency area_density)
+# tgt_area_density: target density (g/cm2)
+# T N Z A    : transparency (T) # of neutrons (N) protons(Z) and nucleons (A)
 target,kin,beam_time,avg_current,total_charge,yield,yield_err,yield_corr,yield_corr_err,yield_norm,yield_norm_err,tgt_area_density,T,N,Z,A
 Be9,MF,4663.34,38.17,128.67,140645.028,375.119,157683.757,468.466,2071.71,6.155,0.9859,0.6,5.0,4.0,9.0
 Be9,SRC,17107.83,54.33,982.4,5692.368,76.347,6699.479,89.985,11.528,0.155,0.9859,0.6,5.0,4.0,9.0

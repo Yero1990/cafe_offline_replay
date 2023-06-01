@@ -56,7 +56,7 @@ thrq_max_mu = 40
 thrq_max_sig = 2.
 
 # cut variation for both min/max Pm (SRC)
-Pm_min_src_mu = 0.350
+Pm_min_src_mu = 0.375
 Pm_min_src_sig = 0.01
 
 Pm_max_src_mu = 0.70
