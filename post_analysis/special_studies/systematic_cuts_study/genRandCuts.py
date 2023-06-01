@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 
 #output file to write cuts file
-ofname = 'cafe_systematics_cuts_file_test.csv' 
+ofname = 'cafe_systematics_cuts_file.csv' 
 ofile = open(ofname, 'w+')
 ofile.write('# CaFe Systematics Cuts File\n')
 ofile.write('# \n'
@@ -96,7 +96,7 @@ for i in range(entries):
 ofile.close()
 
 #--------------------------------------------------
-'''
+
 # prepare subplots for histogramming random cuts
 fig, axs = plt.subplots(nrows=3, ncols=3)
 
@@ -131,11 +131,11 @@ axs[2, 0].hist(Pm_max_src, nbins, density=True, histtype='stepfilled', facecolor
 axs[2, 0].set_title(r'Missing Momentum, $P^{SRC}_{miss, max}$')
 axs[2, 0].set_xlabel(r'$P^{SRC}_{miss, max}$ [GeV/c]')
 
-axs[2, 1].hist(hms_coll, nbins, density=True, histtype='stepfilled', facecolor='gray', alpha=0.75)
+axs[2, 1].hist(hms_coll, nbins, density=True, histtype='stepfilled', facecolor='darkorange', alpha=0.75)
 axs[2, 1].set_title(r'HMS Collimator')
 axs[2, 1].set_xlabel(r'Scale Factor')
 
-axs[2, 2].hist(shms_coll, nbins, density=True, histtype='stepfilled', facecolor='silver', alpha=0.75)
+axs[2, 2].hist(shms_coll, nbins, density=True, histtype='stepfilled', facecolor='plum', alpha=0.75)
 axs[2, 2].set_title(r'SHMS Collimator')
 axs[2, 2].set_xlabel(r'Scale Factor')
 
@@ -144,7 +144,7 @@ axs[2, 2].set_xlabel(r'Scale Factor')
 fig.tight_layout()
 plt.show()
 #--------------------------------------------------
-'''
+
  
 '''
 # loop over all entries
