@@ -3858,6 +3858,12 @@ void baseAnalyzer::ScalerEventLoop()
       //Check If BCM Beam Current in Between Reads is Over Threshold
       //bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
       //if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
+      /*
+      cout << "-------------------" << endl;
+      cout << "Scal_BCM_current: " << Scal_BCM_current << endl;
+      cout << "bcm_thrs: " << bcm_thrs << endl;
+      cout << "---------------------" << endl;
+      */
       if(Scal_BCM_current>=bcm_thrs)
 	{
 	  
@@ -6216,7 +6222,7 @@ void baseAnalyzer::EventLoop()
     int row_cnt = 0;
     string col_str;
     double row_value;
-    bool debug = false;    
+    bool debug = true;    
 
     // Open / write header for output numerical file (where integrated counts per systematic cut entry will be stored)
     
@@ -6228,7 +6234,7 @@ void baseAnalyzer::EventLoop()
     out_sys << "# entry -> id for a particular combination of random gaussian-generated data analysis cuts  " << endl;
     out_sys << "# syst_total_real -> randoms-subtracted, integrated yield (varied all cuts simultaneously)" << endl;
     out_sys << "# syst_dVAR_real,err -> randoms-subtracted integrated yield (kept all cuts at central value, and varied only VAR)" << endl;
-    out_sys << "entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
+    out_sys << "# entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
   
     
     //---------------------------------------------------------
@@ -6313,7 +6319,8 @@ void baseAnalyzer::EventLoop()
 	  
 	  tree->GetEntry(jentry);
 
-	  
+	 
+			      
 	  //--------------CALCULATED KINEMATICS VARIABLES (IF THEY ARE NOT ALREADY DONE IN HCANA)-----------
 
 	  th_x = xangle - th_e;  //detected hadron angle for each particle
@@ -6682,15 +6689,30 @@ void baseAnalyzer::EventLoop()
 	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  
-	  //cout << "c_baseCuts: " << c_baseCuts << endl;
-	  
+	  /*
+	  if(c_baseCuts){
+	  cout << ""<< endl;
+	  cout << "c_baseCuts:   " << c_baseCuts << endl;
+	  cout << "c_accpCuts:   " << c_accpCuts << endl;
+	  cout << "c_pidCuts:    " << c_pidCuts << endl; 
+	  cout << "c_kinSRC_Cuts:" << c_kinSRC_Cuts << endl;
+	  cout << "-> c_SRC_Q2:  " << c_SRC_Q2 << endl;
+	  cout << "-> c_SRC_Pm:  " << c_SRC_Pm << endl;
+	  cout << "-> c_SRC_Xbj: " << c_SRC_Xbj << endl;
+	  cout << "-> c_SRC_thrq:" << c_SRC_thrq << endl;
+
+	  cout << "--------------" << endl;
+	  }
+	  */
 	  //====END: DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC)===
 
 	  
 	  //----------------------Check If BCM Current is within limits---------------------
 	  
+	 
 	  if(evt_flag_bcm[scal_read]==1)
 	    {
+	    
 	      
 	      //---------------------------------------------------------
 	      
@@ -6705,25 +6727,25 @@ void baseAnalyzer::EventLoop()
 		 
 		  /*
 		  cout << "TRUE COIN (v1)" <<  endl;  
-			  cout << "c_hdelta: " << c_hdelta << endl;
-			  cout << "c_hxptar: " << c_hxptar << endl; 
-			  cout << "c_hyptar: " << c_hyptar << endl; 
-			  cout << "c_edelta: " << c_edelta << endl;                                                                                                      
-			  cout << "c_exptar: " << c_exptar << endl;                                                                                                                             
-			  cout << "c_eyptar: " << c_eyptar << endl;
-			  cout << "c_pidCuts: " << c_pidCuts << endl;
-			  cout << "pdc_TheRealGolden " << pdc_TheRealGolden << endl;
-			  cout << "gevtyp>=4: " << gevtyp << endl;
-			  cout << "shmsColl_Cut_cent: " << shmsColl_Cut_cent << endl;
-			  cout << "hmsColl_Cut_cent: " << hmsColl_Cut_cent << endl;
-			  cout << "c_SRC_Q2_cent: " << c_SRC_Q2_cent << endl;
-			  cout << "c_SRC_Pm_cent: " << c_SRC_Pm_cent << endl;
-			  cout << "c_SRC_Xbj_cent: " << c_SRC_Xbj_cent << endl;
-			  cout << "c_SRC_thrq_cent:" << c_SRC_thrq_cent << endl;
-			  cout << "eP_ctime_cut:" << eP_ctime_cut << endl;
-			  cout << "-----------------------" << endl;
-			  cout << "c_baseCuts(v1): " << c_baseCuts << endl;
-			  cout << "" << endl;
+		  cout << "c_hdelta: " << c_hdelta << endl;
+		  cout << "c_hxptar: " << c_hxptar << endl; 
+		  cout << "c_hyptar: " << c_hyptar << endl; 
+		  cout << "c_edelta: " << c_edelta << endl;                                                                                                      
+		  cout << "c_exptar: " << c_exptar << endl;                                                                                                                             
+		  cout << "c_eyptar: " << c_eyptar << endl;
+		  cout << "c_pidCuts: " << c_pidCuts << endl;
+		  cout << "pdc_TheRealGolden " << pdc_TheRealGolden << endl;
+		  cout << "gevtyp>=4: " << gevtyp << endl;
+		  cout << "shmsColl_Cut_cent: " << shmsColl_Cut_cent << endl;
+		  cout << "hmsColl_Cut_cent: " << hmsColl_Cut_cent << endl;
+		  cout << "c_SRC_Q2_cent: " << c_SRC_Q2_cent << endl;
+		  cout << "c_SRC_Pm_cent: " << c_SRC_Pm_cent << endl;
+		  cout << "c_SRC_Xbj_cent: " << c_SRC_Xbj_cent << endl;
+		  cout << "c_SRC_thrq_cent:" << c_SRC_thrq_cent << endl;
+		  cout << "eP_ctime_cut:" << eP_ctime_cut << endl;
+		  cout << "-----------------------" << endl;
+		  cout << "c_baseCuts(v1): " << c_baseCuts << endl;
+		  cout << "" << endl;
 		  */
 
 		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
@@ -6732,7 +6754,7 @@ void baseAnalyzer::EventLoop()
 		  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
 		    
 		    
-		    //cout << "systematics level 1 : generic cuts" << endl;
+		 
 
 		    if(analysis_cut=="MF"){
 
@@ -6827,6 +6849,8 @@ void baseAnalyzer::EventLoop()
 		      // --- SRC Pm min. variation ---
 		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && (Pm>=c_SRC_Pm_min) && Pm<=c_SRC_Pm_max_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
 			
+			
+		       
 			// select "TRUE COINCIDENCE " 
 			if(eP_ctime_cut) {  H_syst_dPm_min->Fill(Pm) ; }  
 
@@ -7090,7 +7114,7 @@ void baseAnalyzer::EventLoop()
 
       
       // ---------------- write histos of a given entry to file ----------------------------                                                   
-      outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), ientry), "RECREATE");                                  
+      outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/%s_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), tgt_type.Data(), ientry), "RECREATE");                                  
                                                                                                                                                
       outROOT->cd();                                                                                                                           
                                                                                                                                 
@@ -7199,7 +7223,7 @@ void baseAnalyzer::EventLoop()
 
 
      // ---------------- Write Systematic Histos (over all cut entries) ----------------------------                                                   
-      outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/test_systematics_histos_total.root", tgt_type.Data(), analysis_cut.Data()), "RECREATE");                                  
+    outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/%s_systematics_histos_total.root", tgt_type.Data(), analysis_cut.Data(), tgt_type.Data()), "RECREATE");                                  
                                                                                                                                                
       outROOT->cd();                                                                                                                           
                                                                                                                                 
