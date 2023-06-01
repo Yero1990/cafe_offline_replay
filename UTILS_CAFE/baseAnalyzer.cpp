@@ -6234,7 +6234,7 @@ void baseAnalyzer::EventLoop()
     out_sys << "# entry -> id for a particular combination of random gaussian-generated data analysis cuts  " << endl;
     out_sys << "# syst_total_real -> randoms-subtracted, integrated yield (varied all cuts simultaneously)" << endl;
     out_sys << "# syst_dVAR_real,err -> randoms-subtracted integrated yield (kept all cuts at central value, and varied only VAR)" << endl;
-    out_sys << "# entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
+    out_sys << "entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
   
     
     //---------------------------------------------------------
