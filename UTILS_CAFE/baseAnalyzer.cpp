@@ -6651,21 +6651,7 @@ void baseAnalyzer::EventLoop()
 
 	  c_kinSRC_Cuts = c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq;
 	  
-	  
-	  /*
-	  cout << "c_SRC_Q2: " << c_SRC_Q2 << endl;
-	  cout << Form("(Q2, Q2_min, Q2_max) = (%.3f, %.3f, %.3f)", Q2, c_SRC_Q2_min, c_SRC_Q2_max) << endl;
-	  cout << "c_SRC_Pm: " << c_SRC_Pm << endl;
-	  cout << Form("(Pm, Pm_min, Pm_max) = (%.3f, %.3f, %.3f)", Pm, c_SRC_Pm_min, c_SRC_Pm_max) << endl;    
-	  cout << "c_SRC_Xbj: " << c_SRC_Xbj << endl;
-	  cout << Form("(Xbj, Xbj_min, Xbj_max) = (%.3f, %.3f, %.3f)", X, c_SRC_Xbj_min, c_SRC_Xbj_max) << endl;    
-	  cout << "c_SRC_thrq: " << c_SRC_thrq << endl;
-	  cout << Form("(thrq, thrq_min, thrq_max) = (%.3f, %.3f, %.3f)", (th_rq/dtr), c_SRC_thrq_min, c_SRC_thrq_max) << endl;    
-	  cout << "---------------" << endl;
-	  cout << "c_kinSRC_Cuts: " << c_kinSRC_Cuts << endl;
-	  cout << "---------------" << endl;
-	  cout << "" << endl;
-	  */
+
 	  // ----- Combine All CUTS -----
 
 	  // user pre-determined analysis kinematics cuts
@@ -6689,21 +6675,7 @@ void baseAnalyzer::EventLoop()
 	    c_baseCuts =  c_accpCuts && c_pidCuts && c_kinSRC_Cuts && pdc_TheRealGolden==1 && gevtyp>=4;
 	  }
 	  
-	  /*
-	  if(c_baseCuts){
-	  cout << ""<< endl;
-	  cout << "c_baseCuts:   " << c_baseCuts << endl;
-	  cout << "c_accpCuts:   " << c_accpCuts << endl;
-	  cout << "c_pidCuts:    " << c_pidCuts << endl; 
-	  cout << "c_kinSRC_Cuts:" << c_kinSRC_Cuts << endl;
-	  cout << "-> c_SRC_Q2:  " << c_SRC_Q2 << endl;
-	  cout << "-> c_SRC_Pm:  " << c_SRC_Pm << endl;
-	  cout << "-> c_SRC_Xbj: " << c_SRC_Xbj << endl;
-	  cout << "-> c_SRC_thrq:" << c_SRC_thrq << endl;
 
-	  cout << "--------------" << endl;
-	  }
-	  */
 	  //====END: DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC)===
 
 	  
@@ -6723,30 +6695,7 @@ void baseAnalyzer::EventLoop()
 		  
 		  //----------------------Fill DATA Histograms-----------------------
 		  
-		 
-		 
-		  /*
-		  cout << "TRUE COIN (v1)" <<  endl;  
-		  cout << "c_hdelta: " << c_hdelta << endl;
-		  cout << "c_hxptar: " << c_hxptar << endl; 
-		  cout << "c_hyptar: " << c_hyptar << endl; 
-		  cout << "c_edelta: " << c_edelta << endl;                                                                                                      
-		  cout << "c_exptar: " << c_exptar << endl;                                                                                                                             
-		  cout << "c_eyptar: " << c_eyptar << endl;
-		  cout << "c_pidCuts: " << c_pidCuts << endl;
-		  cout << "pdc_TheRealGolden " << pdc_TheRealGolden << endl;
-		  cout << "gevtyp>=4: " << gevtyp << endl;
-		  cout << "shmsColl_Cut_cent: " << shmsColl_Cut_cent << endl;
-		  cout << "hmsColl_Cut_cent: " << hmsColl_Cut_cent << endl;
-		  cout << "c_SRC_Q2_cent: " << c_SRC_Q2_cent << endl;
-		  cout << "c_SRC_Pm_cent: " << c_SRC_Pm_cent << endl;
-		  cout << "c_SRC_Xbj_cent: " << c_SRC_Xbj_cent << endl;
-		  cout << "c_SRC_thrq_cent:" << c_SRC_thrq_cent << endl;
-		  cout << "eP_ctime_cut:" << eP_ctime_cut << endl;
-		  cout << "-----------------------" << endl;
-		  cout << "c_baseCuts(v1): " << c_baseCuts << endl;
-		  cout << "" << endl;
-		  */
+		
 
 		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
 		  	 
@@ -7207,7 +7156,7 @@ void baseAnalyzer::EventLoop()
 
       //-----------------------------------------------------------------------------------------------
       
-      //cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 100 * 100. << "  % " << std::flush << "\r";
+      cout << "SystematicEntry: " << std::setprecision(2) << double(ientry) / 1000 * 100. << "  % " << std::flush << "\r";
 	
       
       // keep track of each row entry in the systematics cut file

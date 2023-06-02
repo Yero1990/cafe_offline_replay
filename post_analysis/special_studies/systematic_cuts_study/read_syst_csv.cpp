@@ -10,7 +10,7 @@ using namespace std;
 void read_syst_csv()
 {
 
-  string csv_file = "cafe_systematics_cuts_file.csv";
+  string csv_file = "cafe_systematics_cuts_file_test.csv";
 
   ifstream myFileStream(csv_file.c_str());
 

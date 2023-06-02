@@ -24,7 +24,7 @@ ofile.write('# \n'
             '# hms/shms_coll   : HMS/SHMS collimator scale factor cut variation\n'
             '#'
             )
-ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src,hms_coll,shms_coll\n') 
+ofile.write('# entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src,hms_coll,shms_coll\n') 
 
 
 #----------------------------------------------------------------

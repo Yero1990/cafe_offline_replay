@@ -18,7 +18,7 @@ ofile.write('# \n'
             '# hms/shms_coll   : HMS/SHMS collimator scale factor cut variation\n'
             '#'
             )
-ofile.write('entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll\n') 
+ofile.write('# entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll\n') 
 
 
 #----------------------------------------------------------------
@@ -100,7 +100,7 @@ ofile.close()
 # prepare subplots for histogramming random cuts
 fig, axs = plt.subplots(nrows=3, ncols=3)
 
-nbins = 70
+nbins = 40
 axs[0,0].hist(Q2_min, nbins, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
 axs[0,0].set_title(r'4-Momentum Transfer, $Q^{2}_{min}$')
 axs[0,0].set_xlabel(r'$Q^{2}_{min}$ [GeV$^{2}$]')
