@@ -9,8 +9,6 @@ echo "Running as ${USER}"
 targ=$1
 ana_cut=$2
 
-echo "RunList: ${RunList}"
-
 if [[ -z "$1" ]]; then
     echo ""
     echo "-----------------------------------------------------"

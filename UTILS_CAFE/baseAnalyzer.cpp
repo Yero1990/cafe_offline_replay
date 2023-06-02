@@ -1517,7 +1517,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 	cout << "analysis_cut: " << analysis_cut.Data() << endl;
  	//data_InputFileName = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_replay_prod_%s_%s_systematics.root", tgt_type.Data(), analysis_cut.Data() ); /// make sure file with this generic name exists
      
-	data_InputFileName = Form("SYSTEMATICS/cafe_systematics_%s_%s.root", tgt_type.Data(), analysis_cut.Data() );
+	data_InputFileName = Form("SYSTEMATICS/input/cafe_systematics_%s_%s.root", tgt_type.Data(), analysis_cut.Data() );
 	//Check if ROOTfile exists                                                                                                                                                                                                              
         in_file.open(data_InputFileName.Data());                                                                                                                          
         cout << "in_file.fail() --> " << in_file.fail() << endl;                                                                                                                                                                      
@@ -1530,7 +1530,7 @@ void baseAnalyzer::ReadInputFile(bool set_input_fnames=true, bool set_output_fna
 
 	//data_InputReport = Form("/cache/hallc/c-cafe-2022/analysis/OFFLINE/PASS2/ROOTfiles/systematics/cafe_prod_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data());
        
-	data_InputReport = Form("SYSTEMATICS/cafe_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data() ); 
+	data_InputReport = Form("SYSTEMATICS/input/cafe_systematics_%s_%s.report", tgt_type.Data(), analysis_cut.Data() ); 
 
 	cout << "data_InputReport: " << data_InputReport.Data() << endl;
 	//Check if REPORTFile exists                                                                              
@@ -3633,8 +3633,8 @@ void baseAnalyzer::CreateHist()
 
     // define binning for systematics depending on whether MF or SRC
     
-    if(analysis_cut=="MF")  {syst_nbins = 570;  syst_xmin = 0; syst_xmax = 80000.; }
-    if(analysis_cut=="SRC") {syst_nbins = 85;   syst_xmin = 0; syst_xmax = 12000.; }
+    if(analysis_cut=="MF")  {syst_nbins = 1430;  syst_xmin = 0; syst_xmax = 200000.; }
+    if(analysis_cut=="SRC") {syst_nbins = 85;    syst_xmin = 0; syst_xmax = 12000.; }
     
     H_systInt_total              = new TH1F("H_systInt_total",    "P_{miss,syst} (total); Integrated P_{miss} [GeV/c]; Entries; ",                syst_nbins, syst_xmin, syst_xmax); // for SRC 
     H_systInt_dPm_min            = new TH1F("H_systInt_dPm_min",  "P_{miss,syst} (#delta P_{miss,min}); Integrated P_{miss} [GeV/c]; Entries; ",  syst_nbins, syst_xmin, syst_xmax);
@@ -6206,7 +6206,7 @@ void baseAnalyzer::EventLoop()
     
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file_test.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
