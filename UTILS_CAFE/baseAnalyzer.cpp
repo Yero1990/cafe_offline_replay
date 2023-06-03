@@ -3662,6 +3662,9 @@ void baseAnalyzer::CreateHist()
 //_______________________________________________________________________________
 void baseAnalyzer::ReadScalerTree()
 {
+
+  if(analysis_type=="systematics") return;
+  
   cout << "Calling Base ReadScalerTree()  " << endl;
   cout << Form("Using %s ", bcm_type.Data()) << endl;
 
@@ -3751,6 +3754,10 @@ void baseAnalyzer::ReadScalerTree()
 //_______________________________________________________________________________
 void baseAnalyzer::ScalerEventLoop()
 {
+
+  // systematics use the skimmed file (no need to loop over scaler tree again,
+  // since, skimmed files already scaler-analyzed)
+  if(analysis_type=="systematics") return;
   
   cout << "Calling Base ScalerEventLoop() " << endl;
 
@@ -3855,15 +3862,6 @@ void baseAnalyzer::ScalerEventLoop()
       total_edtm_scaler = EDTM_scaler;
 
     
-      //Check If BCM Beam Current in Between Reads is Over Threshold
-      //bcm_thrs = 3.;  //reset bcm_thrs for +/- current cut
-      //if(abs(Scal_BCM_current-set_current)<=bcm_thrs)  // set_current +/- bcm_thrs (for beam current study)
-      /*
-      cout << "-------------------" << endl;
-      cout << "Scal_BCM_current: " << Scal_BCM_current << endl;
-      cout << "bcm_thrs: " << bcm_thrs << endl;
-      cout << "---------------------" << endl;
-      */
       if(Scal_BCM_current>=bcm_thrs)
 	{
 	  
@@ -5405,20 +5403,7 @@ void baseAnalyzer::EventLoop()
 	  if(evt_flag_bcm[scal_read]==1)
 	    {
 	      
-	      //cout << "passed BCM Cut !" << endl;
-	      //bool event_type_cut = false;
-	      
-	      //if( (analysis_cut=="heep_singles") || (analysis_cut=="lumi") || (analysis_cut=="optics") || (analysis_cut=="bcm_calib") ){
-	      //event_type_cut = (gevtyp==1 || gevtyp==3);  // use this to calculate live time for shms singles events only                               
-              //}
-	      //if((analysis_cut=="heep_coin") || (analysis_cut=="MF") || (analysis_cut=="SRC")){
-	      //event_type_cut = (gevtyp == 4);} //use this to calculate live time for coin. events only               
-	      //Count Accepted EDTM events (With bcm current cut: to be used in total edtm live time calculation)
-	      // if(c_edtm && event_type_cut){ total_edtm_accp_bcm_cut++;}
-	      //}
-	      
-	      
-	
+
 
 	      // during Feb 2023, Au197 data-taking, gate-widths were widened which casued a 2nd edtm peak to be within the time window, increasing the live time
 	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
@@ -5431,9 +5416,6 @@ void baseAnalyzer::EventLoop()
 		  H_raw_ctime_edtm->Fill( TRIG2_tdcTimeRaw-TRIG3_tdcTimeRaw );
 		
 		  H_raw_edtm->Fill(EDTM_tdcTimeRaw);
-		  //cout << "tgt_type Au197" << endl;
-		  //cout << "pEL_LO_tdcTimeRaw = " << pEL_LO_tdcTimeRaw << endl;
-		  //cout << "pEL_HI_tdcTimeRaw = " << pEL_HI_tdcTimeRaw << endl;
 		  total_edtm_accp_bcm_cut++;
 		}
 
@@ -5511,11 +5493,15 @@ void baseAnalyzer::EventLoop()
 		  if( hms_Coll_gCut->IsInside(hYColl, hXColl) )  { hms_coll_cut_bool=true; }
 		  if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
 		  
-		  // apply the following to the skimmed ttree:
-		  // 1_ loose cut on coin time window
+	
 
 		  if ( abs(epCoinTime-ctime_offset_peak_val) < 50. ) {
 
+		    // the skimmed ttree has the following applied:
+		    // 1_ loose cut on coin time window
+		    // 2_ no edtm cut
+		    // 3_ beam current cut (>bcm_thrs)
+		    
 		    tree_skim->Fill();
 
 		  }
@@ -6206,7 +6192,7 @@ void baseAnalyzer::EventLoop()
     
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/cafe_systematics_cuts_file.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/input/cafe_systematics_cuts_file.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -6339,104 +6325,9 @@ void baseAnalyzer::EventLoop()
 	  
 	  // Calculate special missing energy to cut on background @ SRC kinematics (only for online analysis) Em = nu - Tp - T_n (for A>2 nuclei)	 
 	  Em_src = nu - Tx - (sqrt(MN*MN + Pm*Pm) - MN); // assume kinetic energy of recoil system is that of a spectator SRC nucleon 
-
-	 
-	  // get center coin time peak (obtained from GetPeak() method)
-	  //epCoinTime_center       = epCoinTime-ctime_offset_peak_val;
-	  //epCoinTime_center_notrk = epCoinTime_notrk - ctime_offset_peak_notrk_val;
-
-
-	  //--------------DEFINE CUTS--------------------
 	  
-	  //CUTS USED IN EDTM LIVE TIME CALCULATION
-	  c_noedtm = EDTM_tdcTimeRaw == 0.;
-	  c_edtm   = EDTM_tdcTimeRaw  > 0.;
-	  c_trig1  = TRIG1_tdcTimeRaw > 0.;
-	  c_trig2  = TRIG2_tdcTimeRaw > 0.;
-	  c_trig3  = TRIG3_tdcTimeRaw > 0.;
-	  c_trig4  = TRIG4_tdcTimeRaw > 0.;
-	  c_trig5  = TRIG5_tdcTimeRaw > 0.;
-	  c_trig6  = TRIG6_tdcTimeRaw > 0.;
-
-	  c_notrig1  = TRIG1_tdcTimeRaw == 0.;
-	  c_notrig2  = TRIG2_tdcTimeRaw == 0.;
-	  c_notrig3  = TRIG3_tdcTimeRaw == 0.;
-	  c_notrig4  = TRIG4_tdcTimeRaw == 0.;
-	  c_notrig5  = TRIG5_tdcTimeRaw == 0.;
-	  c_notrig6  = TRIG6_tdcTimeRaw == 0.;
-
 	  
-	  //=====CUTS USED IN TRACKING EFFICIENCY CALCULATION=====
-
-	  //CUTS: HMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
-
-	  //Require at least a minimum number of track(s) 
-	  if(hdc_ntrk_cut_flag){c_hdc_ntrk = hdc_ntrack >= c_hdc_ntrk_min;}
-	  else{
-	    cout <<
-	      "********************************\n"
-	      "TRACKING EFFICIENCY ERROR: \n"
-	      "Must set hdc_ntrk_cut_flag = 1 \n"
-	      "See " <<  Form("%s", input_CutFileName.Data()) << "\n"
-	      "********************************"<< endl;
-	    
-	    //"*********************************************************" << endl;
-	    gSystem->Exit(0);}
-
-	  //Require a "Good Scintillator Hit" in the Fiducial Hodoscopoe Region
-	  if(hScinGood_cut_flag){c_hScinGood = hhod_GoodScinHit==1;}
-	  else{c_hScinGood=1;} //1 means allow all events (i.e., do not put hScinGood cut other than 1)
-
-	  //Require HMS Cherenkov Cut (for electron or hadron selection)
-	  if(hcer_cut_flag){c_hcer_NPE_Sum = hcer_npesum >= c_hnpeSum_min && hcer_npesum <= c_hnpeSum_max;}
-	  else{c_hcer_NPE_Sum=1;}
-
-	  //Require HMS Calorimeter Cut (for additional electron or hadron selection)
-	  if(hetotnorm_cut_flag){c_hetotnorm = hcal_etotnorm >= c_hetotnorm_min && hcal_etotnorm <= c_hetotnorm_max;}
-	  else{c_hetotnorm=1;}
-
-	  //Require HMS Hodoscope Beta Cut (no track-biased) (for electron or hadron selection)
-	  if(hBeta_notrk_cut_flag){c_hBeta_notrk = hhod_beta_ntrk >= c_hBetaNtrk_min && hhod_beta_ntrk <= c_hBetaNtrk_max;}
-	  else{c_hBeta_notrk=1;}
-
-
-	  //CUTS: SHMS TRACKING EFFICIENCY (May be for e- or hadrons, depending on the limits set in the input file)
-
-	  //Require at least a minimum number of track(s) 
-	  //if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack == c_pdc_ntrk_min;} // C.Y. Jan 2023 require ONLY onw track for now, to study track efficiency
-	  if(pdc_ntrk_cut_flag){c_pdc_ntrk = pdc_ntrack >= c_pdc_ntrk_min;}
-	  else{
-	    cout <<
-	      "********************************\n"
-	      "TRACKING EFFICIENCY ERROR: \n"
-	      "Must set pdc_ntrk_cut_flag = 1 \n"
-	      "See " <<  Form("%s", input_CutFileName.Data()) << "\n"
-	      "********************************"<< endl;
-	    
-	    //"*********************************************************" << endl;
-	    gSystem->Exit(0);}
-
-	  //Require a "Good Scintillator Hit" in the Fiducial Hodoscopoe Region
-	  if(pScinGood_cut_flag){c_pScinGood = phod_GoodScinHit==1;}
-	  else{c_pScinGood=1;} //1 means allow all events (do not put hScinGood cut)
-
-	  //Require SHMS Noble Gas Cherenkov Cut (for electron or hadron selection)
-	  if(pngcer_cut_flag){c_pngcer_NPE_Sum = pngcer_npesum >= c_pngcer_npeSum_min &&  pngcer_npesum <= c_pngcer_npeSum_max;}
-	  else{c_pngcer_NPE_Sum=1;}
-
-	  //Require SHMS Heavy Gas Cherenkov Cut (for electron or hadron selection)
-	  if(phgcer_cut_flag){c_phgcer_NPE_Sum = phgcer_npesum >= c_phgcer_npeSum_min &&  phgcer_npesum <= c_phgcer_npeSum_max;}
-	  else{c_phgcer_NPE_Sum=1;}
-	  
-	  //Require SHMS Calorimeter Cut (for additional electron or hadron selection)
-	  if(petotnorm_cut_flag){c_petotnorm = pcal_etotnorm >= c_petotnorm_min && pcal_etotnorm <= c_petotnorm_max;}
-	  else{c_petotnorm=1;}
-
-	  //Require SHMS Hodoscope Beta Cut (no track-biased) (for electron or hadron selection)
-	  if(pBeta_notrk_cut_flag){c_pBeta_notrk = phod_beta_ntrk >= c_pBetaNtrk_min && phod_beta_ntrk <= c_pBetaNtrk_max;}
-	  else{c_pBeta_notrk=1;}
-
-	  
+		  
 	  //====DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC, except PID & COIN TIME CUTS on detectors)====
 
 	  // CUTS (SPECIFIC TO DATA)
@@ -6492,7 +6383,6 @@ void baseAnalyzer::EventLoop()
 	  // combined hms/shms pid cuts 
 	  c_pidCuts = c_pidCuts_shms && c_pidCuts_hms;
 
-	  //cout << "c_pidCuts: " << c_pidCuts << endl;    
 
 	   //----Acceptance Cuts----
 
@@ -6509,12 +6399,12 @@ void baseAnalyzer::EventLoop()
 	  //Collimator CUTS
 	  if(hmsCollCut_flag)  { 
 	    
-	    // re-set shms scale to variational cut value for setting variational hms coll. cut                                                                                         
+	    // re-set hms scale to read variational cut value for setting variational hms coll. cut                                                                                         
             hms_scale   = atof(parsed_header[13].c_str());
-	    CollimatorStudy(); // call again 
+	    CollimatorStudy(); // call again, 
 	    hmsColl_Cut =  hms_Coll_gCut->IsInside(hYColl, hXColl);
 
-	    // re-set hms scale to central value for setting standard hms collimator cut
+	    // re-set hms scale to read central value for setting standard hms collimator cut
 	    hms_scale = hms_scale_cent;  
 	    CollimatorStudy(); // call again 
 	    hmsColl_Cut_cent =  hms_Coll_gCut->IsInside(hYColl, hXColl);
@@ -6524,8 +6414,6 @@ void baseAnalyzer::EventLoop()
 	  
 	  c_accpCuts_hms = c_hdelta && c_hxptar && c_hyptar && hmsColl_Cut;
 	  
-	  //cout << "c_accpCuts_hms: " << c_accpCuts_hms << endl;   
-
 	  // electron arm
 	  if(edelta_cut_flag){c_edelta = e_delta>=c_edelta_min && e_delta<=c_edelta_max;} 
 	  else{c_edelta=1;} 
@@ -6538,12 +6426,12 @@ void baseAnalyzer::EventLoop()
 
 	  //Collimator Cuts
 	  if(shmsCollCut_flag) { 
-	    // re-set shms scale to variational cut value for setting variational shms coll. cut
+	    // re-set shms scale to read variational cut value for setting variational shms coll. cut
 	    shms_scale     = atof(parsed_header[14].c_str()); 
 	    CollimatorStudy(); // call again 
 	    shmsColl_Cut =  shms_Coll_gCut->IsInside(eYColl, eXColl);
 
-	    // re-set shms scale to central value for setting standard shms collimator cut
+	    // re-set shms scale to read central value for setting standard shms collimator cut
 	    shms_scale = shms_scale_cent;  
 	    CollimatorStudy(); // call again 
 	    shmsColl_Cut_cent =  shms_Coll_gCut->IsInside(eYColl, eXColl);
@@ -6682,354 +6570,335 @@ void baseAnalyzer::EventLoop()
 
 	  //====END: DATA ANALYSIS CUTS (MUST BE EXACTLY SAME AS SIMC)===
 
+		  
+	  //----------------------Fill DATA Histograms-----------------------
+
+	  //** NOTE: Since "systematics" read the skimmed files, there is no need to apply beam current or edtm cuts,
+	  // as the skimmed files already have these cuts implemented
+		
+
+	  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
 	  
-	  //----------------------Check If BCM Current is within limits---------------------
-	  
-	 
-	  if(evt_flag_bcm[scal_read]==1)
-	    {
+	  // generic cuts (that will remain constant)
+	  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
 	    
+	    
+	    
+	    
+	    if(analysis_cut=="MF"){
 	      
-	      //---------------------------------------------------------
-	      
-	      
-	      //REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS
-	      if(c_noedtm)
-		{
-		  
-		  //----------------------Fill DATA Histograms-----------------------
-		  
+	      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) ---
+	      if(shmsColl_Cut && hmsColl_Cut && c_MF_Q2 && c_MF_Em && c_MF_Pm ){
 		
-
-		  // --------- APPLY SELECTIVE CUTS FOR CUT SENSITIVITY STUDY ON INDIVIDUAL KINEMATIC CUTS ------------
-		  	 
-		  // generic cuts (that will remain constant)
-		  if(c_hdelta && c_hxptar && c_hyptar && c_edelta && c_exptar && c_eyptar && c_pidCuts && pdc_TheRealGolden==1 && gevtyp>=4) {
-		    
-		    
-		 
-
-		    if(analysis_cut=="MF"){
-
-		      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) ---
-		      if(shmsColl_Cut && hmsColl_Cut && c_MF_Q2 && c_MF_Em && c_MF_Pm ){
-			
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_total->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_total_rand->Fill(Pm) ;}	
-			  
-		      }
-		      
-		      // --- Pm max cut variation (while keeping other cuts at central value) ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && Pm>=c_MF_Pm_min_cent && (Pm<=c_MF_Pm_max) ){
-			
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dPm_max->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_max_rand->Fill(Pm) ;}	
-			  
-		      }
-
-		      
-		      // --- Q2 min. variation (while keeping other cuts at central value) ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_MF_Q2_min) && Q2<=c_MF_Q2_max_cent && c_MF_Em_cent && c_MF_Pm_cent){
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dQ2->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dQ2_rand->Fill(Pm) ;}
-			
-			}
-		      
-		      // --- Em max, variation (while keeping other cuts at central value) ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent &&  Em_nuc >= c_MF_Em_min_cent && (Em_nuc <= c_MF_Em_max) && c_MF_Pm_cent){
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dEm->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dEm_rand->Fill(Pm) ;}
-			
-		      }
-
-		    
-		      
-		      // --- hms collimator variation
-		      if(shmsColl_Cut_cent && hmsColl_Cut && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dHcoll->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dHcoll_rand->Fill(Pm) ;}
-
-		      }
-		      
-		      // --- shms collimator variation
-		      if(shmsColl_Cut && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dScoll->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dScoll_rand->Fill(Pm) ;}
-
-
-		      }
- 
-		    } // end MF
-		    
-		    
-		    if(analysis_cut=="SRC"){
-
-		      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) --- 
-		      if(shmsColl_Cut && hmsColl_Cut && c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq) {
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) {  
-			  
-			  H_syst_total->Fill(Pm) ; }  
-
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_total_rand->Fill(Pm); }
-			
-		      }
-		      
-		      // --- SRC Pm min. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && (Pm>=c_SRC_Pm_min) && Pm<=c_SRC_Pm_max_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
-			
-			
-		       
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) {  H_syst_dPm_min->Fill(Pm) ; }  
-
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_min_rand->Fill(Pm); }
-			
-		      }
-		      
-		      // --- SRC Pm max. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && Pm>=c_SRC_Pm_min_cent && (Pm<=c_SRC_Pm_max) && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_total->Fill(Pm) ; } 
 		
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) {  H_syst_dPm_max->Fill(Pm) ; }  
-
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_max_rand->Fill(Pm); }     
-			
-		      }
-		      
-		      // --- SRC Q2 min. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_SRC_Q2_min) && Q2<=c_SRC_Q2_max_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dQ2->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dQ2_rand->Fill(Pm) ;}
-			
-		      }
-
-		    
-		      
-		      // --- SRC Xbj min. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && (X >= c_SRC_Xbj_min) && X <= c_SRC_Xbj_max_cent && c_SRC_thrq_cent) {
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dXbj->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dXbj_rand->Fill(Pm) ;}
-			
-			}
-
-
-		     
-		      
-		      // --- SRC thrq max. variation ---
-		      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && th_rq/dtr >= c_SRC_thrq_min_cent && (th_rq/dtr <= c_SRC_thrq_max)) {
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dthrq->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dthrq_rand->Fill(Pm) ;}
-			
-			}
-
-		      
-		      
-		      // --- hms collimator variation
-		      if(shmsColl_Cut_cent && hmsColl_Cut && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
-			
-		     	
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dHcoll->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dHcoll_rand->Fill(Pm) ;}
-			
-		      }
-		      
-		      // --- shms collimator variation
-		      if(shmsColl_Cut && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
-
-			// select "TRUE COINCIDENCE " 
-			if(eP_ctime_cut) { H_syst_dScoll->Fill(Pm) ; } 
-			
-			// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
-			if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dScoll_rand->Fill(Pm) ;}
-
-		      }
-		      
-		      
-		    } // end SRC
-		    
-		  } // end base cuts for individual  systematic studies
-		  
-
-		  //---------------------------------------------------------------------------------------------------
-		  
-		  
-		  
-		   // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
-		  if(c_baseCuts){
-		    
-		    // full (reals + accidentals) coin. time spectrum with all other cuts   
-		    H_ep_ctime_total->Fill(epCoinTime_center); 
-		    
-		    
-
-		      // select "TRUE COINCIDENCE " (electron-proton from same "beam bunch" form a coincidence)
-		    if(eP_ctime_cut)
-		      {
-			//cout << "c_baseCuts(v2): " << c_baseCuts << endl; 
-			//Coincidence Time		      
-			H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
-			
-		     	//Fill HMS Detectors
-			H_hCerNpeSum->Fill(hcer_npesum);
-			H_hCalEtotNorm->Fill(hcal_etotnorm);
-			H_hCalEtotTrkNorm->Fill(hcal_etottracknorm);
-			H_hHodBetaNtrk->Fill(hhod_beta_ntrk);
-			H_hHodBetaTrk->Fill(hhod_beta);
-			
-			//Fill SHMS Detectors
-			H_pNGCerNpeSum->Fill(pngcer_npesum);
-			H_pHGCerNpeSum->Fill(phgcer_npesum);
-			H_pCalEtotNorm->Fill(pcal_etotnorm);
-			H_pCalEtotTrkNorm->Fill(pcal_etottracknorm);
-			H_pHodBetaNtrk->Fill(phod_beta_ntrk);
-			H_pHodBetaTrk->Fill(phod_beta);
-
-			// ----  histograms that will be used in randoms subtraction -----
-			H_W       ->  Fill (W);       
-			H_Q2      ->  Fill (Q2);      
-			H_xbj     ->  Fill (X);     
-			H_nu      ->  Fill (nu);      
-			H_q       ->  Fill (q);       
-			H_Em      ->  Fill (Em);      
-			H_Em_nuc  ->  Fill (Em_nuc);  
-			H_Pm      ->  Fill (Pm);      
-			H_MM      ->  Fill (MM);      
-			H_thxq    ->  Fill (th_xq/dtr);    
-			H_thrq    ->  Fill (ph_xq/dtr); 
-			
-			//Other relevant Primary / Secondary Kinematics
-			H_the    ->Fill(th_e/dtr);
-			H_kf     ->Fill(kf);
-			H_thx    ->Fill(th_x/dtr);
-			H_Pf     ->Fill(Pf);
-			
-		      
-			
-			//----------------------------------------------------------------------
-			//---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
-			//----------------------------------------------------------------------
-			//Fill SPECTROMETER  ACCEPTANCE
-			H_exfp       ->Fill(e_xfp);
-			H_eyfp       ->Fill(e_yfp);
-			H_expfp      ->Fill(e_xpfp);
-			H_eypfp      ->Fill(e_ypfp);
-			
-			H_eytar      ->Fill(e_ytar);
-			H_exptar     ->Fill(e_xptar);
-			H_eyptar     ->Fill(e_yptar);
-			H_edelta     ->Fill(e_delta);
-			
-			H_hxfp       ->Fill(h_xfp);
-			H_hyfp       ->Fill(h_yfp);
-			H_hxpfp      ->Fill(h_xpfp);
-			H_hypfp      ->Fill(h_ypfp);
-			
-			H_hytar       ->Fill(h_ytar);
-			H_hxptar      ->Fill(h_xptar);
-			H_hyptar      ->Fill(h_yptar);
-			H_hdelta      ->Fill(h_delta);
-			
-			H_htar_x       ->Fill(htar_x);
-			H_htar_y       ->Fill(htar_y);
-			H_htar_z       ->Fill(htar_z);
-			H_etar_x       ->Fill(etar_x);
-			H_etar_y       ->Fill(etar_y);
-			H_etar_z       ->Fill(etar_z);
-			H_ztar_diff    ->Fill(ztar_diff);
-			
-			H_hXColl      ->Fill(hXColl);
-			H_hYColl      ->Fill(hYColl);
-			H_eXColl      ->Fill(eXColl);
-			H_eYColl      ->Fill(eYColl);
-			
-			H_hXColl_vs_hYColl  ->Fill(hYColl, hXColl);
-			H_eXColl_vs_eYColl  ->Fill(eYColl, eXColl);
-			
-			H_hxfp_vs_hyfp  ->Fill(h_yfp, h_xfp);
-			H_exfp_vs_eyfp  ->Fill(e_yfp, e_xfp);
-
-			
-			
-		      }
-		    
-		    // select "ACCIDENTAL COINCIDENCE BACKGROUND" left/right of main coin. peak as a sample to estimate background underneath main coin. peak
-		    // background underneath main peak: electron-proton from same "beam bunch" form a random ("un-correlated") coincidence
-		    
-		    if(ePctime_cut_flag && eP_ctime_cut_rand)		      
-		      {
-			// Only histograms of selected variables of interest will be filled with coincidence accidantal background (for background subtraction)
-			
-			H_ep_ctime_rand->  Fill ( epCoinTime_center );
-			H_W_rand       ->  Fill (W);       
-			H_Q2_rand      ->  Fill (Q2);      
-			H_xbj_rand     ->  Fill (X);     
-			H_nu_rand      ->  Fill (nu);      
-			H_q_rand       ->  Fill (q);       
-			H_Em_rand      ->  Fill (Em);      
-			H_Em_nuc_rand  ->  Fill (Em_nuc);  
-			H_Pm_rand      ->  Fill (Pm);      
-			H_MM_rand      ->  Fill (MM);      
-			H_thxq_rand    ->  Fill (th_xq/dtr);    
-			H_thrq_rand    ->  Fill (ph_xq/dtr);  
-			
-			
-			
-		      }
-		    
-		    
-		    
-		  } //----------------------END: Fill DATA Histograms-----------------------	
-		  
-		  
-		} //------END: REQUIRE "NO EDTM" CUT TO FILL DATA HISTOGRAMS-----
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_total_rand->Fill(Pm) ;}	
+		
+	      }
 	      
-	    } //-----END: BCM Current Cut------
+	      // --- Pm max cut variation (while keeping other cuts at central value) ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && Pm>=c_MF_Pm_min_cent && (Pm<=c_MF_Pm_max) ){
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dPm_max->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_max_rand->Fill(Pm) ;}	
+		
+	      }
+	      
+	      
+	      // --- Q2 min. variation (while keeping other cuts at central value) ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_MF_Q2_min) && Q2<=c_MF_Q2_max_cent && c_MF_Em_cent && c_MF_Pm_cent){
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dQ2->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dQ2_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      // --- Em max, variation (while keeping other cuts at central value) ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_MF_Q2_cent &&  Em_nuc >= c_MF_Em_min_cent && (Em_nuc <= c_MF_Em_max) && c_MF_Pm_cent){
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dEm->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dEm_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      
+	      
+	      // --- hms collimator variation
+	      if(shmsColl_Cut_cent && hmsColl_Cut && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dHcoll->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dHcoll_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      // --- shms collimator variation
+	      if(shmsColl_Cut && hmsColl_Cut_cent && c_MF_Q2_cent && c_MF_Em_cent && c_MF_Pm_cent){
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dScoll->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dScoll_rand->Fill(Pm) ;}
+		
+		
+	      }
+	      
+	    } // end MF
+	    
+	    
+	    if(analysis_cut=="SRC"){
+	      
+	      // --- VARY ALL CUTS SIMULTANEOUSLY (read combined cut values) --- 
+	      if(shmsColl_Cut && hmsColl_Cut && c_SRC_Q2 && c_SRC_Pm && c_SRC_Xbj && c_SRC_thrq) {
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) {  
+		  
+		  H_syst_total->Fill(Pm) ; }  
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_total_rand->Fill(Pm); }
+		
+	      }
+	      
+	      // --- SRC Pm min. variation ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && (Pm>=c_SRC_Pm_min) && Pm<=c_SRC_Pm_max_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+		
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) {  H_syst_dPm_min->Fill(Pm) ; }  
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_min_rand->Fill(Pm); }
+		
+	      }
+	      
+	      // --- SRC Pm max. variation ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && Pm>=c_SRC_Pm_min_cent && (Pm<=c_SRC_Pm_max) && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) {  H_syst_dPm_max->Fill(Pm) ; }  
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dPm_max_rand->Fill(Pm); }     
+		
+	      }
+	      
+	      // --- SRC Q2 min. variation ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && (Q2>=c_SRC_Q2_min) && Q2<=c_SRC_Q2_max_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dQ2->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dQ2_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      
+	      
+	      // --- SRC Xbj min. variation ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && (X >= c_SRC_Xbj_min) && X <= c_SRC_Xbj_max_cent && c_SRC_thrq_cent) {
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dXbj->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dXbj_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      
+	      
+	      
+	      // --- SRC thrq max. variation ---
+	      if(shmsColl_Cut_cent && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && th_rq/dtr >= c_SRC_thrq_min_cent && (th_rq/dtr <= c_SRC_thrq_max)) {
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dthrq->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dthrq_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      
+	      
+	      // --- hms collimator variation
+	      if(shmsColl_Cut_cent && hmsColl_Cut && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dHcoll->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dHcoll_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      // --- shms collimator variation
+	      if(shmsColl_Cut && hmsColl_Cut_cent && c_SRC_Q2_cent && c_SRC_Pm_cent && c_SRC_Xbj_cent && c_SRC_thrq_cent) {
+		
+		// select "TRUE COINCIDENCE " 
+		if(eP_ctime_cut) { H_syst_dScoll->Fill(Pm) ; } 
+		
+		// select "ACCIDENTAL COINCIDENCE BACKGROUND" 
+		if(ePctime_cut_flag && eP_ctime_cut_rand) { H_syst_dScoll_rand->Fill(Pm) ;}
+		
+	      }
+	      
+	      
+	    } // end SRC
+	    
+	  } // end base cuts for individual  systematic studies
 	  
-	  //Increment Scaler Read if event == scaler_evt_perlimit for that scaler read
-	  if(gevnum==scal_evt_num[scal_read]){ scal_read++; }
+	  
+	  //---------------------------------------------------------------------------------------------------
+	  
+	  
+	  
+	  // APPLY ALL CUTS EXCEPT COIN. TIME SELECTION
+	  if(c_baseCuts){
+	    
+	    // full (reals + accidentals) coin. time spectrum with all other cuts   
+	    H_ep_ctime_total->Fill(epCoinTime_center); 
+	    
+	    
+	    
+	    // select "TRUE COINCIDENCE " (electron-proton from same "beam bunch" form a coincidence)
+	    if(eP_ctime_cut)
+	      {
+		//cout << "c_baseCuts(v2): " << c_baseCuts << endl; 
+		//Coincidence Time		      
+		H_ep_ctime_real->Fill(epCoinTime_center); // fill coin. time and apply the offset
+		
+		//Fill HMS Detectors
+		H_hCerNpeSum->Fill(hcer_npesum);
+		H_hCalEtotNorm->Fill(hcal_etotnorm);
+		H_hCalEtotTrkNorm->Fill(hcal_etottracknorm);
+		H_hHodBetaNtrk->Fill(hhod_beta_ntrk);
+		H_hHodBetaTrk->Fill(hhod_beta);
+		
+		//Fill SHMS Detectors
+		H_pNGCerNpeSum->Fill(pngcer_npesum);
+		H_pHGCerNpeSum->Fill(phgcer_npesum);
+		H_pCalEtotNorm->Fill(pcal_etotnorm);
+		H_pCalEtotTrkNorm->Fill(pcal_etottracknorm);
+		H_pHodBetaNtrk->Fill(phod_beta_ntrk);
+		H_pHodBetaTrk->Fill(phod_beta);
+		
+		// ----  histograms that will be used in randoms subtraction -----
+		H_W       ->  Fill (W);       
+		H_Q2      ->  Fill (Q2);      
+		H_xbj     ->  Fill (X);     
+		H_nu      ->  Fill (nu);      
+		H_q       ->  Fill (q);       
+		H_Em      ->  Fill (Em);      
+		H_Em_nuc  ->  Fill (Em_nuc);  
+		H_Pm      ->  Fill (Pm);      
+		H_MM      ->  Fill (MM);      
+		H_thxq    ->  Fill (th_xq/dtr);    
+		H_thrq    ->  Fill (ph_xq/dtr); 
+		
+		//Other relevant Primary / Secondary Kinematics
+		H_the    ->Fill(th_e/dtr);
+		H_kf     ->Fill(kf);
+		H_thx    ->Fill(th_x/dtr);
+		H_Pf     ->Fill(Pf);
+		
+		
+		
+		//----------------------------------------------------------------------
+		//---------HISTOGRAM CATEGORY: Spectrometer Acceptance  (ACCP)----------
+		//----------------------------------------------------------------------
+		//Fill SPECTROMETER  ACCEPTANCE
+		H_exfp       ->Fill(e_xfp);
+		H_eyfp       ->Fill(e_yfp);
+		H_expfp      ->Fill(e_xpfp);
+		H_eypfp      ->Fill(e_ypfp);
+		
+		H_eytar      ->Fill(e_ytar);
+		H_exptar     ->Fill(e_xptar);
+		H_eyptar     ->Fill(e_yptar);
+		H_edelta     ->Fill(e_delta);
+		
+		H_hxfp       ->Fill(h_xfp);
+		H_hyfp       ->Fill(h_yfp);
+		H_hxpfp      ->Fill(h_xpfp);
+		H_hypfp      ->Fill(h_ypfp);
+		
+		H_hytar       ->Fill(h_ytar);
+		H_hxptar      ->Fill(h_xptar);
+		H_hyptar      ->Fill(h_yptar);
+		H_hdelta      ->Fill(h_delta);
+		
+		H_htar_x       ->Fill(htar_x);
+		H_htar_y       ->Fill(htar_y);
+		H_htar_z       ->Fill(htar_z);
+		H_etar_x       ->Fill(etar_x);
+		H_etar_y       ->Fill(etar_y);
+		H_etar_z       ->Fill(etar_z);
+		H_ztar_diff    ->Fill(ztar_diff);
+		
+		H_hXColl      ->Fill(hXColl);
+		H_hYColl      ->Fill(hYColl);
+		H_eXColl      ->Fill(eXColl);
+		H_eYColl      ->Fill(eYColl);
+		
+		H_hXColl_vs_hYColl  ->Fill(hYColl, hXColl);
+		H_eXColl_vs_eYColl  ->Fill(eYColl, eXColl);
+		
+		H_hxfp_vs_hyfp  ->Fill(h_yfp, h_xfp);
+		H_exfp_vs_eyfp  ->Fill(e_yfp, e_xfp);
+		
+		
+		
+	      }
+	    
+	    // select "ACCIDENTAL COINCIDENCE BACKGROUND" left/right of main coin. peak as a sample to estimate background underneath main coin. peak
+	    // background underneath main peak: electron-proton from same "beam bunch" form a random ("un-correlated") coincidence
+	    
+	    if(ePctime_cut_flag && eP_ctime_cut_rand)		      
+	      {
+		// Only histograms of selected variables of interest will be filled with coincidence accidantal background (for background subtraction)
+		
+		H_ep_ctime_rand->  Fill ( epCoinTime_center );
+		H_W_rand       ->  Fill (W);       
+		H_Q2_rand      ->  Fill (Q2);      
+		H_xbj_rand     ->  Fill (X);     
+		H_nu_rand      ->  Fill (nu);      
+		H_q_rand       ->  Fill (q);       
+		H_Em_rand      ->  Fill (Em);      
+		H_Em_nuc_rand  ->  Fill (Em_nuc);  
+		H_Pm_rand      ->  Fill (Pm);      
+		H_MM_rand      ->  Fill (MM);      
+		H_thxq_rand    ->  Fill (th_xq/dtr);    
+		H_thrq_rand    ->  Fill (ph_xq/dtr);  
+		
+		
+		
+	      }
+	    
+	    
+	    
+	  } //----------------------END: Fill DATA Histograms-----------------------	
+
 	  
 	  cout << "DataEventLoop: " << std::setprecision(2) << double(jentry) / nentries * 100. << "  % " << std::flush << "\r";   
 	  
@@ -7094,9 +6963,6 @@ void baseAnalyzer::EventLoop()
 
       outROOT->cd("systematics");
       syst_entry_HList->Write();     
-
-
-
 
       
       outROOT->Close();                                                                                                                        
@@ -7178,25 +7044,21 @@ void baseAnalyzer::EventLoop()
     out_sys.close();
 
 
-     // ---------------- Write Systematic Histos (over all cut entries) ----------------------------                                                   
+    // ---------------- Write Systematic Histos (over all cut entries) ----------------------------                                                   
     outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/%s_systematics_histos_total.root", tgt_type.Data(), analysis_cut.Data(), tgt_type.Data()), "RECREATE");                                  
-                                                                                                                                               
-      outROOT->cd();                                                                                                                           
-                                                                                                                                
-      outROOT->mkdir("systematics");                                                                                                                                                                                                                                                                                                                                                                     
-      outROOT->cd("systematics");                                                                                                                
-      syst_HList->Write(); 
-      outROOT->Close(); 
-      // --------------------------------------------------------------------------------------------
-      
+    
+    outROOT->cd();                                                                                                                           
+    
+    outROOT->mkdir("systematics");                                                                                                                                                                                                                                                                                                                                                                     
+    outROOT->cd("systematics");                                                                                                                
+    syst_HList->Write(); 
+    outROOT->Close(); 
+    // --------------------------------------------------------------------------------------------
+    
   } // end analysis_type == systematics requirement
   
   
-  //-----------------------------------
-  //-----------------------------------
-
   
-  //
   
   if(analysis_type=="simc")
     {
