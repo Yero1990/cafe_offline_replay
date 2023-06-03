@@ -21,6 +21,9 @@ from scipy import asarray as ar
 target = sys.argv[1]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
 kin    = sys.argv[2]    # MF, SRC
 
+# usage:
+# ipython fit_systematics.py Be9 MF
+
 fname='../output/cafe_systematics_%s_%s.csv' % (target, kin)
 
 df_data = pd.read_csv(fname, comment='#')
@@ -34,8 +37,20 @@ def gaus(X,C,X_mean,sigma):
 
 if kin=="SRC":
     fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True)
+    fig.set_size_inches(10,8, forward=True)
+    plt.subplots_adjust(bottom=0.8)
+    plt.subplots_adjust(left=0.56)
+    fig.text(0.5, 0.001, 'Integrated Yield', ha='center', fontsize=14)
+    fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
+
 elif kin=="MF":
     fig, axs = plt.subplots(nrows=2, ncols=3, sharex=True)
+    fig.set_size_inches(12,8, forward=True)
+    plt.subplots_adjust(bottom=0.8)
+    plt.subplots_adjust(left=0.3)
+    plt.ticklabel_format(axis='both', style='sci', scilimits=(0,0))
+    fig.text(0.5, 0.01, 'Integrated Yield', ha='center', fontsize=14)
+    fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
 
 nbins = 20
 
@@ -46,9 +61,9 @@ if kin=="SRC":
     title=[r'Integrated Yield (total)', r'Integrated Yield ($\delta Pm_{min}$)', r'Integrated Yield ($\delta Pm_{max}$)', r'Integrated Yield ($\delta Q^{2}$)', r'Integrated Yield ($\delta X^{2}_{bj}$)', r'Integrated Yield ($\delta\theta_{rq}$)', r'Integrated Yield ($\delta HMS_{coll}$)', r'Integrated Yield ($\delta SHMS_{coll}$)']
 
 elif kin=="MF":
-    syst_name=['syst_total_real',syst_dPm_max_real,syst_dQ2_real,syst_dEm_real,syst_dHcoll_real,syst_dScoll_real']
+    syst_name=['syst_total_real','syst_dPm_max_real','syst_dQ2_real','syst_dEm_real','syst_dHcoll_real','syst_dScoll_real']
     clr=['silver', 'tomato', 'violet', 'dodgerblue', 'darkorange', 'plum']
-    title=[r'Integrated Yield (total)', r'Integrated Yield ($\delta Pm_{min}$)', r'Integrated Yield ($\delta Pm_{max}$)', r'Integrated Yield ($\delta Q^{2}$)', r'Integrated Yield ($\delta Em_{max}$)', r'Integrated Yield ($\delta HMS_{coll}$)', r'Integrated Yield ($\delta SHMS_{coll}$)']
+    title=[r'Integrated Yield (total)', r'Integrated Yield ($\delta Pm_{max}$)',r'Integrated Yield ($\delta Q^{2}$)', r'Integrated Yield ($\delta Em_{max}$)', r'Integrated Yield ($\delta HMS_{coll}$)', r'Integrated Yield ($\delta SHMS_{coll}$)']
 
     
 # loop oved subplot indices (ith-row, jth-col)
@@ -72,7 +87,7 @@ for i in row:
 
         print('(idx, row, col): %i %i %i'%(idx,i,j))
         print(syst_name[idx])
-        '''
+        
         yhist, xedge, patches = axs[i,j].hist(df_data[syst_name[idx]], nbins, density=False, histtype='stepfilled', facecolor=clr[idx], alpha=0.75)
         xhist = (xedge[:-1] + xedge[1:])/2  # bin center
         
@@ -92,6 +107,8 @@ for i in row:
         mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
         sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
 
+        print('pcov[1,1]:', np.sqrt(pcov[1,1]))
+        print('pcov[2,2]:', np.sqrt(pcov[2,2]))
         # create evenly-spaced points for plotting fit function
         xmin=df_data[syst_name[idx]].min()
         xmax=df_data[syst_name[idx]].max()
@@ -102,7 +119,7 @@ for i in row:
         axs[i,j].set_title(title[idx])
         axs[i,j].legend(frameon=False, loc='upper right')
 
-        '''
+        
         idx=idx+1
 
         if(kin=="SRC" and idx==8):
@@ -110,10 +127,11 @@ for i in row:
         if(kin=="MF" and idx==6):
             break  
         
-fig.text(0.5, 0.015, 'Integrated Yield', ha='center', fontsize=16)
-fig.text(0.015, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=16)
+
 
 fig.tight_layout()
-plt.show()
 
+#plt.show()
+
+plt.savefig('%s_%s_systematics.pdf'%(target,kin))
 
