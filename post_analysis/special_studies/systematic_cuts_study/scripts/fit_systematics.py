@@ -113,7 +113,7 @@ if (len(sys.argv) == 3):
         fig.set_size_inches(10,8, forward=True)
         plt.subplots_adjust(bottom=0.75)
         plt.subplots_adjust(left=0.56)
-        fig.text(0.5, 0.001, 'Integrated Yield', ha='center', fontsize=14)
+        fig.text(0.5, 0.003, 'Integrated Yield', ha='center', fontsize=14)
         fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
 
     elif kin=="MF":
@@ -214,9 +214,9 @@ if (len(sys.argv) == 3):
     # common title
     fig.suptitle('%s %s Integrated Yield'%(target,kin), fontsize=20)
     fig.tight_layout()
-    plt.show()
-    #plt.savefig('%s_%s_systematics.pdf'%(target,kin))
 
+    plt.savefig('%s_%s_systematics.pdf'%(target,kin))
+    plt.show()
 
 # ------------------------------------
 # CALCULATE SINGLE RATIO SYSTEMATICS
@@ -288,20 +288,22 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
     
     # plot fit function and write fit parameters as label for legend
     axs.plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.3f}\pm{1:.3f}$''\n''$\sigma:{2:.3f}\pm{3:.3f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
-    axs.legend(frameon=False, loc='upper right')
+    axs.legend(frameon=False, loc='upper right', fontsize=18)
     
             
             
     #fig.tight_layout()
     if(target1 != target2):
         plt.title('Single Ratio %s %s / %s %s (systematics)' % (target1,kin1,target2,kin2), fontsize=16)
+        plt.savefig('single_ratio_%s%s2%s%s_systematics.pdf'%(target1,kin1, target2, kin2))
     elif(target1==target2):
-        plt.title('Single Ratio %s %s / %s (systematics)' % (target1,kin1,kin2), fontsize=16)        
+        plt.title('Single Ratio %s %s / %s (systematics)' % (target1,kin1,kin2), fontsize=16)
+        plt.savefig('single_ratio_%s_%s2%s_systematics.pdf'%(target1,kin1,kin2))
+
     plt.xlabel('Single Ratio Counts', fontsize=14)
     plt.ylabel('Frequency', fontsize=14)
         
     plt.show()
-    #plt.savefig('%s_%s_single_ratio_systematics.pdf'%(target,kin))
 
 
 
@@ -383,7 +385,7 @@ elif (len(sys.argv)==4 and sys.argv[1] == "double"):
     
     # plot fit function and write fit parameters as label for legend
     axs.plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.3f}\pm{1:.3f}$''\n''$\sigma:{2:.3f}\pm{3:.3f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
-    axs.legend(frameon=False, loc='upper right')
+    axs.legend(frameon=False, loc='upper right', fontsize=18)
     
             
             
@@ -394,6 +396,7 @@ elif (len(sys.argv)==4 and sys.argv[1] == "double"):
     plt.ylabel('Frequency', fontsize=14)
         
     plt.show()
+    plt.savefig('double_ratio_%sto%s_systematics.pdf'%(target1,target2))
 
 
 else:
