@@ -1,0 +1,21 @@
+# CaFe numerical double ratios (pass2) 
+# 
+# Header Definitions: 
+# target       : target A used in double ratio 
+# doubleR      : double ratio of target A(SRC/MF) relative to C12 (SRC/MF) 
+# doubleR_err  : uncertainty in double ratio 
+# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
+# NoZ          : N/Z 
+# NmZoA        : (N-Z)/A 
+target,doubleR,doubleR_err,N,Z,A,NoZ,NmZoA
+Be9,0.751,1.527E-02,5.0,4.0,9.0,1.250,0.111
+#B10,0.900,1.915E-02,5.0,5.0,10.0,1.000,0.000
+#B11,0.994,2.083E-02,6.0,5.0,11.0,1.200,0.091
+C12,1.000,2.116E-02,6.0,6.0,12.0,1.000,0.000
+Ca40,1.144,2.171E-02,20.0,20.0,40.0,1.000,0.000
+#Ca48,1.260,2.318E-02,28.0,20.0,48.0,1.400,0.167
+Ca48_corr,1.266,2.378E-02,28.0,20.0,48.0,1.400,0.167
+Fe54,1.406,2.857E-02,28.0,26.0,54.0,1.077,0.037
+Au197,1.672,4.404E-02,118.0,79.0,197.0,1.494,0.198
+B10_corr,0.875,2.193E-02,5.0,5.0,10.0,1.000,0.000
+B11_corr,0.993,2.439E-02,6.0,5.0,11.0,1.200,0.091
