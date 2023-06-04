@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from itertools import takewhile
 import matplotlib.pyplot as plt
 import sys
 import uncertainties
@@ -14,8 +15,22 @@ handling/combining cafe numerical
 (.csv) summary files for plotting
 double ratios
 
-April 5, 2023: Modified
 '''
+
+# user need to specify which pass to analyze
+if (len(sys.argv) != 2):
+    print('''\n
+    ---------------------------------------------
+    Usage: ipython make_final_summary.py <passN>
+    <passN>: data pass number to analyze
+    (pass1, pass2, ...)
+    
+    e.g. ipython make_final_summary.py pass3
+    ---------------------------------------------
+    ''')
+    sys.exit()
+
+npass = sys.argv[1] 
 
 #________________________
 def get_cntmEff(run):
@@ -90,9 +105,9 @@ def make_final_summary():
     #  ( for additional subtractions -> boron-carbide subtractions, Ca48 impurity and contamination corrections, and double ratio calculations)
     
     #output file to write summary file
-    ofname = 'cafe_final_summary_pass2.csv' 
+    ofname = 'cafe_final_summary_%s.csv' %(npass) 
     ofile = open(ofname, 'w+')
-    ofile.write('# CaFe Final Summary File (pass 2) \n')
+    ofile.write('# CaFe Final Summary File (%s) \n'%(npass))
     ofile.write('# \n'
                 '# Header Definitions: \n'
                 '# target       : target name analyzed \n'
@@ -136,7 +151,7 @@ def make_final_summary():
             df_empty_flag = 0
             
             # set generic summary file name
-            summary_file_path = 'summary_files/pass2/cafe_prod_%s_%s_report_summary.csv' % (target[idx], kin[jdx])
+            summary_file_path = 'summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,target[idx], kin[jdx])
             
             # read .csv file
             df = pd.read_csv(summary_file_path, comment='#')
@@ -272,14 +287,14 @@ def make_final_summary():
                 # Write numerical data to final summary file
                 ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (ca48_tgt.strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
 
-    plt.show()          
+    #plt.show()          
     ofile.close()
 
     
     # apply b10,11 -carbide corrections + ca48 purity corrections
     applyB4C_correction(ofname)
     
-    write_double_ratio(ofname, 'double_ratios_pass2.csv')
+    write_double_ratio(ofname, 'double_ratios_%s.csv'%(npass))
     
 #_____________________________________
 def applyB4C_correction(ofname=''):
@@ -291,9 +306,10 @@ def applyB4C_correction(ofname=''):
     # Ca48 is 90.5% pure, assuming that the remainder is Ca40.  The 48Ca target is 1051 mg/cm2.
     # If the purity refers to number of atoms, then the purity by weight is 91.5%.  (We need to find out whether purity refers to mass or to number.)  
 
-
-    # set filename to be read
-    #ofname='cafe_final_summary_pass2.csv'
+    # recover comments from file to be written again once new columns are added
+    with open(ofname, 'r') as fobj:
+        headiter = takewhile(lambda s: s.startswith('#'), fobj)
+        header = list(headiter)
     
     # read final summary file
     df = pd.read_csv(ofname, comment='#')
@@ -555,8 +571,19 @@ def applyB4C_correction(ofname=''):
     df.loc[idx_ca48_corr_src, ['yield_norm']]       = round(unumpy.nominal_values(ca48_src_corr)[0], 3)
     df.loc[idx_ca48_corr_src, ['yield_norm_err']]   = round(unumpy.std_devs(ca48_src_corr)[0], 3)  
     df.loc[idx_ca48_corr_src, ['tgt_area_density']] = round(ca48_density_corr[0], 3)
-    
-    df.to_csv('cafe_final_summary_pass2.csv', index=False)
+
+
+    # convert list to string of comments
+    comments = ''.join(header)
+
+    # open new file in write mode
+    f = open(ofname, 'w+')
+
+    # write comments to file
+    f.write(comments)
+
+    # write updated columsn to file
+    df.to_csv(f, index=False)
     
 
     
@@ -575,7 +602,7 @@ def write_double_ratio(ifname='', ofname=''):
 
     # set output file to write double ratio numerical values
     ofile = open(ofname, 'w+')
-    ofile.write('# CaFe numerical double ratios (pass 2) \n')
+    ofile.write('# CaFe numerical double ratios (%s) \n'%(npass))
     ofile.write('# \n'
                 '# Header Definitions: \n'
                 '# target       : target A used in double ratio \n'
@@ -630,36 +657,7 @@ def write_double_ratio(ifname='', ofname=''):
 
         
     ofile.close()
-    
-    '''
-    
-    #          'LD2', 'Be9', 'B10',   'B11',   'C12', 'Ca40',       'Ca48',  'Ca48_corr' , 'Fe54', 'B10_corr', 'B11_corr'
-    # tcolor  = ['c',    'm',   'r',     'g',     'b',  'darkorange', 'violet', 'violet',    'gold',    'r',      'g'     ] 
 
-    #print('double_ratio = ', double_ratio)
-    for i in range(len(src_yield_norm_arr)):
-
-       
-        #print('N[i] = ', N[i])
-        if (targ[i]=='LD2'):
-            continue
-        if (targ[i]=='Ca48' or targ[i]=='B10' or targ[i]=='B11'):
-            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc='gray', ecolor='gray', mec='gray', linestyle='None', label=targ[i])
-        else:
-            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
-            #plt.errorbar((N[i]-Z[i])/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
-        
-        
-    plt.ylabel('SRC High Momentum Fraction', fontsize=18)
-    plt.xlabel('N/Z', fontsize=18)
-    #plt.xlabel('(N-Z)/Z', fontsize=18)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-
-    '''
 
     
 make_final_summary()
