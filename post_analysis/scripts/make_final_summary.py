@@ -183,9 +183,18 @@ def make_final_summary():
             T3_scl_rate  = df['T3_scl_rate']  # HMS 3/4      kHz
             T5_scl_rate  = df['T5_scl_rate']  # COIN         kHz
 
-            # calculate other variables from data columns
-            Qsum = charge.cumsum()  # calculate cumulative charge over all runs of given (target, kin) (may be helpful for plotting)
-            T1_scl = T1_scl_rate * 1000 * beam_time   # total scaler counts
+            # calculate total (cumulative) charge (i.e., array with incremental charge)
+            Qsum = charge.cumsum()
+
+            # calculate average hms/shms track efficiency and live time
+            # (these may be useful later on, for normalizing yield)
+            avg_hms_trk_eff  =  hms_trk_eff.mean()
+            avg_shms_trk_eff =  shms_trk_eff.mean()
+            avg_total_LT     =  total_LT.mean()
+            avg_mult_trk_eff =  mult_trk_eff.mean()
+            
+            # calculate total scaler counts
+            T1_scl = T1_scl_rate * 1000 * beam_time   
             T2_scl = T2_scl_rate * 1000 * beam_time
             T3_scl = T3_scl_rate * 1000 * beam_time
             T5_scl = T5_scl_rate * 1000 * beam_time 
@@ -250,6 +259,8 @@ def make_final_summary():
                 
 
             #----------------------------------------
+            # WRITE CAFE NUMERICAL DATA
+            #----------------------------------------
      
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, yield_norm.n, yield_norm.s, tgt_areal_density, T, N, Z, A) )
@@ -298,7 +309,7 @@ def applyB4C_correction(ofname=''):
     
     # --- set Ca48 purity by weight-----
 
-    ca48_purity = 0.915
+    ca48_purity = 0.915   # (91.5% purity, but need to determine if its by mass or weight)
     
     # get areal densities for Ca40 subtraction from Ca48 (g/cm2)
     ca48_density = np.array(df[(df['target']=='Ca48')]['tgt_area_density'][:-1])

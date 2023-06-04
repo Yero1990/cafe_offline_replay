@@ -5,33 +5,101 @@ import sys
 from scipy import stats
 from scipy.stats import norm
 from scipy.optimize import curve_fit
-from scipy import asarray as ar
-
+import uncertainties
+from uncertainties import ufloat
+from uncertainties import unumpy
 
     
-# description: this script reads the data yield
-# over the systematically-varied cuts for each 
-# (target, kinematics) 
+"""
+---------------------------
+Author: C. Yero
+Date: June 04, 2023
+email: cyero@jlab.org,
+       cyero002@gmail.com
+---------------------------
 
-#Calculating the Gaussian PDF values given Gaussian parameters and random variable X
+-------------
+description:
+-------------
+this script does the following:
+1) reads the data yield over the systematically-varied cuts for each (target, kinematics)
+2) histograms the individual (target,kin) set, single ratios or double ratios 
+3) fits the histograms with a gaussian-distribution to determine mean,standard_deviation
+   where the standard_deviation / mean is a direct measure of the systematic spread
+"""
+
+
+def printHelp():
+    print('''\n
+    ---------------------------------------------------------------------------------------------------------------
+    Usage                                                              Description                       
+    ---------------------------------------------------------------------------------------------------------------
+
+    ipython fit_systematics.py <tgt> <kin>                             only calculate systematics for
+    e.g., ipython fit_systematics.py Be9 MF                            single (target,kin) configuration
+                             
+    ipython fit_systematics.py single <tgt1> <kin1> <tgt2> <kin2>      calculate systematics for a singles ratio: 
+    e.g., ipython fit_systematics.py single Be9 SRC Be9 MF             R = (target1,kin1) / (target2,kin2)
+    
+    ipython fit_systematics.py double <tgt1>  <tgt2>                   calculate systematics for a double ratio: 
+    e.g., ipython fit_systematics.py double Be9 C12                    R = (target1_SRC/MF) / (target2_SRC/MF)
+
+    tgt: Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
+    kiN: MF, SRC
+    ---------------------------------------------------------------------------------------------------------------
+
+    ''')
+
+
+
+# define gaussian fit function 
 def gaus(X,C,X_mean,sigma):
     return C*np.exp(-(X-X_mean)**2/(2*sigma**2))
 
-# primary user argument: "target" or "single" or "coin"
 
-# --> target: only calculate systematics for a single (target,kin) configuration
-#             e.g., ipython fit_systematics.py target Be9 MF
 
-# --> single : calculate systematics for a singles ratio: (target1,kin1) / (target2,kin2)
-#              e.g., ipython fit_systematics.py single Be9 SRC Be9 MF
+# define functions to get normalization quantities from .csv file
+def get_var(tgt, kin, var, npass):
+    csv_file='../../../summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,tgt,kin)
 
-ratio_flag = str(sys.argv[1])
+    # read .csv file
+    df           = pd.read_csv(csv_file, comment='#')
+    charge       = df['charge'] # [mC]
+    hms_trk_eff  = unumpy.uarray(df['hTrkEff'],         df['hTrkEff_err'])
+    shms_trk_eff = unumpy.uarray(df['pTrkEff'],         df['pTrkEff_err'])
+    total_LT     = unumpy.uarray(df['tLT'],             df['tLT_err_Bi'])
+    mult_trk_eff = np.array(df['multi_track_eff'])  
 
-# Usage: ipython fit_systematics.py target Be9 MF
-if ratio_flag == "target":
+    # calculate average hms/shms track efficiency and live time
+    # (these may be useful later on, for normalizing yield)
+    avg_hms_trk_eff  =  hms_trk_eff.mean()
+    avg_shms_trk_eff =  shms_trk_eff.mean()
+    avg_total_LT     =  total_LT.mean()
+    avg_mult_trk_eff =  mult_trk_eff.mean()
+    # sum over all total charge
+    total_charge = charge.sum()
 
-    target = sys.argv[2]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
-    kin    = sys.argv[3]    # MF, SRC
+    if(var=='charge'):
+        return total_charge
+    if(var=='hms_trk_eff'):
+        return  unumpy.nominal_values(avg_hms_trk_eff)
+    if(var=='shms_trk_eff'):
+        return  unumpy.nominal_values(avg_shms_trk_eff)
+    if(var=='total_LT'):
+        return  unumpy.nominal_values(avg_total_LT)
+    if(var=='multi_trk_eff'):
+        return  avg_mult_trk_eff
+
+
+    
+# Usage: ipython fit_systematics.py  Be9 MF
+if (len(sys.argv) == 3):
+    
+       
+    target = sys.argv[1]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
+    kin    = sys.argv[2]    # MF, SRC
+
+    
     
     fname='../output/cafe_systematics_%s_%s.csv' % (target, kin)
     
@@ -43,7 +111,7 @@ if ratio_flag == "target":
     if kin=="SRC":
         fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True)
         fig.set_size_inches(10,8, forward=True)
-        plt.subplots_adjust(bottom=0.8)
+        plt.subplots_adjust(bottom=0.75)
         plt.subplots_adjust(left=0.56)
         fig.text(0.5, 0.001, 'Integrated Yield', ha='center', fontsize=14)
         fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
@@ -63,12 +131,12 @@ if ratio_flag == "target":
     if kin=="SRC":
         syst_name=['syst_total_real', 'syst_dPm_min_real', 'syst_dPm_max_real', 'syst_dQ2_real', 'syst_dXbj_real', 'syst_dthrq_real', 'syst_dHcoll_real', 'syst_dScoll_real']
         clr=['silver', 'lime', 'forestgreen', 'violet', 'gold', 'crimson', 'lime', 'plum']
-        title=[r'Integrated Yield (total)', r'Integrated Yield ($\delta Pm_{min}$)', r'Integrated Yield ($\delta Pm_{max}$)', r'Integrated Yield ($\delta Q^{2}$)', r'Integrated Yield ($\delta X^{2}_{bj}$)', r'Integrated Yield ($\delta\theta_{rq}$)', r'Integrated Yield ($\delta HMS_{coll}$)', r'Integrated Yield ($\delta SHMS_{coll}$)']
+        title=[r'(total)', r'($\delta Pm_{min}$)', r'($\delta Pm_{max}$)', r'($\delta Q^{2}$)', r'($\delta X^{2}_{bj}$)', r'($\delta\theta_{rq}$)', r'($\delta HMS_{coll}$)', r'($\delta SHMS_{coll}$)']
 
     elif kin=="MF":
         syst_name=['syst_total_real','syst_dPm_max_real','syst_dQ2_real','syst_dEm_real','syst_dHcoll_real','syst_dScoll_real']
         clr=['silver', 'tomato', 'violet', 'dodgerblue', 'darkorange', 'plum']
-        title=[r'Integrated Yield (total)', r'Integrated Yield ($\delta Pm_{max}$)',r'Integrated Yield ($\delta Q^{2}$)', r'Integrated Yield ($\delta Em_{max}$)', r'Integrated Yield ($\delta HMS_{coll}$)', r'Integrated Yield ($\delta SHMS_{coll}$)']
+        title=[r'(total)', r'($\delta Pm_{max}$)',r'($\delta Q^{2}$)', r'($\delta Em_{max}$)', r'($\delta HMS_{coll}$)', r'($\delta SHMS_{coll}$)']
 
     
     # loop oved subplot indices (ith-row, jth-col)
@@ -93,6 +161,9 @@ if ratio_flag == "target":
             
             print('(idx, row, col): %i %i %i'%(idx,i,j))
             print(syst_name[idx])
+
+
+        
             
             yhist, xedge, patches = axs[i,j].hist(df_data[syst_name[idx]], nbins, density=False, histtype='stepfilled', facecolor=clr[idx], alpha=0.75)
             xhist = (xedge[:-1] + xedge[1:])/2  # bin center
@@ -113,18 +184,25 @@ if ratio_flag == "target":
             mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
             sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
 
+            rel_err = sig_fit / mu_fit
+             
             print('pcov[1,1]:', np.sqrt(pcov[1,1]))
             print('pcov[2,2]:', np.sqrt(pcov[2,2]))
             # create evenly-spaced points for plotting fit function
             xmin=df_data[syst_name[idx]].min()
             xmax=df_data[syst_name[idx]].max()
             x_fit = np.linspace(xmin, xmax, 500) 
-            
+
+            bin_w = xedge[1] - xedge[0]
+            if(bin_w < 1.):
+                mu_fit_err = 0
+                sig_fit_err = 0
             # plot fit function and write fit parameters as label for legend
-            axs[i,j].plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.0f}\pm{1:.0f}$''\n''$\sigma:{2:.0f}\pm{3:.0f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err))
+            axs[i,j].plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.0f}\pm{1:.0f}$''\n''$\sigma:{2:.0f}\pm{3:.0f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
             axs[i,j].set_title(title[idx])
             axs[i,j].legend(frameon=False, loc='upper right')
-            
+            axs[i,j].tick_params(labelbottom=True)
+
             
             idx=idx+1
 
@@ -133,8 +211,8 @@ if ratio_flag == "target":
             if(kin=="MF" and idx==6):
                 break  
         
-            
-    
+    # common title
+    fig.suptitle('%s %s Integrated Yield'%(target,kin), fontsize=20)
     fig.tight_layout()
     plt.show()
     #plt.savefig('%s_%s_systematics.pdf'%(target,kin))
@@ -146,7 +224,7 @@ if ratio_flag == "target":
 
 # Usage: ipython fit_systematics.py single target1 kin1 target2 kin2
 # to calculate the ratio:  R = target1_kin1 / target2_kin2
-if ratio_flag == "single":
+elif (len(sys.argv)==6 and sys.argv[1] == "single"):
 
     target1 = sys.argv[2]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
     kin1    = sys.argv[3]    # MF, SRC
@@ -172,7 +250,7 @@ if ratio_flag == "single":
     # from randomly-sampled gaussian distributions  about the central value
     # for each of the kinematical cuts
     
-    R_single  =df_data1['syst_total_real'] /  df_data2['syst_total_real'] 
+    R_single  = df_data1['syst_total_real']  /  df_data2['syst_total_real'] 
 
 
     # set up the canvas
@@ -234,7 +312,7 @@ if ratio_flag == "single":
 
 # Usage: ipython fit_systematics.py double target1 target2 
 # to calculate the ratio:  R = (target1_SRC/target1_MF) / )target2_SRC/target2_MF)
-if ratio_flag == "double":
+elif (len(sys.argv)==4 and sys.argv[1] == "double"):
 
     target1 = sys.argv[2]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
     target2 = sys.argv[3]    # Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
@@ -316,3 +394,8 @@ if ratio_flag == "double":
     plt.ylabel('Frequency', fontsize=14)
         
     plt.show()
+
+
+else:
+    printHelp()
+    sys.exit()    
