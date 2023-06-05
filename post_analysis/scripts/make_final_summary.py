@@ -133,9 +133,12 @@ def make_final_summary():
 
     # ------ create subplots for quality check plotting -----------
 
+    fig1, ax1 = plt.subplots(nrows=2, ncols=3)
+    fig1.set_size_inches(14,8, forward=True)
     
+                
     #fig1_mf, ax1_mf  = plt.subplots(2, 3)
-    fig1_src,ax1_src = plt.subplots(2, 3)
+    #fig1_src,ax1_src = plt.subplots(2, 3)
     
    # fig2, ax2 = plt.subplots()
    # fig3, ax3 = plt.subplots()
@@ -253,25 +256,43 @@ def make_final_summary():
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
-            if((kin[jdx]=='MF')):
-
-                ax1_src[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+            if((kin[jdx]=='SRC')):
+              
+                ax1[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[0, 0].set_title('SHMS Track Eff.',fontsize=16)
+                ax1[0, 0].set_xlabel('SHMS (T2) Scaler Rate [kHz]',fontsize=14)
+                ax1[0, 0].set_ylabel(r'$\epsilon_{trk,SHMS}$', fontsize=16)
                 #y_loc = 0.985 - idx/500
                 #plt.text(150, y_loc, '%s'%(target[idx]), color=tcolor[idx], fontsize = 15)
 
-                ax1_src[0, 1].plot(T2_scl_rate, mult_trk_eff, marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-
-                ax1_src[0, 2].errorbar(T3_scl_rate, unumpy.nominal_values(hms_trk_eff),  yerr=unumpy.std_devs(hms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-
-                ax1_src[1, 0].errorbar(T2_scl_rate, unumpy.nominal_values(total_LT),  yerr=unumpy.std_devs(total_LT), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-
-                # plot charge-norm yield vs. T2 rates
-                ax1_src[1, 1].errorbar(T2_scl_rate, unumpy.nominal_values( yield_norm_per_run),  yerr=unumpy.std_devs( yield_norm_per_run), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-
-                #ax1_src[1, 2].errorbar(T2_scl_rate, unumpy.nominal_values( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2],  yerr=unumpy.std_devs( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-                ax1_src[1, 2].errorbar(avg_current, unumpy.nominal_values( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minI],  yerr=unumpy.std_devs( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minI], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-
+                ax1[0, 1].plot(T2_scl_rate, mult_trk_eff, marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[0, 1].set_title('SHMS Multi-Track Eff.',fontsize=16)
+                ax1[0, 1].set_xlabel('SHMS (T2) Scaler Rate [kHz]', fontsize=14)
+                ax1[0, 1].set_ylabel(r'$\epsilon_{multi,SHMS}$',fontsize=16)
                 
+                ax1[0, 2].errorbar(T3_scl_rate, unumpy.nominal_values(hms_trk_eff),  yerr=unumpy.std_devs(hms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[0, 2].set_title('HMS Track Eff.',fontsize=16)
+                ax1[0, 2].set_xlabel('HMS (T3) Scaler Rate [kHz]',fontsize=14)
+                ax1[0, 2].set_ylabel(r'$\epsilon_{trk,HMS}$', fontsize=16)
+                
+                ax1[1, 0].errorbar(T2_scl_rate, unumpy.nominal_values(total_LT),  yerr=unumpy.std_devs(total_LT), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[1, 0].set_title('Total EDTM Live Time',fontsize=16)
+                ax1[1, 0].set_xlabel('SHMS (T2) Scaler Rate [kHz]',fontsize=14)
+                ax1[1, 0].set_ylabel(r'$\epsilon_{tLT}$',fontsize=16)
+                
+                # plot charge-norm yield vs. T2 rates
+                ax1[1, 1].errorbar(T2_scl_rate, unumpy.nominal_values( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2],  yerr=unumpy.std_devs( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                #ax1[1, 1].errorbar(T2_scl_rate, unumpy.nominal_values( yield_norm_per_run),  yerr=unumpy.std_devs( yield_norm_per_run), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[1, 1].set_title('Relative Charge-Normalized Yield', fontsize=16)
+                ax1[1, 1].set_xlabel('SHMS (T2) Scaler Rate [kHz]', fontsize=14)
+                ax1[1, 1].set_ylabel(r'$Y/Y_{T2,min}$', fontsize=16)
+                
+                #ax1[1, 2].errorbar(T2_scl_rate, unumpy.nominal_values( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2],  yerr=unumpy.std_devs( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minT2], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[1, 2].errorbar(avg_current, unumpy.nominal_values( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minI],  yerr=unumpy.std_devs( yield_norm_per_run)/ unumpy.nominal_values( yield_norm_per_run)[minI], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
+                ax1[1, 2].legend(target,loc="upper right")
+                ax1[1, 2].set_title('Relative Charge-Normalized Yield', fontsize=16)
+                ax1[1, 2].set_xlabel(r'Average Current [$\mu$A]', fontsize=14)
+                ax1[1, 2].set_ylabel(r'$Y/Y_{I,min}$', fontsize=16)
 
             #----------------------------------------
             # WRITE CAFE NUMERICAL DATA
@@ -287,7 +308,9 @@ def make_final_summary():
                 # Write numerical data to final summary file
                 ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (ca48_tgt.strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_yield_total.n, real_yield_total.s, real_Yield_cntm_corr_total.n, real_Yield_cntm_corr_total.s, yield_norm_cntm.n, yield_norm_cntm.s, tgt_areal_density, T, N, Z, A) )
 
-    #plt.show()          
+    fig1.suptitle('%s Kinematics'%(kin[jdx]), fontsize=20)
+    plt.tight_layout()
+    plt.show()          
     ofile.close()
 
     
