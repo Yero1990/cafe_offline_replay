@@ -376,7 +376,7 @@ def applyB4C_correction(ofname=''):
        
     
     # calculate amount of ca40 in ca48
-    ca40_cntm = 1. - (ca48_purity * ca48_density) # g/cm2 (amount of ca40)
+    ca40_cntm = (1. - ca48_purity) * ca48_density # g/cm2 (amount of ca40)
 
     # corrected ca48 target thickness
     ca48_density_corr =  ca48_density - ca40_cntm

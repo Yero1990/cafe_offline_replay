@@ -53,9 +53,9 @@ if(compare_flag):
 #--------------------------
 
 fig1= plt.figure()
-plt.errorbar(A, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None')
+plt.errorbar(A, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
 if(compare_flag ):
-    plt.errorbar(A_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None')
+    plt.errorbar(A_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
 plt.xlabel('A')
@@ -84,17 +84,18 @@ for i, tgt in enumerate(targ):
         x = A[i] - 2
         y = double_ratio[i] + 0.05
     plt.text(x, y, tgt)
-
+    
+plt.legend(frameon=False, fontsize=16)
 
 
 #--------------------------
 # PLOT Double Ratio vs. N/Z
 #--------------------------
 fig2 = plt.figure()
-plt.errorbar(NoZ, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None')
+plt.errorbar(NoZ, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
 
 if(compare_flag ):
-    plt.errorbar(NoZ_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None')
+    plt.errorbar(NoZ_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 
 plt.xlabel('N/Z')
 plt.ylabel('A (SRC/MF) / C12 (SRC/MF)')
@@ -115,16 +116,17 @@ for i, tgt in enumerate(targ):
  
     plt.text(x, y, tgt)
 
+plt.legend(frameon=False, fontsize=16)
 
 
 
 
 
 fig3 = plt.figure()
-plt.errorbar(NmZoA, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None')
+plt.errorbar(NmZoA, double_ratio, double_ratio_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
 
 if(compare_flag ):
-    plt.errorbar(NmZoA_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None')
+    plt.errorbar(NmZoA_2, double_ratio_2, double_ratio_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 
 plt.xlabel('(N-Z)/A')
 plt.ylabel('A (SRC/MF) / C12 (SRC/MF)')
@@ -147,14 +149,13 @@ for i, tgt in enumerate(targ):
     plt.text(x, y, tgt)
 
 
+plt.legend(frameon=False, fontsize=16)
+
+
+
+
+
 plt.show()
-
-
-
-
-
-
-
 
 
 
