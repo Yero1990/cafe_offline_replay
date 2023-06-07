@@ -106,6 +106,7 @@ for i, tgt in enumerate(targ):
     plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_doubleR_vs_A.pdf')
 
 
 
@@ -152,6 +153,8 @@ for i, tgt in enumerate(targ):
     plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_singleR_vs_A.pdf')
+
 
 fig1_a2c= plt.figure()
 plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
@@ -162,8 +165,35 @@ plt.xscale('log')
 plt.title('CaFe Single Ratio vs. A', fontsize=18)
 plt.xlabel('A', fontsize=16)
 plt.ylabel('A_SRC / C12_SRC', fontsize=16)
+# add target names to plot
+for i, tgt in enumerate(targ):
+    print('i, tgt -> ',i, tgt)
+    print('(x,y) ->  ',A[i], singleR_A_c12_src[i] )
 
+    # standard (x,y) coordinates
+    x = A[i] + 2
+    y = singleR_A_c12_src[i]
+
+    if tgt=="Fe54":
+        x = A[i] + 6
+    elif tgt=="Ca48":
+        x = A[i] + 5
+    elif tgt=="Ca40":
+        x = A[i] + 4
+    elif tgt=="Au197":
+        x = A[i] - 60
+    elif tgt=="B11":
+        x = A[i] - 3
+        y = singleR_A_c12_src[i] +0.01
+    elif tgt=="Be9" or tgt=="B10" or tgt=="C12":
+        x = A[i] + 2
+    else:
+        x = A[i] + 2
+
+    plt.text(x, y, tgt)
+    
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 
 
 
@@ -193,6 +223,7 @@ for i, tgt in enumerate(targ):
     plt.text(x, y, tgt)
 
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
 
 
@@ -222,6 +253,7 @@ for i, tgt in enumerate(targ):
     plt.text(x, y, tgt)
 
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_singleR_vs_NoZ.pdf')
 
 
 
@@ -252,6 +284,7 @@ for i, tgt in enumerate(targ):
 
 
 plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_doubleR_vs_NmZoA.pdf')
 
 
 
