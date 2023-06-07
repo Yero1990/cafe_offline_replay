@@ -1,1 +1,0 @@
-scripts/plot_double_ratio.py
