@@ -22,7 +22,7 @@ of the submitted jobs
 # see swif2 documentaiton: https://scicomp.jlab.org/docs/swif2
 # to write files thru cache to tape (permanet storage),
 # see: https://jlab.servicenowservices.com/scicomp?id=kb_article_view&sysparm_article=KB0014975&sys_kb_id=391b3b031bd61550a552ed3ce54bcbb1&spa=1
-
+# see: https://scicomp.jlab.org/cli/modify-jobs.html
 # for submitted jobs: the output .err and .out filess will be writte to: /farm_out/${USER}/swif/${Workflow}/
 
 # modify all problem jobs related to out of memory (triple the original ram, and set cores to 4)  
@@ -30,6 +30,9 @@ of the submitted jobs
 
 # if job fails due to "SWIF_SYSTEM_ERROR" or  "SLURM_NODE_FAIL",  user can retry, for example:
   swif2 retry-jobs ${Workflow} -problems SWIF_SYSTEM_ERROR SLURM_NODE_FAIL
+
+# Request 8 cores for all unresolved problem jobs that failed owing to timeout or out of memory.
+swif2 modify-jobs "my workflow" -cores set 8 -problems SLURM_TIMEOUT SLURM_OUT_OF_MEMORY
 
 #delete workflow
 swif2 cancel -workflow $workflow_name -delete
