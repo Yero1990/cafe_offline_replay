@@ -2,6 +2,8 @@
 # 
 # Header Definitions: 
 # target       : target A used in single or double ratio 
+# singleR_A_c12_src      : single ratio of target A_SRC / C12_SRC  
+# singleR_A_c12_src_err  : uncertainty in single ratio 
 # singleR_per_nucleon      : single ratio of target A(SRC/MF) per nucleon 
 # singleR_per_nucleon_err  : uncertainty in single ratio per nucleon 
 # singleR_per_nucleus      : single ratio of target A(SRC/MF) per nucleus 
@@ -13,12 +15,12 @@
 # N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
 # NoZ          : N/Z 
 # NmZoA        : (N-Z)/A 
-target,singleR_per_nucleon,singleR_per_nucleon_err,singleR_per_nucleus,singleR_per_nucleus_err,doubleR_per_nucleon,doubleR_per_nucleon_err,doubleR_per_nucleus,doubleR_per_nucleus_err,N,Z,A,NoZ,NmZoA
-Be9,4.887E-03,7.170E-05,4.887E-03,7.149E-05,0.781,1.701E-02,0.781,1.699E-02,5.0,4.0,9.0,1.250,0.111
-B10,5.434E-03,1.183E-04,5.433E-03,1.184E-04,0.868,2.351E-02,0.868,2.353E-02,5.0,5.0,10.0,1.000,0.000
-B11,6.367E-03,1.316E-04,6.367E-03,1.318E-04,1.018,2.665E-02,1.018,2.669E-02,6.0,5.0,11.0,1.200,0.091
-C12,6.257E-03,1.007E-04,6.257E-03,1.007E-04,1.000,2.276E-02,1.000,2.277E-02,6.0,6.0,12.0,1.000,0.000
-Ca40,7.556E-03,9.321E-05,7.556E-03,9.310E-05,1.208,2.448E-02,1.208,2.448E-02,20.0,20.0,40.0,1.000,0.000
-Ca48,8.451E-03,1.066E-04,8.451E-03,1.069E-04,1.351,2.761E-02,1.351,2.765E-02,28.0,20.0,48.0,1.400,0.167
-Fe54,9.224E-03,1.342E-04,9.224E-03,1.339E-04,1.474,3.198E-02,1.474,3.196E-02,28.0,26.0,54.0,1.077,0.037
-Au197,1.142E-02,2.577E-04,1.142E-02,2.580E-04,1.826,5.058E-02,1.826,5.063E-02,118.0,79.0,197.0,1.494,0.198
+target,singleR_A_c12_src,singleR_A_c12_src_err,singleR_per_nucleon,singleR_per_nucleon_err,singleR_per_nucleus,singleR_per_nucleus_err,doubleR_per_nucleon,doubleR_per_nucleon_err,doubleR_per_nucleus,doubleR_per_nucleus_err,N,Z,A,NoZ,NmZoA
+Be9,7.948E-01,1.685E-02,4.887E-03,7.150E-05,4.887E-03,7.145E-05,0.781,1.700E-02,0.781,1.699E-02,5.0,4.0,9.0,1.250,0.111
+B10,9.573E-01,2.523E-02,5.433E-03,1.184E-04,5.433E-03,1.184E-04,0.868,2.353E-02,0.868,2.353E-02,5.0,5.0,10.0,1.000,0.000
+B11,9.404E-01,2.414E-02,6.367E-03,1.318E-04,6.367E-03,1.319E-04,1.018,2.670E-02,1.018,2.669E-02,6.0,5.0,11.0,1.200,0.091
+C12,1.000E+00,2.209E-02,6.258E-03,1.009E-04,6.257E-03,1.008E-04,1.000,2.280E-02,1.000,2.277E-02,6.0,6.0,12.0,1.000,0.000
+Ca40,9.234E-01,1.796E-02,7.556E-03,9.282E-05,7.556E-03,9.310E-05,1.208,2.447E-02,1.208,2.448E-02,20.0,20.0,40.0,1.000,0.000
+Ca48,7.843E-01,1.534E-02,8.451E-03,1.067E-04,8.451E-03,1.069E-04,1.350,2.765E-02,1.351,2.766E-02,28.0,20.0,48.0,1.400,0.167
+Fe54,1.055E+00,2.203E-02,9.224E-03,1.340E-04,9.224E-03,1.339E-04,1.474,3.198E-02,1.474,3.196E-02,28.0,26.0,54.0,1.077,0.037
+Au197,7.385E-01,1.973E-02,1.142E-02,2.578E-04,1.142E-02,2.580E-04,1.826,5.063E-02,1.826,5.063E-02,118.0,79.0,197.0,1.494,0.198

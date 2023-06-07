@@ -31,6 +31,9 @@ targ = df['target']
 singleR_per_nucleon      = np.array(df['singleR_per_nucleon'])
 singleR_per_nucleon_err  = np.array(df['singleR_per_nucleon_err'])
 
+singleR_A_c12_src        = np.array(df['singleR_A_c12_src'])
+singleR_A_c12_src_err    = np.array(df['singleR_A_c12_src_err'])
+
 doubleR_per_nucleon      = np.array(df['doubleR_per_nucleon'])
 doubleR_per_nucleon_err  = np.array(df['doubleR_per_nucleon_err'])
 
@@ -50,6 +53,9 @@ if(compare_flag):
     targ_2 = df['target']
     singleR_per_nucleon_2      = np.array(df['singleR_per_nucleon'])
     singleR_per_nucleon_err_2  = np.array(df['singleR_per_nucleon_err'])
+
+    singleR_A_c12_src_2        = np.array(df['singleR_A_c12_src'])
+    singleR_A_c12_src_err_2    = np.array(df['singleR_A_c12_src_err'])
 
     doubleR_per_nucleon_2      = np.array(df['doubleR_per_nucleon'])
     doubleR_per_nucleon_err_2  = np.array(df['doubleR_per_nucleon_err'])
@@ -147,8 +153,17 @@ for i, tgt in enumerate(targ):
     
 plt.legend(frameon=False, fontsize=16)
 
+fig1_a2c= plt.figure()
+plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+if(compare_flag ):
+    plt.errorbar(A_2, singleR_A_c12_src_2, singleR_A_c12_src_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+    
+plt.xscale('log')
+plt.title('CaFe Single Ratio vs. A', fontsize=18)
+plt.xlabel('A', fontsize=16)
+plt.ylabel('A_SRC / C12_SRC', fontsize=16)
 
-
+plt.legend(frameon=False, fontsize=16)
 
 
 

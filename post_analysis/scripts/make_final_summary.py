@@ -184,6 +184,10 @@ def make_final_summary():
             A                 = find_param('A:', summary_file_path) # number of nucleons
             # ---- END: read parameters -----
 
+            # Transparency function: T = c * A ** alpha (Q2), where alpha ~ -0.24 for Q2 >= 2 GeV^2, and c=1, A -> mass number
+            # reference: https://arxiv.org/abs/1211.2826  "Color Transparency: past, present and future"
+            alpha=-0.24
+            T = A**(alpha)
             
             # read selected data columns (with respective uncertainties)
             avg_current  = df['avg_current'] # average beam current [uA]     
@@ -301,15 +305,15 @@ def make_final_summary():
                 real_Yield_corr_total = real_Yield_corr_total - real_Yield_corr_total_c12 * (c12_density_b4c/c12_density) * (total_charge/c12_charge)  # corrected boron yield  
 
                 # define raw cross section: corrected yield normalized by  total charge, transparency and "CORRECTED" target density (g/cm2),
-                sigma_raw_per_nucleon         =  real_Yield_corr_total /  (total_charge * T * boron_density_corr)  # counts / (mC * g/cm^2)
-                sigma_raw_per_nucleus           =  sigma_raw_per_nucleon * A
+                sigma_raw_per_nucleon      =  real_Yield_corr_total /  (total_charge * T * boron_density_corr)  # counts / (mC * g/cm^2)
+                sigma_raw_per_nucleus      =  sigma_raw_per_nucleon * A
                 tgt_thick_corr             = boron_density_corr               # re-define corrected target thickness (to be written to file)            
 
             
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
-            if((kin[jdx]=='SRC')):
+            if((kin[jdx]=='MF')):
               
                 ax1[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
                 ax1[0, 0].set_title('SHMS Track Eff.',fontsize=16)
@@ -389,6 +393,8 @@ def write_double_ratio(ifname='', ofname=''):
     ofile.write('# \n'
                 '# Header Definitions: \n'
                 '# target       : target A used in single or double ratio \n'
+                '# singleR_A_c12_src      : single ratio of target A_SRC / C12_SRC  \n'
+                '# singleR_A_c12_src_err  : uncertainty in single ratio \n'
                 '# singleR_per_nucleon      : single ratio of target A(SRC/MF) per nucleon \n'
                 '# singleR_per_nucleon_err  : uncertainty in single ratio per nucleon \n'
                 '# singleR_per_nucleus      : single ratio of target A(SRC/MF) per nucleus \n'
@@ -401,7 +407,7 @@ def write_double_ratio(ifname='', ofname=''):
                 '# NoZ          : N/Z \n'
                 '# NmZoA        : (N-Z)/A \n'                
                 )
-    ofile.write('target,singleR_per_nucleon,singleR_per_nucleon_err,singleR_per_nucleus,singleR_per_nucleus_err,doubleR_per_nucleon,doubleR_per_nucleon_err,doubleR_per_nucleus,doubleR_per_nucleus_err,N,Z,A,NoZ,NmZoA\n') 
+    ofile.write('target,singleR_A_c12_src,singleR_A_c12_src_err,singleR_per_nucleon,singleR_per_nucleon_err,singleR_per_nucleus,singleR_per_nucleus_err,doubleR_per_nucleon,doubleR_per_nucleon_err,doubleR_per_nucleus,doubleR_per_nucleus_err,N,Z,A,NoZ,NmZoA\n') 
 
     #--------------------------------------------------------------------------------
     # ----- Read charge-normalized corrected yields from the final summary file -----
@@ -472,6 +478,13 @@ def write_double_ratio(ifname='', ofname=''):
     singleR_per_nucleus_err = unumpy.std_devs(singleR_per_nucleus)
     singleR_per_nucleus_C12 = (src_sigma_raw_per_nucleus_C12_arr/mf_sigma_raw_per_nucleus_C12_arr)
 
+    # A_SRC / C12_SRC
+    singleR_A_c12_src     =  src_sigma_raw_per_nucleon_arr / src_sigma_raw_per_nucleon_C12_arr
+    singleR_A_c12_src_val =  unumpy.nominal_values(singleR_A_c12_src)
+    singleR_A_c12_src_err =  unumpy.std_devs(singleR_A_c12_src)
+    
+    # A_MF / C12_MF
+    
     #--------------------------------------------------------
     # ---- CALCULATE DOUBLE RATIOS A_SRC/MF / C12_SRC/MF ----
     #--------------------------------------------------------
@@ -497,7 +510,7 @@ def write_double_ratio(ifname='', ofname=''):
     # loop over each target (to write numerical values to file)
     for i in np.arange(len(targ)):
 
-        ofile.write('%s,%.3E,%.3E,%.3E,%.3E,%.3f,%.3E,%.3f,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i], singleR_per_nucleon_val[i], singleR_per_nucleon_err[i], singleR_per_nucleus_val[i], singleR_per_nucleus_err[i], doubleR_per_nucleon_val[i], doubleR_per_nucleon_err[i], doubleR_per_nucleus_val[i], doubleR_per_nucleus_err[i], N[i], Z[i], A[i], NoZ[i], NmZoA[i]) ) 
+        ofile.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3E,%.3f,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i], singleR_A_c12_src_val[i], singleR_A_c12_src_err[i], singleR_per_nucleon_val[i], singleR_per_nucleon_err[i], singleR_per_nucleus_val[i], singleR_per_nucleus_err[i], doubleR_per_nucleon_val[i], doubleR_per_nucleon_err[i], doubleR_per_nucleus_val[i], doubleR_per_nucleus_err[i], N[i], Z[i], A[i], NoZ[i], NmZoA[i]) ) 
 
         
     ofile.close()
