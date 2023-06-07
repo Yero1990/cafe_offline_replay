@@ -21,12 +21,17 @@ npass = sys.argv[1]       # "pass3"
 
 ifname= 'cafe_ratios_%s.csv' % (npass)
 
+# ----------------
 # read input file
+# ----------------
 df = pd.read_csv(ifname, comment='#')
 
 targ = df['target']
 
-doubleR_per_nucleon  = np.array(df['doubleR_per_nucleon'])
+singleR_per_nucleon      = np.array(df['singleR_per_nucleon'])
+singleR_per_nucleon_err  = np.array(df['singleR_per_nucleon_err'])
+
+doubleR_per_nucleon      = np.array(df['doubleR_per_nucleon'])
 doubleR_per_nucleon_err  = np.array(df['doubleR_per_nucleon_err'])
 
 
@@ -43,7 +48,10 @@ if(compare_flag):
     df = pd.read_csv(fname, comment='#')
     
     targ_2 = df['target']
-    doubleR_per_nucleon_2  = np.array(df['doubleR_per_nucleon'])
+    singleR_per_nucleon_2      = np.array(df['singleR_per_nucleon'])
+    singleR_per_nucleon_err_2  = np.array(df['singleR_per_nucleon_err'])
+
+    doubleR_per_nucleon_2      = np.array(df['doubleR_per_nucleon'])
     doubleR_per_nucleon_err_2  = np.array(df['doubleR_per_nucleon_err'])
     A_2 = df['A'] 
     NoZ_2 = df['NoZ'] 
@@ -60,29 +68,89 @@ if(compare_flag ):
     plt.errorbar(A_2, doubleR_per_nucleon_2, doubleR_per_nucleon_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
-plt.xlabel('A')
-plt.ylabel('A (SRC/MF) / C12 (SRC/MF)')
+
+plt.title('CaFe Double Ratio vs. A', fontsize=18)
+plt.xlabel('A', fontsize=16)
+plt.ylabel('A (SRC/MF) / C12 (SRC/MF)', fontsize=16)
 # add target names to plot
 for i, tgt in enumerate(targ):
     print('i, tgt -> ',i, tgt)
     print('(x,y) ->  ',A[i], doubleR_per_nucleon[i] )
-    
-    
-    if(A[i]>15):
-        x = A[i] + 5
-        y = doubleR_per_nucleon[i]
-    else:
-        x = A[i] + 2
-        y = doubleR_per_nucleon[i]
 
-    if tgt=="Au197":
+    # standard (x,y) coordinates
+    x = A[i] + 2
+    y = doubleR_per_nucleon[i]
+
+    if tgt=="Fe54":
+        x = A[i] - 15
+    elif tgt=="Ca48":
+        x = A[i] - 13
+    elif tgt=="Ca40":
+        x = A[i] - 12
+    elif tgt=="Au197":
         x = A[i] - 70
-    if tgt=="B11":
+    elif tgt=="B11":
         x = A[i] - 2
         y = doubleR_per_nucleon[i] + 0.05
+    elif tgt=="Be9" or tgt=="B10" or tgt=="C12":
+        x = A[i] + 1
+    else:
+        x = A[i] + 2
+
     plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
+
+
+
+
+#--------------------------
+# PLOT Single Ratio vs. A
+#--------------------------
+
+fig1_s= plt.figure()
+plt.errorbar(A, singleR_per_nucleon, singleR_per_nucleon_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+if(compare_flag ):
+    plt.errorbar(A_2, singleR_per_nucleon_2, singleR_per_nucleon_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+    
+plt.xscale('log')
+
+plt.title('CaFe Single Ratio vs. A', fontsize=18)
+plt.xlabel('A', fontsize=16)
+plt.ylabel('A (SRC/MF)', fontsize=16)
+# add target names to plot
+for i, tgt in enumerate(targ):
+    print('i, tgt -> ',i, tgt)
+    print('(x,y) ->  ',A[i], singleR_per_nucleon[i] )
+
+    # standard (x,y) coordinates
+    x = A[i] + 2
+    y = singleR_per_nucleon[i]
+
+    if tgt=="Fe54":
+        x = A[i] + 15
+    elif tgt=="Ca48":
+        x = A[i] + 13
+    elif tgt=="Ca40":
+        x = A[i] + 12
+    elif tgt=="Au197":
+        x = A[i] - 70
+    elif tgt=="B11":
+        x = A[i] 
+        y = singleR_per_nucleon[i] +0.0005
+    elif tgt=="Be9" or tgt=="B10" or tgt=="C12":
+        x = A[i] + 1
+    else:
+        x = A[i] + 2
+
+    plt.text(x, y, tgt)
+    
+plt.legend(frameon=False, fontsize=16)
+
+
+
+
+
 
 
 #--------------------------
@@ -94,8 +162,9 @@ plt.errorbar(NoZ, doubleR_per_nucleon, doubleR_per_nucleon_err, marker='o', mark
 if(compare_flag ):
     plt.errorbar(NoZ_2, doubleR_per_nucleon_2, doubleR_per_nucleon_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 
-plt.xlabel('N/Z')
-plt.ylabel('A (SRC/MF) / C12 (SRC/MF)')
+plt.title('CaFe Double Ratio vs. N/Z', fontsize=18)
+plt.xlabel('N/Z', fontsize=16)
+plt.ylabel('A (SRC/MF) / C12 (SRC/MF)', fontsize=16)
 for i, tgt in enumerate(targ):
     print('i, tgt -> ',i, tgt)
     print('(x,y) ->  ',NoZ[i], doubleR_per_nucleon[i] )
@@ -113,6 +182,36 @@ plt.legend(frameon=False, fontsize=16)
 
 
 
+#--------------------------
+# PLOT Single Ratio vs. N/Z
+#--------------------------
+fig2_s = plt.figure()
+plt.errorbar(NoZ, singleR_per_nucleon, singleR_per_nucleon_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(compare_flag ):
+    plt.errorbar(NoZ_2, singleR_per_nucleon_2, singleR_per_nucleon_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.title('CaFe Single Ratio vs. N/Z', fontsize=18)
+plt.xlabel('N/Z', fontsize=16)
+plt.ylabel('A (SRC/MF) ', fontsize=16)
+for i, tgt in enumerate(targ):
+    print('i, tgt -> ',i, tgt)
+    print('(x,y) ->  ',NoZ[i], doubleR_per_nucleon[i] )
+    
+    x = NoZ[i] + 0.01
+    y = singleR_per_nucleon[i]
+
+    if tgt=="Au197":
+        x = NoZ[i] - 0.07
+ 
+    plt.text(x, y, tgt)
+
+plt.legend(frameon=False, fontsize=16)
+
+
+
+
+
 
 fig3 = plt.figure()
 plt.errorbar(NmZoA, doubleR_per_nucleon, doubleR_per_nucleon_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
@@ -120,8 +219,9 @@ plt.errorbar(NmZoA, doubleR_per_nucleon, doubleR_per_nucleon_err, marker='o', ma
 if(compare_flag ):
     plt.errorbar(NmZoA_2, doubleR_per_nucleon_2, doubleR_per_nucleon_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 
-plt.xlabel('(N-Z)/A')
-plt.ylabel('A (SRC/MF) / C12 (SRC/MF)')
+plt.title('CaFe Double Ratio vs. (N-Z)/A', fontsize=18)
+plt.xlabel('(N-Z)/A', fontsize=16)
+plt.ylabel('A (SRC/MF) / C12 (SRC/MF)', fontsize=16)
 
 for i, tgt in enumerate(targ):
     print('i, tgt -> ',i, tgt)
@@ -152,31 +252,3 @@ plt.show()
 
 
 
-
-
-
-
-'''
-#print('double_ratio = ', double_ratio)
-for i in range(len(src_yield_norm_arr)):
-
-       
-        #print('N[i] = ', N[i])
-        if (targ[i]=='LD2'):
-            continue
-        if (targ[i]=='Ca48' or targ[i]=='B10' or targ[i]=='B11'):
-            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc='gray', ecolor='gray', mec='gray', linestyle='None', label=targ[i])
-        else:
-            plt.errorbar(N[i]/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
-            #plt.errorbar((N[i]-Z[i])/Z[i], double_ratio_val[i], double_ratio_err[i], marker='o', markersize=10, mfc=tcolor[i], ecolor=tcolor[i], mec='k', linestyle='None', label=targ[i])
-        
-        
-    plt.ylabel('SRC High Momentum Fraction', fontsize=18)
-    plt.xlabel('N/Z', fontsize=18)
-    #plt.xlabel('(N-Z)/Z', fontsize=18)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-'''
