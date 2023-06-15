@@ -459,8 +459,8 @@ def write_ratios(ifname='', ofname=''):
     src_sigma_raw_per_proton_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_proton']
     src_sigma_raw_per_proton_err_C12  = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_proton_err']
 
-    mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_proton']/T_arr
-    mf_sigma_raw_per_proton_err_C12   = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_proton_err']/T_arr
+    mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_proton']
+    mf_sigma_raw_per_proton_err_C12   = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_proton_err']
 
     '''
     # NOTE: src_sigma_raw_nucleons -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] )
