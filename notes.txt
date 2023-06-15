@@ -1,0 +1,5 @@
+* momentum calibrations, (and issues with it, xptar)
+* discuss other corrections (counts/mC, )
+* taken data on gold
+* 3rd pass thru data
+* un-explained decrease in the raw counts per protons
