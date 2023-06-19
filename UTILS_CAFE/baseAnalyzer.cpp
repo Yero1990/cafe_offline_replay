@@ -5406,8 +5406,8 @@ void baseAnalyzer::EventLoop()
 
 
 	      // during Feb 2023, Au197 data-taking, gate-widths were widened which casued a 2nd edtm peak to be within the time window, increasing the live time
-	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
-	      // the second edtm peak must also be cut out. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
+	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out in Sep 2022 run period, then
+	      // the second edtm peak must also be cut out in Feb 2023 run period. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
 	      
 	      if(tgt_type=="Au197") {
 

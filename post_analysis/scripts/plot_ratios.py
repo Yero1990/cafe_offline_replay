@@ -61,6 +61,9 @@ if(compare_flag):
     singleR_per_proton_2      = np.array(df['singleR_per_proton'])
     singleR_per_proton_err_2  = np.array(df['singleR_per_proton_err'])
 
+    singleR_A_c12_mf_2        = np.array(df['singleR_A_c12_mf'])
+    singleR_A_c12_mf_err_2    = np.array(df['singleR_A_c12_mf_err'])
+    
     singleR_A_c12_src_2        = np.array(df['singleR_A_c12_src'])
     singleR_A_c12_src_err_2    = np.array(df['singleR_A_c12_src_err'])
 
@@ -255,6 +258,55 @@ plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
 
 
+#--------------------------
+# PLOT Single Ratio vs. N/Z
+#--------------------------
+
+# A_SRC / A_MF
+fig2_s = plt.figure()
+plt.errorbar(NoZ, singleR_per_proton, singleR_per_proton_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(compare_flag ):
+    plt.errorbar(NoZ_2, singleR_per_proton_2, singleR_per_proton_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.title('CaFe Single Ratio vs. N/Z', fontsize=18)
+plt.xlabel('N/Z', fontsize=16)
+plt.ylabel('A (SRC/MF) ', fontsize=16)
+for i, tgt in enumerate(targ):
+    
+    x = NoZ[i] + 0.01
+    y = singleR_per_proton[i]
+
+    if tgt=="Au197":
+        x = NoZ[i] - 0.07
+ 
+    plt.text(x, y, tgt)
+
+plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_singleR_vs_NoZ.pdf')
+
+# A_SRC / C12_SRC
+fig2_s_src = plt.figure()
+plt.errorbar(NoZ, singleR_A_c12_src, singleR_A_c12_src_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(compare_flag ):
+    plt.errorbar(NoZ_2, singleR_A_c12_src_2, singleR_A_c12_src_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.title('CaFe Single Ratio vs. N/Z', fontsize=18)
+plt.xlabel('N/Z', fontsize=16)
+plt.ylabel('A_SRC / C12_SRC', fontsize=16)
+for i, tgt in enumerate(targ):
+    
+    x = NoZ[i] + 0.01
+    y = singleR_A_c12_src[i]
+ 
+    plt.text(x, y, tgt)
+
+plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_SRCsingleR_vs_NoZ.pdf')
+
+
+
 
 
 #--------------------------
@@ -287,38 +339,15 @@ plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
 
 
-#--------------------------
-# PLOT Single Ratio vs. N/Z
-#--------------------------
-fig2_s = plt.figure()
-plt.errorbar(NoZ, singleR_per_proton, singleR_per_proton_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
-
-if(compare_flag ):
-    plt.errorbar(NoZ_2, singleR_per_proton_2, singleR_per_proton_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
-
-plt.title('CaFe Single Ratio vs. N/Z', fontsize=18)
-plt.xlabel('N/Z', fontsize=16)
-plt.ylabel('A (SRC/MF) ', fontsize=16)
-for i, tgt in enumerate(targ):
-    print('i, tgt -> ',i, tgt)
-    print('(x,y) ->  ',NoZ[i], doubleR[i] )
-    
-    x = NoZ[i] + 0.01
-    y = singleR_per_proton[i]
-
-    if tgt=="Au197":
-        x = NoZ[i] - 0.07
- 
-    plt.text(x, y, tgt)
-
-plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_singleR_vs_NoZ.pdf')
 
 
 
 
 
 
+#-------------------------------
+# PLOT Double Ratio vs. (N-Z)/A
+#-------------------------------
 fig3 = plt.figure()
 plt.errorbar(NmZoA, doubleR, doubleR_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
 

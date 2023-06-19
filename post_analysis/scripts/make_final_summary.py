@@ -143,13 +143,17 @@ def make_final_summary():
     
     # ------ create subplots for quality check plotting -----------
 
-    # quantities vesrus T2 scaler rate
+    # efficiencies vesrus T2 scaler rate
     fig1, ax1 = plt.subplots(nrows=2, ncols=3)
     fig1.set_size_inches(14,8, forward=True)
 
-    #
-    fig2, ax2 = plt.subplots(nrows=1, ncols=2)
-    fig2.set_size_inches(10,8, forward=True)
+    # T2 scaler / ( Q * tgt_thick )
+    fig2, ax2 = plt.subplots(nrows=1, ncols=1)
+    fig2.set_size_inches(12,8, forward=True)
+
+    # sigma_raw_per_nucleon vs. run number (on a run-by-run basis) for sanity check
+    fig3, ax3 = plt.subplots(nrows=1, ncols=1)
+    fig3.set_size_inches(8,8, forward=True)
     
     # -------------------------------------------------------------
     # loop over each target
@@ -240,6 +244,7 @@ def make_final_summary():
 
             # calculate normalized scalers (for sanity check)
             T2_scl_norm = T2_scl / (charge *  tgt_thick_corr)
+            T3_scl_norm = T3_scl / (charge *  tgt_thick_corr)
             
             
             # sum over  counts (before applying any corrections, inefficinecy, charge, etc.) for book-keeping 
@@ -298,6 +303,7 @@ def make_final_summary():
                 # define c12 dataframe to get charge and yield from C12 to subtract from B4C-10,11
                 df_c12 = pd.read_csv('summary_files/%s/cafe_prod_C12_%s_report_summary.csv'%(npass, kin[jdx]), comment='#') 
                 c12_charge       = df_c12['charge'].sum()
+                c12_charge_per_run       = df_c12['charge']
                 real_Yield_c12   = unumpy.uarray(df_c12['real_Yield'],  df_c12['real_Yield_err']) 
                 hms_trk_eff_c12  = unumpy.uarray(df_c12['hTrkEff'],         df_c12['hTrkEff_err'])
                 shms_trk_eff_c12 = unumpy.uarray(df_c12['pTrkEff'],         df_c12['pTrkEff_err'])
@@ -312,7 +318,7 @@ def make_final_summary():
                 c12_density_b4c    = tgt_thick -  boron_density_corr   # c12 density contribution in b4c 
 
                 # subtract c12 contribution from b4c yield
-                real_Yield_corr_total = real_Yield_corr_total - real_Yield_corr_total_c12 * (c12_density_b4c/c12_density) * (total_charge/c12_charge)  # corrected boron yield  
+                real_Yield_corr_total = real_Yield_corr_total - real_Yield_corr_total_c12 * (c12_density_b4c/c12_density) * (total_charge/c12_charge)  # corrected boron yield  (total)
 
                 # define raw cross section: corrected yield normalized by  total charge, transparency and "CORRECTED" target density (g/cm2),
                 sigma_raw_per_nucleon      =  real_Yield_corr_total /  (total_charge * T * boron_density_corr)  # counts / (mC * g/cm^2)
@@ -324,8 +330,9 @@ def make_final_summary():
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
-            if((kin[jdx]=='SRC')):
-              
+            if((kin[jdx]=='MF')):
+                fig1.suptitle('%s Kinematics'%(kin[jdx]), fontsize=20)
+
                 ax1[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
                 ax1[0, 0].set_title('SHMS Track Eff.',fontsize=14)
                 ax1[0, 0].set_xlabel('SHMS (T2) Scaler Rate [kHz]',fontsize=14)
@@ -347,6 +354,7 @@ def make_final_summary():
                 ax1[1, 0].set_title('Total EDTM Live Time',fontsize=14)
                 ax1[1, 0].set_xlabel('SHMS (T2) Scaler Rate [kHz]',fontsize=14)
                 ax1[1, 0].set_ylabel(r'$\epsilon_{tLT}$',fontsize=16)
+                ax1[1, 0].legend(target,loc="lower right")
                 
                 # plot charge-norm yield vs. T2 rates
                 ax1[1, 1].errorbar(T2_scl_rate, unumpy.nominal_values( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minT2],  yerr=unumpy.std_devs( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minT2], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
@@ -357,27 +365,40 @@ def make_final_summary():
                 
                 #ax1[1, 2].errorbar(T2_scl_rate, unumpy.nominal_values( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minT2],  yerr=unumpy.std_devs( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minT2], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
                 ax1[1, 2].errorbar(avg_current, unumpy.nominal_values( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minI],  yerr=unumpy.std_devs( sigma_raw_per_nucleon_per_run)/ unumpy.nominal_values( sigma_raw_per_nucleon_per_run)[minI], marker='o', mec='k', color=tcolor[idx], linestyle='None' )
-                ax1[1, 2].legend(target,loc="upper right")
                 ax1[1, 2].set_title('Relative Charge-Normalized Yield', fontsize=14)
                 ax1[1, 2].set_xlabel(r'Average Current [$\mu$A]', fontsize=14)
                 ax1[1, 2].set_ylabel(r'$Y/Y_{I,min}$', fontsize=16)
+                
 
-                # ---- PLOT T2 scsalers / (Q*tgt_thick) -------
-                A_lst = [A] * len(T2_scl_norm)
-                ax2[0].errorbar(A_lst, unumpy.nominal_values(T2_scl_norm),  yerr=unumpy.std_devs(T2_scl_norm), marker='o', markersize=10, mec='k', color=tcolor[idx], linestyle='None')
-                ax2[0].legend(target,loc="upper right", fontsize=16)
-                ax2[0].set_title(r'SHMS T2 Scalers / (Q $\times \sigma_{thick}$) vs A',fontsize=16)
-                ax2[0].set_xlabel('Mass Number, A',fontsize=16)
-                ax2[0].set_ylabel(r'T2 / (Q $\times$ $\sigma_{thick}$)', fontsize=14)
-                ax2[0].set_xscale('log')
+                # ---- PLOT T2 (or T3) scsalers / (Q*tgt_thick) -------
+                A_lst = np.array([A] * len(run))
+                N_lst = np.array([N] * len(run))
+                Z_lst = np.array([Z] * len(run))
+                NoZ = N_lst /   Z_lst
+                
+                ax2.errorbar(A_lst, unumpy.nominal_values(T2_scl_norm),  yerr=unumpy.std_devs(T2_scl_norm), marker='o', markersize=10, mec='k', color=tcolor[idx], linestyle='None')
+                ax2.legend(target,loc="lower right", fontsize=16)
+                ax2.set_title(r'SHMS (%s) T2 Scalers / (Q $\times \sigma_{thick}$) vs A'%(kin[jdx]),fontsize=16)
+                ax2.set_xlabel('Mass Number, A',fontsize=16)
+                ax2.set_ylabel(r'T2 / (Q $\times$ $\sigma_{thick}$)', fontsize=14)
+                ax2.set_xscale('log')
 
-                ax2[1].errorbar(T2_scl_rate, unumpy.nominal_values(T2_scl_norm),  yerr=unumpy.std_devs(T2_scl_norm), marker='o', markersize=10, mec='k', color=tcolor[idx], linestyle='None')
+                '''
+                ax2[1].errorbar(T3_scl_rate, unumpy.nominal_values(T3_scl_norm),  yerr=unumpy.std_devs(T3_scl_norm), marker='o', markersize=10, mec='k', color=tcolor[idx], linestyle='None')
                 ax2[1].legend(target,loc="lower right", fontsize=16)
-                ax2[1].set_title(r'SHMS T2 Scalers / (Q $\times \sigma_{thick}$)',fontsize=16)
-                ax2[1].set_xlabel('T2 Scaler Rate [kHz]',fontsize=16)
-                ax2[1].set_ylabel(r'T2 / (Q $\times$ $\sigma_{thick}$)', fontsize=14)
-
-
+                ax2[1].set_title(r'SHMS T3 Scalers / (Q $\times \sigma_{thick}$)',fontsize=16)
+                ax2[1].set_xlabel('T3 Scaler Rate [kHz]',fontsize=16)
+                ax2[1].set_ylabel(r'T3 / (Q $\times$ $\sigma_{thick}$)', fontsize=14)
+                '''
+                #---- Plot sigma_raw_per_proton_per_run versus A ------
+                sigma_raw_per_proton_per_run = sigma_raw_per_nucleon_per_run * A / Z
+                ax3.errorbar(NoZ , unumpy.nominal_values(sigma_raw_per_proton_per_run),  yerr=unumpy.std_devs(sigma_raw_per_proton_per_run), marker='o', markersize=8, mec='k', color=tcolor[idx], linestyle='None')
+                ax3.legend(target,loc="upper right", fontsize=14)
+                ax3.set_title(r'raw %s $\sigma_{xsec}$ (per proton)'%(kin[jdx]),fontsize=16)
+                ax3.set_xlabel('N/Z',fontsize=16)
+                ax3.set_ylabel(r'Y / $(Q \cdot \epsilon \cdot \sigma_{thick}\cdot T )\times A/Z$', fontsize=14)
+                #ax3.set_xscale('log')
+                
                 
             # SAVE SPECIFIC Ca40 TARGET INFO TO BE USED IN CORRECTIONS IN Ca48
             if(target[idx]=='Ca40'):
@@ -393,7 +414,6 @@ def make_final_summary():
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total.n, real_Yield_total.s, real_Yield_eff_total.n, real_Yield_eff_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, sigma_raw_per_nucleon.n, sigma_raw_per_nucleon.s, sigma_raw_per_proton.n, sigma_raw_per_proton.s, sigma_raw_per_nucleus.n, sigma_raw_per_nucleus.s, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
             
-    fig1.suptitle('%s Kinematics'%(kin[jdx]), fontsize=20)
     plt.tight_layout()
     plt.show()          
     ofile.close()
