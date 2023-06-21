@@ -22,6 +22,17 @@ def get_data(header='', fname=''):
 
     return data_array
 
+#_____________________________________
+def find_param(param='', fname=''):
+    #brief: function that read parameters from .csv file
+    
+    with open(fname) as fp:
+        lines = fp.readlines()
+        for line in lines:
+            if line.find(param) != -1:
+                #print('param: ', line)
+                param_value = float(line.split(':')[1].strip())
+                return param_value
 
 
 def get_relative(name='',  file1=''):
@@ -39,14 +50,27 @@ def get_relative(name='',  file1=''):
     Q                    = get_data('charge', file1)
     T2_scl               = get_data('T2_scl_rate', file1) * 1000. * get_data('beam_time', file1) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
 
-    N                    = unumpy.uarray(get_data('real_Yield', file1),  get_data('real_Yield_err', file1) )
+    counts                    = unumpy.uarray(get_data('real_Yield', file1),  get_data('real_Yield_err', file1) )
     hms_trk_eff   = unumpy.uarray(get_data('hTrkEff',    file1),  get_data('hTrkEff_err',    file1) )
     shms_trk_eff  = unumpy.uarray(get_data('pTrkEff',    file1),  get_data('pTrkEff_err',    file1) )
     total_LT      = unumpy.uarray(get_data('tLT',        file1),  get_data('tLT_err_Bi',     file1) )
     mult_trk_eff  = np.array(get_data('multi_track_eff', file1) )
+
+    # ------ read parameters -------
+
+    tgt_thick         = find_param('target_areal_density', file1) # g/cm^2
+    tgt_thick_corr    = tgt_thick  # set corrected thickness to thickness (will be re-defined if impurity is corrected for any target)
+    N                 = find_param('N:', file1) # number of neutrons
+    Z                 = find_param('Z:', file1) # number of protons
+    A                 = find_param('A:', file1) # number of nucleons
+
+    # Transparency function: T = c * A ** alpha (Q2), where alpha ~ -0.24 for Q2 >= 2 GeV^2, and c=1, A -> mass number
+    # reference: https://arxiv.org/abs/1211.2826  "Color Transparency: past, present and future"
+    alpha=-0.24
+    T = A**(alpha)
     
     # calcualte charge-normalized yield
-    Y     = N / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)              
+    Y     = counts / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff * T * tgt_thick)              
     relY  = Y / Y[0] 
 
     Y_nom = unumpy.nominal_values(Y)
@@ -89,7 +113,7 @@ def compare():
     # define output file to write correction factors (change in relative yield vs. T2 rates)
 
     # output file to write summary file
-    ofname = 'cafe_relYield_corrections_pass2.csv'
+    ofname = 'cafe_relYield_corrections.csv'
     ofile = open(ofname, 'w+')
     ofile.write('# CaFe Relative Yield Correction Factors (using MF kinematics) \n')
     ofile.write('# \n'
@@ -109,6 +133,7 @@ def compare():
     target = ['Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54', 'Au197']
 
     
+
     # loop over each target
     for t in np.arange(len(target)):
 
@@ -122,14 +147,15 @@ def compare():
         # icolor  = ['k', 'gray', 'b', 'g']
         
         # pass 2
-        file_arr = ['../../summary_files/pass2/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
-        imarker = ['v']
-        icolor  = ['g']
+        #file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t]), '../../summary_files/rate_dependence_study/pass3/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
+        file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
+
+        imarker = ['s', 'o']
+        icolor  = ['gray', 'red']
 
         # figure to plot relative yields vs. avg current and T2 rates
-        fig1, axs1 = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
-        
-
+        fig1, axs1 = plt.subplots(nrows=1, ncols=1, figsize=(8, 8))
+    
         # loop over each phase study
         for i, ifile in enumerate(file_arr):
 
@@ -140,15 +166,29 @@ def compare():
             Q                    = get_data('charge', ifile)
             T2_scl_rate          = get_data('T2_scl_rate', ifile)
             T2_scl               = get_data('T2_scl_rate', ifile) * 1000. * get_data('beam_time', ifile) #[kHz] * 1000 Hz/1kHz [sec] = [counts] 
-            N                    = unumpy.uarray(get_data('real_Yield', ifile),  get_data('real_Yield_err', ifile) )
+            counts                    = unumpy.uarray(get_data('real_Yield', ifile),  get_data('real_Yield_err', ifile) )
             hms_trk_eff   = unumpy.uarray(get_data('hTrkEff',    ifile),  get_data('hTrkEff_err',    ifile) )
             shms_trk_eff  = unumpy.uarray(get_data('pTrkEff',    ifile),  get_data('pTrkEff_err',    ifile) )
             total_LT      = unumpy.uarray(get_data('tLT',        ifile),  get_data('tLT_err_Bi',     ifile) )
             mult_trk_eff  = np.array(get_data('multi_track_eff', ifile) )
+
+            # ------ read parameters -------
+            N                 = find_param('N:', ifile) # number of neutrons
+            Z                 = find_param('Z:', ifile) # number of protons
+            A                 = find_param('A:', ifile) # number of nucleons
+            tgt_thick         = find_param('target_areal_density', ifile) # g/cm^2
             
+            minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
+            print(minT2)
+            print('file_arr:',  file_arr[i])
+            # Transparency function: T = c * A ** alpha (Q2), where alpha ~ -0.24 for Q2 >= 2 GeV^2, and c=1, A -> mass number
+            # reference: https://arxiv.org/abs/1211.2826  "Color Transparency: past, present and future"
+            alpha=-0.24
+            T = A**(alpha)
+    
             # calcualte charge-normalized yield
-            Y     = N / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)              
-            relY  = Y / Y[0] 
+            Y     = counts / ( Q * hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff * T * tgt_thick)              
+            relY  = Y / Y[minT2] 
             
             Y_nom = unumpy.nominal_values(Y)
             Y_err = unumpy.std_devs(Y)
@@ -158,7 +198,7 @@ def compare():
             
             #calculate T2 scaler counts / charge
             T2    = T2_scl/Q 
-            relT2 = T2/T2[0]
+            relT2 = T2/T2[minT2]
             
             T2_nom = unumpy.nominal_values(T2)
             T2_err = unumpy.std_devs(T2)
@@ -198,20 +238,21 @@ def compare():
             #  PLOT relative yileds vs (avg current or rate) for each phase
             # ---------------------------------------------------------------
             
-            ax1 = axs1[0]
-            ax1.errorbar(I, relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
-            ax1.set_ylabel('Relative Yield', fontsize=18)
-            ax1.set_xlabel('Average Current [uA]', fontsize=18)
-            ax1.tick_params(axis='x', labelsize=14)
-            ax1.tick_params(axis='y', labelsize=14)
-            ax1.grid(True)
+            #ax1 = axs1[0]
+            #ax1.errorbar(I, relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')
+            #ax1.set_ylabel('Relative Yield', fontsize=18)
+             #ax1.set_xlabel('Average Current [uA]', fontsize=18)
+            #ax1.tick_params(axis='x', labelsize=14)
+            #ax1.tick_params(axis='y', labelsize=14)
+            #ax1.grid(True)
 
-            ax1 = axs1[1]            
-            ax1.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed')            
-            ax1.set_xlabel('T2 Scaler Rate [kHz]', fontsize=18)
-            ax1.tick_params(axis='x', labelsize=14)
-            ax1.tick_params(axis='y', labelsize=14)
-            ax1.grid(True)
+                       
+            axs1.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed', label='%s MF'%target[t])            
+            axs1.set_xlabel('T2 Scaler Rate [kHz]', fontsize=18)
+            axs1.set_ylabel('Relative Yield', fontsize=18)
+            axs1.tick_params(axis='x', labelsize=14)
+            axs1.tick_params(axis='y', labelsize=14)
+            axs1.grid(True)
             
             fig1.tight_layout() 
 
@@ -266,4 +307,4 @@ def plot_correction():
 # calling function to compare different phases of the rate-dependece study
 compare()
 
-plot_correction()
+#plot_correction()
