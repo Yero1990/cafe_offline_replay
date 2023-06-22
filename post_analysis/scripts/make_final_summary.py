@@ -186,7 +186,7 @@ def make_final_summary():
 
             
             # ------ read parameters -------
-            T                 = find_param('transparency', summary_file_path) # transparency
+            #T                 = find_param('transparency', summary_file_path) # transparency
             tgt_thick         = find_param('target_areal_density', summary_file_path) # g/cm^2
             tgt_thick_corr    = tgt_thick  # set corrected thickness to thickness (will be re-defined if impurity is corrected for any target)
             N                 = find_param('N:', summary_file_path) # number of neutrons
