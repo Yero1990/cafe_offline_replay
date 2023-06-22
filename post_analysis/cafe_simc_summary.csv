@@ -1,0 +1,13 @@
+# CaFe SIMC Summary File
+# target       : target name analyzed
+# kin          : kinematics analyzed 
+# simc_yield   : yield (counts integrated over Pm per 1 mC) with all simc-analysis cuts applied
+# sigma_raw_per_proton : per-proton yield scaled by transparency & target thickness -> 1 / (T * tgt_thick * Z/A )
+# singleR_A_to_C12_MF : sigma_raw_per_proton_A / sigma_raw_per_proton_C12
+# tgt_thick: target density (g/cm2)
+# T Z A    : transparency (T) | # of protons(Z) and nucleons (A)
+
+target,kin,simc_yield,simc_yield_err,sigma_raw_per_proton,sigma_raw_per_proton_err,singleR_A_to_C12_MF,singleR_A_to_C12_MF_err,tgt_thick,T,Z,A
+C12,MF,777.608,8.948E+00,4839.966,5.569E+01,1.000,0.000E+00,0.574,5.6000E-01,6.0,12.0
+Fe56,MF,251.382,2.187E+00,4098.082,5.569E+01,0.847,1.222E-02,0.367,3.6000E-01,26.0,56.0
+Au197,MF,109.234,8.342E-01,3059.423,2.336E+01,0.632,8.730E-03,0.405,2.2000E-01,79.0,197.0

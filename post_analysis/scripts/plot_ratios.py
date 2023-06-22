@@ -40,7 +40,6 @@ singleR_A_c12_mf_err    = np.array(df['singleR_A_c12_mf_err'])
 singleR_A_c12_src        = np.array(df['singleR_A_c12_src'])
 singleR_A_c12_src_err    = np.array(df['singleR_A_c12_src_err'])
 
-
 doubleR     = np.array(df['doubleR'])
 doubleR_err  = np.array(df['doubleR_err'])
 
@@ -49,7 +48,20 @@ A = df['A']
 NoZ = df['NoZ'] 
 NmZoA = df['NmZoA'] 
 
-compare_flag = False
+
+compare_flag = False  # compare to previous pass ?
+compare_simc_flag = True  #compare to simc ?
+
+if(compare_simc_flag):
+
+    # read SIMC single_ratio (C12, Fe56, Au197)
+    df_simc = pd.read_csv('cafe_simc_summary.csv', comment='#')
+    A_simc = df_simc['A']
+    singleR_per_proton_simc      = np.array(df_simc['singleR_A_to_C12_MF'])
+    singleR_per_proton_err_simc  = np.array(df_simc['singleR_A_to_C12_MF_err'])
+
+
+
 
 if(compare_flag):
     fname= 'cafe_ratios_pass2.csv' 
@@ -177,7 +189,9 @@ fig1_a2c_mf= plt.figure()
 plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
 if(compare_flag ):
     plt.errorbar(A_2, singleR_A_c12_mf_2, singleR_A_c12_mf_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
-    
+if(compare_simc_flag ):
+    plt.errorbar(A_simc, singleR_per_proton_simc, singleR_per_proton_err_simc, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='SIMC')
+        
 plt.xscale('log')
 plt.title('CaFe Single Ratio (per proton) vs. A', fontsize=18)
 plt.xlabel('A', fontsize=16)
