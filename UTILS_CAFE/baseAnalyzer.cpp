@@ -5406,8 +5406,8 @@ void baseAnalyzer::EventLoop()
 
 
 	      // during Feb 2023, Au197 data-taking, gate-widths were widened which casued a 2nd edtm peak to be within the time window, increasing the live time
-	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out in Sep 2022 run period, then
-	      // the second edtm peak must also be cut out in Feb 2023 run period. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
+	      // however, since this second edtm peak corresponds to the 2nd coin. time peak due to this +30 ns shift, and since the 2nd coin peak is cut out, then
+	      // the second edtm peak must also be cut out. this would yield a lower live time from ~98 % --> ~92%, consistent with the CaFe measurements on Sep 2022
 	      
 	      if(tgt_type=="Au197") {
 
@@ -5494,7 +5494,7 @@ void baseAnalyzer::EventLoop()
 		  if( shms_Coll_gCut->IsInside(eYColl, eXColl) ) { shms_coll_cut_bool=true; }
 		  
 	
-
+		  
 		  if ( abs(epCoinTime-ctime_offset_peak_val) < 50. ) {
 
 		    // the skimmed ttree has the following applied:
@@ -5505,6 +5505,24 @@ void baseAnalyzer::EventLoop()
 		    tree_skim->Fill();
 
 		  }
+		  
+
+		  // select e- singles
+		  /*
+		  if (gevtyp==1 || gevtyp==3 || gevtyp==5 || gevtyp==7) {
+
+		    tree_skim->Fill();
+		  }
+		  
+		  if (gevtyp==2 || gevtyp==3 || gevtyp==6 || gevtyp==7) { 
+		    tree_skim->Fill();     
+		  }
+		  */
+		  // step1:    proton singles (2 3 6 7 ) analysis
+		  // step2: 
+		  // look at those proton distribution for H(e,e'p) in P_proton vs theta_p
+		  // look at it for C12 and check if there is reasonable cut for quasi-elastic
+
 		  //==========================================================================
 
 		  //-------------------------------------
@@ -6214,7 +6232,7 @@ void baseAnalyzer::EventLoop()
     
     // Create and open a text file
     ofstream out_sys(Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()));
-
+    cout << "Writing comments to file: " << Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()) << endl;
     // Write header to file
     out_sys << Form("# CaFe %s %s Systematics Cuts Summary", tgt_type.Data(), analysis_cut.Data() ) << endl;
     out_sys << "# entry -> id for a particular combination of random gaussian-generated data analysis cuts  " << endl;
@@ -6224,6 +6242,7 @@ void baseAnalyzer::EventLoop()
       out_sys << "entry,syst_total_real,syst_total_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dEm_real,syst_dEm_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
     }
     else if(analysis_cut=="SRC") {
+      cout << "Writing entry to file: " << Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()) << endl;        
       out_sys << "entry,syst_total_real,syst_total_real_err,syst_dPm_min_real,syst_dPm_min_real_err,syst_dPm_max_real,syst_dPm_max_real_err,syst_dQ2_real,syst_dQ2_real_err,syst_dXbj_real,syst_dXbj_real_err,syst_dthrq_real,syst_dthrq_real_err,syst_dHcoll_real,syst_dHcoll_real_err,syst_dScoll_real,syst_dScoll_real_err" << endl;   
     }
     
@@ -6932,6 +6951,7 @@ void baseAnalyzer::EventLoop()
 	out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",ientry, syst_total_real, syst_total_real_err, syst_dPm_max_real, syst_dPm_max_real_err, syst_dQ2_real, syst_dQ2_real_err, syst_dEm_real, syst_dEm_real_err, syst_dHcoll_real, syst_dHcoll_real_err, syst_dScoll_real, syst_dScoll_real_err) << endl;        
       }
       else if(analysis_cut=="SRC") {
+	cout << "Writing to entry file: " << Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()) << endl;        
 	out_sys << Form("%i,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",ientry, syst_total_real, syst_total_real_err, syst_dPm_min_real, syst_dPm_min_real_err, syst_dPm_max_real, syst_dPm_max_real_err, syst_dQ2_real, syst_dQ2_real_err, syst_dXbj_real, syst_dXbj_real_err, syst_dthrq_real, syst_dthrq_real_err, syst_dHcoll_real, syst_dHcoll_real_err,syst_dScoll_real, syst_dScoll_real_err) << endl;        
       }
       
@@ -7040,6 +7060,7 @@ void baseAnalyzer::EventLoop()
 
     } // end loop over each entry of the systematics cut file
 
+    cout << "Closing file: " << Form("cafe_systematics_%s_%s.csv", tgt_type.Data(), analysis_cut.Data()) << endl;        
     // close output systematics file
     out_sys.close();
 
@@ -7332,6 +7353,12 @@ void baseAnalyzer::EventLoop()
 	    //Fill Secondary Kin Histos
 	    H_Em       ->Fill(Em, FullWeight);
 	    H_Pm       ->Fill(Pm, FullWeight);
+	    H_Pmx_lab  ->Fill(-1.*Pmx_lab, FullWeight);                                                                                                                         
+	    H_Pmy_lab  ->Fill(Pmy_lab, FullWeight);                                                                                                                                    
+	    H_Pmz_lab  ->Fill(Pmz_lab, FullWeight);                                          
+	    H_Pmx_q    ->Fill(Pmx_q, FullWeight);                                                                                                                              
+	    H_Pmy_q    ->Fill(Pmy_q, FullWeight);     
+	    H_Pmz_q    ->Fill(Pmz_q, FullWeight);
 	    H_Tx       ->Fill(Tx, FullWeight);
 	    H_Tr       ->Fill(Tr, FullWeight);
 	    H_MM       ->Fill(MM, FullWeight);

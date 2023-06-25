@@ -330,7 +330,8 @@ if [ "${ana_type}" = "simc" ]; then
     if [ $# -eq 0 ]; then     
 	
 	# Display help output if no argument specified
-	printSIMCHelpMsg	
+	printSIMCHelpMsg
+	exit 0
     fi
 
     ana_cut=$1

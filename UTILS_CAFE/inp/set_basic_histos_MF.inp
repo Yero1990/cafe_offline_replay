@@ -162,17 +162,17 @@ Pm_xmax = 0.95
 
 # Missing Momentum (X-component, lab)
 Pmx_lab_nbins = 80 
-Pmx_lab_xmin = -0.2
-Pmx_lab_xmax = 0.2
+Pmx_lab_xmin = -0.4
+Pmx_lab_xmax = 0.4
 
 # Missing Momentum (Y-component, lab)
 Pmy_lab_nbins = 80
-Pmy_lab_xmin = -0.2
-Pmy_lab_xmax = 0.2
+Pmy_lab_xmin = -0.4
+Pmy_lab_xmax = 0.4
 
 # Missing Momentum (Z-component, lab)
 Pmz_lab_nbins = 80
-Pmz_lab_xmin = -0.2
+Pmz_lab_xmin = -0.4
 Pmz_lab_xmax = 0.4
 
 # Missing Momentum (X-component, q-frame: +z_lab rotated to +q)
