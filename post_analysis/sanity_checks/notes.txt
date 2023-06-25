@@ -1,0 +1,17 @@
+Carlos' Notes of Sanity Checks
+
+Jun 25, 2023:
+--------------
+While comparing Data/SIMC Emiss, I noticed C12 Emiss was offset
+I compared Au197 Emiss Data/SIMC and they were fine. Then upon
+checking the C12 MF Emiss distribution from two independent runs
+taken (16977 and 17098), I noticed the two data Emiss were
+offset from each other.  I decided to compare as a test, the two
+Be9 MF Emiss taken (16983, 17100) and they were not as offset as
+C12, but negligible offset.  This needs to be further explored.
+Perhaps compare independent C12 MF runs to C12 MF SIMC and check which
+Emiss better agrees, for example.
+
+Nevertheless,  the Pmx,y,z Pm components seemed fine, so Im not
+sure why was Emiss offset.
+

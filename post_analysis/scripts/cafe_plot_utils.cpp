@@ -11,6 +11,40 @@ void cafe_plot_utils(){
   cout << "Please call a plotting utility \nfunction from this script " << endl;
   cout << "--------------------------------" << endl;
 
+  // data/simc yield comparisons (yields scaled by charge, efficiencies, etc)
+  
+  //user may define scale factor within function)
+  //cout <<  "hist_id: \n 0: Pm, 1: W, 2: Q2, 3: xbj, 4: nu, 5: Em, 6: th_rq, 7: th_pq \n
+  //                      8: th_e, 9: kf, 10: th_p, 11: Pf, 12: |q|, 13: th_q, 14: Pmx_lab, \n
+  //                      15: Pmy_lab, 16: Pmz_lab " << endl;
+
+  TString target = "Au197";
+  TString kin = "MF";
+  int run= 20793;
+  
+  yield_comparison(target.Data(), kin.Data(), run, 0);
+  
+  yield_comparison(target.Data(), kin.Data(), run, 1);
+  yield_comparison(target.Data(), kin.Data(), run, 2);
+  yield_comparison(target.Data(), kin.Data(), run, 3);
+  yield_comparison(target.Data(), kin.Data(), run, 4);
+  yield_comparison(target.Data(), kin.Data(), run, 5);
+  yield_comparison(target.Data(), kin.Data(), run, 6);
+  yield_comparison(target.Data(), kin.Data(), run, 7);
+ 
+  
+  yield_comparison(target.Data(), kin.Data(), run, 8);
+  yield_comparison(target.Data(), kin.Data(), run, 9);
+  yield_comparison(target.Data(), kin.Data(), run, 10);
+  yield_comparison(target.Data(), kin.Data(), run, 11);
+  yield_comparison(target.Data(), kin.Data(), run, 12);
+  yield_comparison(target.Data(), kin.Data(), run, 13);
+  yield_comparison(target.Data(), kin.Data(), run, 14);
+  yield_comparison(target.Data(), kin.Data(), run, 15);
+  yield_comparison(target.Data(), kin.Data(), run, 16);
+  
+    
+}
 
   //=====================
   // EXAMPLES FOR USERS
@@ -21,9 +55,9 @@ void cafe_plot_utils(){
   // READ PARAMETERS FROM SUMMARY (.csv) FILES
   //--------------------------------------------
 
-  /*
-  // get summary file columns combined (either total or average or per run)
   
+  // get summary file columns combined (either total or average or per run)
+  /*
   double total_charge    = get_header("total_charge", "B11", "SRC"   );
   double total_yield     = get_header("real_yield", "Be9", "SRC"     );
    double total_yield_err = get_header("real_yield_err", "B10", "MF" );
@@ -43,69 +77,9 @@ void cafe_plot_utils(){
   double Z    = get_param("Z", "Fe54", "MF" );  # get number of protons
   double A    = get_param("A","Be9", "MF" );  # get mass number (N+Z)
 
+  
   */
-  
 
-  // ---------- compare DATA /  SIMC  H(e,e'p) Elastics (or MF, SRC for other targets)--------------------
-
-  // If dealing with multiole runs, or multiple histograms, one can always put this in a loop
-  int run = 16962;
-  TString target = "LH2";  // LH2, LD2, Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
-  TString kin = "heep_coin";  // heep_coin, MF, SRC
-   
-  double Q          = get_header("total_charge", target.Data(), kin.Data(), run);
-  double htrk_eff   = get_header("hms_trk_eff",  target.Data(), kin.Data(), run );
-  double etrk_eff   = get_header("shms_trk_eff", target.Data(), kin.Data(), run );
-  double e_mtrk_eff = get_header("shms_mult_trk_eff", target.Data(), kin.Data(), run );
-  double tLT        = get_header("total_live_time", target.Data(),  kin.Data(), run);
-
-  double T         = get_param("transparency",    target.Data(), kin.Data() );
-  double tgt_thick = get_param("tgt_area_density",target.Data(), kin.Data() );
-
-  double scale1 = 1. / (Q *  htrk_eff * etrk_eff * e_mtrk_eff * tLT  * tgt_thick);
-  double scale2 = 1. / (tgt_thick);  // simulation scale factor (SIMC is already 1 mC, and efficiencies are 100% )
-
-  // LH2
-  TString file1_path = "~/ROOTfiles/pass3_files/data/cafe_prod_LH2_heep_coin_16962_-1_histos.root";
-  TString file2_path = "~/ROOTfiles/pass3_files/simc/cafe_heep_coin_kin0_rad_analyzed.root";
-
-  // C12
-  //TString file1_path = "~/ROOTfiles/pass3_files/data/cafe_prod_Au197_MF_20799_-1_histos.root";
-  //TString file2_path = "~/ROOTfiles/pass3_files/simc/cafe_au197_MF_rad_analyzed.root";
-
-  
-  TString hist1="randSub_plots/H_Pm_rand_sub";
-  TString hist2="kin_plots/H_Pm";
-  TString xlabel="Missing Momentum, Pm [GeV/c]";
-  TString ylabel="Charge-Normalized Yield ";
-  TString title = "CaFe H(e,e'p): Missing Momentum";
-  TString hist1_leg="DATA";
-  TString hist2_leg="SIMC";
-
-  cout << Form("reading file1: %s", file1_path.Data()) << endl;
-  cout << "----------------" << endl;
-  cout << "Scale Factors" << endl;
-  cout << "----------------" << endl;
-  cout << " " << endl;
-  cout << "scale_factor =  1 / (Q * hms_trk_eff * \n  \t shms_trk_eff * shms_multi_trk_eff * \n \t total_live_time * tgt_thick) " << endl;
-  cout << Form("scale_factor -->  %.4f", scale1) << endl;
-  cout << "" << endl;
-  cout << Form("Charge Q [mC]      : %.3f ", Q) << endl;
-  cout << Form("HMS Trk Eff        : %.3f", htrk_eff) << endl;
-  cout << Form("SHMS Trk Eff       : %.3f", etrk_eff) << endl;
-  cout << Form("SHMS Mult. Trk Eff : %.3f", e_mtrk_eff) << endl;
-  cout << Form("Total Live Time    : %.3f", tLT) << endl;
-  cout << Form("Target Thick [g/cm2] : %.4f", tgt_thick) << endl;
-  cout << "" << endl;
-  
-  // loop over kinematic histograms
-  
-  
-  compare_histos( file1_path, hist1,        scale1,
-		  file2_path, hist2,        scale2,
-		  xlabel,     ylabel,       title,
-		  hist1_leg,  hist2_leg,    false);
-  
 
   
 
@@ -307,7 +281,7 @@ void cafe_plot_utils(){
   
  
   
-}
+//}
 
 
 
