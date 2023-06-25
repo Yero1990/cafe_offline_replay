@@ -55,7 +55,7 @@ double get_header(string header="", string target="", string kin="", int run=-1)
   // set generic .csv file name
   string file_csv = Form(SUMMARY_FILES_DIR"pass3/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
-  cout << Form("FILE TO OPEN: %s", file_csv.c_str()) << endl;
+  //cout << Form("FILE TO OPEN: %s", file_csv.c_str()) << endl;
   
   // set run index to -1, and define the run vector
   int run_idx = -1;
@@ -168,8 +168,8 @@ double get_header(string header="", string target="", string kin="", int run=-1)
     vector<double> v_pMultiTrkEff        = read_csv(file_csv, "multi_track_eff");
     vector<double> v_pMultiTrkEff_err( v_pMultiTrkEff.size(),0.001); // no errors until figure out proper way to calculate them
 
-    cout << "v_pMultiTrkEff : " << v_pMultiTrkEff.at(0)  << endl;
-    cout << "v_pMultiTrkEff_err : " << v_pMultiTrkEff_err.at(0)  << endl;
+    //cout << "v_pMultiTrkEff : " << v_pMultiTrkEff.at(0)  << endl;
+    //cout << "v_pMultiTrkEff_err : " << v_pMultiTrkEff_err.at(0)  << endl;
 
     //error in weighted average is passed by reference
     double shms_trk_eff_err = 0;          
@@ -179,7 +179,7 @@ double get_header(string header="", string target="", string kin="", int run=-1)
     double shms_trk_eff              = vavgw(v_pTrkEff, v_pTrkEff_err, shms_trk_eff_err);  
 
     double shms_mult_trk_eff         = vavgw(v_pMultiTrkEff, v_pMultiTrkEff_err, shms_mult_trk_eff_err);
-    cout << "shms_mult_trk_eff :" << shms_mult_trk_eff  << endl;
+    //cout << "shms_mult_trk_eff :" << shms_mult_trk_eff  << endl;
     
     if( header.compare("shms_trk_eff")==0 ){
 
@@ -260,7 +260,7 @@ double get_header(string header="", string target="", string kin="", int run=-1)
 
   // find parameters in .csv. files (usually commented lines above header in .csv file)
 
-  cout << Form("FILE TO OPEN: %s", file_csv.c_str() ) << endl;
+  //cout << Form("FILE TO OPEN: %s", file_csv.c_str() ) << endl;
 
   double tgt_area_density = stod(split(FindString("target_areal_density", file_csv.c_str(), false, -1, true)[0], ':')[1]);
   double transparency     = stod(split(FindString("transparency:", file_csv.c_str(),        false, -1, true)[0], ':')[1]);
@@ -333,16 +333,18 @@ void compare_histos( TString file_path="path/to/file1.root",
 
 
 
-  // declare canvas to draw overlay histos
-  TCanvas *c = new TCanvas("c", "c", 900, 700);
-
- 
-  TLegend *leg = new TLegend(0.14,0.89,0.25,0.78);
-
 
   // loop over all histogram names to be overlayed
   for(int i=0; i<hist_name.size(); i++) {
 
+    
+    // declare canvas to draw overlay histos
+    TCanvas *c = new TCanvas(Form("c_%s",hist_name[i].Data()), Form("%s", hist_name[i].Data()), 900, 700);
+
+ 
+    TLegend *leg = new TLegend(0.14,0.89,0.25,0.78);
+
+  
     // declare 1D histos
     TH1F *H_hist = 0;  
 
@@ -412,15 +414,11 @@ void compare_histos( TString file_path="path/to/file1.root",
 
     // draw legend
     leg->Draw();
-    //delete H_hist; H_hist=NULL;
 
 
   } // end loop over hist names
   
-
-
-
-  
+ 
 }
 
 //____________________________________________________________________________________________________
@@ -481,7 +479,8 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
   H_hist2->SetFillStyle(3005);
 
   // set y-range
-  H_hist1->GetYaxis()->SetRangeUser(0, H_hist1->GetMaximum()+0.6*H_hist1->GetMaximum());
+  H_hist1->GetYaxis()->SetRangeUser(0, H_hist1->GetMaximum()+1.6*H_hist1->GetMaximum());
+  H_hist2->GetYaxis()->SetRangeUser(0, H_hist1->GetMaximum()+1.6*H_hist1->GetMaximum());
 
   // set histogram titles/labels/font
   H_hist1->SetTitle(title);
@@ -501,7 +500,8 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
   H_hist1->SetTitleOffset(1., "XY");
 
 
-  TCanvas *c = new TCanvas("c", "c", 900, 700);
+  TCanvas *c = new TCanvas(Form("c_%s", title.Data()), Form("%s", title.Data()), 900, 700);
+  c -> SetLeftMargin(0.12);
   c -> SetBottomMargin(0.12);
   // scale histograms (default is 1, but user can input different value)
   H_hist1->Scale(scale1);
@@ -680,10 +680,10 @@ void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", st
     // generic file name with specific target, kinematic
     fname = Form(ANALYZED_COMBINED"pass3/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
 
-    cout << Form("FILE TO OPEN: %s", fname.c_str()) << endl;
+    //cout << Form("FILE TO OPEN: %s", fname.c_str()) << endl;
 
-    cout << "fname = " << fname << endl;
-    cout << clr[i] << endl;
+    //cout << "fname = " << fname << endl;
+    //cout << clr[i] << endl;
     // read TFile
     TFile *file = NULL;
     file = new TFile(fname.c_str());
@@ -944,10 +944,167 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   
   return hvec;
 
-  
 }
 
 
 
+void yield_comparison(TString target="", TString kin="", Int_t run=-1, Int_t hist_id=-1) {
+  
+  // ---------- compare DATA /  SIMC  H(e,e'p) --------------------
+  
+  // If dealing with multiole runs, or multiple histograms, one can always put this in a loop
+   
+  double Q          = get_header("total_charge", target.Data(), kin.Data(), run);
+  double htrk_eff   = get_header("hms_trk_eff",  target.Data(), kin.Data(), run );
+  double etrk_eff   = get_header("shms_trk_eff", target.Data(), kin.Data(), run );
+  double e_mtrk_eff = get_header("shms_mult_trk_eff", target.Data(), kin.Data(), run );
+  double tLT        = get_header("total_live_time", target.Data(),  kin.Data(), run);
+  double tgt_thick = get_param("tgt_area_density",target.Data(), kin.Data() );
+  double A          = get_param("A",target.Data(), kin.Data() );
+  double Z          = get_param("Z",target.Data(), kin.Data() );
 
+  double T         = 1;  
+
+  double scale1 = 1. / (Q *  htrk_eff * etrk_eff * e_mtrk_eff * tLT  * tgt_thick * Z/A);
+  double scale2 = 1. / (tgt_thick * Z/A);  // simulation scale factor (SIMC is already 1 mC, and efficiencies are 100% )
+
+  // LH2
+  TString file1_path = "~/ROOTfiles/pass3_files/data/cafe_prod_LH2_heep_coin_16962_-1_histos.root";
+  TString file2_path = "~/ROOTfiles/pass3_files/simc/cafe_heep_coin_kin0_rad_analyzed.root";
+
+  
+  TString hist1="randSub_plots/H_Pm_rand_sub";
+  TString hist2="kin_plots/H_Pm";
+  TString xlabel="Missing Momentum, Pm [GeV/c]";
+  TString ylabel="Charge-Normalized Yield ";
+  TString title = "CaFe H(e,e'p): Missing Momentum";
+  TString hist1_leg="DATA";
+  TString hist2_leg="SIMC";
+
+
+  // ---------- compare DATA /  SIMC for  MF, SRC for other targets--------------------
+
+  // User Input
+  //cout << "Enter (target, kin, run, hist_id): \n example: C12 MF 17098 0 \n example2: LH2 heep_coin 16962 1 \n";
+  cout <<  "hist_id: \n 0: Pm, 1: W, 2: Q2, 3: xbj, 4: nu, 5: Em, 6: th_rq, 7: th_pq \n 8: th_e, 9: kf, 10: th_p, 11: Pf, 12: |q|, 13: th_q, 14: Pmx_lab, \n 15: Pmy_lab, 16: Pmz_lab " << endl;
+  //cin >> target >> kin >> run >> hist_id;
+  cout << "--------------" << endl;
+  cout << "target: " << target.Data() << endl;
+  cout << "kin   : " << kin.Data() << endl;
+  cout << "run   : " << run << endl;
+  cout << "hist_id   : " << hist_id << endl;
+  cout << "--------------" << endl;
+  cout << "" << endl;
+  
+  Q          = get_header("total_charge", target.Data(), kin.Data(), run);
+  htrk_eff   = get_header("hms_trk_eff",  target.Data(), kin.Data(), run );
+  etrk_eff   = get_header("shms_trk_eff", target.Data(), kin.Data(), run );
+  e_mtrk_eff = get_header("shms_mult_trk_eff", target.Data(), kin.Data(), run );
+  tLT        = get_header("total_live_time", target.Data(),  kin.Data(), run);
+
+  tgt_thick = get_param("tgt_area_density",target.Data(), kin.Data() );
+  A          = get_param("A",target.Data(), kin.Data() );
+  Z          = get_param("Z",target.Data(), kin.Data() );
+
+  double alpha=0.24;
+  T = pow(A, -alpha); // TRASNPARENCY BASED ON previous fits
+    
+  scale1 = 1. / (Q *  htrk_eff * etrk_eff * e_mtrk_eff * tLT  * tgt_thick * Z/A);
+  scale2 = 1. / (tgt_thick * Z/A);  // simulation scale factor (SIMC is already 1 mC, and efficiencies are 100% )
+  
+  file1_path = Form("~/ROOTfiles/pass3_files/data/cafe_prod_%s_%s_%i_-1_histos.root", target.Data(), kin.Data(), run);
+  
+  file2_path = Form("~/ROOTfiles/pass3_files/simc/cafe_%s_%s_rad_analyzed.root", target.Data(), kin.Data());
+
+  if(target=="LH2")   file2_path = Form("~/ROOTfiles/pass3_files/simc/cafe_%s_kin0_rad_analyzed.root", kin.Data());
+
+  
+  cout << Form("reading data file1: %s", file1_path.Data()) << endl;
+  cout << Form("reading simc file2: %s", file2_path.Data()) << endl;
+
+  cout << "" << endl;
+  cout << "----------------------------" << endl;
+  cout << Form("%s %s %i Scale Factors", target.Data(), kin.Data(), run) << endl;
+  cout << "----------------------------" << endl;
+  cout << " " << endl;
+  cout << "data scale_factor =  1 / (Q * hms_trk_eff * \n  \t shms_trk_eff * shms_multi_trk_eff * \n \t total_live_time * tgt_thick * Z / A) " << endl;
+  cout << Form("data scale_factor -->  %.4f", scale1) << endl;
+  cout << "" << endl;
+  cout << "simc scale_factor =  1 / (tgt_thick * Z / A) " << endl;
+  cout << Form("simc scale_factor -->  %.4f", scale2) << endl;
+  cout << "" << endl;
+  cout << Form("(A, Z, T) : %.1f, %.1f, %.3f ", A, Z, T) << endl;  
+  cout << Form("Charge Q [mC]      : %.3f ", Q) << endl;
+  cout << Form("HMS Trk Eff        : %.3f", htrk_eff) << endl;
+  cout << Form("SHMS Trk Eff       : %.3f", etrk_eff) << endl;
+  cout << Form("SHMS Mult. Trk Eff : %.3f", e_mtrk_eff) << endl;
+  cout << Form("Total Live Time    : %.3f", tLT) << endl;
+  cout << Form("Target Thick [g/cm2] : %.4f", tgt_thick) << endl;
+  cout << "-----------------------------" << endl;
+  cout << "" << endl;
+
+
+
+  
+  // Create arrays of histogram object names
+
+  TString hist1_randSub_dir = "randSub_plots/";
+  TString hist1_kin_dir = "kin_plots/";
+    
+  TString hist2_kin_dir = "kin_plots/";
+
+  TString title_prefix      = Form("%s %s (run %i) ", target.Data(), kin.Data(), run);
+  TString title_arr[18]      = {"Missing Momentum, P_{m}",  "Invariant Mass, W", "4-Momentum Transfer", "x-Bjorken", "Energy Transfer, #nu", "Missing Energy, E_{m}", "Recoil Angle, #theta_{rq}", "In-Plane Angle, #theta_{pq}",
+			       "Electron (SHMS) Angle, #theta_{e}",  "Electron (SHMS) Momentum, k_{f} [GeV/c]", "Proton Angle, #theta_{p}", "Proton Momentum, p_{f} [GeV/c]",
+			       "3-Momentum, |#vec{q}|",  "In-Plane Angle, #theta_{q}", "Missing Momentum X, P_{mx}", "Missing Momentum Y, P_{my}",
+			       "Missing Momentum Z, P_{mz}"};
+
+  TString hist1_name[18] = {"H_Pm_rand_sub", "H_W_rand_sub", "H_Q2_rand_sub", "H_xbj_rand_sub", "H_nu_rand_sub", "H_Em_nuc_rand_sub",  "H_thrq_rand_sub",  "H_thxq_rand_sub",
+			    "H_the",         "H_kf",          "H_thx",          "H_Pf",          "H_q",                "H_thq",  
+			    "H_Pmx_Lab",          "H_Pmy_Lab",      "H_Pmz_Lab"};
+  if(target=="LH2"){
+    hist1_name[5] = "H_Em_rand_sub";
+  }
+
+  TString hist2_name[18] = {"H_Pm",          "H_W", "H_Q2",          "H_xbj",          "H_nu",          "H_Em",               "H_thrq",   "H_thxq",
+			    "H_the",         "H_kf",          "H_thx",          "H_Pf",           "H_q",               "H_thq", 
+			    "H_Pmx_Lab",          "H_Pmy_Lab",      "H_Pmz_Lab"};
+
+  TString xlabel_arr[18]     = {"Pm [GeV/c]",  "W [GeV]", "Q^{2} [GeV^{2}]", "x_{Bj}",      "#nu [GeV]",     "E_{m} [GeV]",        "#theta_{rq} [deg]",     "#theta_{pq} [deg]",
+				"#theta_{e} [deg]", "k_{f} [GeV/c]",  "#theta_{p} [deg]",  "P_{f} [GeV/c]",  "|#vec{q}| [GeV/c]", " #theta_{q} [deg]", 
+				"P_{mx,lab} [GeV]", "P_{my,lab} [GeV]", "P_{mz,lab} [GeV]"  };
+  
+
+
+  cout << "title: " << title_arr[hist_id].Data() << endl;
+  // plot randoms-subtracted histos from data (compared to simc)
+  if(hist_id<8) {
+    hist1 = hist1_randSub_dir + hist1_name[hist_id];
+    hist2 = hist2_kin_dir + hist2_name[hist_id];
+  }
+
+  // plot histograms under kin_plots/ dir for both data/simc (all cuts, but not random-subtracted)
+  else if(hist_id>=8){
+    hist1 = hist1_kin_dir + hist1_name[hist_id];
+    hist2 = hist2_kin_dir + hist2_name[hist_id];
+  }
+
+  // plot histograms under accp_plots
+
+
+  
+  title = title_prefix + title_arr[hist_id];
+  ylabel="Charge-Normalized Yield ";
+  hist1_leg="DATA";
+  hist2_leg="SIMC";
+  
+  
+  // loop over kinematic histograms
+
+  compare_histos( file1_path, hist1,        scale1,
+		  file2_path, hist2,        scale2,
+		  xlabel_arr[hist_id],      ylabel,     title,
+		  hist1_leg,  hist2_leg,    false);
+  
+}
 
