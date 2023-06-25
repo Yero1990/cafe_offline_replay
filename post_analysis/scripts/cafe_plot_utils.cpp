@@ -22,22 +22,22 @@ void cafe_plot_utils(){
   //--------------------------------------------
 
   /*
-  // get summary file columns combined (either total or average)
+  // get summary file columns combined (either total or average or per run)
   
   double total_charge    = get_header("total_charge", "B11", "SRC"   );
   double total_yield     = get_header("real_yield", "Be9", "SRC"     );
    double total_yield_err = get_header("real_yield_err", "B10", "MF" );
 
-  double hms_trk_err     = get_header("hms_trk_eff", "B11", "SRC" );
+  double hms_trk_eff     = get_header("hms_trk_eff", "B11", "SRC" );
   double hms_trk_err_err = get_header("hms_trk_eff_err", "LD2", "SRC" );
 
-  double shms_trk_err     = get_header("shms_trk_eff", "C12", "SRC" );
+  double shms_trk_eff     = get_header("shms_trk_eff", "C12", "SRC" );
   double shms_trk_err_err = get_header("shms_trk_eff_err", "B11", "SRC" );
   
   double_t live_time      = get_header("total_live_time", "Fe54",  "MF");
 
   double transparency     = get_param("transparency","C12", "MF" );
-  double tgt_area_density = get_param("transparency","Fe54", "SRC" );
+  double tgt_area_density = get_param("tgt_area_density","Fe54", "SRC" );
   
   double N    = get_param("N","C12", "MF" );  # get number of neutrons
   double Z    = get_param("Z", "Fe54", "MF" );  # get number of protons
@@ -45,7 +45,68 @@ void cafe_plot_utils(){
 
   */
   
+
+  // ---------- compare DATA /  SIMC  H(e,e'p) Elastics (or MF, SRC for other targets)--------------------
+
+  // If dealing with multiole runs, or multiple histograms, one can always put this in a loop
+  int run = 16962;
+  TString target = "LH2";  // LH2, LD2, Be9, B10, B11, C12, Ca40, Ca48, Fe54, Au197
+  TString kin = "heep_coin";  // heep_coin, MF, SRC
+   
+  double Q          = get_header("total_charge", target.Data(), kin.Data(), run);
+  double htrk_eff   = get_header("hms_trk_eff",  target.Data(), kin.Data(), run );
+  double etrk_eff   = get_header("shms_trk_eff", target.Data(), kin.Data(), run );
+  double e_mtrk_eff = get_header("shms_mult_trk_eff", target.Data(), kin.Data(), run );
+  double tLT        = get_header("total_live_time", target.Data(),  kin.Data(), run);
+
+  double T         = get_param("transparency",    target.Data(), kin.Data() );
+  double tgt_thick = get_param("tgt_area_density",target.Data(), kin.Data() );
+
+  double scale1 = 1. / (Q *  htrk_eff * etrk_eff * e_mtrk_eff * tLT  * tgt_thick);
+  double scale2 = 1. / (tgt_thick);  // simulation scale factor (SIMC is already 1 mC, and efficiencies are 100% )
+
+  // LH2
+  TString file1_path = "~/ROOTfiles/pass3_files/data/cafe_prod_LH2_heep_coin_16962_-1_histos.root";
+  TString file2_path = "~/ROOTfiles/pass3_files/simc/cafe_heep_coin_kin0_rad_analyzed.root";
+
+  // C12
+  //TString file1_path = "~/ROOTfiles/pass3_files/data/cafe_prod_Au197_MF_20799_-1_histos.root";
+  //TString file2_path = "~/ROOTfiles/pass3_files/simc/cafe_au197_MF_rad_analyzed.root";
+
   
+  TString hist1="randSub_plots/H_Pm_rand_sub";
+  TString hist2="kin_plots/H_Pm";
+  TString xlabel="Missing Momentum, Pm [GeV/c]";
+  TString ylabel="Charge-Normalized Yield ";
+  TString title = "CaFe H(e,e'p): Missing Momentum";
+  TString hist1_leg="DATA";
+  TString hist2_leg="SIMC";
+
+  cout << Form("reading file1: %s", file1_path.Data()) << endl;
+  cout << "----------------" << endl;
+  cout << "Scale Factors" << endl;
+  cout << "----------------" << endl;
+  cout << " " << endl;
+  cout << "scale_factor =  1 / (Q * hms_trk_eff * \n  \t shms_trk_eff * shms_multi_trk_eff * \n \t total_live_time * tgt_thick) " << endl;
+  cout << Form("scale_factor -->  %.4f", scale1) << endl;
+  cout << "" << endl;
+  cout << Form("Charge Q [mC]      : %.3f ", Q) << endl;
+  cout << Form("HMS Trk Eff        : %.3f", htrk_eff) << endl;
+  cout << Form("SHMS Trk Eff       : %.3f", etrk_eff) << endl;
+  cout << Form("SHMS Mult. Trk Eff : %.3f", e_mtrk_eff) << endl;
+  cout << Form("Total Live Time    : %.3f", tLT) << endl;
+  cout << Form("Target Thick [g/cm2] : %.4f", tgt_thick) << endl;
+  cout << "" << endl;
+  
+  // loop over kinematic histograms
+  
+  
+  compare_histos( file1_path, hist1,        scale1,
+		  file2_path, hist2,        scale2,
+		  xlabel,     ylabel,       title,
+		  hist1_leg,  hist2_leg,    false);
+  
+
   
 
   // brief: this function returns an overlay of any two histogram objects from any two files (or histograms) input by the user
@@ -188,6 +249,7 @@ void cafe_plot_utils(){
     
   // Example of Use: 
 
+  /*
   //declare histogram vector to retrieve histograms A: Ca48 MF,  B: Ca40 MF, and R: A/B, binned in Pmiss
   vector<TH1F*> hvec_be9;
   vector<TH1F*> hvec_b10;
@@ -241,8 +303,23 @@ void cafe_plot_utils(){
   be9r->Draw("E0");
   b10r->Draw("E0sames");
   b11r->Draw("E0sames");
-  
+  */
   
  
   
 }
+
+
+
+/*
+  For data:
+  We know that nucleus A must have transparency T_A and H has transparency T_H=1
+  
+  R_data =  Y_A / Y_H = N_A * T_A / (N_H * T_H) = 1
+  --> T_A = N_H * T_H / N_A = N_H / N_A
+
+  T = Y_DATA / Y_PWIA
+
+ For
+  
+ */

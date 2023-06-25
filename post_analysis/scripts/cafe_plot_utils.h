@@ -19,13 +19,26 @@
 #include "../../UTILS_CAFE/UTILS/read_csv.h"
 #include "../../UTILS_CAFE/UTILS/vector_operations.h"
 
-//___________________________________________________________________________
-double get_header(string header="", string target="", string kin=""){
 
+struct compare
+{
+  int key;
+compare(int const &i): key(i) {}
+  
+  bool operator()(int const &i) {
+    return (i == key);
+  }
+};
+
+//___________________________________________________________________________
+double get_header(string header="", string target="", string kin="", int run=-1){
+  
   /* brief: returns either total or average value (depends on column) for selected data column header from the
      cafe summary files.  The summary files are assumed to be in a fixed location and have 
      the generic format: cafe_prod_<target>_<kin>_report_summary.csv 
-   
+
+     if run!=0, then will try to find vector array index of user-defined run
+     and output the corresponding header value for the given run instead
 
 
      ----------
@@ -34,20 +47,51 @@ double get_header(string header="", string target="", string kin=""){
      header: "total_charge", "real_yield", "real_yield_err", "hms_trk_eff", "hms_trk_eff_err", "shms_trk_eff", "shms_trk_eff_err"
      target: "LD2", "Be9",  "B10",  "B11",  "C12",  "Ca40",  "Ca48",  "Fe54"
      kin:    "MF", "SRC"
-
+     
    */
-    
-
+  
+  
   //SUMMARY_FILES_DIR
   // set generic .csv file name
-  string file_csv = Form(SUMMARY_FILES_DIR"pass2/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+  string file_csv = Form(SUMMARY_FILES_DIR"pass3/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
   cout << Form("FILE TO OPEN: %s", file_csv.c_str()) << endl;
-
-  // return total charge (sums over charge for each run)
+  
+  // set run index to -1, and define the run vector
+  int run_idx = -1;
+  vector<double> v_run         = read_csv(file_csv.c_str(), "run");
+  
+  //---------------- check if user input a run ---------------
+  if(run!=-1){
+    
+    // search for run number
+    auto itr = std::find_if(v_run.cbegin(), v_run.cend(), compare(run));
+    
+    // if run is found, get the index
+    if (itr != v_run.cend()) {
+      run_idx = std::distance(v_run.cbegin(), itr);
+      cout << "run index:" << run_idx << endl;
+      
+    }
+    else {
+      std::cout << "run number not found" << endl;
+      cout << "run index:" << run_idx << endl;
+    }
+  }
+  //---------------------------------------------------------
+    
+    
+    // return total charge (sums over charge for each run)
   if( header.compare("total_charge")==0 ){
+
+    
     vector<double> v_charge         = read_csv(file_csv.c_str(), "charge"); // mC
     double charge = vsum(v_charge);
+
+    // check if run number is detected, and get the value using the index
+    if(run_idx!=-1){
+      charge =  v_charge.at(run_idx);
+    }
     
     return charge;
   }
@@ -57,6 +101,11 @@ double get_header(string header="", string target="", string kin=""){
     
     vector<double> v_real_Yield     = read_csv(file_csv, "real_Yield");
     double real_Yield = vsum(v_real_Yield);
+
+    // check if run number is detected, and get the value using the index
+    if(run_idx!=-1){
+      real_Yield  =  v_real_Yield.at(run_idx);
+    }
     
     return real_Yield;
   }
@@ -66,6 +115,11 @@ double get_header(string header="", string target="", string kin=""){
     
     vector<double> v_real_Yield_err = read_csv(file_csv, "real_Yield_err");
     double real_Yield_err = sqrt( vsum ( vpow(v_real_Yield_err, 2) ) ); // sqrt [  err_1^{2} + err_2^{2} + . .  . err_n^{2} ]
+
+    // check if run number is detected, and get the value using the index
+    if(run_idx!=-1){
+      real_Yield_err  =  v_real_Yield_err.at(run_idx);
+    }
     
     return real_Yield_err;
     
@@ -85,35 +139,73 @@ double get_header(string header="", string target="", string kin=""){
 
     
     if( header.compare("hms_trk_eff")==0 ){
+
+      // check if run number is detected, and get the value using the index
+      if(run_idx!=-1){
+	hms_trk_eff  =  v_hTrkEff.at(run_idx);
+      }
+    
       return hms_trk_eff;
     }
 
     if( header.compare("hms_trk_eff_err")==0 ){
+
+      if(run_idx!=-1){
+	hms_trk_eff_err  =  v_hTrkEff_err.at(run_idx);
+      }
+	 
       return hms_trk_eff_err;
     }    
 
   }
 
   // return weighted avg SHMS tracking (and error) efficiency (presumably tracking efficiency is ~ same for every run of the same kinematic)
-  if( header.compare("shms_trk_eff")==0 || header.compare("shms_trk_eff_err")==0 ){
+  if( header.compare("shms_trk_eff")==0 || header.compare("shms_trk_eff_err")==0 || header.compare("shms_mult_trk_eff")==0 ){
 
     vector<double> v_pTrkEff        = read_csv(file_csv, "pTrkEff");
     vector<double> v_pTrkEff_err    = read_csv(file_csv, "pTrkEff_err");
 
+    vector<double> v_pMultiTrkEff        = read_csv(file_csv, "multi_track_eff");
+    vector<double> v_pMultiTrkEff_err( v_pMultiTrkEff.size(),0.001); // no errors until figure out proper way to calculate them
+
+    cout << "v_pMultiTrkEff : " << v_pMultiTrkEff.at(0)  << endl;
+    cout << "v_pMultiTrkEff_err : " << v_pMultiTrkEff_err.at(0)  << endl;
+
     //error in weighted average is passed by reference
     double shms_trk_eff_err = 0;          
+    double shms_mult_trk_eff_err = 0;          
 
     // calculated weighted average of a vector of elements
     double shms_trk_eff              = vavgw(v_pTrkEff, v_pTrkEff_err, shms_trk_eff_err);  
 
+    double shms_mult_trk_eff         = vavgw(v_pMultiTrkEff, v_pMultiTrkEff_err, shms_mult_trk_eff_err);
+    cout << "shms_mult_trk_eff :" << shms_mult_trk_eff  << endl;
     
     if( header.compare("shms_trk_eff")==0 ){
+
+      if(run_idx!=-1){
+	shms_trk_eff  =  v_pTrkEff.at(run_idx);
+      }
       return shms_trk_eff;
     }
 
     if( header.compare("shms_trk_eff_err")==0 ){
+
+      if(run_idx!=-1){
+	shms_trk_eff_err  =  v_pTrkEff_err.at(run_idx);
+      }
+	
       return shms_trk_eff_err;
-    }    
+    }
+
+    if( header.compare("shms_mult_trk_eff")==0 ){
+      
+      if(run_idx!=-1){
+	shms_mult_trk_eff  =  v_pMultiTrkEff.at(run_idx);
+      }
+      
+      return shms_mult_trk_eff;
+    }   
 
   }
 
@@ -133,10 +225,20 @@ double get_header(string header="", string target="", string kin=""){
 
     
     if( header.compare("total_live_time")==0 ){
+
+      if(run_idx!=-1){
+	total_live_time  =  v_tLT.at(run_idx);
+      }
+	
       return total_live_time;
     }
 
     if( header.compare("total_live_time_err")==0 ){
+
+      if(run_idx!=-1){
+	total_live_time_err  =  v_tLT_err.at(run_idx);
+      }
+	  
       return total_live_time_err;
     }    
 
@@ -145,16 +247,16 @@ double get_header(string header="", string target="", string kin=""){
   
   return 0;
   
-}
-
-//__________________________________________________________________
- double get_param( string var="", string target="", string kin="" ){
+  }
+  
+  //__________________________________________________________________
+  double get_param( string var="", string target="", string kin="" ){
   
   // brief: function to read parameters from the .csv files
 
 
   // set generic .csv file name
-  string file_csv = Form(SUMMARY_FILES_DIR"pass2/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
+  string file_csv = Form(SUMMARY_FILES_DIR"pass3/cafe_prod_%s_%s_report_summary.csv", target.c_str(), kin.c_str());
 
   // find parameters in .csv. files (usually commented lines above header in .csv file)
 
@@ -322,10 +424,10 @@ void compare_histos( TString file_path="path/to/file1.root",
 }
 
 //____________________________________________________________________________________________________
-void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm",
-		     TString file2_path="path/to/file2.root",   TString hist2="kin_plots/H_Pm",
+void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin_plots/H_Pm", Double_t scale1=1,
+		     TString file2_path="path/to/file2.root", TString hist2="kin_plots/H_Pm", Double_t scale2=1,
 		     TString xlabel="X-label [units]",          TString ylabel="Y-label [units]", TString title="title",
-		     TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=true)
+		     TString hist1_leg="hist1_legend_title", TString hist2_leg="hist2_legend_title", bool norm=false)
 {
 
   /* brief: generic function to compare (overlay) two 1D histograms from different files (assuming they have same binning)
@@ -334,6 +436,7 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
 
      file1_path, file2_path: ROOTfile paths ( /path/to/file.root )
      hist1, hist2          : complete path to histogram objects in file (for example if they are in a sub-direcotry, then it must be specified ("path/to/hist_object")
+     scale1, scale2        : user can input by how much to scale hist1,2 as follows:  hist1->Scale(scale1), hist2->Scale(scale2)
      xlabel, ylabel, title : self-explanatory (axis labels and plot title)
      hist1_leg, hist2_leg  : histograms legend names that can help identify what the histogram being plotted is
      norm                  : boolean flag that if set to true, draws the histograms normalized to an area of 1
@@ -399,7 +502,11 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
 
 
   TCanvas *c = new TCanvas("c", "c", 900, 700);
-
+  c -> SetBottomMargin(0.12);
+  // scale histograms (default is 1, but user can input different value)
+  H_hist1->Scale(scale1);
+  H_hist2->Scale(scale2);
+  
   H_hist1->Draw("histE0");
   H_hist2->Draw("sameshistE0");
 
@@ -407,7 +514,9 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
   if(norm) {
     H_hist1->DrawNormalized("histE0");
     H_hist2->DrawNormalized("sameshistE0");
+    
   }
+
   
   // create legend ( displays hist legend label and integral counts)
   TLegend *leg = new TLegend(0.14,0.89,0.25,0.78);
@@ -416,9 +525,14 @@ void compare_histos( TString file1_path="path/to/file1.root", TString hist1="kin
   double nbins = H_hist1->GetNbinsX();  //Get total number of bins (excluding overflow)
   h1_I = H_hist1->IntegralAndError(1, nbins, h1_Ierr);
   h2_I = H_hist2->IntegralAndError(1, nbins, h2_Ierr);
+
+  double R = h1_I / h2_I;
+  double R_err = abs(R) * sqrt( pow(h1_Ierr/h1_I,2) + pow(h2_Ierr/h2_I,2) );
   
   leg->AddEntry(H_hist1,Form("%s | Integral: %.3f", hist1_leg.Data(), h1_I),"f");
   leg->AddEntry(H_hist2,Form("%s | Integral: %.3f", hist2_leg.Data(), h2_I));
+  leg->AddEntry((TObject*)0, TString::Format("%s / %s = %.3f #pm %.3f", hist1_leg.Data(), hist2_leg.Data(), R, R_err), "");
+  
   // draw legend
   leg->Draw();
   
@@ -564,7 +678,7 @@ void overlay_nuclei(vector<string> tgt={}, vector<int> clr={}, string kin="", st
   for (int i=0; i<tgt.size(); i++){
 
     // generic file name with specific target, kinematic
-    fname = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
+    fname = Form(ANALYZED_COMBINED"pass3/cafe_prod_%s_%s_combined.root", tgt[i].c_str(), kin.c_str());
 
     cout << Form("FILE TO OPEN: %s", fname.c_str()) << endl;
 
@@ -704,8 +818,8 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   cout << "" << endl;
   
   // set .root file names 
-  string fname_A = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
-  string fname_B = Form(ANALYZED_COMBINED"pass2/cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
+  string fname_A = Form(ANALYZED_COMBINED"pass3/cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
+  string fname_B = Form(ANALYZED_COMBINED"pass3/cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
 
   cout << Form("FILES TO OPEN: \n%s\n%s", fname_A.c_str(), fname_B.c_str() ) << endl;
 
