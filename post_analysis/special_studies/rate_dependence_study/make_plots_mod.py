@@ -146,15 +146,15 @@ def compare():
         # imarker = ['o', 's', '^', 'v']
         # icolor  = ['k', 'gray', 'b', 'g']
         
-        # pass 2
-        #file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t]), '../../summary_files/rate_dependence_study/pass3/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
-        file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
+        file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t]), '../../summary_files/rate_dependence_study/pass3/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
+
+        #file_arr = ['../../summary_files/rate_dependence_study/phase0/cafe_prod_%s_MF_report_summary.csv' % (target[t])]
 
         imarker = ['s', 'o']
         icolor  = ['gray', 'red']
-
+        ilabel = ['un-corrected', 'corrected']
         # figure to plot relative yields vs. avg current and T2 rates
-        fig1, axs1 = plt.subplots(nrows=1, ncols=1, figsize=(8, 8))
+        fig1, axs1 = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
     
         # loop over each phase study
         for i, ifile in enumerate(file_arr):
@@ -247,13 +247,14 @@ def compare():
             #ax1.grid(True)
 
                        
-            axs1.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed', label='%s MF'%target[t])            
+            axs1.errorbar(  T2_scl_rate , relY_nom, relY_err,   marker=imarker[i], markersize=8, color=icolor[i], mec='k', linestyle='dashed', label=ilabel[i])            
             axs1.set_xlabel('T2 Scaler Rate [kHz]', fontsize=18)
             axs1.set_ylabel('Relative Yield', fontsize=18)
+            axs1.set_title('CaFe %s MF'%target[t], fontsize=18)
             axs1.tick_params(axis='x', labelsize=14)
             axs1.tick_params(axis='y', labelsize=14)
             axs1.grid(True)
-            
+            axs1.legend(loc='upper right', fontsize=14)
             fig1.tight_layout() 
 
             #----------------------------------------------------------------
