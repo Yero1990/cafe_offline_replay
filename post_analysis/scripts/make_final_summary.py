@@ -119,7 +119,7 @@ def make_final_summary():
                 '# total_charge : cumulative charge (over all runs) [mC] \n'
                 '# yield        : yield (counts integrated over Pm) with all data-analysis cuts applied \n'
                 '# yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time) \n'
-                '# yield_corr   : yield_eff corrected for external/internal impurities, if any \n'
+                '# yield_corr   : yield_eff corrected for external/internal impurities if any \n'
                 '# sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))\n'
                 '# sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )\n'
                 '# sigma_raw_per_proton    : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per proton) e.g. xA/Z )\n'
@@ -326,11 +326,12 @@ def make_final_summary():
                 sigma_raw_per_proton       =  sigma_raw_per_nucleon * A / Z
                 tgt_thick_corr             = boron_density_corr               # re-define corrected target thickness (to be written to file)            
 
-            
+
+            show_plots=True
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
-            if((kin[jdx]=='MF')):
+            if(show_plots and kin[jdx]=="MF"):
                 fig1.suptitle('%s Kinematics'%(kin[jdx]), fontsize=20)
 
                 ax1[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
@@ -413,9 +414,9 @@ def make_final_summary():
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total.n, real_Yield_total.s, real_Yield_eff_total.n, real_Yield_eff_total.s, real_Yield_corr_total.n, real_Yield_corr_total.s, sigma_raw_per_nucleon.n, sigma_raw_per_nucleon.s, sigma_raw_per_proton.n, sigma_raw_per_proton.s, sigma_raw_per_nucleus.n, sigma_raw_per_nucleus.s, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
-            
-    plt.tight_layout()
-    plt.show()          
+    if(show_plots):         
+        plt.tight_layout()
+        plt.show()          
     ofile.close()
 
     # call function to write singles, double ratios to file for ease of plotting
