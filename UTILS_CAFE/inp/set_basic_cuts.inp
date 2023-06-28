@@ -191,7 +191,7 @@ c_ztarDiff_max = 2.
 # not all of these cuts may necessarily be turned ON. Leave to the user discretion.
 
 # 4-Momentum Transfers [GeV^2]
-Q2_heep_cut_flag = 1
+Q2_heep_cut_flag = 0
 c_heep_Q2_min = 1.8
 c_heep_Q2_max = 100
 
