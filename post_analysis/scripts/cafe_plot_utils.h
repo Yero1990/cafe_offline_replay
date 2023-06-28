@@ -863,6 +863,7 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   // get histogram objects
   file_A->cd(); 
   file_A->GetObject(hist_name.c_str(), H_hist_A);
+  extract_1d_hist(H_hist_A, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtA.c_str(), kinA.c_str()));
 
   // scale histogram appropiately
   H_hist_A->Scale(scale_factor_A);
@@ -870,6 +871,7 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
     
   file_B->cd();
   file_B->GetObject(hist_name.c_str(), H_hist_B);
+  extract_1d_hist(H_hist_B, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtB.c_str(), kinB.c_str()));
 
   // scale histogram appropiately
   H_hist_B->Scale(scale_factor_B);

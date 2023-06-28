@@ -60,7 +60,7 @@ void extract_2d_hist(TH2F *h2, TString xlabel, TString ylabel, TString out_fname
 			"# zcont:      bin content (z-axis) \n"
 			"# zcont_err:  bin content error (z-axis) \n"
 			"#                                        \n"
-			"#! ib[i,0]/  xb[i,1]/  yb[i,2]/  x0[f,3]/  xlow[f,4]/  xup[f,5]/  y0[f,6]/  ylow[f,7]/  yup[f,8]/  zcont[f,9]/  zcont_err[f,10]/  "
+			"ib,xb,yb,x0,xlow,xup,y0,ylow,yup,zcont,zcont_err"
 			,y_Nbins, ylabel.Data(), x_Nbins, xlabel.Data(), ybin_width, xbin_width  );
 
   //Write header to data file
@@ -147,7 +147,7 @@ void extract_1d_hist(TH1F *h1, TString xlabel, TString ylabel, TString out_fname
 			"# ycont:      bin content (y-axis) \n"
 			"# ycont_err:  bin content error (y-axis) \n"
 			"#                                        \n"
-			"xb, x0,  xlow,  xup, ycont,  ycont_err  "
+			"xb,x0,xlow,xup,ycont,ycont_err"
 			, x_Nbins, xlabel.Data(),xbin_width  );
 
   //Write header to data file
