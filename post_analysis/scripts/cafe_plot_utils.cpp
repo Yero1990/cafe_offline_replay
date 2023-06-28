@@ -18,13 +18,15 @@ void cafe_plot_utils(){
   //                      8: th_e, 9: kf, 10: th_p, 11: Pf, 12: |q|, 13: th_q, 14: Pmx_lab, \n
   //                      15: Pmy_lab, 16: Pmz_lab " << endl;
 
-  TString target = "Au197";
+  TString target = "C12";
   TString kin = "MF";
-  int run= 20793;
+  int run= 17098;
+
   
   yield_comparison(target.Data(), kin.Data(), run, 0);
   
   yield_comparison(target.Data(), kin.Data(), run, 1);
+  
   yield_comparison(target.Data(), kin.Data(), run, 2);
   yield_comparison(target.Data(), kin.Data(), run, 3);
   yield_comparison(target.Data(), kin.Data(), run, 4);
@@ -39,6 +41,7 @@ void cafe_plot_utils(){
   yield_comparison(target.Data(), kin.Data(), run, 11);
   yield_comparison(target.Data(), kin.Data(), run, 12);
   yield_comparison(target.Data(), kin.Data(), run, 13);
+  
   yield_comparison(target.Data(), kin.Data(), run, 14);
   yield_comparison(target.Data(), kin.Data(), run, 15);
   yield_comparison(target.Data(), kin.Data(), run, 16);

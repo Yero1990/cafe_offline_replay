@@ -8,7 +8,7 @@
 # total_charge : cumulative charge (over all runs) [mC] 
 # yield        : yield (counts integrated over Pm) with all data-analysis cuts applied 
 # yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time) 
-# yield_corr   : yield_eff corrected for external/internal impurities, if any 
+# yield_corr   : yield_eff corrected for external/internal impurities if any 
 # sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))
 # sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )
 # sigma_raw_per_proton    : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per proton) e.g. xA/Z )
@@ -29,5 +29,5 @@ Ca48,MF,3749.11,40.73,161.12,72437.223,269.429,83633.812,334.839,73793.674,335.4
 Ca48,SRC,52167.60,51.27,2710.87,10152.289,106.819,11852.001,124.804,10492.217,123.901,10.192,0.120,24.462,0.289,489.233,5.777,1.0509,0.9616,0.395,28.0,20.0,48.0
 Fe54,MF,11318.91,24.75,285.42,55031.619,234.649,59748.129,258.611,59748.129,258.611,1485.775,6.431,3085.839,13.357,80231.825,347.272,0.3670,0.3670,0.384,28.0,26.0,54.0
 Fe54,SRC,58672.53,51.31,3112.74,5409.725,74.932,6010.485,83.285,6010.485,83.285,13.705,0.190,28.464,0.394,740.064,10.255,0.3670,0.3670,0.384,28.0,26.0,54.0
-Au197,MF,9120.02,35.19,316.50,26273.145,162.237,30279.547,190.080,30279.547,190.080,840.055,5.273,2094.820,13.150,165490.744,1038.866,0.4047,0.4047,0.281,118.0,79.0,197.0
+Au197,MF,8820.23,34.63,305.29,25292.803,159.184,29144.084,186.450,29144.084,186.450,838.269,5.363,2090.368,13.373,165139.077,1056.483,0.4047,0.4047,0.281,118.0,79.0,197.0
 Au197,SRC,68426.37,34.96,2408.94,2287.067,49.596,2632.926,57.107,2632.926,57.107,9.597,0.208,23.933,0.519,1890.680,41.008,0.4047,0.4047,0.281,118.0,79.0,197.0

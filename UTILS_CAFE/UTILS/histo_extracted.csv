@@ -1,0 +1,25 @@
+# 1D Histogram Bin Extraction 
+#                   
+# histogram parameters:  
+# xbins      = 10   | xlabel: example x axis 
+# xbin width = 1.000 
+#                   
+# header definitions:
+# xb:         x-axis bin number 
+# x0:         x-axis central bin value 
+# xlow:       x-axis low-edge bin value 
+# xup:        x-axis up-edge bin value 
+# ycont:      bin content (y-axis) 
+# ycont_err:  bin content error (y-axis) 
+#                                        
+xb, x0,  xlow,  xup, ycont,  ycont_err  
+1,-4.500,-5.000,-4.000,2.000,1.414
+2,-3.500,-4.000,-3.000,7.000,2.646
+3,-2.500,-3.000,-2.000,108.000,10.392
+4,-1.500,-2.000,-1.000,687.000,26.211
+5,-0.500,-1.000,0.000,1692.000,41.134
+6,0.500,0.000,1.000,1682.000,41.012
+7,1.500,1.000,2.000,694.000,26.344
+8,2.500,2.000,3.000,122.000,11.045
+9,3.500,3.000,4.000,5.000,2.236
+10,4.500,4.000,5.000,1.000,1.000
