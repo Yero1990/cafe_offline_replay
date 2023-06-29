@@ -7,14 +7,15 @@ import uncertainties
 from uncertainties import ufloat
 from uncertainties import unumpy
 
-df = pd.read_csv('raw_histo1D_Ca48_SRC_Pm_bins.csv', comment='#')
+df = pd.read_csv('realYield_Pm_bins_Ca40_SRC_17008.csv', comment='#')
 
 run = np.array([3288, 3290, 3290])
 real_Yield_per_bin_total = 0
+
 for i in np.arange(len(run)):
     print(i, run[i])
 
-    # read the raw yield per bin per run
+    # read the real yield per bin per run
     real_Yield_per_bin =  unumpy.uarray(df['ycont'], df['ycont_err']) 
 
     # apply efficiency correction (scale factor) per bin per run

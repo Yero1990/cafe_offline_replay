@@ -812,6 +812,10 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * shms_mult_trk_eff_A * total_LT_A * transparency_A * tgt_area_density_A * Z_tgtA/A_tgtA) ;
   scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * shms_mult_trk_eff_B * total_LT_B * transparency_B * tgt_area_density_B * Z_tgtB/A_tgtB) ;
 
+  //scale_factor_A   = 1. / ( Q_A * hms_trk_eff_A * shms_trk_eff_A * shms_mult_trk_eff_A * total_LT_A * transparency_A * tgt_area_density_A * A_tgtA) ;
+  //scale_factor_B   = 1. / ( Q_B * hms_trk_eff_B * shms_trk_eff_B * shms_mult_trk_eff_B * total_LT_B * transparency_B * tgt_area_density_B * A_tgtB) ;
+
+  
   // PRINT OUT scale factor and its components for sanity checking
   cout << "" << endl;
   cout << "#---------------------------" << endl;
@@ -844,7 +848,7 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   string fname_A = Form(ANALYZED_COMBINED"cafe_prod_%s_%s_combined.root", tgtA.c_str(), kinA.c_str());
   string fname_B = Form(ANALYZED_COMBINED"cafe_prod_%s_%s_combined.root", tgtB.c_str(), kinB.c_str());
 
-  cout << Form("FILES TO OPEN: \n%s\n%s", fname_A.c_str(), fname_B.c_str() ) << endl;
+  cout << Form("FILES TO OPEN: \n%s\n%s\n", fname_A.c_str(), fname_B.c_str() ) << endl;
 
   // define TFile
   TFile *file_A  = NULL;
@@ -859,19 +863,22 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   file_A = new TFile(fname_A.c_str());
   file_B = new TFile(fname_B.c_str());
 
+  cout << "TEST1" << endl;
    
   // get histogram objects
   file_A->cd(); 
   file_A->GetObject(hist_name.c_str(), H_hist_A);
-  extract_1d_hist(H_hist_A, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtA.c_str(), kinA.c_str()));
-
+  cout << "TEST2" << endl;
+  //extract_1d_hist(H_hist_A, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtA.c_str(), kinA.c_str()));
+cout << "TEST3" << endl;
+  
   // scale histogram appropiately
   H_hist_A->Scale(scale_factor_A);
-  
+  cout << "TEST4" << endl;
     
   file_B->cd();
   file_B->GetObject(hist_name.c_str(), H_hist_B);
-  extract_1d_hist(H_hist_B, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtB.c_str(), kinB.c_str()));
+  //extract_1d_hist(H_hist_B, "Missing Momentum Pm [GeV/c]", "Raw Counts", Form("raw_histo1D_%s_%s_Pm_bins.csv", tgtB.c_str(), kinB.c_str()));
 
   // scale histogram appropiately
   H_hist_B->Scale(scale_factor_B);
@@ -959,9 +966,9 @@ vector<TH1F*> get_single_ratios(string tgtA="",  string kinA="", string tgtB="",
   }
 
   // Write Numerical information from histogram to external .csv file (method in hist_utils.h)
-  extract_1d_hist(H_hist_A, "Missing Momentum Pm [GeV/c]", "Charge-Norm Yield", Form("histo1D_%s_%s_Pm_bins.csv", tgtA.c_str(), kinA.c_str()));
-  extract_1d_hist(H_hist_B, "Missing Momentum Pm [GeV/c]", "Charge-Norm Yield", Form("histo1D_%s_%s_Pm_bins.csv", tgtB.c_str(), kinB.c_str()));
-  extract_1d_hist(H_hist_R, "Missing Momentum Pm [GeV/c]", "%s/%s SRC Ratio", Form("histo1D_%s%sto%s%s_Pm_bins.csv", tgtA.c_str(),kinA.c_str(),tgtB.c_str(),kinB.c_str()));
+  //extract_1d_hist(H_hist_A, "Missing Momentum Pm [GeV/c]", "Charge-Norm Yield", Form("histo1D_%s_%s_Pm_bins.csv", tgtA.c_str(), kinA.c_str()));
+  //extract_1d_hist(H_hist_B, "Missing Momentum Pm [GeV/c]", "Charge-Norm Yield", Form("histo1D_%s_%s_Pm_bins.csv", tgtB.c_str(), kinB.c_str()));
+  //extract_1d_hist(H_hist_R, "Missing Momentum Pm [GeV/c]", "%s/%s SRC Ratio", Form("histo1D_%s%sto%s%s_Pm_bins.csv", tgtA.c_str(),kinA.c_str(),tgtB.c_str(),kinB.c_str()));
   
   // save histograms to a vector to be returned to the user
  
