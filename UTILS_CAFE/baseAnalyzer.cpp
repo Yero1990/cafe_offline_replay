@@ -7505,7 +7505,7 @@ void baseAnalyzer::RandSub()
   H_thrq_rand_sub    -> Add(H_thrq      ,H_thrq_rand     , 1, -1);  
 
   // ------- Histogram bin content extraction (of selected histos)  -----------
-  extract_1d_hist(H_Pm_rand_sub, "Missing Momentum Pm [GeV/c]", "Real Yield (randoms-subtracted)", Form("realYield_Pm_bins_%s_%s_%d.csv", tgt_type.c_str(), analysis_cut.c_str(), run));
+  extract_1d_hist(H_Pm_rand_sub, "Missing Momentum Pm [GeV/c]", "Real Yield (randoms-subtracted)", Form("CAFE_OUTPUT/REPORT/realYield_Pm_bins_%s_%s_%d.csv", tgt_type.Data(), analysis_cut.Data(), run));
 
 
   
