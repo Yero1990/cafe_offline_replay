@@ -1,0 +1,72 @@
+------------------------------------
+SRC Workshop Trento July 2023 NOTES
+------------------------------------
+
+From CaFe presentations /  discussion with Dien, the following ideas
+and thoughts were born:
+
+------------
+Hypothesis:
+------------
+A: Be9, B10, B11, C12, Ca40, Ca48, Fe54(data), 56(simc), Aug197
+
+The relative drop in A/C12 vs. A @ MF kinematics can be
+attributed to an acceptance effect in the Hall C spectrometers.
+
+If we compare DATA and SIMC A/C12 vs. A @ MF kinematics, we noticed,
+that DATA-to-SIMC did not quite agree, however, upon applying the
+proper spectral function acceptance corrections to SIMC, brings the
+SIMC in good agreement with DATA. Now both DATA and SIMC are
+in good agreement for A/C12 @ MF, and show a similar linear drop-off
+with mass number. This indicates that there is an acceptance effect
+associated with this loss in strength. For example, the missing energy (Em)
+and missing momentum (Pm) might be limited due to finite spectrometer
+acceptance and causing a loss in strength of spectral function.
+
+Now, for the A/C12 @ SRC kinematics, we currently see a ration of ~1, which
+is contrary to the expected scaling behavior that should be observed. This, too,
+may be also due to spectrometer acceptance effects, in which case, one would need
+to determine how to calculate the spectral correction factor for high-p nucleons (SRC)
+for which one would require knowledge of the spectral functions S(Em,Pm) @ high momentum
+and those are not trivial to obtain
+
+------------------------
+Alternative suggestion:
+------------------------
+Assuming our observations of the odd behavior of single ratios of A/C12 @ MF, SRC is due to spectrometer
+acceptance limitations: rather than trying to find correction factor for acceptance-dependent effects,
+if one takes a double ratio:  A_SRC/A_MF / (C12_SRC/C12_MF), one may remove this spectrometer acceptance
+effects and get ultimately a good agreement between data and theory calculations or models.
+For example, Justins Estees / Andrew Denniston model, correctly describes, or rather, seems to be in
+relatively good agreement if we both use the double ratios, which could be indication that acceptance
+effects cancel for our data, leading to the good agreement.  However, if one looks a the single ratios,
+there is a completely different behavior between A/C12 for data and the model.
+
+It would be interesting, to check, if possible, is the model can be cut off in Emiss and Pmiss, to check its
+behavior, whether it is similar to data. Something to ask Justin/Andrew.
+
+
+
+--------------------------------------
+What is spectral function correction? 
+--------------------------------------
+The spectral function, S(Em,Pm) is a function that relates
+the probability of finding a nucleon with (Em, Pm), where Em
+and Pm, in theory, are integrated over the full range. However,
+when the S(Em, Pm) is passed through a finite detector/spectrometer
+acceptance, this limites the (Em, Pm) range, and can cause the S(Em,Pm)
+to be weaker, leading to a decrease in the yield. The thesis
+by D.McKafe Oneill (1994), goes over a method to find the correction factor
+based on Emiss and Pmiss cuts placed on the data, compared to the fully integrated
+spectral function. See Tables 11 (p.122) and 12 (p.126)
+
+Correl_factor = 1 / Icorrel * integral_[R] { dEm * d^3p * S(Em, pm)  },
+-->  where R is the integration range of (Em,Pm) for DATA.
+
+Icorrel = 1/2 * ( integral_[R] {dEm * d^3p * S(Em,Pm)}  + integral_[0, inf] {dEm} * integral_[pm_min, pm_max]{d^3p * S(Em,Pm)}  )
+
+Now, there were discussions that arose during the SRC Workshop @ Trento (ECT), of whether these correction from this thesis
+should be or not implemented, and whether there are other opinions on what the correction factors should be, etc.  This
+needs to be followed-up with theorists, to try and figure out the best approach
+
+-------------------------------
