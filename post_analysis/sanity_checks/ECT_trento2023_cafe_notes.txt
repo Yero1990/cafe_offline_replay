@@ -43,7 +43,9 @@ effects cancel for our data, leading to the good agreement.  However, if one loo
 there is a completely different behavior between A/C12 for data and the model.
 
 It would be interesting, to check, if possible, is the model can be cut off in Emiss and Pmiss, to check its
-behavior, whether it is similar to data. Something to ask Justin/Andrew.
+behavior, whether it is similar to data. Something to ask Justin/Andrew. Or to try to put similar constraints
+on Hall B RGM data to check if effect is observed. I could gived RGM, our electron/proton angle (theta, phi) and
+momentum distributions so that they may select similar region in Hall B, and check for reproducibility.
 
 
 
@@ -54,7 +56,7 @@ The spectral function, S(Em,Pm) is a function that relates
 the probability of finding a nucleon with (Em, Pm), where Em
 and Pm, in theory, are integrated over the full range. However,
 when the S(Em, Pm) is passed through a finite detector/spectrometer
-acceptance, this limites the (Em, Pm) range, and can cause the S(Em,Pm)
+acceptance, this limits the (Em, Pm) range, and can cause the S(Em,Pm)
 to be weaker, leading to a decrease in the yield. The thesis
 by D.McKafe Oneill (1994), goes over a method to find the correction factor
 based on Emiss and Pmiss cuts placed on the data, compared to the fully integrated
