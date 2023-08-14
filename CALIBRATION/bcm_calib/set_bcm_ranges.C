@@ -35,7 +35,7 @@ void set_bcm_ranges(TString basename="none",Int_t nrun=16432) {
  TString inputroot;
 
  
- inputroot="~/cafe_replay_prod_16432_-1.root";
+ inputroot="/Users/deuteron/ROOTfiles/bcm_files/cafe_replay_prod_16432_-1.root";
  cout << " infile root = " << inputroot << endl;
 
 
@@ -92,7 +92,8 @@ void set_bcm_ranges(TString basename="none",Int_t nrun=16432) {
        //hUnser_Time->Draw("L");
        hBCM_Time->Draw("SCAT");
        
-       hBCM_Time->SetMarkerStyle(7);
+       hBCM_Time->SetMarkerStyle(kCircle);
+       hBCM_Time->SetMarkerSize(0.2);
        hBCM_Time->SetMarkerColor(kBlue);
      
     for (Int_t j=0;j<vxlo.size();j++) {
@@ -105,7 +106,8 @@ void set_bcm_ranges(TString basename="none",Int_t nrun=16432) {
        cout << vxlo[j] << " " << vxhi[j] << endl;
      }
     
-    hBCM_Time->SetMarkerStyle(7);
+    hBCM_Time->SetMarkerStyle(kCircle);
+    hBCM_Time->SetMarkerSize(0.2);
     hBCM_Time->SetMarkerColor(kBlue);
 
     gPad->Update();
