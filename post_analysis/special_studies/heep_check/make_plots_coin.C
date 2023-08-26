@@ -3,8 +3,10 @@ void make_plots_coin(){
 
 
   // e- angle: 8.3 deg (run 16962)
-  TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root";
-  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0.root";  // no hms collimator interaction (set to 0 in input file)
+  //TString data_fname="~/ROOTfiles/optics_aug14/cafe_replay_optics_16962_-1.root"; // Aug 14 optics
+  TString data_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_replay_optics_16962_-1.root"; // previous  optics
+  
+  TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad.root";  // no hms collimator interaction (set to 0 in input file)
 
   //TString simc_fname="~/ROOTfiles/heep_coin_optim/step4/cafe_heep_coin_kin0_rad_0p0_eYmisPoint_0p1cm.root";
   //TString simc_fname="~/ROOTfiles/heep_coin_optim/step1/cafe_heep_coin_kin0_rad_0p0_hMispointNeg_eMispointPos.root"; // WRONG mispong sign (found it HMS/SHMS  were way off, but ztar is ok)
