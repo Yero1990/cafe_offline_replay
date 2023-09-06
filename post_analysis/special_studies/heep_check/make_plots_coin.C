@@ -51,7 +51,7 @@ void make_plots_coin(){
 
 
      // only plot tarx,y,z
-     //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
+    //if( ((i!=11) && (i!=12) && (i!=15)) ) continue;
 
     // only plot xptar,yptar,ytar,delta
     // if( ( (i!=1) && (i!=2) && (i!=3) && (i!=4) && (i!=16) && (i!=17) && (i!=18)) && (i!=19) && (i!=28) ) continue;
