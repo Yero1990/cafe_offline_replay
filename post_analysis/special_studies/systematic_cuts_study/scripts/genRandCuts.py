@@ -27,7 +27,7 @@ ofile.write('# entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_m
 
 # Q2 (same random cut for MF, SRC)
 Q2_min_mu = 1.8
-Q2_min_sig = 0.05
+Q2_min_sig = 0.025
 
 # Emiss lower bound (MF) :  -20 MeV (fixed)
 Em_min_mu_mf = -0.02
@@ -49,7 +49,7 @@ shms_coll_sig = 0.04  # 4% variation in the scaler factor
 
 # x-Bjorken (SRC) : 1.2 +/- 0.1
 xbj_min_mu = 1.2
-xbj_min_sig = 0.05
+xbj_min_sig = 0.025
 
 # th_rq (SRC) : 40 +/- 4 deg
 thrq_max_mu = 40
@@ -57,10 +57,10 @@ thrq_max_sig = 2.
 
 # cut variation for both min/max Pm (SRC)
 Pm_min_src_mu = 0.375
-Pm_min_src_sig = 0.01
+Pm_min_src_sig = 0.0125
 
 Pm_max_src_mu = 0.70
-Pm_max_src_sig = 0.05
+Pm_max_src_sig = 0.025
 
 # ---------------------------------------------------------------
 
