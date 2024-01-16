@@ -1,0 +1,59 @@
+# Run 17093 Data Analysis Summary
+                                     
+#//////////////////////////////////////////
+                                         //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+# ! ! !   SHIFT WORKERS INFO   ! ! !     //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+                                         //
+Current [uA]        : 28.783          
+Charge [mC]         : 49.725          
+Beam-on-Target [sec]: 1727.586          
+                                         
+#                                        //
+#//////////////////////////////////////////
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# General Run Configuration                              
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+run_number: 17093                     
+
+start_of_run =  2022-09-26 20:34:40
+end_of_run =  2022-09-26 21:13:23
+
+kin_type: bcm_calib                     
+daq_mode: coin                     
+events_replayed: 717589              
+
+beam_energy [GeV]: 10.5494          
+target_name: Ca48                       
+target_amu: 47.952523                 
+
+hms_h_particle_mass [GeV]: 0.938272          
+hms_h_momentum [GeV/c]: 1.8200             
+hms_h_angle [deg]: -48.3000                  
+
+shms_e_particle_mass [GeV]: 0.000511          
+shms_e_momentum [GeV/c]: 8.5500             
+shms_e_angle [deg]: 8.3000                  
+
+BCM4A_Current_Threshold [uA]: >5.00 
+beam_on_target [sec]: 1727.586       
+BCM4A_Average_Current [uA]: 28.783 
+BCMi_Charge [mC]: 49.725 
+
+BCM1_Charge [mC]: -25.990 
+BCM2_Charge [mC]: 49.416 
+BCM4A_Charge [mC]: 49.725 
+BCM4B_Charge [mC]: 244.511 
+BCM4C_Charge [mC]: 55.434 
+
+# pre-trigger scalers                 
+S1X_scaler:  707327604.000 [ 409.431 kHz ] 
+T1_scaler:  221932095.000 [ 128.464 kHz ] 
+T2_scaler:  160160376.000 [ 92.708 kHz ] 
+T3_scaler:  20051384.000 [ 11.607 kHz ] 
+T4_scaler:  459306.000 [ 0.266 kHz ] 
+T5_scaler:  230369.000 [ 0.133 kHz ] 
+T6_scaler:  355503.000 [ 0.206 kHz ] 
