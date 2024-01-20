@@ -249,6 +249,7 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
     # cuts file of N cuts. The cuts file has been generated
     # from randomly-sampled gaussian distributions  about the central value
     # for each of the kinematical cuts
+
     
     R_single  = df_data1['syst_total_real']  /  df_data2['syst_total_real'] 
 
@@ -302,9 +303,128 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
 
     plt.xlabel('Single Ratio Counts', fontsize=14)
     plt.ylabel('Frequency', fontsize=14)
-        
+
     plt.show()
 
+    #----------------------------------------------------------------------------------------------------------
+    
+    #----------------------------------------------------------------------------------------------------------
+    #------- set-up for plotting individual cut contributions ONLY for the case MF/MF or SRC/SRC ratios -------
+    #----------------------------------------------------------------------------------------------------------
+
+     # define systematic cut arrays to loop over
+    if (kin1=="SRC" and kin2=="SRC"):
+
+        # Set up subplots 
+        fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True)
+        fig.set_size_inches(10,8, forward=True)
+        plt.subplots_adjust(bottom=0.75)
+        plt.subplots_adjust(left=0.56)
+        fig.text(0.5, 0.003, '%s / %s SRC'%(target1, target2), ha='center', fontsize=14)
+        fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
+
+        syst_name=['syst_total_real', 'syst_dPm_min_real', 'syst_dPm_max_real', 'syst_dQ2_real', 'syst_dXbj_real', 'syst_dthrq_real', 'syst_dHcoll_real', 'syst_dScoll_real']
+        clr=['silver', 'lime', 'forestgreen', 'violet', 'gold', 'crimson', 'lime', 'plum']
+        title=[r'(total)', r'($\delta Pm_{min}$)', r'($\delta Pm_{max}$)', r'($\delta Q^{2}$)', r'($\delta X^{2}_{bj}$)', r'($\delta\theta_{rq}$)', r'($\delta HMS_{coll}$)', r'($\delta SHMS_{coll}$)']
+
+        row=[0,1,2]
+        col=[0,1,2]
+        
+    elif (kin1=="MF" and kin2=="MF"):
+
+        # Set up subplots 
+        fig, axs = plt.subplots(nrows=2, ncols=3, sharex=True)
+        fig.set_size_inches(12,8, forward=True)
+        plt.subplots_adjust(bottom=0.8)
+        plt.subplots_adjust(left=0.3)
+        plt.ticklabel_format(axis='both', style='sci', scilimits=(0,0))
+        fig.text(0.5, 0.003, '%s / %s MF'%(target1, target2), ha='center', fontsize=14)
+        fig.text(0.001, 0.5, 'Frequency', va='center', rotation='vertical', fontsize=14)
+
+        syst_name=['syst_total_real','syst_dPm_max_real','syst_dQ2_real','syst_dEm_real','syst_dHcoll_real','syst_dScoll_real']
+        clr=['silver', 'tomato', 'violet', 'dodgerblue', 'darkorange', 'plum']
+        title=[r'(total)', r'($\delta Pm_{max}$)',r'($\delta Q^{2}$)', r'($\delta Em_{max}$)', r'($\delta HMS_{coll}$)', r'($\delta SHMS_{coll}$)']
+
+        row=[0,1]
+        col=[0,1,2]
+
+    idx = 0  # index counter
+    nbins = 20
+
+    if ((kin1=="SRC" and kin2=="SRC") or (kin1=="MF" and kin2=="MF")) :
+        
+        for i in row:
+            for j in col:
+
+                #-------------------------
+                # plot the data histogram
+                #-------------------------
+                # yhist:   is the number of counts in each bin of the histogram
+                # xedge:   is the left hand edge of each bin
+                # patches: is the individual patches used to create the histogram, e.g a collection of rectangles
+                
+                print('(idx, row, col): %i %i %i'%(idx,i,j))
+                print(syst_name[idx])
+                
+                R_single  = df_data1[syst_name[idx]]  /  df_data2[syst_name[idx]] 
+                
+                yhist, xedge, patches = axs[i,j].hist(R_single, nbins, density=False, histtype='stepfilled', facecolor=clr[idx], alpha=0.75)
+                xhist = (xedge[:-1] + xedge[1:])/2  # bin center
+                
+                #---------------------------------------
+                # Gaussian least-square fitting process
+                #---------------------------------------
+                
+                # get data info (peak, mean, sigma) to be used as input fit param
+                data_peak = yhist.max()
+                data_mu   = R_single.mean()
+                data_sig  = R_single.std()
+                
+                
+                # perform fit (provided fit function-> gaus, data-> xhist,yhist, and fit param p0)
+                popt,pcov = curve_fit(gaus,xhist,yhist ,p0=[data_peak, data_mu, data_sig], maxfev=5000) 
+                
+                # get fit parameters
+                mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
+                sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
+                
+                rel_err = sig_fit / mu_fit
+                
+                # create evenly-spaced points for plotting fit function
+                xmin=R_single.min()
+                xmax=R_single.max()
+                x_fit = np.linspace(xmin, xmax, 500)
+                
+                #bin_w = xedge[1] - xedge[0]
+                #if(bin_w < 1.):
+                #    mu_fit_err = 0
+                #    sig_fit_err = 0
+                
+                # plot fit function and write fit parameters as label for legend
+                axs[i,j].plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.3f}\pm{1:.3f}$''\n''$\sigma:{2:.3f}\pm{3:.3f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
+                axs[i,j].set_title(title[idx])
+                axs[i,j].legend(frameon=False, loc='upper right')
+                axs[i,j].tick_params(labelbottom=True)
+                
+            
+                idx=idx+1
+            
+        
+                if(kin1=="SRC" and kin2=="SRC" and idx==8):
+                    break
+                if(kin1=="MF" and kin2=="MF" and idx==6):
+                    break
+
+        # common title
+        
+        fig.suptitle('Single Ratio %s %s / %s %s (systematics)' % (target1,kin1,target2,kin2), fontsize=20)
+        fig.tight_layout()
+        
+        plt.savefig('single_ratio_individual_%s%s2%s%s_systematics.pdf'%(target1,kin1, target2, kin2))
+        plt.show()
+            
+        
+    
 
 
 
