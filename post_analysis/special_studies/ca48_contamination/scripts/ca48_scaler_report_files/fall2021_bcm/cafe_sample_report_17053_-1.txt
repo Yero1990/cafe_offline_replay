@@ -1,0 +1,59 @@
+# Run 17053 Data Analysis Summary
+                                     
+#//////////////////////////////////////////
+                                         //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+# ! ! !   SHIFT WORKERS INFO   ! ! !     //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+                                         //
+Current [uA]        : 54.631          
+Charge [mC]         : 187.809          
+Beam-on-Target [sec]: 3437.772          
+                                         
+#                                        //
+#//////////////////////////////////////////
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# General Run Configuration                              
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+run_number: 17053                     
+
+start_of_run =  2022-09-22 21:09:15
+end_of_run =  2022-09-22 22:21:03
+
+kin_type: bcm_calib                     
+daq_mode: coin                     
+events_replayed: 1507643              
+
+beam_energy [GeV]: 10.5494          
+target_name: Ca48                       
+target_amu: 47.952523                 
+
+hms_h_particle_mass [GeV]: 0.938272          
+hms_h_momentum [GeV/c]: 1.3250             
+hms_h_angle [deg]: -66.4000                  
+
+shms_e_particle_mass [GeV]: 0.000511          
+shms_e_momentum [GeV/c]: 8.5500             
+shms_e_angle [deg]: 8.3000                  
+
+BCM4A_Current_Threshold [uA]: >5.00 
+beam_on_target [sec]: 3437.772       
+BCM4A_Average_Current [uA]: 54.631 
+BCMi_Charge [mC]: 187.809 
+
+BCM1_Charge [mC]: 35.764 
+BCM2_Charge [mC]: 185.868 
+BCM4A_Charge [mC]: 187.809 
+BCM4B_Charge [mC]: 497.613 
+BCM4C_Charge [mC]: 209.202 
+
+# pre-trigger scalers                 
+S1X_scaler:  2621933038.000 [ 762.684 kHz ] 
+T1_scaler:  918628655.000 [ 267.216 kHz ] 
+T2_scaler:  626161475.000 [ 182.142 kHz ] 
+T3_scaler:  96233958.000 [ 27.993 kHz ] 
+T4_scaler:  481682.000 [ 0.140 kHz ] 
+T5_scaler:  787876.000 [ 0.229 kHz ] 
+T6_scaler:  1847160.000 [ 0.537 kHz ] 

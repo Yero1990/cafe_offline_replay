@@ -1,0 +1,59 @@
+# Run 16978 Data Analysis Summary
+                                     
+#//////////////////////////////////////////
+                                         //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+# ! ! !   SHIFT WORKERS INFO   ! ! !     //
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:     //
+                                         //
+Current [uA]        : 27.527          
+Charge [mC]         : 5.435          
+Beam-on-Target [sec]: 197.442          
+                                         
+#                                        //
+#//////////////////////////////////////////
+                                     
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+# General Run Configuration                              
+# =:=:=:=:=:=:=:=:=:=:=:=:=:=:
+                                     
+run_number: 16978                     
+
+start_of_run =  2022-09-19 02:26:28
+end_of_run =  2022-09-19 02:30:27
+
+kin_type: bcm_calib                     
+daq_mode: coin                     
+events_replayed: 133358              
+
+beam_energy [GeV]: 10.5494          
+target_name: Ca48                       
+target_amu: 47.952523                 
+
+hms_h_particle_mass [GeV]: 0.938272          
+hms_h_momentum [GeV/c]: 1.8200             
+hms_h_angle [deg]: -48.3000                  
+
+shms_e_particle_mass [GeV]: 0.000511          
+shms_e_momentum [GeV/c]: 8.5500             
+shms_e_angle [deg]: 8.3000                  
+
+BCM4A_Current_Threshold [uA]: >5.00 
+beam_on_target [sec]: 197.442       
+BCM4A_Average_Current [uA]: 27.527 
+BCMi_Charge [mC]: 5.435 
+
+BCM1_Charge [mC]: 5.465 
+BCM2_Charge [mC]: 5.457 
+BCM4A_Charge [mC]: 5.435 
+BCM4B_Charge [mC]: 4.625 
+BCM4C_Charge [mC]: 5.448 
+
+# pre-trigger scalers                 
+S1X_scaler:  80309949.000 [ 406.751 kHz ] 
+T1_scaler:  24908324.000 [ 126.155 kHz ] 
+T2_scaler:  17899453.000 [ 90.657 kHz ] 
+T3_scaler:  2258379.000 [ 11.438 kHz ] 
+T4_scaler:  52851.000 [ 0.268 kHz ] 
+T5_scaler:  27983.000 [ 0.142 kHz ] 
+T6_scaler:  40976.000 [ 0.208 kHz ] 
