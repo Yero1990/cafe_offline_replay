@@ -25,9 +25,9 @@ ofile.write('# entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_m
 # Set standard CaFe cuts (mu) +/-  2sigma to randomly generate
 # a value around the about the central cut
 
-# Q2 (same random cut for MF, SRC)
+# Q2 (same random cut for MF, SRC) : 1.8 +/- 0.05 GeV^2
 Q2_min_mu = 1.8
-Q2_min_sig = 0.025
+Q2_min_sig = 0.05
 
 # Emiss lower bound (MF) :  -20 MeV (fixed)
 Em_min_mu_mf = -0.02
@@ -36,7 +36,7 @@ Em_min_mu_mf = -0.02
 Em_max_mu_mf = 0.09
 Em_max_sig_mf = 0.0025
 
-# cut variation only needed for Pmax_mf (MF)
+# cut variation only needed for Pmax_mf (MF) : 270 +/- 10 MeV
 Pm_max_mf_mu = 0.270
 Pm_max_mf_sig = 0.01
 
@@ -47,26 +47,27 @@ hms_coll_sig = 0.04  # 4% variation in the scaler factor
 shms_coll_mu = 1    # scale factor of 1 (geometry cut on collimator)
 shms_coll_sig = 0.04  # 4% variation in the scaler factor 
 
-# x-Bjorken (SRC) : 1.2 +/- 0.1
+# x-Bjorken (SRC) : 1.2 +/- 0.05
 xbj_min_mu = 1.2
-xbj_min_sig = 0.025
+xbj_min_sig = 0.05
 
-# th_rq (SRC) : 40 +/- 4 deg
+# th_rq (SRC) : 40 +/- 2 deg
 thrq_max_mu = 40
 thrq_max_sig = 2.
 
-# cut variation for both min/max Pm (SRC)
+# cut variation for  min Pm (SRC): 375 +/- 12.5 MeV/c
 Pm_min_src_mu = 0.375
 Pm_min_src_sig = 0.0125
 
+# cut variation for max Pm (SRC): 700 +/- 50 MeV/c 
 Pm_max_src_mu = 0.70
-Pm_max_src_sig = 0.025
+Pm_max_src_sig = 0.05
 
 # ---------------------------------------------------------------
 
 
 # generate N random entries of cut ranges extracted from a gaussian sample
-entries = 1000
+entries = 10000
 
 # get random cut from randoom gaussian sample
 hms_coll       = np.random.normal(hms_coll_mu, hms_coll_sig, entries)
