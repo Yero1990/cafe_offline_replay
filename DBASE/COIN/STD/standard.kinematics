@@ -414,10 +414,10 @@ ppcentral = 8.55
 hpartmass = 0.93827231                 
 ppartmass = 0.000511
 
-# Dummy MF Kinematics
+# Dummy MF Kinematics (assume hydrogen mass, for proton abs)
 16976
 gpbeam = 10.549355                       
-gtargmass_amu = 2.014101          
+gtargmass_amu = 1.00794          
 htheta_lab = -48.30                     
 ptheta_lab = 8.3                      
 hpcentral = 1.820                        
@@ -425,10 +425,9 @@ ppcentral = 8.55
 hpartmass = 0.93827231                 
 ppartmass = 0.000511 
 
-# Carbon MF Kinematics
-# gpbeam = 10.549355  
-16977                     
-gpbeam = 10.545355  
+# Carbon MF Kinematics   
+16977          
+gpbeam = 10.549355           
 gtargmass_amu = 12.0107     
 htheta_lab = -48.30                     
 ptheta_lab = 8.3                      
@@ -576,9 +575,8 @@ ppartmass = 0.000511
 # C12 SRC Kinematics
 # run 17077 was marked as junk due to beam cavity problems (low stats, ~13,000 counts -> few src counts), but will count it anyways unless proven otherwise
 # run 17078 is fadc mode10, but will count it as good run (unless proven otherwise)
-#gpbeam = 10.549355
 17076 - 17089
-gpbeam = 10.545355                                                                           
+gpbeam = 10.549355                                                                            
 gtargmass_amu = 12.0107
 htheta_lab = -66.40                                                                      
 ptheta_lab = 8.3                                                                             

@@ -29,7 +29,7 @@ of the submitted jobs
   swif2 modify-jobs "cafe_cyero" -ram mult 3 -cores set 4 -problems SLURM_OUT_OF_MEMORY
 
 # if job fails due to "SWIF_SYSTEM_ERROR" or  "SLURM_NODE_FAIL",  user can retry, for example:
-  swif2 retry-jobs ${Workflow} -problems SWIF_SYSTEM_ERROR SLURM_NODE_FAIL
+  swif2 retry-jobs ${Workflow} -problems SLURM_FAILED SLURM_NODE_FAIL SLURM_CANCELLED 
 
 # Request 8 cores for all unresolved problem jobs that failed owing to timeout or out of memory.
 swif2 modify-jobs "my workflow" -cores set 8 -problems SLURM_TIMEOUT SLURM_OUT_OF_MEMORY

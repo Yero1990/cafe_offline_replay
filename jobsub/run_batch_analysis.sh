@@ -75,7 +75,7 @@ echo "JOBNAME: cafe_${targ}_${ana_cut}" >> ${batch} ## Change to be more specifi
 # Note, unless this is set typically replays will produce broken root files
 echo "DISK_SPACE: 5 GB" >> ${batch}
 echo "MEMORY: 10000 MB" >> ${batch} 
-echo "CPU: 1" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
+echo "CPU: 2" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/analyze_cafe_data.sh ${targ} ${ana_cut} ${MAXEVENTS}"  >> ${batch}
 # simulation script (will need to make alternate submittion script for simulation)
 #echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/hallc_simulations/simulate.py" >> ${batch}

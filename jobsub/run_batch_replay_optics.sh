@@ -68,6 +68,8 @@ while true; do
 			MSSstub='/mss/hallc/c-cafe-2022/raw/shms_all_%05d.dat'  # cafe sep 18-29 2022 data
 		    elif [[ $runNum -lt 10000 ]]; then
 			MSSstub='/mss/hallc/spring17/raw/coin_all_%05d.dat'
+		    elif [ $runNum -ge 20776 ] && [ $runNum -le 20870 ]; then         
+                        MSSstub='/mss/hallc/c-deuteron/raw/shms_all_%05d.dat'   # cafe feb 22-24 2023 data 
 		    fi
 		    # Output batch job text file, this is the script that is submitted as part of the job, 
 		    # change the name of this as you want. Preferably, you should have different script name for each job so that you don't get any overwriting weirdness##

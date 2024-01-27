@@ -51,6 +51,7 @@ echo "MAIL: ${USER}@jlab.org" >> ${batch}
 echo "Submitting batch"
 # swif2 is now used for job submission, we use our old jsub style scripts. The argument set to "LTSep" currently is the workflow. Change this if you want.
 eval "swif2 add-jsub ${Workflow} -script ${batch} 2>/dev/null" # Swif2 job submission, uses old jsub scripts
+echo "-----> ${batch}"
 echo " "
 sleep 2
 # Delete the script we just submitted as a batch job, this stops this folder getting clogged
