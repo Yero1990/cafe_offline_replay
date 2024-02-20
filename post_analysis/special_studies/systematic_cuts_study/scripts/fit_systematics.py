@@ -5,9 +5,9 @@ import sys
 from scipy import stats
 from scipy.stats import norm
 from scipy.optimize import curve_fit
-import uncertainties
-from uncertainties import ufloat
-from uncertainties import unumpy
+#import uncertainties
+#from uncertainties import ufloat
+#from uncertainties import unumpy
 
     
 """
@@ -102,6 +102,7 @@ if (len(sys.argv) == 3):
     
     
     fname='../output/cafe_systematics_%s_%s.csv' % (target, kin)
+    #fname='../output/onek/cafe_systematics_%s_%s.csv' % (target, kin)
     
     df_data = pd.read_csv(fname, comment='#')
     df_data.to_numpy()
@@ -167,7 +168,8 @@ if (len(sys.argv) == 3):
             
             yhist, xedge, patches = axs[i,j].hist(df_data[syst_name[idx]], nbins, density=False, histtype='stepfilled', facecolor=clr[idx], alpha=0.75)
             xhist = (xedge[:-1] + xedge[1:])/2  # bin center
-        
+
+            
             #---------------------------------------
             # Gaussian least-square fitting process
             #---------------------------------------
@@ -176,16 +178,20 @@ if (len(sys.argv) == 3):
             data_peak = yhist.max()
             data_mu   = df_data[syst_name[idx]].mean()
             data_sig  = df_data[syst_name[idx]].std()
-            
-            # perform fit (provided fit function-> gaus, data-> xhist,yhist, and fit param p0)
-            popt,pcov = curve_fit(gaus,xhist,yhist ,p0=[data_peak, data_mu, data_sig], maxfev=5000) 
-        
-            # get fit parameters
-            mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
-            sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
 
-            rel_err = sig_fit / mu_fit
-             
+            # C.Y Feb 20, 2024 added restriction to fitting all except the SHMS collinator, since that was just a delta function
+            if(syst_name[idx]=="syst_dScoll_real"):
+                continue
+            else:
+                # perform fit (provided fit function-> gaus, data-> xhist,yhist, and fit param p0)
+                popt,pcov = curve_fit(gaus,xhist,yhist ,p0=[data_peak, data_mu, data_sig], maxfev=5000) 
+        
+                # get fit parameters
+                mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
+                sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
+                
+                rel_err = sig_fit / mu_fit
+                
             print('pcov[1,1]:', np.sqrt(pcov[1,1]))
             print('pcov[2,2]:', np.sqrt(pcov[2,2]))
             # create evenly-spaced points for plotting fit function
@@ -197,12 +203,13 @@ if (len(sys.argv) == 3):
             if(bin_w < 1.):
                 mu_fit_err = 0
                 sig_fit_err = 0
-            # plot fit function and write fit parameters as label for legend
+
+            # plot fit function and write fit parameters as label for legend        
             axs[i,j].plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.0f}\pm{1:.0f}$''\n''$\sigma:{2:.0f}\pm{3:.0f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
             axs[i,j].set_title(title[idx])
             axs[i,j].legend(frameon=False, loc='upper right')
             axs[i,j].tick_params(labelbottom=True)
-
+            
             
             idx=idx+1
 
@@ -286,7 +293,7 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
     xmin=R_single.min()
     xmax=R_single.max()
     x_fit = np.linspace(xmin, xmax, 500) 
-    
+
     # plot fit function and write fit parameters as label for legend
     axs.plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.3f}\pm{1:.3f}$''\n''$\sigma:{2:.3f}\pm{3:.3f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
     axs.legend(frameon=False, loc='upper right', fontsize=18)
@@ -349,7 +356,7 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
         col=[0,1,2]
 
     idx = 0  # index counter
-    nbins = 20
+    nbins = 50# 20  # C.Y. Feb 20 (increased binning for single ratio plots, as it seems there were fitting issues due to coerses bins)
 
     if ((kin1=="SRC" and kin2=="SRC") or (kin1=="MF" and kin2=="MF")) :
         
@@ -379,27 +386,28 @@ elif (len(sys.argv)==6 and sys.argv[1] == "single"):
                 data_peak = yhist.max()
                 data_mu   = R_single.mean()
                 data_sig  = R_single.std()
+
+                # C.Y Feb 20, 2024 added restriction to fitting all except the SHMS collinator, since that was just a delta function
+                if(syst_name[idx]=="syst_dScoll_real"):
+                    continue
+                else:
+                
+                    # perform fit (provided fit function-> gaus, data-> xhist,yhist, and fit param p0)
+                    popt,pcov = curve_fit(gaus,xhist,yhist ,p0=[data_peak, data_mu, data_sig], maxfev=5000) 
                 
                 
-                # perform fit (provided fit function-> gaus, data-> xhist,yhist, and fit param p0)
-                popt,pcov = curve_fit(gaus,xhist,yhist ,p0=[data_peak, data_mu, data_sig], maxfev=5000) 
-                
-                # get fit parameters
-                mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
-                sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
-                
-                rel_err = sig_fit / mu_fit
+                    # get fit parameters
+                    mu_fit,  mu_fit_err  = popt[1], np.sqrt(pcov[1,1])
+                    sig_fit, sig_fit_err = popt[2], np.sqrt(pcov[2,2])
+                    
+                    rel_err = sig_fit / mu_fit
                 
                 # create evenly-spaced points for plotting fit function
                 xmin=R_single.min()
                 xmax=R_single.max()
                 x_fit = np.linspace(xmin, xmax, 500)
-                
-                #bin_w = xedge[1] - xedge[0]
-                #if(bin_w < 1.):
-                #    mu_fit_err = 0
-                #    sig_fit_err = 0
-                
+                    
+                    
                 # plot fit function and write fit parameters as label for legend
                 axs[i,j].plot(x_fit,gaus(x_fit,*popt), color='r', label=r'$\mu:{0:.3f}\pm{1:.3f}$''\n''$\sigma:{2:.3f}\pm{3:.3f}$''\n''$\sigma$ / $\mu:{4:.3f}$'.format(mu_fit, mu_fit_err, sig_fit, sig_fit_err, rel_err))
                 axs[i,j].set_title(title[idx])
