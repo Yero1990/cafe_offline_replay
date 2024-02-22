@@ -1,7 +1,9 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import pandas as pd
 
+'''
 #output file to write cuts file
 ofname = 'cafe_systematics_cuts_file.csv' 
 ofile = open(ofname, 'w+')
@@ -95,55 +97,112 @@ for i in range(entries):
     # write random cuts to a .txt file
     ofile.write("%i,%.3f, %.3f, %.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f \n" % (i, Q2_min[i], Q2_max,Em_min_mf,Em_max_mf[i],Pm_min_mf,Pm_max_mf[i],xbj_min_src[i],xbj_max_src,thrq_min_src,thrq_max_src[i],Pm_min_src[i],Pm_max_src[i], hms_coll[i], shms_coll[i] ))
 ofile.close()
-
+'''
 #--------------------------------------------------
 
-# prepare subplots for histogramming random cuts
-fig, axs = plt.subplots(nrows=3, ncols=3)
 
-nbins = 40
+
+
+
+'''
 axs[0,0].hist(Q2_min, nbins, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
 axs[0,0].set_title(r'4-Momentum Transfer, $Q^{2}_{min}$')
 axs[0,0].set_xlabel(r'$Q^{2}_{min}$ [GeV$^{2}$]')
 
 
-axs[0, 1].hist(Em_max_mf, nbins, density=True, histtype='stepfilled', facecolor='dodgerblue', alpha=0.75)
+axs[0, 1].hist(df.Em_max_mf, nbins, density=True, histtype='stepfilled', facecolor='dodgerblue', alpha=0.75)
 axs[0, 1].set_title(r'Missing Energy, $E^{MF}_{miss, max}$')
 axs[0, 1].set_xlabel(r'$E_{miss}$ [GeV]')
 
-axs[0, 2].hist(Pm_max_mf, nbins, density=True, histtype='stepfilled', facecolor='tomato', alpha=0.75)
+axs[0, 2].hist(df.Pm_max_mf, nbins, density=True, histtype='stepfilled', facecolor='tomato', alpha=0.75)
 axs[0, 2].set_title(r'Missing Momentum, $P^{MF}_{miss, max}$')
 axs[0, 2].set_xlabel(r'$P_{miss, max}$ [GeV/c]')
 
 
-axs[1, 0].hist(xbj_min_src, nbins, density=True, histtype='stepfilled', facecolor='gold', alpha=0.75)
+axs[1, 0].hist(df.xbj_min_src, nbins, density=True, histtype='stepfilled', facecolor='gold', alpha=0.75)
 axs[1, 0].set_title(r'x-Bjorken, $x_{Bj,min}$')
 axs[1, 0].set_xlabel(r'$x_{Bj, min}$')
 
-axs[1, 1].hist(thrq_max_src, nbins, density=True, histtype='stepfilled', facecolor='crimson', alpha=0.75)
+axs[1, 1].hist(df.thrq_max_src, nbins, density=True, histtype='stepfilled', facecolor='crimson', alpha=0.75)
 axs[1, 1].set_title(r'recoil angle, $\theta_{rq,min}$')
 axs[1, 1].set_xlabel(r'$\theta_{rq,min} [deg]$')
 
-axs[1, 2].hist(Pm_min_src, nbins, density=True, histtype='stepfilled', facecolor='lime', alpha=0.75)
+axs[1, 2].hist(df.Pm_min_src, nbins, density=True, histtype='stepfilled', facecolor='lime', alpha=0.75)
 axs[1, 2].set_title(r'Missing Momentum, $P^{SRC}_{miss, min}$')
 axs[1, 2].set_xlabel(r'$P^{SRC}_{miss, min}$ [GeV/c]')
 
-axs[2, 0].hist(Pm_max_src, nbins, density=True, histtype='stepfilled', facecolor='forestgreen', alpha=0.75)
+axs[2, 0].hist(df.Pm_max_src, nbins, density=True, histtype='stepfilled', facecolor='forestgreen', alpha=0.75)
 axs[2, 0].set_title(r'Missing Momentum, $P^{SRC}_{miss, max}$')
 axs[2, 0].set_xlabel(r'$P^{SRC}_{miss, max}$ [GeV/c]')
 
-axs[2, 1].hist(hms_coll, nbins, density=True, histtype='stepfilled', facecolor='darkorange', alpha=0.75)
+axs[2, 1].hist(df.hms_coll, nbins, density=True, histtype='stepfilled', facecolor='darkorange', alpha=0.75)
 axs[2, 1].set_title(r'HMS Collimator')
 axs[2, 1].set_xlabel(r'Scale Factor')
 
-axs[2, 2].hist(shms_coll, nbins, density=True, histtype='stepfilled', facecolor='plum', alpha=0.75)
+axs[2, 2].hist(df.shms_coll, nbins, density=True, histtype='stepfilled', facecolor='plum', alpha=0.75)
+axs[2, 2].set_title(r'SHMS Collimator')
+axs[2, 2].set_xlabel(r'Scale Factor')
+'''
+
+fig.tight_layout()
+plt.show()
+
+
+#---------------------------------------
+
+# this part of the code reads directly the input cuts file to make the plots
+# NOTE: This requires the column header to be read without the '#' symbol (without comments)
+# in order to be able to read the columns using pandas dataframe
+
+# alternatively read the input cuts file
+fname='../input/cafe_systematics_cuts_pass4_10k.csv'
+df = pd.read_csv(fname, comment='#')
+df.to_numpy()
+    
+# prepare subplots for histogramming random cuts
+fig, axs = plt.subplots(nrows=3, ncols=3)
+
+nbins = 20
+
+axs[0,0].hist(df.Q2_min, nbins, density=True, histtype='stepfilled', facecolor='violet', alpha=0.75)
+axs[0,0].set_title(r'4-Momentum Transfer, $Q^{2}_{min}$')
+axs[0,0].set_xlabel(r'$Q^{2}_{min}$ [GeV$^{2}$]')
+
+
+axs[0, 1].hist(df.Em_max_mf, nbins, density=True, histtype='stepfilled', facecolor='dodgerblue', alpha=0.75)
+axs[0, 1].set_title(r'Missing Energy, $E^{MF}_{miss, max}$')
+axs[0, 1].set_xlabel(r'$E_{miss}$ [GeV]')
+
+axs[0, 2].hist(df.Pm_max_mf, nbins, density=True, histtype='stepfilled', facecolor='tomato', alpha=0.75)
+axs[0, 2].set_title(r'Missing Momentum, $P^{MF}_{miss, max}$')
+axs[0, 2].set_xlabel(r'$P_{miss, max}$ [GeV/c]')
+
+
+axs[1, 0].hist(df.xbj_min, nbins, density=True, histtype='stepfilled', facecolor='gold', alpha=0.75)
+axs[1, 0].set_title(r'x-Bjorken, $x_{Bj,min}$')
+axs[1, 0].set_xlabel(r'$x_{Bj, min}$')
+
+axs[1, 1].hist(df.thrq_max, nbins, density=True, histtype='stepfilled', facecolor='crimson', alpha=0.75)
+axs[1, 1].set_title(r'recoil angle, $\theta_{rq,min}$')
+axs[1, 1].set_xlabel(r'$\theta_{rq,min} [deg]$')
+
+axs[1, 2].hist(df.Pm_min_src, nbins, density=True, histtype='stepfilled', facecolor='lime', alpha=0.75)
+axs[1, 2].set_title(r'Missing Momentum, $P^{SRC}_{miss, min}$')
+axs[1, 2].set_xlabel(r'$P^{SRC}_{miss, min}$ [GeV/c]')
+
+axs[2, 0].hist(df.Pm_max_src, nbins, density=True, histtype='stepfilled', facecolor='forestgreen', alpha=0.75)
+axs[2, 0].set_title(r'Missing Momentum, $P^{SRC}_{miss, max}$')
+axs[2, 0].set_xlabel(r'$P^{SRC}_{miss, max}$ [GeV/c]')
+
+axs[2, 1].hist(df.hms_coll, nbins, density=True, histtype='stepfilled', facecolor='darkorange', alpha=0.75)
+axs[2, 1].set_title(r'HMS Collimator')
+axs[2, 1].set_xlabel(r'Scale Factor')
+
+axs[2, 2].hist(df.shms_coll, nbins, density=True, histtype='stepfilled', facecolor='plum', alpha=0.75)
 axs[2, 2].set_title(r'SHMS Collimator')
 axs[2, 2].set_xlabel(r'Scale Factor')
 
 
-
-fig.tight_layout()
-plt.show()
 #--------------------------------------------------
 
  

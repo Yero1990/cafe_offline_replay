@@ -9,7 +9,7 @@
 # thrq_min,max    : recoil nucleon angle relative to q-vector (SRC) [deg] 
 # Pm_min,max_src  : Missing Momentum (SRC) [GeV/c] 
 # hms/shms_coll   : HMS/SHMS collimator scale factor cut variation
-## entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src, hms_coll, shms_coll
+# entry,Q2_min,Q2_max,Em_min_mf,Em_max_mf,Pm_min_mf,Pm_max_mf,xbj_min,xbj_max,thrq_min,thrq_max,Pm_min_src,Pm_max_src,hms_coll,shms_coll
 0,1.755, 100.000, -0.020,0.088,0.000,0.275,1.216,100.000,0.000,35.317,0.415,0.675,1.042,1.078 
 1,1.782, 100.000, -0.020,0.086,0.000,0.273,1.194,100.000,0.000,42.876,0.379,0.647,0.989,0.947 
 2,1.860, 100.000, -0.020,0.095,0.000,0.270,1.246,100.000,0.000,38.899,0.382,0.673,0.986,1.003 
