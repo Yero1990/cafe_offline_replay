@@ -32,11 +32,11 @@ if (len(sys.argv) != 2):
 npass = sys.argv[1] 
 
 #________________________
-def get_cntmEff(run):
+def get_cntmEff(run=0, tgt=''):
     # method: get Ca48 contamination efficinecy factor on a run-basis
-    
+    # tgt = 'ca40' or 'ca48'
     # set filename
-    fname='special_studies/ca48_contamination/ca48_correction.csv'
+    fname='special_studies/ca_contamination/%s_correction_noah.csv'%(tgt)
 
     # read .csv file
     df = pd.read_csv(fname, comment='#')
@@ -46,21 +46,21 @@ def get_cntmEff(run):
 
     # get absolute contamination (in percent) -- to use this, requires that there is not space between comma-sepatated values
     absContamCalc = df[cond].C_absCntm_calc    # calculated from fit
-    absContamMeas = df[cond].C_absCntm_meas    # measured (only for Ca48 MF)
+    #absContamMeas = df[cond].C_absCntm_meas    # measured (only for Ca48 MF)
 
     contam_eff_calc = 1. -  (absContamCalc/100.)
-    contam_eff_meas = 1. -  (absContamMeas/100.)
+    #contam_eff_meas = 1. -  (absContamMeas/100.)
 
     # it depends on whether we want to apply calculated or measured contamination eff. for the Ca48 MF
     # for now we use the fit results 
     return contam_eff_calc  # efficiency factor
 
 #________________________
-def get_cntmEff(kin=''):
+def get_cntmEff(kin='', tgt=''):
     # method: returns an array for contamination factor for either Ca48 MF or SRC
-    
+    # tgt = 'ca40' or 'ca48'
     # example of appending new row (to append corrected Ca48 yield)
-    fname='special_studies/ca48_contamination/ca48_correction.csv'
+    fname='special_studies/ca_contamination/%s_correction_noah.csv'%(tgt)
 
     # read .csv file
     df = pd.read_csv(fname, comment='#')
@@ -70,10 +70,10 @@ def get_cntmEff(kin=''):
 
     # get absolute contamination (in percent) -- to use this, requires that there is not space between comma-sepatated values
     absContamCalc = df[cond].C_absCntm_calc    # calculated from fit (exponential fit func. of relative scalers for Ca48 SRC is used to quantify contamination)
-    absContamMeas = df[cond].C_absCntm_meas    # measured (only for Ca48 MF)
+    #absContamMeas = df[cond].C_absCntm_meas    # measured (only for Ca48 MF)
 
     contam_eff_calc = 1. -  (absContamCalc/100.)
-    contam_eff_meas = 1. -  (absContamMeas/100.)
+    #contam_eff_meas = 1. -  (absContamMeas/100.)
 
     # it depends on whether we want to apply calculated or measured contamination eff. for the Ca48 MF
     # for now we use the fit results 
@@ -118,7 +118,7 @@ def make_final_summary():
                 '# avg_current  : average beam current [uA] \n'
                 '# total_charge : cumulative charge (over all runs) [mC] \n'
                 '# yield        : yield (counts integrated over Pm) with all data-analysis cuts applied \n'
-                '# yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time) \n'
+                '# yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time + NOT YET proton absorption) \n'
                 '# yield_corr   : yield_eff corrected for external/internal impurities if any \n'
                 '# sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))\n'
                 '# sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )\n'
@@ -161,6 +161,8 @@ def make_final_summary():
 
         # loop over each kinmeatic (MF, SRC)
         for jdx in np.arange(len(kin)):
+
+            print('target ->', target[idx], ' kin -> ', kin[jdx])
             
             # set generic summary file name
             summary_file_path = 'summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,target[idx], kin[jdx])
@@ -174,7 +176,7 @@ def make_final_summary():
             if(target[idx]=='Ca48'):
                 
                 # read array of contamination eff. factors
-                cntm_eff = get_cntmEff(kin[jdx])
+                cntm_eff = get_cntmEff(kin[jdx], 'ca48')
                 
                 if (kin[jdx]=='MF'):
                     cntm_eff = cntm_eff[-3:] # read contamination factor corresponding to last 3 Ca48 MF runs
@@ -182,6 +184,16 @@ def make_final_summary():
 
             # ----- END: check if target is Ca48 (and read contamination factors) --------
 
+            # ------- check if target is Ca40 (and read contamination factors) --------
+            
+            if(target[idx]=='Ca40'):
+                 
+                # read array of contamination eff. factors
+                cntm_eff = get_cntmEff(kin[jdx], 'ca40')
+            
+            
+            
+            
             
             # ------ read parameters -------
             #T                 = find_param('transparency', summary_file_path) # transparency
@@ -216,11 +228,11 @@ def make_final_summary():
             T5_scl_rate  = df['T5_scl_rate']  # COIN         kHz
 
             
-            # read .csv numerical binning on Pmiss file
+            # read .csv numerical binning on Pmiss filex
             # (for applying corrections on binned Pmiss content, rather than integrated Pmiss)
-            for i in np.arange(len(run)):
-                pm_binned_file_path = 'analyzed_files/realYield_Pm_bins_%s_%s_%d.csv' % (target[idx], kin[jdx], run[])
-                df_bin = pd.read_csv(pm_binned_file_path, comment='#')
+            #for i in np.arange(len(run)):x1
+            #    pm_binned_file_path = 'analyzed_files/realYield_Pm_bins_%s_%s_%d.csv' % (target[idx], kin[jdx], run[])
+            #    df_bin = pd.read_csv(pm_binned_file_path, comment='#')
 
             
 
@@ -275,10 +287,26 @@ def make_final_summary():
             sigma_raw_per_nucleus   =   sigma_raw_per_nucleon * A  # counts / (mC * T * g/cm^2 * nucleus)
             sigma_raw_per_proton   =   sigma_raw_per_nucleon * A / Z  # counts / (mC * T * g/cm^2 * proton)
 
+            
+            # --- apply Ca40 contamination
+            if(target[idx]=='Ca40'):
+
+                # --- Ca40 oil contamination correction ---
+                real_Yield_corr = real_Yield_corr * cntm_eff  # apply oil contamination run-by-run           
+                real_Yield_corr_total = real_Yield_corr.sum() # sum the oil-corrected runs 
+                
+                # define raw cross section: corrected yield normalized by  total charge, transparency 
+                sigma_raw_per_nucleon_per_run = real_Yield_corr / (charge * T * tgt_thick)       # counts / (mC * g/cm^2)
+                sigma_raw_per_nucleon =  real_Yield_corr_total / (total_charge * T * tgt_thick)  # counts / (mC * g/cm^2)
+                sigma_raw_per_nucleus   =  sigma_raw_per_nucleon * A
+                sigma_raw_per_proton    =  sigma_raw_per_nucleon * A / Z
+            
             # --- apply Ca48 contamination + impurities corrections ----
             if(target[idx]=='Ca48'):
 
                 # --- Ca48 oil contamination correction ---
+                print(len(real_Yield_corr))
+                print(len(cntm_eff))
                 real_Yield_corr = real_Yield_corr * cntm_eff  # apply oil contamination run-by-run           
                 real_Yield_corr_total = real_Yield_corr.sum() # sum the oil-corrected runs 
                 

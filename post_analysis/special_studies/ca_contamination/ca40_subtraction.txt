@@ -1,0 +1,16 @@
+Dear Folks,
+
+According to my records, Ca48 is 90.5% pure.
+I assume that the remainder is Ca40.  The 48Ca target is 1051 mg/cm2.
+If the purity refers to number of atoms, then the purity by weight is 91.5%.
+(We need to find out whether purity refers to mass or to number.)  
+
+Thus there is (1 - 0.915 * 1051) = 89 mg/cm^2 of Ca40 in the Ca48 target.
+THe Ca40 target is 785 mg/cm^2
+
+Ca48_corr = Ca48 - (89 / 785) * Ca40
+where Ca48 is the Ca48 yield per charge and Ca40 is the Ca40 yield per charge.  
+This is true for both MF and for SRC.
+The corrected target thickness is 1051 - 89 = 962 mg/cm^2.  (My spreadsheet has a minor error in this number.)
+
+- Larry

@@ -50,7 +50,7 @@ NmZoA = df['NmZoA']
 
 
 compare_flag = False  # compare to previous pass ?
-compare_simc_flag = True  #compare to simc ?
+compare_simc_flag = False  #compare to simc ?
 
 if(compare_simc_flag):
 

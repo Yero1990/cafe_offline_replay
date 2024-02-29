@@ -1,0 +1,35 @@
+# Ca40 Contamination Correction Factors
+# 
+# Header Definitions: 
+# run      : run number 
+# kin      : kinematics analyzed  
+# C_absCntm_calc: Carbon calculated (from fit to scalers)  absolute contamination (in percent)
+# C_absCntm_calc_err: uncertainty in Carbon calculated (from fit to scalers)  absolute contamination (in percent)
+run,kin,C_absCntm_calc,C_absCntm_calc_err
+16980,MF,0.516,0.0052
+17097,MF,0.516,0.0052
+17008,SRC,0.516,0.0052
+17009,SRC,0.516,0.0052
+17011,SRC,0.516,0.0052
+17012,SRC,0.516,0.0052
+17013,SRC,0.516,0.0052
+17014,SRC,0.516,0.0052
+17015,SRC,0.516,0.0052
+17016,SRC,0.516,0.0052
+17017,SRC,0.516,0.0052
+17018,SRC,0.516,0.0052
+17020,SRC,0.516,0.0052
+17021,SRC,0.516,0.0052
+17022,SRC,0.516,0.0052
+17023,SRC,0.516,0.0052
+17024,SRC,0.516,0.0052
+17025,SRC,0.516,0.0052
+17027,SRC,0.516,0.0052
+17028,SRC,0.516,0.0052
+17029,SRC,0.516,0.0052
+17030,SRC,0.516,0.0052
+17031,SRC,0.516,0.0052
+17032,SRC,0.516,0.0052
+17033,SRC,0.516,0.0052
+17034,SRC,0.516,0.0052
+17035,SRC,0.516,0.0052
