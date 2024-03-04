@@ -334,7 +334,7 @@ def make_final_summary():
             if(target[idx]=='B10' or target[idx]=='B11'):
 
                 # get necessary C12 information 
-                c12_density = find_param('target_areal_density', 'summary_files/pass3/cafe_prod_C12_MF_report_summary.csv') #g/cm2
+                c12_density = find_param('target_areal_density', 'summary_files/%s/cafe_prod_C12_MF_report_summary.csv'%(npass)) #g/cm2
 
                 # define c12 dataframe to get charge and yield from C12 to subtract from B4C-10,11
                 df_c12 = pd.read_csv('summary_files/%s/cafe_prod_C12_%s_report_summary.csv'%(npass, kin[jdx]), comment='#') 
@@ -367,7 +367,7 @@ def make_final_summary():
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
-            if(show_plots and kin[jdx]=="MF"):
+            if(show_plots and kin[jdx]=="SRC"):
                 fig1.suptitle('%s Kinematics'%(kin[jdx]), fontsize=20)
 
                 ax1[0, 0].errorbar(T2_scl_rate, unumpy.nominal_values(shms_trk_eff),  yerr=unumpy.std_devs(shms_trk_eff), marker='o', mec='k', color=tcolor[idx], linestyle='None' )
