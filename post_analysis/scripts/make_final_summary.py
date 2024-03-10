@@ -129,21 +129,22 @@ def make_final_summary():
                 '# yield        : yield (raw counts integrated over Pm) with all data-analysis cuts applied \n'
                 '# yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) \n'
                 '# yield_corr   : yield_eff corrected for external/internal impurities if any \n'
+                '# rad_corr     : radiative correction factor, yield_rad / yield_norad (to be applied when calculating ratios) \n'
                 '# sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))\n'
                 '# sigma_raw_per_proton    : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per proton) e.g. xA/Z )\n'
                 '# sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )\n'
                 '# stat_rel_err            : relative statistical error on the total yield calculated as sqrt(yield)/yield \n'
-                '# norm_syst_rel_err       : relative systematic error due to normalization correction factors (hms/shms track efficiencies, live time, proton transmission) \n'
+                '# norm_syst_rel_err       : relative systematic error due to normalization correction factors (hms/shms track efficiencies, live time, proton transmission, ca40,48 cntm) \n'
                 '# tgt_thick               : target density (g/cm2)\n'
                 '# T N Z A                 : transparency (T) # of neutrons (N) protons(Z) and nucleons (A)\n'
                 )
-    ofile.write('target,kin,beam_time,avg_current,total_charge,yield,yield_eff,yield_corr,sigma_raw_per_nucleon,sigma_raw_per_proton,sigma_raw_per_nucleus,stat_rel_err,norm_syst_rel_err,tgt_thick,tgt_thick_corr,T,N,Z,A\n') 
+    ofile.write('target,kin,beam_time,avg_current,total_charge,yield,yield_eff,yield_corr,rad_corr,sigma_raw_per_nucleon,sigma_raw_per_proton,sigma_raw_per_nucleus,stat_rel_err,norm_syst_rel_err,tgt_thick,tgt_thick_corr,T,N,Z,A\n') 
 
     # target, kin list
     # target = ['LD2', 'Be9', 'B10', 'B11', 'C12', 'Ca40', 'Ca48', 'Fe54']
     target = ['Be9', 'B10', 'B11', 'C12', 'Ca40',       'Ca48',   'Fe54', 'Au197']
     tcolor  = ['m',   'r',   'g',   'b',  'darkorange', 'dodgerblue', 'lime',  'gold'] 
-
+    
     kin    = ['MF', 'SRC']
 
     # Set pre-defined varaibles to be set and  saved for corrections
@@ -173,7 +174,27 @@ def make_final_summary():
         for jdx in np.arange(len(kin)):
 
             print('target ->', target[idx], ' kin -> ', kin[jdx])
+
+            rad_corr = -1000  # initiate default radiative correction factor  Y_rad / Y_norad (usually < 1)
             
+            # set radiative correction factors (based on studies by N. Swan)
+            if(kin[jdx]=='MF'):
+                if(target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12'):
+                    rad_corr = 0.6
+                if(target[idx]=='Ca40' or target[idx]=='Ca48' or target[idx]=='Fe54'):
+                    rad_corr = 0.51
+                if(target[idx]=='Au197'):
+                    rad_corr = 0.38
+            
+            if(kin[jdx]=='SRC'):
+                if(target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12'):
+                    rad_corr = 0.63
+                if(target[idx]=='Ca40' or target[idx]=='Ca48' or target[idx]=='Fe54'):
+                    rad_corr = 0.52
+                if(target[idx]=='Au197'):
+                    rad_corr = 0.40
+
+                
             # set generic summary file name
             summary_file_path = 'summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,target[idx], kin[jdx])
             
@@ -537,7 +558,7 @@ def make_final_summary():
             #----------------------------------------
      
             # Write numerical data to final summary file
-            ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
+            ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, rad_corr, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
     if(show_plots):         
         plt.tight_layout()
@@ -595,79 +616,28 @@ def write_ratios(ifname='', ofname=''):
 
     # NOTE: src_sigma_raw_proton -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] * Z/A)
 
-    src_sigma_raw_per_proton          = df[(df['kin']=='SRC')]['sigma_raw_per_proton'] 
+    src_sigma_raw_per_proton          = df[(df['kin']=='SRC')]['sigma_raw_per_proton']
+    rad_corr_src                      = df[(df['kin']=='SRC')]['rad_corr'] 
+
     mf_sigma_raw_per_proton           = df[(df['kin']=='MF')]['sigma_raw_per_proton']
+    rad_corr_mf                       = df[(df['kin']=='MF')]['rad_corr'] 
 
     
     src_sigma_raw_per_proton_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_proton']
-    mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_proton']
+    mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF')  & (df['target']=='C12')]['sigma_raw_per_proton']
+    rad_corr_src_c12                  = df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'] 
+    rad_corr_mf_c12                   = df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr'] 
 
-    '''
-    # NOTE: src_sigma_raw_nucleons -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] )
-    src_sigma_raw_per_nucleon          = df[(df['kin']=='SRC')]['sigma_raw_per_nucleon']
-    src_sigma_raw_per_nucleon_err      = df[(df['kin']=='SRC')]['sigma_raw_per_nucleon_err']
-
-    mf_sigma_raw_per_nucleon           = df[(df['kin']=='MF')]['sigma_raw_per_nucleon']
-    mf_sigma_raw_per_nucleon_err       = df[(df['kin']=='MF')]['sigma_raw_per_nucleon_err']
-
-    
-    src_sigma_raw_per_nucleon_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_nucleon']
-    src_sigma_raw_per_nucleon_err_C12  = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_nucleon_err']
-
-    mf_sigma_raw_per_nucleon_C12       = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_nucleon']
-    mf_sigma_raw_per_nucleon_err_C12   = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_nucleon_err']
-
-
-
-    # NOTE: src_sigma_raw_per_nucleus -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] )
-    src_sigma_raw_per_nucleus          = df[(df['kin']=='SRC')]['sigma_raw_per_nucleus']
-    src_sigma_raw_per_nucleus_err      = df[(df['kin']=='SRC')]['sigma_raw_per_nucleus_err']
-
-    mf_sigma_raw_per_nucleus           = df[(df['kin']=='MF')]['sigma_raw_per_nucleus']
-    mf_sigma_raw_per_nucleus_err       = df[(df['kin']=='MF')]['sigma_raw_per_nucleus_err']
-
-    
-    src_sigma_raw_per_nucleus_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_nucleus']
-    src_sigma_raw_per_nucleus_err_C12  = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_nucleus_err']
-
-    mf_sigma_raw_per_nucleus_C12       = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_nucleus']
-    mf_sigma_raw_per_nucleus_err_C12   = df[(df['kin']=='MF') & (df['target']=='C12')]['sigma_raw_per_nucleus_err']
-    '''
-    
-    #-------------------------------------------------------------------------
-    # ---- Put numerica data and errors into arrays for error calculation ----
-    #-------------------------------------------------------------------------
-
-    # per proton
-    src_sigma_raw_per_proton_arr      = unumpy.uarray(src_sigma_raw_per_proton,  src_sigma_raw_per_proton_err)
-    mf_sigma_raw_per_proton_arr       = unumpy.uarray(mf_sigma_raw_per_proton,  mf_sigma_raw_per_proton_err)
-
-    src_sigma_raw_per_proton_C12_arr  = unumpy.uarray(src_sigma_raw_per_proton_C12, src_sigma_raw_per_proton_err_C12)
-    mf_sigma_raw_per_proton_C12_arr   = unumpy.uarray(mf_sigma_raw_per_proton_C12,  mf_sigma_raw_per_proton_err_C12)
-
-    '''
-    # per nucleon
-    src_sigma_raw_per_nucleon_arr      = unumpy.uarray(src_sigma_raw_per_nucleon,  src_sigma_raw_per_nucleon_err)
-    mf_sigma_raw_per_nucleon_arr       = unumpy.uarray(mf_sigma_raw_per_nucleon,  mf_sigma_raw_per_nucleon_err)
-
-    src_sigma_raw_per_nucleon_C12_arr  = unumpy.uarray(src_sigma_raw_per_nucleon_C12, src_sigma_raw_per_nucleon_err_C12)
-    mf_sigma_raw_per_nucleon_C12_arr   = unumpy.uarray(mf_sigma_raw_per_nucleon_C12,  mf_sigma_raw_per_nucleon_err_C12)
-
-
-    # per nucleus
-    src_sigma_raw_per_nucleus_arr      = unumpy.uarray(src_sigma_raw_per_nucleus,  src_sigma_raw_per_nucleus_err)
-    mf_sigma_raw_per_nucleus_arr       = unumpy.uarray(mf_sigma_raw_per_nucleus,  mf_sigma_raw_per_nucleus_err)
-
-    src_sigma_raw_per_nucleus_C12_arr  = unumpy.uarray(src_sigma_raw_per_nucleus_C12, src_sigma_raw_per_nucleus_err_C12)
-    mf_sigma_raw_per_nucleus_C12_arr   = unumpy.uarray(mf_sigma_raw_per_nucleus_C12,  mf_sigma_raw_per_nucleus_err_C12)
-    '''
 
     #-----------------------------------
     # ---- CALCULATE SINGLE RATIOS  ----
     #-----------------------------------
 
+    rad_corr_ratio
     # A_SRC / A_MF (per proton)
-    singleR_per_proton     = (src_sigma_raw_per_proton_arr/mf_sigma_raw_per_proton_arr)
+    singleR_per_proton     = (src_sigma_raw_per_proton/mf_sigma_raw_per_proton) * (rad_corr_mf/rad_corr_src)
+
+
     singleR_per_proton_val = unumpy.nominal_values(singleR_per_proton)
     singleR_per_proton_err = unumpy.std_devs(singleR_per_proton)
     singleR_per_proton_C12 = (src_sigma_raw_per_proton_C12_arr/mf_sigma_raw_per_proton_C12_arr)
