@@ -609,6 +609,21 @@ def write_ratios(ifname='', ofname=''):
     A = np.array(df[(df['kin']=='SRC')]['A'])
     NoZ = N/Z
     NmZoA = (N-Z) / A
+
+    #--------------------------------------------------------------------------------
+    # ----- Read relative stats. and normalization systematic uncertainties
+    #--------------------------------------------------------------------------------
+    stat_rel_err_src = df[(df['kin']=='SRC')]['stat_rel_err']
+    stat_rel_err_mf  = df[(df['kin']=='MF')]['stat_rel_err']
+
+    norm_syst_rel_err_src = df[(df['kin']=='SRC')]['norm_syst_rel_err']
+    norm_syst_rel_err_mf  = df[(df['kin']=='MF')]['norm_syst_rel_err']
+
+    stat_rel_err_src_c12 = df[(df['kin']=='SRC') & (df['target']=='C12')]['stat_rel_err']
+    stat_rel_err_mf_c12  = df[(df['kin']=='MF') & (df['target']=='C12')]['stat_rel_err']
+
+    norm_syst_rel_err_src_c12 = df[(df['kin']=='SRC') & (df['target']=='C12')]['norm_syst_rel_err']
+    norm_syst_rel_err_mf_c12  = df[(df['kin']=='MF') & (df['target']=='C12')]['norm_syst_rel_err']
     
     #--------------------------------------------------------------------------------
     # ----- Read charge-normalized corrected yields from the final summary file -----
@@ -616,19 +631,25 @@ def write_ratios(ifname='', ofname=''):
 
     # NOTE: src_sigma_raw_proton -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] * Z/A)
 
+    # read raw cross sections (raw sigma or yield)
     src_sigma_raw_per_proton          = df[(df['kin']=='SRC')]['sigma_raw_per_proton']
     mf_sigma_raw_per_proton           = df[(df['kin']=='MF')]['sigma_raw_per_proton']
     
     src_sigma_raw_per_proton_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_proton']
     mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF')  & (df['target']=='C12')]['sigma_raw_per_proton']
-
+    
+    # read radiative correction factors
     rad_corr_src                      = df[(df['kin']=='SRC')]['rad_corr']  # src_rad/src_norad
     rad_corr_mf                       = df[(df['kin']=='MF')]['rad_corr']   # mf_rad/mf_norad
 
     rad_corr_src_c12                  = df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'] 
     rad_corr_mf_c12                   = df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr'] 
 
+    # calculate the absolute stats. and norm. syst error on the raw cross sections
+    src_sigma_raw_per_proton_stat_err = src_sigma_raw_per_proton * stat_rel_err_src
 
+    # continue working here, calculating stats & syst error
+    
     #-----------------------------------
     # ---- CALCULATE SINGLE RATIOS  ----
     #-----------------------------------
@@ -640,12 +661,15 @@ def write_ratios(ifname='', ofname=''):
     # since rad corr between SRC/MF of same nucleus A is very similar
 
     rad_corr_ratio = (rad_corr_mf/rad_corr_src)
-    rad_corr_ratio_rel_err = 0.05  
+    rad_corr_ratio_c12 = (rad_corr_mf_c12/rad_corr_src_c12)
+
+    rad_corr_ratio_rel_err = 0.05
+    
     singleR_per_proton     = (src_sigma_raw_per_proton/mf_sigma_raw_per_proton) * rad_corr_ratio
     singleR_per_proton_RC_syst = singleR_per_proton * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
-
-    #--> NEED TO FINISH singleR_per_proton_C12     = (src_sigma_raw_per_proton_C12/mf_sigma_raw_per_proton_C12) * rad_corr_ratio
-    # --> NEED TO FINISH singleR_per_proton_RC_syst_C12 = singleR_per_proton * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
+    
+    singleR_per_proton_C12         = (src_sigma_raw_per_proton_C12/mf_sigma_raw_per_proton_C12) * rad_corr_ratio_c12
+    singleR_per_proton_RC_syst_C12 = singleR_per_proton_C12 * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
     
 
     #--- A_MF / C12_MF (per proton) -should be flat ---
@@ -684,18 +708,8 @@ def write_ratios(ifname='', ofname=''):
     #--------------------------------------------------------
 
     doubleR     = singleR_per_proton / singleR_per_proton_C12
-    doubleR_val = unumpy.nominal_values(doubleR)
-    doubleR_err = unumpy.std_devs(doubleR)
     
-    '''
-    doubleR_per_nucleon     = singleR_per_nucleon / singleR_per_nucleon_C12
-    doubleR_per_nucleon_val = unumpy.nominal_values(doubleR_per_nucleon)
-    doubleR_per_nucleon_err = unumpy.std_devs(doubleR_per_nucleon)
 
-    doubleR_per_nucleus     = singleR_per_nucleus / singleR_per_nucleus_C12
-    doubleR_per_nucleus_val = unumpy.nominal_values(doubleR_per_nucleus)
-    doubleR_per_nucleus_err = unumpy.std_devs(doubleR_per_nucleus)
-    '''
 
 
     # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
