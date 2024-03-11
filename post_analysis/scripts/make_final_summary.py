@@ -643,6 +643,9 @@ def write_ratios(ifname='', ofname=''):
     rad_corr_src_c12                  = np.array(df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'])
     rad_corr_mf_c12                   = np.array(df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr']) 
 
+    print('rad_corr_src = ',rad_corr_src)
+    print('rad_corr_mf  = ', rad_corr_mf )
+    
     # calculate the absolute stats. and norm. syst error on the raw cross sections
     src_sigma_raw_per_proton_stat_err      = src_sigma_raw_per_proton * stat_rel_err_src
     src_sigma_raw_per_proton_norm_syst_err = src_sigma_raw_per_proton * norm_syst_rel_err_src 
@@ -671,6 +674,9 @@ def write_ratios(ifname='', ofname=''):
     
     rad_corr_ratio = (rad_corr_mf/rad_corr_src)
     rad_corr_ratio_c12 = (rad_corr_mf_c12/rad_corr_src_c12)
+
+    print('rad_corr_ratio = ',rad_corr_ratio)
+    print('rad_corr_ratio_c12 = ', rad_corr_ratio_c12)
     
     rad_corr_ratio_rel_err = 0.05
 
@@ -711,7 +717,7 @@ def write_ratios(ifname='', ofname=''):
 
         else:
             rad_corr_ratio_mf_rel_err =  np.abs(1.-rad_corr_ratio_mf[i]) * 0.20
-            
+            print('rad_corr_ratio_mf_rel_err = ',rad_corr_ratio_mf_rel_err )
         singleR_A_c12_mf[i]               =  ( mf_sigma_raw_per_proton.values[i] / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf[i]
         singleR_A_c12_mf_RC_syst[i]       = singleR_A_c12_mf[i] * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
         singleR_A_c12_mf_stat_err[i]      = singleR_A_c12_mf[i] * np.sqrt(stat_rel_err_mf.values[i]**2 +  stat_rel_err_mf_c12**2) 
@@ -737,7 +743,7 @@ def write_ratios(ifname='', ofname=''):
 
         else:
             rad_corr_ratio_src_rel_err =  np.abs(1.-rad_corr_ratio_src[i]) * 0.20
-    
+            print('rad_corr_ratio_src_rel_err = ',rad_corr_ratio_src_rel_err)
             singleR_A_c12_src[i]               =  ( src_sigma_raw_per_proton.values[i] / src_sigma_raw_per_proton_C12 ) * rad_corr_ratio_src[i]
             singleR_A_c12_src_RC_syst[i]       = singleR_A_c12_src[i] * rad_corr_ratio_src_rel_err  # absolute syst. error due to rad corr ratio
             singleR_A_c12_src_stat_err[i]      = singleR_A_c12_src[i] * np.sqrt(stat_rel_err_src.values[i]**2 +  stat_rel_err_src_c12**2)
@@ -750,9 +756,13 @@ def write_ratios(ifname='', ofname=''):
     #--------------------------------------------------------
 
     doubleR     = singleR_per_proton / singleR_per_proton_C12
+    doubleR_stat_err = doubleR * np.sqrt( (singleR_per_proton_stat_err/singleR_per_proton)**2 +  (singleR_per_proton_C12_stat_err/singleR_per_proton_C12)**2 )
+    doubleR_RC_syst = doubleR * np.sqrt( (singleR_per_proton_RC_syst/singleR_per_proton)**2 + (singleR_per_proton_C12_RC_syst_err/singleR_per_proton_C12)**2  )
+    print('doubleR_RC_syst = ', doubleR_RC_syst)
+    #print('rad_corr_ratio = ', rad_corr_ratio)
+    #print('rad_corr_ratio_c12 = ', rad_corr_ratio_c12)
+    #print('rad_corr_ratio/rad_corr_ratio_c12 = ', rad_corr_ratio/rad_corr_ratio_c12 )
     
-
-
     '''
     # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
     targ = np.array(df[(df['kin']=='SRC')]['target'])
