@@ -116,7 +116,7 @@ def make_final_summary():
     # sigma_raw_A -->  [area_density(g/cm^2) / molar_mass(g/mol)] * 4 (B10 atoms) * 10 g/mol ??
     
     #output file to write summary file
-    ofname = 'cafe_final_summary_%s.csv' %(npass) 
+    ofname = 'cafe_final_summary_%s_testing.csv' %(npass) 
     ofile = open(ofname, 'w+')
     ofile.write('# CaFe Final Summary File (%s) \n'%(npass))
     ofile.write('# \n'
@@ -194,7 +194,6 @@ def make_final_summary():
                 if(target[idx]=='Au197'):
                     rad_corr = 0.40
 
-                
             # set generic summary file name
             summary_file_path = 'summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,target[idx], kin[jdx])
             
@@ -339,8 +338,8 @@ def make_final_summary():
 
             # --- apply Ca40 contamination systematic correction (the correction is pre-determined for either MF or SRC during get_cntmEff() function call
             if(target[idx]=='Ca40'):
-                f6 = cntm_eff
-                df6 = cntm_eff_err
+                f6_per_run = cntm_eff
+                df6_per_run = cntm_eff_err
                 df6_f6_per_run = df6_per_run / f6_per_run
                 df6_f6_sq = np.sum(np.square(df6_f6_per_run))  
 
@@ -348,8 +347,8 @@ def make_final_summary():
 
             # --- apply Ca48 contamination systematic correction (the correction is pre-determined for either MF or SRC during get_cntmEff() function call
             if(target[idx]=='Ca48'):
-                f7 = cntm_eff
-                df7 = cntm_eff_err
+                f7_per_run = cntm_eff
+                df7_per_run = cntm_eff_err
                 df7_f7_per_run = df7_per_run / f7_per_run
                 df7_f7_sq = np.sum(np.square(df7_f7_per_run))  
 
@@ -473,7 +472,7 @@ def make_final_summary():
                 tgt_thick_corr             = boron_density_corr               # re-define corrected target thickness (to be written to file)            
 
 
-            show_plots=True
+            show_plots=False
             # ----------- make plots ----------------
             minT2 = T2_scl_rate==min(T2_scl_rate) #condition of minimum scaler rate
             minI  = avg_current==min(avg_current)
@@ -556,7 +555,7 @@ def make_final_summary():
             #----------------------------------------
             # WRITE CAFE NUMERICAL DATA
             #----------------------------------------
-     
+
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, rad_corr, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
@@ -566,7 +565,7 @@ def make_final_summary():
     ofile.close()
 
     # call function to write singles, double ratios to file for ease of plotting
-    write_ratios(ofname, 'cafe_ratios_%s.csv'%(npass))
+    write_ratios(ofname, 'cafe_ratios_%s_testing.csv'%(npass))
     
 
 def write_ratios(ifname='', ofname=''):
@@ -579,7 +578,6 @@ def write_ratios(ifname='', ofname=''):
     
     # read input final summary file
     df = pd.read_csv(ifname, comment='#')
-
 
     # set output file to write double ratio numerical values
     ofile = open(ofname, 'w+')
@@ -639,16 +637,24 @@ def write_ratios(ifname='', ofname=''):
     mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF')  & (df['target']=='C12')]['sigma_raw_per_proton']
     
     # read radiative correction factors
-    rad_corr_src                      = df[(df['kin']=='SRC')]['rad_corr']  # src_rad/src_norad
-    rad_corr_mf                       = df[(df['kin']=='MF')]['rad_corr']   # mf_rad/mf_norad
+    rad_corr_src                      = np.array(df[(df['kin']=='SRC')]['rad_corr'])  # src_rad/src_norad
+    rad_corr_mf                       = np.array(df[(df['kin']=='MF')]['rad_corr'])   # mf_rad/mf_norad
 
-    rad_corr_src_c12                  = df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'] 
-    rad_corr_mf_c12                   = df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr'] 
+    rad_corr_src_c12                  = np.array(df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'])
+    rad_corr_mf_c12                   = np.array(df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr']) 
 
     # calculate the absolute stats. and norm. syst error on the raw cross sections
-    src_sigma_raw_per_proton_stat_err = src_sigma_raw_per_proton * stat_rel_err_src
+    src_sigma_raw_per_proton_stat_err      = src_sigma_raw_per_proton * stat_rel_err_src
+    src_sigma_raw_per_proton_norm_syst_err = src_sigma_raw_per_proton * norm_syst_rel_err_src 
+    mf_sigma_raw_per_proton_stat_err       = mf_sigma_raw_per_proton  * stat_rel_err_mf
+    mf_sigma_raw_per_proton_norm_syst_err  = mf_sigma_raw_per_proton  * norm_syst_rel_err_mf 
 
-    # continue working here, calculating stats & syst error
+    src_sigma_raw_per_proton_C12_stat_err      = src_sigma_raw_per_proton_C12 * stat_rel_err_src_c12
+    src_sigma_raw_per_proton_C12_norm_syst_err = src_sigma_raw_per_proton_C12 * norm_syst_rel_err_src_c12 
+    mf_sigma_raw_per_proton_C12_stat_err       = mf_sigma_raw_per_proton_C12  * stat_rel_err_mf_c12
+    mf_sigma_raw_per_proton_C12_norm_syst_err  = mf_sigma_raw_per_proton_C12  * norm_syst_rel_err_mf_c12 
+
+    
     
     #-----------------------------------
     # ---- CALCULATE SINGLE RATIOS  ----
@@ -660,18 +666,28 @@ def write_ratios(ifname='', ofname=''):
     # default rad corr relative error (dR/R) on single ratio to 5%,
     # since rad corr between SRC/MF of same nucleus A is very similar
 
+    # for R = A/B,  dR = |R| sqrt( (dA/A)**2 + (dB/B)**2 ), assuming A,B are non-correlated
+    
+    
     rad_corr_ratio = (rad_corr_mf/rad_corr_src)
     rad_corr_ratio_c12 = (rad_corr_mf_c12/rad_corr_src_c12)
-
+    
     rad_corr_ratio_rel_err = 0.05
-    
-    singleR_per_proton     = (src_sigma_raw_per_proton/mf_sigma_raw_per_proton) * rad_corr_ratio
-    singleR_per_proton_RC_syst = singleR_per_proton * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
-    
-    singleR_per_proton_C12         = (src_sigma_raw_per_proton_C12/mf_sigma_raw_per_proton_C12) * rad_corr_ratio_c12
-    singleR_per_proton_RC_syst_C12 = singleR_per_proton_C12 * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
-    
 
+
+    singleR_per_proton               = (src_sigma_raw_per_proton.values/mf_sigma_raw_per_proton.values) * rad_corr_ratio
+    singleR_per_proton_RC_syst       = singleR_per_proton * rad_corr_ratio_rel_err                                       # absolute syst. error due to rad corr ratio
+    singleR_per_proton_stat_err      = singleR_per_proton * np.sqrt(stat_rel_err_src.values**2 +  stat_rel_err_mf.values**2)           # absolute stat. error 
+    singleR_per_proton_norm_syst_err = singleR_per_proton * np.sqrt(norm_syst_rel_err_src.values**2 +  norm_syst_rel_err_mf.values**2) # absolute norm syst. error 
+    
+    
+    singleR_per_proton_C12               = (src_sigma_raw_per_proton_C12.values/mf_sigma_raw_per_proton_C12.values) * rad_corr_ratio_c12
+    singleR_per_proton_C12_RC_syst_err   = singleR_per_proton_C12 * rad_corr_ratio_rel_err                                               # absolute syst. error due to rad corr ratio
+    singleR_per_proton_C12_stat_err      = singleR_per_proton_C12 * np.sqrt(stat_rel_err_src_c12.values**2 +  stat_rel_err_mf_c12.values**2)           # absolute stat. error 
+    singleR_per_proton_C12_norm_syst_err = singleR_per_proton_C12 * np.sqrt(norm_syst_rel_err_src_c12.values**2 +  norm_syst_rel_err_mf_c12.values**2) # absolute norm syst. error 
+
+
+    
     #--- A_MF / C12_MF (per proton) -should be flat ---
     # rad correction factor for MF/C12_MF single ratio
     # has a ratio = 1 for light nuclei --> assign a 5% relative error on the ratio
@@ -679,27 +695,53 @@ def write_ratios(ifname='', ofname=''):
     # e.g., if ratio = 0.6 / 0.38 = 1.57  --> abs(1-1.57) =  0.57 (57% correction factor)
     # --> assign 0.57 * 0.20 = 0.114 (11%) as relative syst. error
     
-    rad_corr_ratio_mf = ( rad_corr_mf_c12 / rad_corr_mf ) 
-    rad_corr_ratio_mf_rel_err = 0.05  # default
-
-    if(rad_corr_ratio_mf!=1):
-        rad_corr_ratio_mf_rel_err =  np.abs(1.-rad_corr_ratio_mf) * 0.20
+    rad_corr_ratio_mf = ( rad_corr_mf_c12 / rad_corr_mf )
     
-    singleR_A_c12_mf  =  ( mf_sigma_raw_per_proton / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf
-    singleR_A_c12_mf_RC_syst = singleR_A_c12_mf * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
+    # initialize zero arrays to be filled in depending on relative error value
+    singleR_A_c12_mf               = np.zeros([len(rad_corr_ratio_mf)])
+    singleR_A_c12_mf_RC_syst       = np.zeros([len(rad_corr_ratio_mf)])
+    singleR_A_c12_mf_stat_err      = np.zeros([len(rad_corr_ratio_mf)])
+    singleR_A_c12_mf_norm_syst_err = np.zeros([len(rad_corr_ratio_mf)])
+
+    
+    # loop over rad corr ratio
+    for i in range(len(rad_corr_ratio_mf)):
+        if rad_corr_ratio_mf[i] == 1:
+            rad_corr_ratio_mf_rel_err = 0.05  # default, if corr factor is same (as it is for light nuclei)
+
+        else:
+            rad_corr_ratio_mf_rel_err =  np.abs(1.-rad_corr_ratio_mf[i]) * 0.20
+            
+        singleR_A_c12_mf[i]               =  ( mf_sigma_raw_per_proton.values[i] / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf[i]
+        singleR_A_c12_mf_RC_syst[i]       = singleR_A_c12_mf[i] * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
+        singleR_A_c12_mf_stat_err[i]      = singleR_A_c12_mf[i] * np.sqrt(stat_rel_err_mf.values[i]**2 +  stat_rel_err_mf_c12**2) 
+        singleR_A_c12_mf_norm_syst_err[i] = singleR_A_c12_mf[i] * np.sqrt(norm_syst_rel_err_mf.values[i]**2 +  norm_syst_rel_err_mf_c12**2)
+     
 
     
     #--- A_SRC / C12_SRC (per proton) ---
     # similar treatment of radiative corrections as for the A_MF / C12_MF case above
 
-    rad_corr_ratio_src = ( rad_corr_src_c12 / rad_corr_src ) 
-    rad_corr_ratio_src_rel_err = 0.05  # default
+    rad_corr_ratio_src = ( rad_corr_src_c12 / rad_corr_src )
 
-    if(rad_corr_ratio_src!=1):
-        rad_corr_ratio_src_rel_err =  np.abs(1.-rad_corr_ratio_src) * 0.20
+    # initialize zero arrays to be filled in depending on relative error value
+    singleR_A_c12_src               = np.zeros([len(rad_corr_ratio_src)])
+    singleR_A_c12_src_RC_syst       = np.zeros([len(rad_corr_ratio_src)])
+    singleR_A_c12_src_stat_err      = np.zeros([len(rad_corr_ratio_src)])
+    singleR_A_c12_src_norm_syst_err = np.zeros([len(rad_corr_ratio_src)])
+
+    # loop over rad corr ratio
+    for i in range(len(rad_corr_ratio_src)):
+        if rad_corr_ratio_mf[i] == 1:
+            rad_corr_ratio_src_rel_err = 0.05  # default, if corr factor is same (as it is for light nuclei)
+
+        else:
+            rad_corr_ratio_src_rel_err =  np.abs(1.-rad_corr_ratio_src[i]) * 0.20
     
-    singleR_A_c12_src     =  ( src_sigma_raw_per_proton / src_sigma_raw_per_proton_C12 ) * rad_corr_ratio_src
-    singleR_A_c12_src_RC_syst = singleR_A_c12_src * rad_corr_ratio_src_rel_err  # absolute syst. error due to rad corr ratio
+            singleR_A_c12_src[i]               =  ( src_sigma_raw_per_proton.values[i] / src_sigma_raw_per_proton_C12 ) * rad_corr_ratio_src[i]
+            singleR_A_c12_src_RC_syst[i]       = singleR_A_c12_src[i] * rad_corr_ratio_src_rel_err  # absolute syst. error due to rad corr ratio
+            singleR_A_c12_src_stat_err[i]      = singleR_A_c12_src[i] * np.sqrt(stat_rel_err_src.values[i]**2 +  stat_rel_err_src_c12**2)
+            singleR_A_c12_src_norm_syst_err[i] = singleR_A_c12_src[i] * np.sqrt(norm_syst_rel_err_src.values[i]**2 +  norm_syst_rel_err_src_c12**2)
 
 
     
@@ -711,7 +753,7 @@ def write_ratios(ifname='', ofname=''):
     
 
 
-
+    '''
     # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
     targ = np.array(df[(df['kin']=='SRC')]['target'])
 
@@ -720,11 +762,11 @@ def write_ratios(ifname='', ofname=''):
 
         ofile.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3f,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i], singleR_A_c12_mf_val[i], singleR_A_c12_mf_err[i], singleR_A_c12_src_val[i], singleR_A_c12_src_err[i], singleR_per_proton_val[i], singleR_per_proton_err[i], doubleR_val[i], doubleR_err[i], N[i], Z[i], A[i], NoZ[i], NmZoA[i]) ) 
 
-        
+    '''    
     ofile.close()
 
 
-
+    
 
     
 make_final_summary()

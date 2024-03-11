@@ -1,0 +1,16 @@
+# CaFe numerical ratios (pass4) 
+# 
+# Header Definitions: 
+# target       : target A used in single or double ratio 
+# singleR_A_c12_mf      : single ratio of target A_MF / C12_MF (per proton)  
+# singleR_A_c12_mf_err  : uncertainty in single ratio 
+# singleR_A_c12_src      : single ratio of target A_SRC / C12_SRC (per proton) 
+# singleR_A_c12_src_err  : uncertainty in single ratio 
+# singleR_per_proton      : single ratio of target A(SRC/MF) (per proton) 
+# singleR_per_proton_err  : uncertainty in single ratio (per proton) 
+# doubleR      : double ratio of target A(SRC/MF) relative to C12 (SRC/MF) 
+# doubleR_err  : uncertainty in double ratio 
+# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
+# NoZ          : N/Z 
+# NmZoA        : (N-Z)/A 
+target,singleR_A_c12_mf,singleR_A_c12_mf_err,singleR_A_c12_src,singleR_A_c12_src_err,singleR_per_proton,singleR_per_proton_err,doubleR,doubleR_err,N,Z,A,NoZ,NmZoA
