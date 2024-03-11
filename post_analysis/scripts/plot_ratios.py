@@ -19,7 +19,7 @@ if(len(sys.argv)!=2):
 npass = sys.argv[1]       # "pass3"
 
 
-ifname= 'cafe_ratios_%s.csv' % (npass)
+ifname= 'cafe_ratios_%s_testing.csv' % (npass)
 
 # ----------------
 # read input file
@@ -29,19 +29,30 @@ df = pd.read_csv(ifname, comment='#')
 targ = df['target']
 
 # A_SRC / A_MF
-singleR_per_proton      = np.array(df['singleR_per_proton'])
-singleR_per_proton_err  = np.array(df['singleR_per_proton_err'])
+singleR_per_proton           = np.array(df['singleR_per_proton'])
+singleR_per_proton_stat_err  = np.array(df['singleR_per_proton_stat_err'])
+singleR_per_proton_syst_err  = np.array(df['singleR_per_proton_syst_err'])
+singleR_per_proton_tot_err   = np.array(df['singleR_per_proton_tot_err'])
 
 # A_MF / C12_MF
-singleR_A_c12_mf        = np.array(df['singleR_A_c12_mf'])
-singleR_A_c12_mf_err    = np.array(df['singleR_A_c12_mf_err'])
+singleR_A_c12_mf             = np.array(df['singleR_A_c12_mf'])
+singleR_A_c12_mf_stat_err    = np.array(df['singleR_A_c12_mf_stat_err'])
+singleR_A_c12_mf_syst_err    = np.array(df['singleR_A_c12_mf_syst_err'])
+singleR_A_c12_mf_tot_err     = np.array(df['singleR_A_c12_mf_tot_err'])
 
 # A_SRC / C12_SRC
-singleR_A_c12_src        = np.array(df['singleR_A_c12_src'])
-singleR_A_c12_src_err    = np.array(df['singleR_A_c12_src_err'])
+singleR_A_c12_src             = np.array(df['singleR_A_c12_src'])
+singleR_A_c12_src_stat_err    = np.array(df['singleR_A_c12_src_stat_err'])
+singleR_A_c12_src_syst_err    = np.array(df['singleR_A_c12_src_syst_err'])
+singleR_A_c12_src_tot_err     = np.array(df['singleR_A_c12_src_tot_err'])
 
-doubleR     = np.array(df['doubleR'])
-doubleR_err  = np.array(df['doubleR_err'])
+doubleR           = np.array(df['doubleR'])
+doubleR_stat_err  = np.array(df['doubleR_stat_err'])
+doubleR_norm_syst_err  = np.array(df['doubleR_norm_syst_err'])
+doubleR_RC_syst_err  = np.array(df['doubleR_RC_syst_err'])
+doubleR_cut_syst_err  = np.array(df['doubleR_cut_syst_err'])
+doubleR_syst_err  = np.array(df['doubleR_syst_err'])
+doubleR_tot_err   = np.array(df['doubleR_tot_err'])
 
 
 A = df['A'] 
@@ -51,7 +62,7 @@ NmZoA = df['NmZoA']
 
 compare_flag = False  # compare to previous pass ?
 compare_simc_flag = False  #compare to simc ?
-
+error_breakdown = True
 if(compare_simc_flag):
 
     # read SIMC single_ratio (C12, Fe56, Au197)
@@ -91,7 +102,18 @@ if(compare_flag):
 #--------------------------
 
 fig1= plt.figure()
-plt.errorbar(A, doubleR, doubleR_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(error_breakdown):
+    # break-down of syst. contributions
+    plt.errorbar(A, doubleR, doubleR_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, doubleR, doubleR_norm_syst_err, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
+    plt.errorbar(A, doubleR, doubleR_RC_syst_err,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
+    plt.errorbar(A, doubleR, doubleR_cut_syst_err,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
+    plt.errorbar(A, doubleR, doubleR_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+else:
+    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total')
+   
 if(compare_flag ):
     plt.errorbar(A_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
@@ -131,7 +153,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_A.pdf')
 
 
-
+'''
 
 #--------------------------
 # PLOT Single Ratio vs. A
@@ -389,7 +411,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_NmZoA.pdf')
 
 
-
+'''
 
 
 plt.show()

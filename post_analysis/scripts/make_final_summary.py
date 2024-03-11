@@ -267,7 +267,7 @@ def make_final_summary():
             total_LT_err = df['tLT_err_Bi']
 
             mult_trk_eff = df['multi_track_eff']  # df['multi_track_eff_err']
-            mult_trk_eff_err = df['multi_track_eff_err'] 
+            mult_trk_eff_err = df['multi_track_eff_err'] * 0.0   # need to figure out how to fix error calculation on multi-track eff. (as it is too large)
 
             pTrms_eff = 0.952 # Noah Swan's proton transmission factor
             pTrms_eff_err = 0.004
@@ -310,29 +310,35 @@ def make_final_summary():
             df1_f1_per_run = df1_per_run / f1_per_run
             df1_f1_sq = np.sum(np.square(df1_f1_per_run))  # sum of the squared of the relative err per run (add in quadrature)
 
+            print('df1_f1_sq (htrk_eff_rel_syst) = ', df1_f1_sq)
+            
             # calculate relative systematic uncertainty on shms_trk_eff
             f2_per_run = 1./shms_trk_eff
             df2_per_run = (1/shms_trk_eff**2) * shms_trk_eff_err
             df2_f2_per_run = df2_per_run / f2_per_run
             df2_f2_sq = np.sum(np.square(df2_f2_per_run))  
+            print('df2_f2_sq (strk_eff_rel_syst) = ', df2_f2_sq)
 
             # calculate relative systematic uncertainty on total_LT
             f3_per_run = 1./total_LT
             df3_per_run = (1/total_LT**2) * total_LT_err
             df3_f3_per_run = df3_per_run / f3_per_run
             df3_f3_sq = np.sum(np.square(df3_f3_per_run))  
+            print('df3_f3_sq (tLT_rel_syst) = ', df3_f3_sq)
 
             # calculate relative systematic uncertainty on multi-track eff 
             f4_per_run = 1./mult_trk_eff
             df4_per_run = (1/mult_trk_eff**2) * mult_trk_eff_err
             df4_f4_per_run = df4_per_run / f4_per_run
             df4_f4_sq = np.sum(np.square(df4_f4_per_run))  
+            print('df4_f4_sq (multi_trk_eff_rel_syst) = ', df4_f4_sq)
 
             # calculate relative systematic uncertainty on proton transmission factor (overall correction, not run-by-run)
             f5 = 1./pTrms_eff  # obtained from Noah Swan's studies of proton absorption
             df5 = pTrms_eff_err
             df5_f5_sq = (df5 / f5)**2
-                
+            print('df5_f5_sq (proton_trms_rel_syst) = ', df5_f5_sq)
+
             # calculate overall relative norm. systematic unc on the relative yield
             norm_syst_rel_err = np.sqrt( df1_f1_sq + df2_f2_sq + df3_f3_sq + df4_f4_sq + df5_f5_sq)
 
@@ -342,6 +348,7 @@ def make_final_summary():
                 df6_per_run = cntm_eff_err
                 df6_f6_per_run = df6_per_run / f6_per_run
                 df6_f6_sq = np.sum(np.square(df6_f6_per_run))  
+                print('df6_f6_sq (ca40_cntm_rel_syst) = ', df6_f6_sq)
 
                 norm_syst_rel_err = np.sqrt( df1_f1_sq + df2_f2_sq + df3_f3_sq + df4_f4_sq + df5_f5_sq + df6_f6_sq)
 
@@ -351,6 +358,7 @@ def make_final_summary():
                 df7_per_run = cntm_eff_err
                 df7_f7_per_run = df7_per_run / f7_per_run
                 df7_f7_sq = np.sum(np.square(df7_f7_per_run))  
+                print('df7_f7_sq (ca48_cntm_rel_syst) = ', df7_f7_sq)
 
                 norm_syst_rel_err = np.sqrt( df1_f1_sq + df2_f2_sq + df3_f3_sq + df4_f4_sq + df5_f5_sq + df7_f7_sq)
 
