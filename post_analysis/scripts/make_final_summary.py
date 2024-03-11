@@ -617,14 +617,14 @@ def write_ratios(ifname='', ofname=''):
     # NOTE: src_sigma_raw_proton -->  yield / (charge [mC] * transparency * target_thickness [g/cm2] * Z/A)
 
     src_sigma_raw_per_proton          = df[(df['kin']=='SRC')]['sigma_raw_per_proton']
-    rad_corr_src                      = df[(df['kin']=='SRC')]['rad_corr'] 
-
     mf_sigma_raw_per_proton           = df[(df['kin']=='MF')]['sigma_raw_per_proton']
-    rad_corr_mf                       = df[(df['kin']=='MF')]['rad_corr'] 
-
     
     src_sigma_raw_per_proton_C12      = df[(df['kin']=='SRC') & (df['target']=='C12')]['sigma_raw_per_proton']
     mf_sigma_raw_per_proton_C12       = df[(df['kin']=='MF')  & (df['target']=='C12')]['sigma_raw_per_proton']
+
+    rad_corr_src                      = df[(df['kin']=='SRC')]['rad_corr']  # src_rad/src_norad
+    rad_corr_mf                       = df[(df['kin']=='MF')]['rad_corr']   # mf_rad/mf_norad
+
     rad_corr_src_c12                  = df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'] 
     rad_corr_mf_c12                   = df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr'] 
 
@@ -633,40 +633,51 @@ def write_ratios(ifname='', ofname=''):
     # ---- CALCULATE SINGLE RATIOS  ----
     #-----------------------------------
 
-    rad_corr_ratio
-    # A_SRC / A_MF (per proton)
-    singleR_per_proton     = (src_sigma_raw_per_proton/mf_sigma_raw_per_proton) * (rad_corr_mf/rad_corr_src)
+    #--- A_SRC / A_MF (per proton) ---
 
+    # rad correction factor for SRC/MF single ratio on same nucleus
+    # default rad corr relative error (dR/R) on single ratio to 5%,
+    # since rad corr between SRC/MF of same nucleus A is very similar
 
-    singleR_per_proton_val = unumpy.nominal_values(singleR_per_proton)
-    singleR_per_proton_err = unumpy.std_devs(singleR_per_proton)
-    singleR_per_proton_C12 = (src_sigma_raw_per_proton_C12_arr/mf_sigma_raw_per_proton_C12_arr)
+    rad_corr_ratio = (rad_corr_mf/rad_corr_src)
+    rad_corr_ratio_rel_err = 0.05  
+    singleR_per_proton     = (src_sigma_raw_per_proton/mf_sigma_raw_per_proton) * rad_corr_ratio
+    singleR_per_proton_RC_syst = singleR_per_proton * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
 
-    # A_MF / C12_MF (per proton) -should be flat
-    singleR_A_c12_mf     =  mf_sigma_raw_per_proton_arr / mf_sigma_raw_per_proton_C12_arr
-    singleR_A_c12_mf_val =  unumpy.nominal_values(singleR_A_c12_mf)
-    singleR_A_c12_mf_err =  unumpy.std_devs(singleR_A_c12_mf)
+    #--> NEED TO FINISH singleR_per_proton_C12     = (src_sigma_raw_per_proton_C12/mf_sigma_raw_per_proton_C12) * rad_corr_ratio
+    # --> NEED TO FINISH singleR_per_proton_RC_syst_C12 = singleR_per_proton * rad_corr_ratio_rel_err  # absolute syst. error due to rad corr ratio
     
-    # A_SRC / C12_SRC (per proton)
-    singleR_A_c12_src     =  src_sigma_raw_per_proton_arr / src_sigma_raw_per_proton_C12_arr
-    singleR_A_c12_src_val =  unumpy.nominal_values(singleR_A_c12_src)
-    singleR_A_c12_src_err =  unumpy.std_devs(singleR_A_c12_src)
+
+    #--- A_MF / C12_MF (per proton) -should be flat ---
+    # rad correction factor for MF/C12_MF single ratio
+    # has a ratio = 1 for light nuclei --> assign a 5% relative error on the ratio
+    # othersiwe, if ratio != 1, such as heavy_A_MF / C12_MF --> assign 20% or correction factor
+    # e.g., if ratio = 0.6 / 0.38 = 1.57  --> abs(1-1.57) =  0.57 (57% correction factor)
+    # --> assign 0.57 * 0.20 = 0.114 (11%) as relative syst. error
     
-    '''
-    # A_SRC / A_MF 
-    singleR_per_nucleon     = (src_sigma_raw_per_nucleon_arr/mf_sigma_raw_per_nucleon_arr)
-    singleR_per_nucleon_val = unumpy.nominal_values(singleR_per_nucleon)
-    singleR_per_nucleon_err = unumpy.std_devs(singleR_per_nucleon)
-    singleR_per_nucleon_C12 = (src_sigma_raw_per_nucleon_C12_arr/mf_sigma_raw_per_nucleon_C12_arr)
+    rad_corr_ratio_mf = ( rad_corr_mf_c12 / rad_corr_mf ) 
+    rad_corr_ratio_mf_rel_err = 0.05  # default
+
+    if(rad_corr_ratio_mf!=1):
+        rad_corr_ratio_mf_rel_err =  np.abs(1.-rad_corr_ratio_mf) * 0.20
+    
+    singleR_A_c12_mf  =  ( mf_sigma_raw_per_proton / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf
+    singleR_A_c12_mf_RC_syst = singleR_A_c12_mf * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
 
     
-    singleR_per_nucleus     = (src_sigma_raw_per_nucleus_arr/mf_sigma_raw_per_nucleus_arr)
-    singleR_per_nucleus_val = unumpy.nominal_values(singleR_per_nucleus)
-    singleR_per_nucleus_err = unumpy.std_devs(singleR_per_nucleus)
-    singleR_per_nucleus_C12 = (src_sigma_raw_per_nucleus_C12_arr/mf_sigma_raw_per_nucleus_C12_arr)
+    #--- A_SRC / C12_SRC (per proton) ---
+    # similar treatment of radiative corrections as for the A_MF / C12_MF case above
 
-   
-    '''
+    rad_corr_ratio_src = ( rad_corr_src_c12 / rad_corr_src ) 
+    rad_corr_ratio_src_rel_err = 0.05  # default
+
+    if(rad_corr_ratio_src!=1):
+        rad_corr_ratio_src_rel_err =  np.abs(1.-rad_corr_ratio_src) * 0.20
+    
+    singleR_A_c12_src     =  ( src_sigma_raw_per_proton / src_sigma_raw_per_proton_C12 ) * rad_corr_ratio_src
+    singleR_A_c12_src_RC_syst = singleR_A_c12_src * rad_corr_ratio_src_rel_err  # absolute syst. error due to rad corr ratio
+
+
     
     #--------------------------------------------------------
     # ---- CALCULATE DOUBLE RATIOS A_SRC/MF / C12_SRC/MF ----
