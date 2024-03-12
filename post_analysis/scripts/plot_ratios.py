@@ -29,30 +29,39 @@ df = pd.read_csv(ifname, comment='#')
 targ = df['target']
 
 # A_SRC / A_MF
-singleR_per_proton           = np.array(df['singleR_per_proton'])
-singleR_per_proton_stat_err  = np.array(df['singleR_per_proton_stat_err'])
-singleR_per_proton_syst_err  = np.array(df['singleR_per_proton_syst_err'])
-singleR_per_proton_tot_err   = np.array(df['singleR_per_proton_tot_err'])
+singleR_per_proton                = np.array(df['singleR_per_proton'])
+singleR_per_proton_stat_err       = np.array(df['singleR_per_proton_stat_err'])
+singleR_per_proton_norm_syst_err  = np.array(df['singleR_per_proton_norm_syst_err'])
+singleR_per_proton_RC_syst_err    = np.array(df['singleR_per_proton_RC_syst_err'])
+singleR_per_proton_syst_err       = np.array(df['singleR_per_proton_syst_err'])
+singleR_per_proton_tot_err        = np.array(df['singleR_per_proton_tot_err'])
 
 # A_MF / C12_MF
-singleR_A_c12_mf             = np.array(df['singleR_A_c12_mf'])
-singleR_A_c12_mf_stat_err    = np.array(df['singleR_A_c12_mf_stat_err'])
-singleR_A_c12_mf_syst_err    = np.array(df['singleR_A_c12_mf_syst_err'])
-singleR_A_c12_mf_tot_err     = np.array(df['singleR_A_c12_mf_tot_err'])
+singleR_A_c12_mf                 = np.array(df['singleR_A_c12_mf'])
+singleR_A_c12_mf_stat_err        = np.array(df['singleR_A_c12_mf_stat_err'])
+singleR_A_c12_mf_norm_syst_err   = np.array(df['singleR_A_c12_mf_norm_syst_err'])
+singleR_A_c12_mf_RC_syst_err     = np.array(df['singleR_A_c12_mf_RC_syst_err'])
+singleR_A_c12_mf_cut_syst_err    = np.array(df['singleR_A_c12_mf_cut_syst_err'])
+singleR_A_c12_mf_syst_err        = np.array(df['singleR_A_c12_mf_syst_err'])
+singleR_A_c12_mf_tot_err         = np.array(df['singleR_A_c12_mf_tot_err'])
 
 # A_SRC / C12_SRC
-singleR_A_c12_src             = np.array(df['singleR_A_c12_src'])
-singleR_A_c12_src_stat_err    = np.array(df['singleR_A_c12_src_stat_err'])
-singleR_A_c12_src_syst_err    = np.array(df['singleR_A_c12_src_syst_err'])
-singleR_A_c12_src_tot_err     = np.array(df['singleR_A_c12_src_tot_err'])
+singleR_A_c12_src                = np.array(df['singleR_A_c12_src'])
+singleR_A_c12_src_stat_err       = np.array(df['singleR_A_c12_src_stat_err'])
+singleR_A_c12_src_norm_syst_err  = np.array(df['singleR_A_c12_src_norm_syst_err'])
+singleR_A_c12_src_RC_syst_err    = np.array(df['singleR_A_c12_src_RC_syst_err'])
+singleR_A_c12_src_cut_syst_err   = np.array(df['singleR_A_c12_src_cut_syst_err'])
+singleR_A_c12_src_syst_err       = np.array(df['singleR_A_c12_src_syst_err'])
+singleR_A_c12_src_tot_err        = np.array(df['singleR_A_c12_src_tot_err'])
 
-doubleR           = np.array(df['doubleR'])
-doubleR_stat_err  = np.array(df['doubleR_stat_err'])
-doubleR_norm_syst_err  = np.array(df['doubleR_norm_syst_err'])
-doubleR_RC_syst_err  = np.array(df['doubleR_RC_syst_err'])
+# A_SRC/MF / C12_SRC/MF
+doubleR               = np.array(df['doubleR'])
+doubleR_stat_err      = np.array(df['doubleR_stat_err'])
+doubleR_norm_syst_err = np.array(df['doubleR_norm_syst_err'])
+doubleR_RC_syst_err   = np.array(df['doubleR_RC_syst_err'])
 doubleR_cut_syst_err  = np.array(df['doubleR_cut_syst_err'])
-doubleR_syst_err  = np.array(df['doubleR_syst_err'])
-doubleR_tot_err   = np.array(df['doubleR_tot_err'])
+doubleR_syst_err      = np.array(df['doubleR_syst_err'])
+doubleR_tot_err       = np.array(df['doubleR_tot_err'])
 
 
 A = df['A'] 
@@ -62,7 +71,8 @@ NmZoA = df['NmZoA']
 
 compare_flag = False  # compare to previous pass ?
 compare_simc_flag = False  #compare to simc ?
-error_breakdown = True
+error_breakdown = True     # flag to display breakdown of uncertainties in the ratios
+
 if(compare_simc_flag):
 
     # read SIMC single_ratio (C12, Fe56, Au197)
@@ -153,7 +163,6 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_A.pdf')
 
 
-'''
 
 #--------------------------
 # PLOT Single Ratio vs. A
@@ -163,7 +172,19 @@ plt.savefig('cafe_doubleR_vs_A.pdf')
 # Single Ratio A_SRC / A_MF 
 #--------------------------
 fig1_s= plt.figure()
-plt.errorbar(A, singleR_per_proton, singleR_per_proton_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(error_breakdown):
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_norm_syst_err, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_RC_syst_err,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+
+else:
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, singleR_per_proton, singleR_per_proton_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+
+
+
 if(compare_flag ):
     plt.errorbar(A_2, singleR_per_proton_2, singleR_per_proton_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
@@ -208,7 +229,20 @@ plt.savefig('cafe_singleR_vs_A.pdf')
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
 fig1_a2c_mf= plt.figure()
-plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(error_breakdown):
+    # break-down of syst. contributions
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_norm_syst_err, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_RC_syst_err,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_cut_syst_err,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+    
+else:
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+
+
 if(compare_flag ):
     plt.errorbar(A_2, singleR_A_c12_mf_2, singleR_A_c12_mf_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 if(compare_simc_flag ):
@@ -252,7 +286,19 @@ plt.savefig('cafe_MFsingleR_vs_A.pdf')
 # Single Ratio A_SRC / C12_SRC 
 #-----------------------------
 fig1_a2c= plt.figure()
-plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', linestyle='None', label='%s'%(npass))
+
+if(error_breakdown):
+    # break-down of syst. contributions
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_norm_syst_err, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='normalization (syst)')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_RC_syst_err,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='radiative corr (syst)')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_cut_syst_err,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='cut sensitivity (syst)')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
+
+else:
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
+
 if(compare_flag ):
     plt.errorbar(A_2, singleR_A_c12_src_2, singleR_A_c12_src_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
@@ -293,7 +339,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
 
-
+'''
 #--------------------------
 # PLOT Single Ratio vs. N/Z
 #--------------------------
