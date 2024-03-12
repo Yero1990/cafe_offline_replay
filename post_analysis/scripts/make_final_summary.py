@@ -267,7 +267,7 @@ def make_final_summary():
             total_LT_err = df['tLT_err_Bi']
 
             mult_trk_eff = df['multi_track_eff']  # df['multi_track_eff_err']
-            mult_trk_eff_err = df['multi_track_eff_err'] * 0.0   # need to figure out how to fix error calculation on multi-track eff. (as it is too large)
+            mult_trk_eff_err = df['multi_track_eff_err']  # need to figure out how to fix error calculation on multi-track eff. (as it is too large)
 
             pTrms_eff = 0.952 # Noah Swan's proton transmission factor
             pTrms_eff_err = 0.004
@@ -302,36 +302,55 @@ def make_final_summary():
             #------------------------------------------------------------------
             # Y_corr = Y_uncorrr * f1 * f2 * . . . fn,   --> apply correction factors to raw yield (each fn has an uncertainty)
             # where fn = 1/corr_factor, and corr_factor = hms_trk_eff, shms_trk_eff, total_LT, multi_trk_eff, total_charge, proton_transmission
-            # (dY_corr / Y_corr)_syst = (df1/f1)**2 + (df2/f2)**2 +  . . . (dfn/fn)**2 --> relative norm. syst is sum in quadrature of relative error in corr. factors
+            # (dY_corr / Y_corr)_syst2 = (df1/f1)**2 + (df2/f2)**2 +  . . . (dfn/fn)**2 --> relative norm. syst is sum in quadrature of relative error in corr. factors
 
+            # *take the average of all runs rather than run-by-run
             # calculate relative systematic uncertainty on hms_trk_eff
-            f1_per_run = 1./hms_trk_eff
-            df1_per_run = (1/hms_trk_eff**2) * hms_trk_eff_err
-            df1_f1_per_run = df1_per_run / f1_per_run
-            df1_f1_sq = np.sum(np.square(df1_f1_per_run))  # sum of the squared of the relative err per run (add in quadrature)
-
-            print('df1_f1_sq (htrk_eff_rel_syst) = ', df1_f1_sq)
+            w_avg = -1
+            w_avg_err = -1
+            weights = -1
             
+            #--------------------------------
+            
+            # calculate relative systematic uncertainty on hms_trk_eff
+            weight =  1. /  hms_trk_eff_err**2
+            w_avg = np.average(hms_trk_eff, weights=weight)
+            w_avg_err = np.sqrt(1. / np.sum(weight))
+            
+            f1 = 1./w_avg
+            df1 = (1./w_avg**2) * w_avg_err
+            df1_f1_sq = np.square(df1 / f1)
+            print('df1_f1_sq (shms_trk_eff) = ', df1_f1_sq)
+             
             # calculate relative systematic uncertainty on shms_trk_eff
-            f2_per_run = 1./shms_trk_eff
-            df2_per_run = (1/shms_trk_eff**2) * shms_trk_eff_err
-            df2_f2_per_run = df2_per_run / f2_per_run
-            df2_f2_sq = np.sum(np.square(df2_f2_per_run))  
-            print('df2_f2_sq (strk_eff_rel_syst) = ', df2_f2_sq)
+            weight =  1. /  shms_trk_eff_err**2
+            w_avg = np.average(shms_trk_eff, weights=weight)
+            w_avg_err = np.sqrt(1. / np.sum(weight))
 
+            f2 = 1./w_avg
+            df2 = (1./w_avg**2) * w_avg_err
+            df2_f2_sq = np.square(df2 / f2)
+            print('df2_f2_sq (shms_trk_eff) = ', df2_f2_sq)        
+     
             # calculate relative systematic uncertainty on total_LT
-            f3_per_run = 1./total_LT
-            df3_per_run = (1/total_LT**2) * total_LT_err
-            df3_f3_per_run = df3_per_run / f3_per_run
-            df3_f3_sq = np.sum(np.square(df3_f3_per_run))  
-            print('df3_f3_sq (tLT_rel_syst) = ', df3_f3_sq)
+            weight =  1. /  total_LT_err**2
+            w_avg = np.average(total_LT, weights=weight)
+            w_avg_err = np.sqrt(1. / np.sum(weight))
+            
+            f3 = 1./w_avg
+            df3 = (1./w_avg**2) * w_avg_err
+            df3_f3_sq = np.square(df3 / f3)
+            print('df3_f3_sq (total_LT) = ', df3_f3_sq)
 
-            # calculate relative systematic uncertainty on multi-track eff 
-            f4_per_run = 1./mult_trk_eff
-            df4_per_run = (1/mult_trk_eff**2) * mult_trk_eff_err
-            df4_f4_per_run = df4_per_run / f4_per_run
-            df4_f4_sq = np.sum(np.square(df4_f4_per_run))  
-            print('df4_f4_sq (multi_trk_eff_rel_syst) = ', df4_f4_sq)
+            # calculate relative systematic uncertainty on multi-track eff
+            weight =  1. /  mult_trk_eff_err**2
+            w_avg = np.average(mult_trk_eff, weights=weight)
+            w_avg_err = np.sqrt(1. / np.sum(weight))
+            
+            f4 = 1./w_avg
+            df4 = (1./w_avg**2) * w_avg_err
+            df4_f4_sq = np.square(df4 / f4)
+            print('df4_f4_sq ( mult_trk_eff) = ', df4_f4_sq)
 
             # calculate relative systematic uncertainty on proton transmission factor (overall correction, not run-by-run)
             f5 = 1./pTrms_eff  # obtained from Noah Swan's studies of proton absorption
@@ -380,7 +399,7 @@ def make_final_summary():
             
             # apply efficiency corrections to real yield  (run-by-run) and then sum over all counts
             #real_Yield_eff       = real_Yield / (hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)     # array of runs         
-            real_Yield_eff       = real_Yield * f1_per_run * f2_per_run * f3_per_run * f4_per_run
+            real_Yield_eff       = real_Yield * f1 * f2 * f3 * f4
             real_Yield_eff_total = real_Yield_eff.sum() * f5                                                # sum of array elements (and apply overall p-transmission factor)
 
             # re-define efficiency yield as corrected yield  to be used to  correct for any target impurities (either internal contamination, or external)
@@ -800,11 +819,9 @@ def write_ratios(ifname='', ofname=''):
     for i in range(len(doubleR_RC_corr_factor)):
         if doubleR_RC_corr_factor[i] == 1:
             doubleR_RC_corr_factor_rel_err[i] = 0.01  # default
-            print(' np.abs(1.-doubleR_RC_corr_factor[i]) = ', np.abs(1.-doubleR_RC_corr_factor[i]))
             print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
         else:
             doubleR_RC_corr_factor_rel_err[i] =  np.abs(1.-doubleR_RC_corr_factor[i]) * 0.20
-            print(' np.abs(1.-doubleR_RC_corr_factor[i]) = ', np.abs(1.-doubleR_RC_corr_factor[i]))
             print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
         
     doubleR                = singleR_per_proton / singleR_per_proton_C12
@@ -812,6 +829,9 @@ def write_ratios(ifname='', ofname=''):
     doubleR_RC_syst_err    = doubleR * doubleR_RC_corr_factor_rel_err
     doubleR_norm_syst_err  = doubleR * np.sqrt( (singleR_per_proton_norm_syst_err/singleR_per_proton)**2 + (singleR_per_proton_C12_norm_syst_err/singleR_per_proton_C12)**2  )
     doubleR_cut_syst_err   = doubleR * doubleR_cut_syst_rel_err
+
+    print('doubleR_RC_corr_factor = ',doubleR_RC_corr_factor)
+    print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err)
 
     # --------
     doubleR_syst_err = np.sqrt(doubleR_norm_syst_err**2 + doubleR_RC_syst_err**2 + doubleR_cut_syst_err**2)
