@@ -28,6 +28,7 @@ df = pd.read_csv(ifname, comment='#')
 
 targ = df['target']
 
+
 # A_SRC / A_MF
 singleR_per_proton                = np.array(df['singleR_per_proton'])
 singleR_per_proton_stat_err       = np.array(df['singleR_per_proton_stat_err'])
@@ -63,6 +64,8 @@ doubleR_cut_syst_err  = np.array(df['doubleR_cut_syst_err'])
 doubleR_syst_err      = np.array(df['doubleR_syst_err'])
 doubleR_tot_err       = np.array(df['doubleR_tot_err'])
 
+# A_SRC/MF / C12_SRC/MF (Justin / Andrew Model)
+doubleR_model               = np.array(df['doubleR_model'])
 
 A = df['A'] 
 NoZ = df['NoZ'] 
