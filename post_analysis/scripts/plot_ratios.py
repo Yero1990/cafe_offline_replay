@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.ma as ma
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
@@ -64,13 +65,38 @@ doubleR_cut_syst_err  = np.array(df['doubleR_cut_syst_err'])
 doubleR_syst_err      = np.array(df['doubleR_syst_err'])
 doubleR_tot_err       = np.array(df['doubleR_tot_err'])
 
-# A_SRC/MF / C12_SRC/MF (Justin / Andrew Model)
-doubleR_model               = np.array(df['doubleR_model'])
+# -----------
+# Read Models
+# -----------
+
+# Justin Estees / Andrew Denniston Model
+doubleR_Jmodel               = np.array(df['doubleR_Jmodel'], dtype=float)
+
+singleR_A_c12_mf_av18        = np.array(df['singleR_A_c12_mf_av18'],  dtype=float)
+singleR_A_c12_src_av18       = np.array(df['singleR_A_c12_src_av18'], dtype=float)
+doubleR_av18                 = np.array(df['doubleR_av18'],           dtype=float)
+
+singleR_A_c12_mf_osu         = np.array(df['singleR_A_c12_mf_osu'],   dtype=float)
+singleR_A_c12_src_osu        = np.array(df['singleR_A_c12_src_osu'],  dtype=float)
+doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=float)
+
+# mask NaN values for plotting
+doubleR_Jmodel               = np.ma.masked_invalid(doubleR_Jmodel)
+
+singleR_A_c12_mf_av18        = np.ma.masked_invalid(singleR_A_c12_mf_av18)
+singleR_A_c12_src_av18       = np.ma.masked_invalid(singleR_A_c12_src_av18)
+doubleR_av18                 = np.ma.masked_invalid(doubleR_av18)
+
+singleR_A_c12_mf_osu        = np.ma.masked_invalid(singleR_A_c12_mf_osu)
+singleR_A_c12_src_osu       = np.ma.masked_invalid(singleR_A_c12_src_osu)
+doubleR_osu                 = np.ma.masked_invalid(doubleR_osu)
+
+
 
 A = df['A'] 
 NoZ = df['NoZ'] 
 NmZoA = df['NmZoA'] 
-y_rel = np.zeros([len(doubleR_model)])  # y-axis (at zero) for plotting relative errors
+y_rel = np.zeros([len(doubleR_Jmodel)])  # y-axis (at zero) for plotting relative errors
 
 compare_flag = False  # compare to previous pass ?
 compare_simc_flag = False  #compare to simc ?
@@ -114,7 +140,7 @@ if(compare_flag):
 #--------------------------
 # PLOT Double Ratio vs. A
 #--------------------------
-
+print(' 100*doubleR_stat_err/doubleR ======> ',  100*doubleR_stat_err/doubleR)
 fig1= plt.figure()
 
 if(error_breakdown):
@@ -126,22 +152,30 @@ if(error_breakdown):
     plt.errorbar(A, doubleR, doubleR_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
 
 elif(rel_err_breakdown):
-    plt.errorbar(A, y_rel, 100*doubleR_stat_err/doubleR,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(A, y_rel, 100*doubleR_norm_syst_err/doubleR, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
-    plt.errorbar(A, y_rel, 100*doubleR_RC_syst_err/doubleR,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
-    plt.errorbar(A, y_rel, 100*doubleR_cut_syst_err/doubleR,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
-    plt.errorbar(A, y_rel, 100*doubleR_tot_err/doubleR,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
-    plt.ylim(-10,10)
+    plt.plot(A, 100*doubleR_stat_err/doubleR,      marker='_', markersize=10, mfc='r', mec='r',  markeredgewidth=2, linestyle='None', label='statistical')
+    plt.plot(A, 100*doubleR_norm_syst_err/doubleR, marker='_', markersize=10, mfc='b', mec='b',  markeredgewidth=2, linestyle='None', label='normalization (syst)')
+    plt.plot(A, 100*doubleR_RC_syst_err/doubleR,   marker='_', markersize=10, mfc='g', mec='g',  markeredgewidth=2, linestyle='None', label='radiative corr (syst)')
+    plt.plot(A, 100*doubleR_cut_syst_err/doubleR,  marker='_', markersize=10, mfc='m', mec='m',  markeredgewidth=2, linestyle='None', label='cut sensitivity (syst)')
+    plt.plot(A, 100*doubleR_tot_err/doubleR,       marker='_', markersize=10, mfc='k', mec='k',  markeredgewidth=2, linestyle='None', label='total error')
+   
 
 else:
-    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total')
-    plt.plot(A, doubleR_model, marker='o', markersize=7, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model')
-   
+    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=2)
+
+    # PLOT MODELS
+    plt.plot(A, doubleR_Jmodel, marker='s', markersize=7, alpha=.5, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model', zorder=3)
+    #plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    #plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
+
+
+    
 if(compare_flag ):
     plt.errorbar(A_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe Double Ratio Relative Error vs. A', fontsize=18)
@@ -162,7 +196,8 @@ else:
         y = doubleR[i]
 
         if tgt=="Fe54":
-            x = A[i] - 15
+            x = A[i] 
+            y = doubleR[i] + 0.07
         elif tgt=="Ca48":
             x = A[i] - 13
         elif tgt=="Ca40":
@@ -183,7 +218,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_A.pdf')
 
 
-
+'''
 #--------------------------
 # PLOT Single Ratio vs. A
 #--------------------------
@@ -256,7 +291,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_singleR_vs_A.pdf')
 
 # --------------------------------------------
-
+'''
 #-----------------------------
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
@@ -271,15 +306,19 @@ if(error_breakdown):
     plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
     
 elif(rel_err_breakdown):
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_mf_stat_err/singleR_A_c12_mf,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_mf_norm_syst_err/singleR_A_c12_mf, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_mf_RC_syst_err/singleR_A_c12_mf,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_mf_cut_syst_err/singleR_A_c12_mf,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+    plt.plot(A, 100*singleR_A_c12_mf_stat_err/singleR_A_c12_mf,      marker='_', markersize=10, mfc='r', mec='r', markeredgewidth=2, linestyle='None', label='statistical')
+    plt.plot(A, 100*singleR_A_c12_mf_norm_syst_err/singleR_A_c12_mf, marker='_', markersize=10, mfc='b', mec='b', markeredgewidth=2, linestyle='None', label='normalization (syst)')
+    plt.plot(A, 100*singleR_A_c12_mf_RC_syst_err/singleR_A_c12_mf,   marker='_', markersize=10, mfc='g', mec='g', markeredgewidth=2, linestyle='None', label='radiative corr (syst)')
+    plt.plot(A, 100*singleR_A_c12_mf_cut_syst_err/singleR_A_c12_mf,  marker='_', markersize=10, mfc='m', mec='m', markeredgewidth=2, linestyle='None', label='cut sensitivity (syst)')
+    plt.plot(A, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
     
 else:
-    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
+
+    # PLOT MODELS
+    plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
 
 
 if(compare_flag ):
@@ -288,6 +327,9 @@ if(compare_simc_flag ):
     plt.errorbar(A_simc, singleR_per_proton_simc, singleR_per_proton_err_simc, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='SIMC')
         
 plt.xscale('log')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe MF Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
@@ -311,12 +353,13 @@ else:
             x = A[i] - 60
         elif tgt=="Be9" or tgt=="B10" or tgt=="B11" :
             x = A[i] + 0.8
+            y = y + 0.05
         elif tgt=="C12":
             x = A[i] + 0.8
             y = y - 0.02
         elif tgt=="Ca40" or tgt=="Ca48" or tgt=="Fe54" :
-            x = A[i] + 1.8
-        
+            x = A[i] - 2
+            y = y - 0.06
         plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
@@ -338,20 +381,28 @@ if(error_breakdown):
     plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
 
 elif(rel_err_breakdown):    
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_src_stat_err/singleR_A_c12_src,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_src_norm_syst_err/singleR_A_c12_src, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='normalization (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_src_RC_syst_err/singleR_A_c12_src,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='radiative corr (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_src_cut_syst_err/singleR_A_c12_src,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='cut sensitivity (syst)')
-    plt.errorbar(A, y_rel, 100*singleR_A_c12_src_tot_err/singleR_A_c12_src,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
+    plt.plot(A, 100*singleR_A_c12_src_stat_err/singleR_A_c12_src,      marker='_', markersize=10, mfc='r', mec='r', markeredgewidth=2, linestyle='None',  label='statistical')
+    plt.plot(A, 100*singleR_A_c12_src_norm_syst_err/singleR_A_c12_src, marker='_', markersize=10, mfc='b', mec='b', markeredgewidth=2, linestyle='None',  label='normalization (syst)')
+    plt.plot(A, 100*singleR_A_c12_src_RC_syst_err/singleR_A_c12_src,   marker='_', markersize=10, mfc='g', mec='g', markeredgewidth=2, linestyle='None',  label='radiative corr (syst)')
+    plt.plot(A, 100*singleR_A_c12_src_cut_syst_err/singleR_A_c12_src,  marker='_', markersize=10, mfc='m', mec='m', markeredgewidth=2, linestyle='None',  label='cut sensitivity (syst)')
+    plt.plot(A, 100*singleR_A_c12_src_tot_err/singleR_A_c12_src,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None',  label='total error')
 
 else:
-    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical')
-    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical', zorder=1)
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error', zorder=1)
 
+    # PLOT MODELS
+    plt.plot(A, singleR_A_c12_src_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    plt.plot(A, singleR_A_c12_src_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+
+    
 if(compare_flag ):
     plt.errorbar(A_2, singleR_A_c12_src_2, singleR_A_c12_src_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
@@ -374,16 +425,25 @@ else:
         if tgt=="Fe54":
             x = A[i] + 6
         elif tgt=="Ca48":
-            x = A[i] + 5
+            x = A[i]
+            y = singleR_A_c12_src[i] - 0.09
         elif tgt=="Ca40":
-            x = A[i] + 4
+            x = A[i] - 2
+            y = singleR_A_c12_src[i] - 0.09
         elif tgt=="Au197":
             x = A[i] - 60
+        elif tgt=="Be9":
+            x = A[i] - 1
+            y = singleR_A_c12_src[i] +0.09
+        elif tgt=="B10":
+            x = A[i] - 1
+            y = singleR_A_c12_src[i] +0.08
         elif tgt=="B11":
-            x = A[i] - 3
-            y = singleR_A_c12_src[i] +0.01
-        elif tgt=="Be9" or tgt=="B10" or tgt=="C12":
-            x = A[i] + 2
+            x = A[i] - 1
+            y = singleR_A_c12_src[i] +0.08         
+        elif tgt=="C12":
+            x = A[i] + 1
+
         else:
             x = A[i] + 2
 
@@ -393,7 +453,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
 
-
+'''
 #--------------------------
 # PLOT Single Ratio vs. N/Z
 #--------------------------
@@ -489,7 +549,7 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_SRCsingleR_vs_NoZ.pdf')
-
+'''
 
 #--------------------------
 # PLOT Double Ratio vs. N/Z
@@ -504,21 +564,28 @@ if(error_breakdown):
     plt.errorbar(NoZ, doubleR, doubleR_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
 
 elif(rel_err_breakdown):
-    plt.errorbar(NoZ, y_rel, 100*doubleR_stat_err/doubleR,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(NoZ, y_rel, 100*doubleR_norm_syst_err/doubleR, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
-    plt.errorbar(NoZ, y_rel, 100*doubleR_RC_syst_err/doubleR,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
-    plt.errorbar(NoZ, y_rel, 100*doubleR_cut_syst_err/doubleR,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
-    plt.errorbar(NoZ, y_rel, 100*doubleR_tot_err/doubleR,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
-    plt.ylim(-10,10)
+    plt.plot(NoZ, 100*doubleR_stat_err/doubleR,      marker='_', markersize=10, mfc='r', mec='r', markeredgewidth=2, linestyle='None', label='statistical')
+    plt.plot(NoZ, 100*doubleR_norm_syst_err/doubleR, marker='_', markersize=10, mfc='b', mec='b', markeredgewidth=2, linestyle='None', label='normalization (syst)')
+    plt.plot(NoZ, 100*doubleR_RC_syst_err/doubleR,   marker='_', markersize=10, mfc='g', mec='g', markeredgewidth=2, linestyle='None', label='radiative corr (syst)')
+    plt.plot(NoZ, 100*doubleR_cut_syst_err/doubleR,  marker='_', markersize=10, mfc='m', mec='m', markeredgewidth=2, linestyle='None', label='cut sensitivity (syst)')
+    plt.plot(NoZ, 100*doubleR_tot_err/doubleR,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
+   
 
 else:
-    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
-    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total')
-    plt.plot(NoZ, doubleR_model, marker='o', markersize=7, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model')
-   
+    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total',zorder=2)
+
+    # PLOT MODELS
+    plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=7, alpha=.5, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model', zorder=3)
+    #plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    #plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
+
 
 if(compare_flag ):
     plt.errorbar(NoZ_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe Double Ratio Relative Error vs. N/Z', fontsize=18)
@@ -544,7 +611,7 @@ else:
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
-
+'''
 #-------------------------------
 # PLOT Double Ratio vs. (N-Z)/A
 #-------------------------------
@@ -570,7 +637,7 @@ elif(rel_err_breakdown):
 else:
     plt.errorbar(NmZoA, doubleR, doubleR_stat_err, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
     plt.errorbar(NmZoA, doubleR, doubleR_tot_err, marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total')
-    plt.plot(NmZoA, doubleR_model, marker='o', markersize=7, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model')
+    plt.plot(NmZoA, doubleR_Jmodel, marker='o', markersize=7, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model')
 
 
 
@@ -602,15 +669,7 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_NmZoA.pdf')
-
+'''
 
 plt.show()
-
-
-
-
-
-
-
-
 

@@ -354,8 +354,8 @@ def make_final_summary():
 
             # calculate relative systematic uncertainty on proton transmission factor (overall correction, not run-by-run)
             f5 = 1./pTrms_eff  # obtained from Noah Swan's studies of proton absorption
-            df5 = pTrms_eff_err
-            df5_f5_sq = (df5 / f5)**2
+            df5 = pTrms_eff_err 
+            df5_f5_sq = 0.0  #(df5 / f5)**2  ----> we should not include this systematic in sing/double ratio as it cancels out
             print('df5_f5_sq (proton_trms_rel_syst) = ', df5_f5_sq)
 
             # calculate overall relative norm. systematic unc on the relative yield
@@ -616,12 +616,13 @@ def write_ratios(ifname='', ofname=''):
                 '# singleR_A_c12_src      : single ratio of target A_SRC / C12_SRC (per proton) \n'
                 '# singleR_per_proton      : single ratio of target A(SRC/MF) (per proton) \n'
                 '# doubleR      : double ratio of target A(SRC/MF) relative to C12 (SRC/MF) \n'
-                '# doubleR_model : Justin/Andrew model of double ratio of target A(SRC/MF) relative to C12 (SRC/MF) \n'                
+                '# doubleR_Jmodel : Justin/Andrew model of double ratio of target A(SRC/MF) relative to C12 (SRC/MF) \n'
+                '# _av18 and _osu : single and double ratio (AV18 and OSU) models \n'
                 '# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A \n'
                 '# NoZ          : N/Z \n'
                 '# NmZoA        : (N-Z)/A \n'                
                 )
-    ofile.write('target,singleR_A_c12_mf,singleR_A_c12_mf_stat_err,singleR_A_c12_mf_norm_syst_err,singleR_A_c12_mf_RC_syst_err,singleR_A_c12_mf_cut_syst_err,singleR_A_c12_mf_syst_err,singleR_A_c12_mf_tot_err,singleR_A_c12_src,singleR_A_c12_src_stat_err,singleR_A_c12_src_norm_syst_err,singleR_A_c12_src_RC_syst_err,singleR_A_c12_src_cut_syst_err,singleR_A_c12_src_syst_err,singleR_A_c12_src_tot_err,singleR_per_proton,singleR_per_proton_stat_err,singleR_per_proton_norm_syst_err,singleR_per_proton_RC_syst_err,singleR_per_proton_syst_err,singleR_per_proton_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,doubleR_model,N,Z,A,NoZ,NmZoA\n') 
+    ofile.write('target,singleR_A_c12_mf,singleR_A_c12_mf_stat_err,singleR_A_c12_mf_norm_syst_err,singleR_A_c12_mf_RC_syst_err,singleR_A_c12_mf_cut_syst_err,singleR_A_c12_mf_syst_err,singleR_A_c12_mf_tot_err,singleR_A_c12_src,singleR_A_c12_src_stat_err,singleR_A_c12_src_norm_syst_err,singleR_A_c12_src_RC_syst_err,singleR_A_c12_src_cut_syst_err,singleR_A_c12_src_syst_err,singleR_A_c12_src_tot_err,singleR_per_proton,singleR_per_proton_stat_err,singleR_per_proton_norm_syst_err,singleR_per_proton_RC_syst_err,singleR_per_proton_syst_err,singleR_per_proton_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,doubleR_Jmodel,singleR_A_c12_mf_av18,singleR_A_c12_src_av18,doubleR_av18,singleR_A_c12_mf_osu,singleR_A_c12_src_osu,doubleR_osu,N,Z,A,NoZ,NmZoA\n') 
 
     
     #--------------
@@ -838,8 +839,18 @@ def write_ratios(ifname='', ofname=''):
     doubleR_tot_err = np.sqrt(doubleR_stat_err**2 + doubleR_syst_err**2)
     
     # Justin's model (numerical data)
-    #                         be9/c12  b10/c12  b11/c12  c12/c12  ca40/c12  ca48/c12  fe54/c12  au197/c12
-    doubleR_model = np.array([0.823,   0.896,   1.056,   1.0,     1.197,    1.545,    1.374,    1.742])
+    #                                   be9/c12  b10/c12  b11/c12  c12/c12     ca40/c12  ca48/c12  fe54/c12  au197/c12
+    doubleR_Jmodel           = np.array([0.823,   0.896,   1.056,   np.nan,     1.197,    1.545,    1.374,    1.742])
+
+    # AV18 model
+    singleR_A_c12_mf_av18    = np.array([1.029,   1.022,   1.005,   np.nan,     1.021,    np.nan,   np.nan,   np.nan])
+    singleR_A_c12_src_av18   = np.array([0.934,   0.896,   1.011,   np.nan,     0.854,    np.nan,   np.nan,   np.nan])
+    doubleR_av18             = np.array([0.908,   0.877,   1.006,   np.nan,     0.837,    np.nan,   np.nan,   np.nan])
+
+    # OSU model
+    singleR_A_c12_mf_osu     = np.array([np.nan,  np.nan,  np.nan,  np.nan,     0.983,    0.962,    0.974,    np.nan])
+    singleR_A_c12_src_osu    = np.array([np.nan,  np.nan,  np.nan,  np.nan,     1.158,    1.347,    1.178,    np.nan])
+    doubleR_osu              = np.array([np.nan,  np.nan,  np.nan,  np.nan,     1.179,    1.401,    1.21,     np.nan])
     
     # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
     targ = np.array(df[(df['kin']=='SRC')]['target'])
@@ -847,11 +858,18 @@ def write_ratios(ifname='', ofname=''):
     # loop over each target (to write numerical values to file)
     for i in np.arange(len(targ)):
 
-        ofile.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
+        if(targ[i]=="C12"):
+            singleR_A_c12_mf_stat_err[i]=singleR_A_c12_mf_norm_syst_err[i]=singleR_A_c12_mf_RC_syst_err[i]=singleR_A_c12_mf_cut_syst_err[i]=singleR_A_c12_mf_syst_err[i]=singleR_A_c12_mf_tot_err[i]=0.0
+            singleR_A_c12_src_stat_err[i]=singleR_A_c12_src_norm_syst_err[i]=singleR_A_c12_src_RC_syst_err[i]=singleR_A_c12_src_cut_syst_err[i]=singleR_A_c12_src_syst_err[i]=singleR_A_c12_src_tot_err[i]=0.0
+            singleR_per_proton_stat_err[i]=singleR_per_proton_norm_syst_err[i]=singleR_per_proton_RC_syst_err[i]=singleR_per_proton_syst_err[i]=singleR_per_proton_tot_err[i]=0.0
+            doubleR_stat_err[i]=doubleR_norm_syst_err[i]=doubleR_RC_syst_err[i]=doubleR_cut_syst_err[i]=doubleR_syst_err[i]=doubleR_tot_err[i]=0.0
+            
+        ofile.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
                                                        singleR_A_c12_mf[i],singleR_A_c12_mf_stat_err[i],singleR_A_c12_mf_norm_syst_err[i],singleR_A_c12_mf_RC_syst_err[i],singleR_A_c12_mf_cut_syst_err[i],singleR_A_c12_mf_syst_err[i],singleR_A_c12_mf_tot_err[i],
                                                        singleR_A_c12_src[i],singleR_A_c12_src_stat_err[i],singleR_A_c12_src_norm_syst_err[i],singleR_A_c12_src_RC_syst_err[i],singleR_A_c12_src_cut_syst_err[i],singleR_A_c12_src_syst_err[i],singleR_A_c12_src_tot_err[i],
                                                        singleR_per_proton[i],singleR_per_proton_stat_err[i],singleR_per_proton_norm_syst_err[i],singleR_per_proton_RC_syst_err[i],singleR_per_proton_syst_err[i],singleR_per_proton_tot_err[i],
-                                                       doubleR[i],doubleR_stat_err[i],doubleR_norm_syst_err[i],doubleR_RC_syst_err[i],doubleR_cut_syst_err[i],doubleR_syst_err[i],doubleR_tot_err[i],doubleR_model[i],
+                                                       doubleR[i],doubleR_stat_err[i],doubleR_norm_syst_err[i],doubleR_RC_syst_err[i],doubleR_cut_syst_err[i],doubleR_syst_err[i],doubleR_tot_err[i],
+                                                       doubleR_Jmodel[i],singleR_A_c12_mf_av18[i],singleR_A_c12_src_av18[i],doubleR_av18[i],singleR_A_c12_mf_osu[i],singleR_A_c12_src_osu[i],doubleR_osu[i],
                                                        N[i], Z[i], A[i], NoZ[i], NmZoA[i]) ) 
         
        
