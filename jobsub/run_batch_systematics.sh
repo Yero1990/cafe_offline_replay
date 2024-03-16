@@ -41,7 +41,7 @@ echo "JOBNAME: cafe_${targ}_${ana_cut}_syst" >> ${batch} ## Change to be more sp
 # Request double the tape file size in space, for trunctuated replays edit down as needed
 # Note, unless this is set typically replays will produce broken root files
 echo "DISK_SPACE: 5 GB" >> ${batch}
-echo "TIME: 60:00:00" >> ${batch}
+echo "TIME: 100:00:00" >> ${batch}
 echo "MEMORY: 10000 MB" >> ${batch} 
 echo "CPU: 8" >> ${batch} ### hcana is single core, setting CPU higher will lower priority and gain you nothing!
 echo "COMMAND:/w/hallc-scshelf2102/c-cafe-2022/cyero/cafe_offline_replay/analyze_cafe_systematics.sh ${targ} ${ana_cut}"  >> ${batch}

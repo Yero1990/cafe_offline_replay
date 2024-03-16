@@ -6210,7 +6210,7 @@ void baseAnalyzer::EventLoop()
     
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/input/cafe_systematics_cuts_pass4.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/input/cafe_systematics_cuts_pass4_10k.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
@@ -6957,7 +6957,9 @@ void baseAnalyzer::EventLoop()
       
       //------------------------------------------------------------------------------------
 
-      
+      // C.Y. Jan 27, 2024: COMMENT OUT THESE LINES BELOW AS THEY MAY TAKE LOTS OF SPACE FOR 10K entries
+      // (These were just intended for debug purposes)
+      /*
       // ---------------- write histos of a given entry to file ----------------------------                                                   
       outROOT = new TFile(Form("CAFE_OUTPUT/SYSTEMATICS/%s_%s/%s_systematics_histos_entry%d.root", tgt_type.Data(), analysis_cut.Data(), tgt_type.Data(), ientry), "RECREATE");                                  
                                                                                                                                                
@@ -6987,7 +6989,7 @@ void baseAnalyzer::EventLoop()
       
       outROOT->Close();                                                                                                                        
       //--------------------------------   
-      
+      */
       
       //-----------------------------------------------------------------------------------------------
       // RESET THE HISTOGRAMS BEFORE LOOP OVER EVENTS FOR NEXT ENTRY in the systematics cuts files
