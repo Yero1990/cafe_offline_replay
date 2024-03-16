@@ -19,7 +19,7 @@ scripts/:   relevant systematic analysis scripts
 			 as well as the plots with the histogrammed
 			 numerical values
 			 
-2) fit_systematics.py -> fits the numerical data output (integrated yield)
+2) fit_systematics_v2.py -> fits the numerical data output (integrated yield)
                          results from varying the cuts N times. The
 			 integrated yield counts represent the counts
 			 obtained for every combination of analysis cuts

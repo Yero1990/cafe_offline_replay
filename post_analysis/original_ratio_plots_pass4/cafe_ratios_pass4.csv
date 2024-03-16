@@ -1,0 +1,24 @@
+# CaFe numerical ratios (pass4) 
+# 
+# Header Definitions: 
+# target       : target A used in single or double ratio 
+# singleR_A_c12_mf      : single ratio of target A_MF / C12_MF (per proton)  
+# singleR_A_c12_mf_err  : uncertainty in single ratio 
+# singleR_A_c12_src      : single ratio of target A_SRC / C12_SRC (per proton) 
+# singleR_A_c12_src_err  : uncertainty in single ratio 
+# singleR_per_proton      : single ratio of target A(SRC/MF) (per proton) 
+# singleR_per_proton_err  : uncertainty in single ratio (per proton) 
+# doubleR      : double ratio of target A(SRC/MF) relative to C12 (SRC/MF) 
+# doubleR_err  : uncertainty in double ratio 
+# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
+# NoZ          : N/Z 
+# NmZoA        : (N-Z)/A 
+target,singleR_A_c12_mf,singleR_A_c12_mf_err,singleR_A_c12_src,singleR_A_c12_src_err,singleR_per_proton,singleR_per_proton_err,doubleR,doubleR_err,N,Z,A,NoZ,NmZoA
+Be9,1.156E+00,5.750E-03,8.780E-01,1.843E-02,4.925E-03,7.183E-05,0.760,1.639E-02,5.0,4.0,9.0,1.250,0.111
+B10,1.112E+00,7.048E-03,9.562E-01,2.485E-02,5.577E-03,1.200E-04,0.860,2.301E-02,5.0,5.0,10.0,1.000,0.000
+B11,1.024E+00,5.546E-03,1.021E+00,2.598E-02,6.469E-03,1.332E-04,0.998,2.596E-02,6.0,5.0,11.0,1.200,0.091
+C12,1.000E+00,5.650E-03,1.000E+00,2.175E-02,6.483E-03,1.030E-04,1.000,2.248E-02,6.0,6.0,12.0,1.000,0.000
+Ca40,7.645E-01,4.372E-03,9.186E-01,1.764E-02,7.790E-03,9.501E-05,1.202,2.407E-02,20.0,20.0,40.0,1.000,0.000
+Ca48,6.990E-01,4.235E-03,9.461E-01,1.827E-02,8.774E-03,1.099E-04,1.353,2.739E-02,28.0,20.0,48.0,1.400,0.167
+Fe54,7.468E-01,4.402E-03,1.089E+00,2.244E-02,9.450E-03,1.359E-04,1.458,3.125E-02,28.0,26.0,54.0,1.077,0.037
+Au197,5.046E-01,3.813E-03,9.211E-01,2.429E-02,1.183E-02,2.646E-04,1.825,5.007E-02,118.0,79.0,197.0,1.494,0.198
