@@ -1,0 +1,37 @@
+# CaFe Final Summary File (pass4) 
+# 
+# Header Definitions: 
+# target       : target name analyzed 
+# kin          : kinematics analyzed  
+# beam_time    : beam-on-target time [s] 
+# avg_current  : average beam current [uA] 
+# total_charge : cumulative charge (over all runs) [mC] 
+# yield        : yield (raw counts integrated over Pm) with all data-analysis cuts applied 
+# yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+# yield_corr   : yield_eff corrected for external/internal impurities if any 
+# rad_corr     : radiative correction factor yield_rad / yield_norad (to be applied when calculating ratios) 
+# sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))
+# sigma_raw_per_proton    : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per proton) e.g. xA/Z )
+# sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )
+# stat_rel_err            : relative statistical error on the total yield calculated as sqrt(yield)/yield 
+# norm_syst_rel_err       : relative systematic error due to normalization correction factors
+#                         : (hms/shms track efficiencies live time proton transmission ca40 ca48 cntm) 
+# tgt_thick               : target density (g/cm2)
+# T N Z A                 : transparency (T) # of neutrons (N) protons(Z) and nucleons (A)
+target,kin,beam_time,avg_current,total_charge,yield,yield_eff,yield_corr,rad_corr,sigma_raw_per_nucleon,sigma_raw_per_proton,sigma_raw_per_nucleus,stat_rel_err,norm_syst_rel_err,tgt_thick,tgt_thick_corr,T,N,Z,A
+Be9,MF,4663.34,38.17,128.67,141395.038,167253.670,167253.670,0.600,2234.020,5026.545,20106.180,0.003,0.008,0.9859,0.9859,0.590,5.0,4.0,9.0
+Be9,SRC,17107.83,54.33,982.40,5064.408,6260.156,6260.156,0.630,10.952,24.641,98.565,0.014,0.005,0.9859,0.9859,0.590,5.0,4.0,9.0
+B10,MF,3453.44,42.28,120.06,79831.487,92939.416,73906.276,0.600,2413.552,4827.104,24135.522,0.004,0.012,0.5762,0.4432,0.575,5.0,5.0,10.0
+B10,SRC,21005.43,52.06,1099.01,4121.369,4891.048,3761.506,0.630,13.419,26.839,134.193,0.016,0.007,0.5762,0.4432,0.575,5.0,5.0,10.0
+B11,MF,6398.59,48.99,262.55,162350.299,190322.853,147877.385,0.600,2014.178,4431.191,22155.957,0.002,0.007,0.6328,0.4972,0.562,6.0,5.0,11.0
+B11,SRC,18445.23,59.59,1108.11,4342.000,5198.852,4037.422,0.630,13.029,28.665,143.324,0.015,0.007,0.6328,0.4972,0.562,6.0,5.0,11.0
+C12,MF,3737.83,42.81,122.15,71919.369,83573.838,83573.838,0.600,2164.810,4329.620,25977.723,0.004,0.012,0.5738,0.5738,0.551,6.0,6.0,12.0
+C12,SRC,25965.03,42.04,1143.59,4310.144,5074.627,5074.627,0.630,14.040,28.081,168.484,0.015,0.007,0.5738,0.5738,0.551,6.0,6.0,12.0
+Ca40,MF,4298.44,43.05,148.59,67647.329,80216.666,75972.216,0.510,1578.496,3156.991,63139.828,0.004,0.010,0.7851,0.7851,0.413,20.0,20.0,40.0
+Ca40,SRC,46952.12,49.11,2354.89,8239.223,9876.524,9353.934,0.520,12.263,24.526,490.517,0.011,0.004,0.7851,0.7851,0.413,20.0,20.0,40.0
+Ca48,MF,3749.11,40.73,161.12,72072.539,87411.765,73426.742,0.510,1200.085,2880.205,57604.096,0.004,0.008,1.0509,0.9616,0.395,28.0,20.0,48.0
+Ca48,SRC,52167.60,51.27,2710.87,10433.725,12791.725,10840.055,0.520,10.530,25.273,505.452,0.010,0.014,1.0509,0.9616,0.395,28.0,20.0,48.0
+Fe54,MF,11318.91,24.75,285.42,54891.632,62613.875,62613.875,0.510,1557.038,3233.848,84080.046,0.004,0.014,0.3670,0.3670,0.384,28.0,26.0,54.0
+Fe54,SRC,58672.53,51.31,3112.74,5528.210,6447.207,6447.207,0.520,14.701,30.532,793.837,0.013,0.006,0.3670,0.3670,0.384,28.0,26.0,54.0
+Au197,MF,8820.23,34.63,305.29,25160.789,30458.052,30458.052,0.380,876.063,2184.613,172584.416,0.006,0.013,0.4047,0.4047,0.281,118.0,79.0,197.0
+Au197,SRC,68426.37,34.96,2408.94,2351.843,2844.178,2844.178,0.400,10.367,25.853,2042.378,0.021,0.008,0.4047,0.4047,0.281,118.0,79.0,197.0
