@@ -851,6 +851,8 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_c12_mf_osu     = np.array([np.nan,  np.nan,  np.nan,  np.nan,     0.983,    0.962,    0.974,    np.nan])
     singleR_A_c12_src_osu    = np.array([np.nan,  np.nan,  np.nan,  np.nan,     1.158,    1.347,    1.178,    np.nan])
     doubleR_osu              = np.array([np.nan,  np.nan,  np.nan,  np.nan,     1.179,    1.401,    1.21,     np.nan])
+
+
     
     # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
     targ = np.array(df[(df['kin']=='SRC')]['target'])

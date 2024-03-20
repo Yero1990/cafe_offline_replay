@@ -69,16 +69,44 @@ doubleR_tot_err       = np.array(df['doubleR_tot_err'])
 # Read Models
 # -----------
 
-# Justin Estees / Andrew Denniston Model
+# Justin Estees / Andrew Denniston Model AKA JAM Model
 doubleR_Jmodel               = np.array(df['doubleR_Jmodel'], dtype=float)
 
+# AV18
 singleR_A_c12_mf_av18        = np.array(df['singleR_A_c12_mf_av18'],  dtype=float)
 singleR_A_c12_src_av18       = np.array(df['singleR_A_c12_src_av18'], dtype=float)
 doubleR_av18                 = np.array(df['doubleR_av18'],           dtype=float)
 
+# OSU (D. Furnshtal)
 singleR_A_c12_mf_osu         = np.array(df['singleR_A_c12_mf_osu'],   dtype=float)
 singleR_A_c12_src_osu        = np.array(df['singleR_A_c12_src_osu'],  dtype=float)
 doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=float)
+
+    
+# Ryckabush model: Colle 15
+
+
+'''  column V, double ratios (per proton) Colle 15 
+(0 0 1)
+0.341771286654969
+0.683542573309941
+0.946991273439815
+1
+1.1961995032924
+1.38023019610661
+1.58069220077924
+1.89682152703411
+1.78264397772703
+1.85664305171117
+2.22422814227187
+2.68881421514748
+'''
+# Meytal (label MT):
+A_MT = np.array([27, 56, 208])
+Double_ratio_MT = np.array([1.15, 1.36, 1.5])
+Double_ratio_MT_err = np.array([0.09, 0.08, 0.1])
+
+
 
 # mask NaN values for plotting
 doubleR_Jmodel               = np.ma.masked_invalid(doubleR_Jmodel)
@@ -90,6 +118,9 @@ doubleR_av18                 = np.ma.masked_invalid(doubleR_av18)
 singleR_A_c12_mf_osu        = np.ma.masked_invalid(singleR_A_c12_mf_osu)
 singleR_A_c12_src_osu       = np.ma.masked_invalid(singleR_A_c12_src_osu)
 doubleR_osu                 = np.ma.masked_invalid(doubleR_osu)
+
+
+
 
 
 
