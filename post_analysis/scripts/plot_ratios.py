@@ -83,28 +83,20 @@ singleR_A_c12_src_osu        = np.array(df['singleR_A_c12_src_osu'],  dtype=floa
 doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=float)
 
     
-# Ryckabush model: Colle 15
+# Ryckabush model: Colle15 double ratios (A_SRC/A_MF) / (C12_SRC/C12_MF)
+A_colle       = np.array([3, 4, 9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
+Z_colle       = np.array([2, 2, 4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
+N_colle       = A_colle - Z_colle
+NoZ_colle     = N_colle / Z_colle
+doubleR_colle = np.array([0.3417, 0.6835, 0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
 
-
-'''  column V, double ratios (per proton) Colle 15 
-(0 0 1)
-0.341771286654969
-0.683542573309941
-0.946991273439815
-1
-1.1961995032924
-1.38023019610661
-1.58069220077924
-1.89682152703411
-1.78264397772703
-1.85664305171117
-2.22422814227187
-2.68881421514748
-'''
-# Meytal (label MT):
-A_MT = np.array([27, 56, 208])
-Double_ratio_MT = np.array([1.15, 1.36, 1.5])
-Double_ratio_MT_err = np.array([0.09, 0.08, 0.1])
+# Meytal's Data double ratios(label MT) :
+A_MT           = np.array([27, 56, 208])
+Z_MT           = np.array([13, 26, 82])
+N_MT           = A_MT - Z_MT
+NoZ_MT         = N_MT / Z_MT
+doubleR_MT     = np.array([1.15, 1.36, 1.5])
+doubleR_MT_err = np.array([0.09, 0.08, 0.1])
 
 
 
@@ -191,14 +183,20 @@ elif(rel_err_breakdown):
    
 
 else:
-    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
-    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=2)
+    # plot CaFe Hall C Data
+    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
+    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
 
+    # plot Meytal's Hall B Data
+    plt.errorbar(A_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+
+    
     # PLOT MODELS
-    plt.plot(A, doubleR_Jmodel, marker='s', markersize=7, alpha=.5, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model', zorder=3)
-    #plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
-    #plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-
+    plt.plot(A, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
+    plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
+    plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    
 
     
 if(compare_flag ):
@@ -603,14 +601,20 @@ elif(rel_err_breakdown):
    
 
 else:
-    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
-    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total',zorder=2)
+    # plot CaFe Hall C Data
+    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
+    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
 
+    # plot Meytal's Hall B Data
+    plt.errorbar(NoZ_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+
+    
     # PLOT MODELS
-    plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=7, alpha=.5, mfc='darkorange', mec='darkorange', linestyle='None', label='Justin/Andrew Model', zorder=3)
-    #plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
-    #plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-
+    plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
+    plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
+    plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    
 
 if(compare_flag ):
     plt.errorbar(NoZ_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
