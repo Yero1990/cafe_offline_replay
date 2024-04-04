@@ -6210,7 +6210,7 @@ void baseAnalyzer::EventLoop()
     
       
     // set file to be read with all the cuts variations
-    string csv_file = "post_analysis/special_studies/systematic_cuts_study/input/cafe_systematics_cuts_pass4_10k.csv";
+    string csv_file = "post_analysis/special_studies/systematic_cuts_study/input/cafe_systematics_cuts_file_noQ2var_10k.csv";
     
     ifstream myFileStream(csv_file.c_str());
     
