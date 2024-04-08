@@ -276,6 +276,8 @@ if(compare_flag ):
     plt.errorbar(A_2, singleR_per_proton_2, singleR_per_proton_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC/MF Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
@@ -318,6 +320,8 @@ plt.savefig('cafe_singleR_vs_A.pdf')
 
 # --------------------------------------------
 
+
+'''
 #-----------------------------
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
@@ -391,8 +395,9 @@ else:
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_MFsingleR_vs_A.pdf')
 # --------------------------------------------
+'''
 
-
+'''
 #-----------------------------
 # Single Ratio A_SRC / C12_SRC 
 #-----------------------------
@@ -478,6 +483,7 @@ else:
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
+'''
 
 '''
 #--------------------------
@@ -504,9 +510,12 @@ else:
     plt.errorbar(NoZ, singleR_per_proton, singleR_per_proton_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
 
 
-
+    
 if(compare_flag ):
     plt.errorbar(NoZ_2, singleR_per_proton_2, singleR_per_proton_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC/MF Single Ratio (per proton) Rel. Error vs. N/Z', fontsize=18)
@@ -516,6 +525,9 @@ else:
     plt.title('CaFe SRC/MF Single Ratio (per proton) vs. N/Z', fontsize=18)
     plt.xlabel('N/Z', fontsize=16)
     plt.ylabel('SRC / MF', fontsize=16)
+
+
+
 
     for i, tgt in enumerate(targ):
     
@@ -552,10 +564,17 @@ else:
     plt.errorbar(NoZ, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical')
     plt.errorbar(NoZ, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error')
 
+    # PLOT MODELS
+    plt.plot(NoZ, singleR_A_c12_src_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    plt.plot(NoZ, singleR_A_c12_src_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+
 
 
 if(compare_flag ):
     plt.errorbar(NoZ_2, singleR_A_c12_src_2, singleR_A_c12_src_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC Single Ratio (per proton) Rel. Error vs. N/Z', fontsize=18)
@@ -575,8 +594,70 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_SRCsingleR_vs_NoZ.pdf')
+
+
+#-----------------------------
+# Single Ratio A_MF / C12_MF 
+#-----------------------------
+fig1_a2c_mf= plt.figure()
+
+if(error_breakdown):
+    # break-down of syst. contributions
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_norm_syst_err, marker='o', markersize=7, mfc='b', ecolor='b', mec='b', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='normalization (syst)')
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_RC_syst_err,   marker='o', markersize=7, mfc='g', ecolor='g', mec='g', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='radiative corr (syst)')
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_cut_syst_err,  marker='o', markersize=7, mfc='m', ecolor='m', mec='m', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='cut sensitivity (syst)')
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+    
+elif(rel_err_breakdown):
+    plt.plot(NoZ, 100*singleR_A_c12_mf_stat_err/singleR_A_c12_mf,      marker='_', markersize=10, mfc='r', mec='r', markeredgewidth=2, linestyle='None', label='statistical')
+    plt.plot(NoZ, 100*singleR_A_c12_mf_norm_syst_err/singleR_A_c12_mf, marker='_', markersize=10, mfc='b', mec='b', markeredgewidth=2, linestyle='None', label='normalization (syst)')
+    plt.plot(NoZ, 100*singleR_A_c12_mf_RC_syst_err/singleR_A_c12_mf,   marker='_', markersize=10, mfc='g', mec='g', markeredgewidth=2, linestyle='None', label='radiative corr (syst)')
+    plt.plot(NoZ, 100*singleR_A_c12_mf_cut_syst_err/singleR_A_c12_mf,  marker='_', markersize=10, mfc='m', mec='m', markeredgewidth=2, linestyle='None', label='cut sensitivity (syst)')
+    plt.plot(NoZ, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
+    
+else:
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    plt.errorbar(NoZ, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
+
+    # PLOT MODELS
+    plt.plot(NoZ, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    plt.plot(NoZ, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+
+
+if(compare_flag ):
+    plt.errorbar(NoZ_2, singleR_A_c12_mf_2, singleR_A_c12_mf_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
+if(compare_simc_flag ):
+    plt.errorbar(NoZ_simc, singleR_per_proton_simc, singleR_per_proton_err_simc, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='SIMC')
+        
+#plt.xscale('log')
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
+
+if(rel_err_breakdown):
+    plt.title('CaFe MF Single Ratio (per proton) Rel. Error vs. N/Z', fontsize=18)
+    plt.xlabel('A', fontsize=16)
+    plt.ylabel(r'A / C12  Relative Error ($\%$)', fontsize=16)
+else:
+    plt.title('CaFe MF Single Ratio (per proton) vs. N/Z', fontsize=18)
+    plt.xlabel('N/Z', fontsize=16)
+    plt.ylabel('A / C12', fontsize=16) 
+
+    for i, tgt in enumerate(targ):
+    
+        x = NoZ[i] + 0.01
+        y = singleR_A_c12_mf[i]
+ 
+        plt.text(x, y, tgt)
+    
+plt.legend(frameon=False, fontsize=16)
+plt.savefig('cafe_MFsingleR_vs_NoZ.pdf')
+# --------------------------------------------
 '''
 
+
+'''
 #--------------------------
 # PLOT Double Ratio vs. N/Z
 #--------------------------
@@ -642,6 +723,7 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_NoZ.pdf')
+'''
 
 '''
 #-------------------------------
