@@ -156,7 +156,7 @@ if(compare_flag):
     NoZ_2 = df['NoZ'] 
     NmZoA_2 = df['NmZoA'] 
 
-
+'''
 #--------------------------
 # PLOT Double Ratio vs. A
 #--------------------------
@@ -242,9 +242,9 @@ else:
     
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_A.pdf')
-
-
 '''
+
+
 #--------------------------
 # PLOT Single Ratio vs. A
 #--------------------------
@@ -317,7 +317,7 @@ plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_singleR_vs_A.pdf')
 
 # --------------------------------------------
-'''
+
 #-----------------------------
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
