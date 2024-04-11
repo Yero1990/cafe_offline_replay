@@ -81,11 +81,18 @@ doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=floa
 
     
 # Ryckabush model: Colle15 double ratios (A_SRC/A_MF) / (C12_SRC/C12_MF)
-A_colle       = np.array([3, 4, 9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
-Z_colle       = np.array([2, 2, 4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
+#A_colle       = np.array([3, 4, 9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
+#Z_colle       = np.array([2, 2, 4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
+#N_colle       = A_colle - Z_colle
+#NoZ_colle     = N_colle / Z_colle
+#doubleR_colle = np.array([0.3417, 0.6835, 0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+A_colle       = np.array([9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
+Z_colle       = np.array([4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
 N_colle       = A_colle - Z_colle
 NoZ_colle     = N_colle / Z_colle
-doubleR_colle = np.array([0.3417, 0.6835, 0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+doubleR_colle = np.array([0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+
+
 
 # Meytal's Data double ratios(label MT) :
 A_MT           = np.array([27, 56, 208])
@@ -190,9 +197,9 @@ else:
     
     # PLOT MODELS
     plt.plot(A, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    #plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
     plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    #plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
     
 
     
@@ -689,9 +696,9 @@ else:
     
     # PLOT MODELS
     plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    #plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
     plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    #plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
     
 
 if(compare_flag ):
