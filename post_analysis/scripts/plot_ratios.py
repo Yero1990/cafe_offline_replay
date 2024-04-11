@@ -190,9 +190,9 @@ else:
     
     # PLOT MODELS
     plt.plot(A, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    #plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
     plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    #plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
     
 
     
@@ -689,9 +689,9 @@ else:
     
     # PLOT MODELS
     plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
+    #plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
     plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    #plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
     
 
 if(compare_flag ):
