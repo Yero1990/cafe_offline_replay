@@ -126,18 +126,40 @@ NmZoA = df['NmZoA']
 y_rel = np.zeros([len(doubleR_Jmodel)])  # y-axis (at zero) for plotting relative errors
 
 compare_flag = False  # compare to previous pass ?
-compare_simc_flag = False  #compare to simc ?
+compare_simc_flag = True  #compare to simc ?
 error_breakdown = False     # flag to display breakdown of absolute uncertainties in the ratios
 rel_err_breakdown = False   # flag to display breakdown of relative uncertainties in the ratios
 
 if(compare_simc_flag):
 
     # read SIMC single_ratio (C12, Fe56, Au197)
-    df_simc = pd.read_csv('cafe_simc_summary.csv', comment='#')
-    A_simc = df_simc['A']
-    singleR_per_proton_simc      = np.array(df_simc['singleR_A_to_C12_MF'])
-    singleR_per_proton_err_simc  = np.array(df_simc['singleR_A_to_C12_MF_err'])
+    #df_simc = pd.read_csv('cafe_simc_summary.csv', comment='#')
+    #A_simc = df_simc['A']
+    #singleR_per_proton_simc      = np.array(df_simc['singleR_A_to_C12_MF'])
+    #singleR_per_proton_err_simc  = np.array(df_simc['singleR_A_to_C12_MF_err'])
 
+    # for pass 4 (re-did simulations using benhar sf, and corrected transparencies and tgt thicknes exactly as done in data)
+
+    A_simc = np.array([12., 56., 197.])
+    Z_simc = np.array([6., 26., 79.])
+    sig_thk = np.array([0.5738, 0.367, 0.4047])  #g/cm2
+    T = np.array([0.551, 0.381, 0.281]) # nucl. transparency
+
+
+    # Y = raw_counts
+    A_raw     = np.array([1081, 370.6, 264.9])    
+    A_raw_err = np.sqrt(A_raw)
+
+    # Y = N / (T_nuc * sig_thick * Z/A)
+    A_yield     = A_raw / (T * sig_thk * Z_simc/A_simc)
+    A_yield_err = A_raw_err / (T * sig_thk * Z_simc/A_simc)
+
+    dA_A = A_yield_err / A_yield
+    dA_A_sq = dA_A**2
+    
+    singleR_per_proton_simc  = A_yield / A_yield[0]  # yield relative to c12 
+    singleR_per_proton_err_simc  = singleR_per_proton_simc * np.sqrt( np.sum(dA_A_sq)  )
+    singleR_per_proton_err_simc[0] = 0.0
 
 
 
@@ -163,7 +185,7 @@ if(compare_flag):
     NoZ_2 = df['NoZ'] 
     NmZoA_2 = df['NmZoA'] 
 
-
+'''
 #--------------------------
 # PLOT Double Ratio vs. A
 #--------------------------
@@ -249,7 +271,7 @@ else:
     
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_A.pdf')
-
+'''
 
 '''
 #--------------------------
@@ -328,7 +350,7 @@ plt.savefig('cafe_singleR_vs_A.pdf')
 # --------------------------------------------
 '''
 
-'''
+
 #-----------------------------
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
@@ -350,12 +372,12 @@ elif(rel_err_breakdown):
     plt.plot(A, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
     
 else:
-    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    #plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
     plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
 
     # PLOT MODELS
-    plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
-    plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+    #plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    #plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
 
 
 if(compare_flag ):
@@ -388,21 +410,26 @@ else:
    
         if tgt=="Au197":
             x = A[i] - 60
-        elif tgt=="Be9" or tgt=="B10" or tgt=="B11" :
+        elif tgt=="Be9" or tgt=="B10" :
             x = A[i] + 0.8
             y = y + 0.05
+        elif tgt=="B11" :
+            x = A[i]
+            y = y +0.07
         elif tgt=="C12":
             x = A[i] + 0.8
             y = y - 0.02
-        elif tgt=="Ca40" or tgt=="Ca48" or tgt=="Fe54" :
+        elif tgt=="Ca40" or tgt=="Ca48" :
             x = A[i] - 2
             y = y - 0.06
+        elif tgt=="Fe54" :
+            y = y + 0.07
         plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_MFsingleR_vs_A.pdf')
 # --------------------------------------------
-'''
+
 
 '''
 #-----------------------------
@@ -664,7 +691,7 @@ plt.savefig('cafe_MFsingleR_vs_NoZ.pdf')
 '''
 
 
-
+'''
 #--------------------------
 # PLOT Double Ratio vs. N/Z
 #--------------------------
@@ -730,7 +757,7 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_doubleR_vs_NoZ.pdf')
-
+'''
 
 '''
 #-------------------------------
