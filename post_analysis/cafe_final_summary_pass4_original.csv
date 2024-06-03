@@ -9,13 +9,12 @@
 # yield        : yield (raw counts integrated over Pm) with all data-analysis cuts applied 
 # yield_eff    : yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
 # yield_corr   : yield_eff corrected for external/internal impurities if any 
-# rad_corr     : radiative correction factor yield_rad / yield_norad (to be applied when calculating ratios) 
+# rad_corr     : radiative correction factor, yield_rad / yield_norad (to be applied when calculating ratios) 
 # sigma_raw_per_nucleon   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density(g/cm2) (per nucleon))
 # sigma_raw_per_proton    : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per proton) e.g. xA/Z )
 # sigma_raw_per_nucleus   : corrected yield (yield_corr) normalized by (total_charge|transpacency|area_density (per nucleus) e.g xA )
 # stat_rel_err            : relative statistical error on the total yield calculated as sqrt(yield)/yield 
-# norm_syst_rel_err       : relative systematic error due to normalization correction factors
-#                         : (hms/shms track efficiencies live time proton transmission ca40 ca48 cntm) 
+# norm_syst_rel_err       : relative systematic error due to normalization correction factors (hms/shms track efficiencies, live time, proton transmission, ca40,48 cntm) 
 # tgt_thick               : target density (g/cm2)
 # T N Z A                 : transparency (T) # of neutrons (N) protons(Z) and nucleons (A)
 target,kin,beam_time,avg_current,total_charge,yield,yield_eff,yield_corr,rad_corr,sigma_raw_per_nucleon,sigma_raw_per_proton,sigma_raw_per_nucleus,stat_rel_err,norm_syst_rel_err,tgt_thick,tgt_thick_corr,T,N,Z,A

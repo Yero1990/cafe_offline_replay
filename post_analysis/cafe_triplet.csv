@@ -1,0 +1,12 @@
+# CaFe Triplet Numerical Ratios (pass4) 
+# 
+# Header Definitions: 
+# target       : target A used in single ratio 
+# singleR_A_ca48_src      : single ratio of target A_SRC / Ca48_SRC (per proton) 
+# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
+# NoZ          : N/Z 
+# NmZoA        : (N-Z)/A 
+target,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,N,Z,A,NoZ,NmZoA
+Ca40,9.528E-01,1.416E-02,1.387E-02,0.000E+00,9.528E-03,1.683E-02,2.200E-02,20.0,20.0,40.0,1.000,0.000
+Ca48,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,28.0,20.0,48.0,1.400,0.167
+Fe54,1.214E+00,1.991E-02,1.849E-02,0.000E+00,1.214E-02,2.212E-02,2.977E-02,28.0,26.0,54.0,1.077,0.037

@@ -116,10 +116,6 @@ singleR_A_c12_src_osu       = np.ma.masked_invalid(singleR_A_c12_src_osu)
 doubleR_osu                 = np.ma.masked_invalid(doubleR_osu)
 
 
-
-
-
-
 A = df['A'] 
 NoZ = df['NoZ'] 
 NmZoA = df['NmZoA'] 

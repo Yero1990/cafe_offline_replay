@@ -674,13 +674,13 @@ def write_ratios(ifname='', ofname=''):
     norm_syst_rel_err_mf_c12  = df[(df['kin']=='MF') & (df['target']=='C12')]['norm_syst_rel_err']
 
     # read relative errors for cafe triple (Ca40,48, Fe54)
-    stat_rel_err_src_ca40 = df[(df['kin']=='SRC') & (df['target']=='Ca40')]['stat_rel_err']
-    stat_rel_err_src_ca48 = df[(df['kin']=='SRC') & (df['target']=='Ca48')]['stat_rel_err']
-    stat_rel_err_src_fe54 = df[(df['kin']=='SRC') & (df['target']=='Fe54')]['stat_rel_err']
+    stat_rel_err_src_ca40 = float(df[(df['kin']=='SRC') & (df['target']=='Ca40')]['stat_rel_err'])
+    stat_rel_err_src_ca48 = float(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['stat_rel_err'])
+    stat_rel_err_src_fe54 = float(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['stat_rel_err'])
 
-    norm_syst_rel_err_src_ca40 = df[(df['kin']=='SRC') & (df['target']=='Ca40')]['norm_syst_rel_err']
-    norm_syst_rel_err_src_ca48 = df[(df['kin']=='SRC') & (df['target']=='Ca48')]['norm_syst_rel_err']
-    norm_syst_rel_err_src_fe54 = df[(df['kin']=='SRC') & (df['target']=='Fe54')]['norm_syst_rel_err']
+    norm_syst_rel_err_src_ca40 = float(df[(df['kin']=='SRC') & (df['target']=='Ca40')]['norm_syst_rel_err'])
+    norm_syst_rel_err_src_ca48 = float(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['norm_syst_rel_err'])
+    norm_syst_rel_err_src_fe54 = float(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['norm_syst_rel_err'])
 
     
     #--------------------------------------------------------------------------------
@@ -711,9 +711,9 @@ def write_ratios(ifname='', ofname=''):
     rad_corr_mf_c12                   = np.array(df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr']) 
 
     # read radiative correction factors (for cafe triple)
-    rad_corr_src_ca40                  = np.array(df[(df['kin']=='SRC') & (df['target']=='Ca40')]['rad_corr'])
-    rad_corr_src_ca48                  = np.array(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['rad_corr'])
-    rad_corr_src_fe54                  = np.array(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['rad_corr'])
+    rad_corr_src_ca40                  = float(df[(df['kin']=='SRC') & (df['target']=='Ca40')]['rad_corr'])
+    rad_corr_src_ca48                  = float(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['rad_corr'])
+    rad_corr_src_fe54                  = float(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['rad_corr'])
     
 
     print('rad_corr_src = ',rad_corr_src)
@@ -855,25 +855,31 @@ def write_ratios(ifname='', ofname=''):
 
     
      # initialize zero arrays to be filled in depending on relative error value
-    singleR_A_ca48_src               = np.zeros([len(3)])
-    singleR_A_ca48_src_RC_syst_err   = np.zeros([len(3)])
-    singleR_A_ca48_src_stat_err      = np.zeros([len(3)])
-    singleR_A_ca48_src_norm_syst_err = np.zeros([len(3)])
-    singleR_A_ca48_src_cut_syst_err  = np.zeros([len(3)])
+    singleR_A_ca48_src               = np.zeros([3])
+    singleR_A_ca48_src_RC_syst_err   = np.zeros([3])
+    singleR_A_ca48_src_stat_err      = np.zeros([3])
+    singleR_A_ca48_src_norm_syst_err = np.zeros([3])
+    singleR_A_ca48_src_cut_syst_err  = np.zeros([3])
 
-    singleR_A_ca48_src_syst_err      = np.zeros([len(3)])
-    singleR_A_ca48_src_tot_err       = np.zeros([len(3)])
+    singleR_A_ca48_src_syst_err      = np.zeros([3])
+    singleR_A_ca48_src_tot_err       = np.zeros([3])
 
     # apply radiative correction factor to single ratio A/Ca48
-    singleR_A_ca48_src[0]               =  ( src_sigma_raw_per_proton_Ca40 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_ca40)
-    singleR_A_ca48_src[1]               =  ( src_sigma_raw_per_proton_Ca48 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_ca48)
-    singleR_A_ca48_src[2]               =  ( src_sigma_raw_per_proton_Fe54 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_fe54)
+    print('src_sigma_raw_per_proton_Ca40 =', src_sigma_raw_per_proton_Ca40 )
+    print('src_sigma_raw_per_proton_Ca48 =', src_sigma_raw_per_proton_Ca48 )
+    print('rad_corr_src_ca48 = ', rad_corr_src_ca48)
+    print('rad_corr_src_ca40 = ', rad_corr_src_ca40)
+    
+    singleR_A_ca48_src[0]               =  ( float(src_sigma_raw_per_proton_Ca40) / float(src_sigma_raw_per_proton_Ca48) ) * (rad_corr_src_ca48 / rad_corr_src_ca40)
+    singleR_A_ca48_src[1]               =  ( float(src_sigma_raw_per_proton_Ca48) / float(src_sigma_raw_per_proton_Ca48) ) * (rad_corr_src_ca48 / rad_corr_src_ca48)
+    singleR_A_ca48_src[2]               =  ( float(src_sigma_raw_per_proton_Fe54) / float(src_sigma_raw_per_proton_Ca48) ) * (rad_corr_src_ca48 / rad_corr_src_fe54)
 
     # need to figure this out (what is the relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca48 single ratio?
     singleR_A_ca48_src_RC_syst_err[0]       = 0  # singleR_A_ca48_src[0] * rad_corr_ratio_src_rel_err ???
     singleR_A_ca48_src_RC_syst_err[1]       = 0
     singleR_A_ca48_src_RC_syst_err[2]       = 0
-  
+
+     
     singleR_A_ca48_src_stat_err[0]      = singleR_A_ca48_src[0] * np.sqrt(stat_rel_err_src_ca40**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[1]      = singleR_A_ca48_src[1] * np.sqrt(stat_rel_err_src_ca48**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[2]      = singleR_A_ca48_src[2] * np.sqrt(stat_rel_err_src_fe54**2 +  stat_rel_err_src_ca48**2)
@@ -896,6 +902,26 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_syst_err[2] = np.sqrt(singleR_A_ca48_src_norm_syst_err[2]**2 + singleR_A_ca48_src_RC_syst_err[2]**2 + singleR_A_ca48_src_cut_syst_err[2]**2)
     singleR_A_ca48_src_tot_err[2]  = np.sqrt(singleR_A_ca48_src_stat_err[2]**2 + singleR_A_ca48_src_syst_err[2]**2)
 
+
+    #-----
+     
+    # read target varibale (isolate only for a kin setting, since double SRC/MF ratios being taken)
+    targ = np.array(['Ca40', 'Ca48', 'Fe54'])
+    
+    # loop over each target (to write numerical values to file)
+    for i in np.arange(len(targ)):
+
+        if(targ[i]=="Ca48"):
+            singleR_A_ca48_src_stat_err[i]=singleR_A_ca48_src_norm_syst_err[i]=singleR_A_ca48_src_RC_syst_err[i]=singleR_A_ca48_src_cut_syst_err[i]=singleR_A_ca48_src_syst_err[i]=singleR_A_ca48_src_tot_err[i]=0.0
+            
+        ofile2.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
+                                                       singleR_A_ca48_src[i],singleR_A_ca48_src_stat_err[i],singleR_A_ca48_src_norm_syst_err[i],singleR_A_ca48_src_RC_syst_err[i],singleR_A_ca48_src_cut_syst_err[i],singleR_A_ca48_src_syst_err[i],singleR_A_ca48_src_tot_err[i],
+                                                       Nt[i], Zt[i], At[i], NoZ_t[i], NmZoA_t[i]) ) 
+        
+       
+    ofile2.close()
+
+    #-------
     
     #--------------------------------------------------------
     # ---- CALCULATE DOUBLE RATIOS A_SRC/MF / C12_SRC/MF ----
