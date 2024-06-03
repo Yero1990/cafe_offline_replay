@@ -593,7 +593,7 @@ def make_final_summary():
     ofile.close()
 
     # call function to write singles, double ratios to file for ease of plotting
-    write_ratios(ofname, 'cafe_ratios_%s_testing.csv'%(npass))
+    write_ratios(ofname, 'cafe_ratios_%s.csv'%(npass))
     
 
 def write_ratios(ifname='', ofname=''):
@@ -608,7 +608,7 @@ def write_ratios(ifname='', ofname=''):
     # read input final summary file
     df = pd.read_csv(ifname, comment='#')
 
-    # set output file to write double ratio numerical values
+    # set output file to write single + double ratio numerical values
     ofile = open(ofname, 'w+')
     ofile.write('# CaFe numerical ratios (%s) \n'%(npass))
     ofile.write('# \n'
@@ -626,6 +626,19 @@ def write_ratios(ifname='', ofname=''):
                 )
     ofile.write('target,singleR_A_c12_mf,singleR_A_c12_mf_stat_err,singleR_A_c12_mf_norm_syst_err,singleR_A_c12_mf_RC_syst_err,singleR_A_c12_mf_cut_syst_err,singleR_A_c12_mf_syst_err,singleR_A_c12_mf_tot_err,singleR_A_c12_src,singleR_A_c12_src_stat_err,singleR_A_c12_src_norm_syst_err,singleR_A_c12_src_RC_syst_err,singleR_A_c12_src_cut_syst_err,singleR_A_c12_src_syst_err,singleR_A_c12_src_tot_err,singleR_per_proton,singleR_per_proton_stat_err,singleR_per_proton_norm_syst_err,singleR_per_proton_RC_syst_err,singleR_per_proton_syst_err,singleR_per_proton_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,doubleR_Jmodel,singleR_A_c12_mf_av18,singleR_A_c12_src_av18,doubleR_av18,singleR_A_c12_mf_osu,singleR_A_c12_src_osu,doubleR_osu,N,Z,A,NoZ,NmZoA\n') 
 
+    # set output file to write CaFe triple [Ca40 Ca48 Fe54] / Ca48 single SRC ratios
+    ofile2 = open('cafe_triplet.csv', 'w+')
+    ofile2.write('# CaFe Triplet Numerical Ratios (%s) \n'%(npass))
+    ofile2.write('# \n'
+                '# Header Definitions: \n'
+                '# target       : target A used in single ratio \n'
+                '# singleR_A_ca48_src      : single ratio of target A_SRC / Ca48_SRC (per proton) \n'
+                '# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A \n'
+                '# NoZ          : N/Z \n'
+                '# NmZoA        : (N-Z)/A \n'                
+                )
+    ofile2.write('target,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,N,Z,A,NoZ,NmZoA\n') 
+
     
     #--------------
     
@@ -638,6 +651,13 @@ def write_ratios(ifname='', ofname=''):
     NoZ = N/Z
     NmZoA = (N-Z) / A
 
+    # define for cafe triplet (Ca40, Ca48, Fe54)
+    Nt = np.array([20.0, 28.0, 28.0])
+    Zt = np.array([20.0, 20.0, 26.0])
+    At = Nt + Zt
+    NoZ_t = Nt/Zt
+    NmZoA_t = (Nt - Zt ) / At
+    
     #--------------------------------------------------------------------------------
     # ----- Read relative stats. and normalization systematic uncertainties
     #--------------------------------------------------------------------------------
@@ -841,14 +861,19 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_norm_syst_err = np.zeros([len(3)])
     singleR_A_ca48_src_cut_syst_err  = np.zeros([len(3)])
 
+    singleR_A_ca48_src_syst_err      = np.zeros([len(3)])
+    singleR_A_ca48_src_tot_err       = np.zeros([len(3)])
 
+    # apply radiative correction factor to single ratio A/Ca48
     singleR_A_ca48_src[0]               =  ( src_sigma_raw_per_proton_Ca40 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_ca40)
     singleR_A_ca48_src[1]               =  ( src_sigma_raw_per_proton_Ca48 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_ca48)
     singleR_A_ca48_src[2]               =  ( src_sigma_raw_per_proton_Fe54 / src_sigma_raw_per_proton_Ca48 ) * (rad_corr_src_ca48 / rad_corr_src_fe54)
 
     # need to figure this out (what is the relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca48 single ratio?
-    # singleR_A_ca48_src_RC_syst_err[0]       = singleR_A_ca48_src[0] * rad_corr_ratio_src_rel_err ???
-
+    singleR_A_ca48_src_RC_syst_err[0]       = 0  # singleR_A_ca48_src[0] * rad_corr_ratio_src_rel_err ???
+    singleR_A_ca48_src_RC_syst_err[1]       = 0
+    singleR_A_ca48_src_RC_syst_err[2]       = 0
+  
     singleR_A_ca48_src_stat_err[0]      = singleR_A_ca48_src[0] * np.sqrt(stat_rel_err_src_ca40**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[1]      = singleR_A_ca48_src[1] * np.sqrt(stat_rel_err_src_ca48**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[2]      = singleR_A_ca48_src[2] * np.sqrt(stat_rel_err_src_fe54**2 +  stat_rel_err_src_ca48**2)
@@ -860,6 +885,16 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_cut_syst_err[0]  = singleR_A_ca48_src[0] * singleR_src_triplet_cut_syst_rel_err[0]
     singleR_A_ca48_src_cut_syst_err[1]  = singleR_A_ca48_src[1] * singleR_src_triplet_cut_syst_rel_err[1]
     singleR_A_ca48_src_cut_syst_err[2]  = singleR_A_ca48_src[2] * singleR_src_triplet_cut_syst_rel_err[2]
+
+    #------
+    singleR_A_ca48_src_syst_err[0] = np.sqrt(singleR_A_ca48_src_norm_syst_err[0]**2 + singleR_A_ca48_src_RC_syst_err[0]**2 + singleR_A_ca48_src_cut_syst_err[0]**2)
+    singleR_A_ca48_src_tot_err[0]  = np.sqrt(singleR_A_ca48_src_stat_err[0]**2 + singleR_A_ca48_src_syst_err[0]**2)
+
+    singleR_A_ca48_src_syst_err[1] = np.sqrt(singleR_A_ca48_src_norm_syst_err[1]**2 + singleR_A_ca48_src_RC_syst_err[1]**2 + singleR_A_ca48_src_cut_syst_err[1]**2)
+    singleR_A_ca48_src_tot_err[1]  = np.sqrt(singleR_A_ca48_src_stat_err[1]**2 + singleR_A_ca48_src_syst_err[1]**2)
+
+    singleR_A_ca48_src_syst_err[2] = np.sqrt(singleR_A_ca48_src_norm_syst_err[2]**2 + singleR_A_ca48_src_RC_syst_err[2]**2 + singleR_A_ca48_src_cut_syst_err[2]**2)
+    singleR_A_ca48_src_tot_err[2]  = np.sqrt(singleR_A_ca48_src_stat_err[2]**2 + singleR_A_ca48_src_syst_err[2]**2)
 
     
     #--------------------------------------------------------
