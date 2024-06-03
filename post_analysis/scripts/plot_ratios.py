@@ -17,7 +17,7 @@ if(len(sys.argv)!=2):
 npass = sys.argv[1]       # "pass3"
 
 
-ifname= 'cafe_ratios_%s_testing.csv' % (npass)
+ifname= 'cafe_ratios_%s.csv' % (npass)
 
 # ----------------
 # read input file
