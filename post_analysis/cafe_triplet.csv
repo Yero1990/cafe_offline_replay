@@ -2,11 +2,19 @@
 # 
 # Header Definitions: 
 # target       : target A used in single ratio 
-# singleR_A_ca48_src      : single ratio of target A_SRC / Ca48_SRC (per proton) 
+# singleR_A_ca48_mf   : single ratio of target A_MF / Ca48_MF (per proton) 
+# singleR_A_ca48_src  : single ratio of target A_SRC / Ca48_SRC (per proton) 
+# doubleR      : double ratio of target A(SRC/MF) relative to Ca48 (SRC/MF) 
+# _stat_err    : absolute statistical uncertainty 
+# _norm_syst_err : absolute systematic error due to normalization correction factors (a) hms/shms track efficiencies (b) live time (c) proton transmission (d) ca 40/48 cntm)
+# _RC_syst_err   : absolute systematic error due to radiative corrections 
+# _cut_syst_err  : absolute systematic error due to cut sensitivity 
+# _syst_err      : absolute systematic errors added in quadrature
+# _tot_err       : absolute total errors (statistical + systematics added in quadrature) 
 # N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
 # NoZ          : N/Z 
 # NmZoA        : (N-Z)/A 
-target,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,N,Z,A,NoZ,NmZoA
-Ca40,9.528E-01,1.416E-02,1.387E-02,0.000E+00,9.528E-03,1.683E-02,2.200E-02,20.0,20.0,40.0,1.000,0.000
-Ca48,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,28.0,20.0,48.0,1.400,0.167
-Fe54,1.214E+00,1.991E-02,1.849E-02,0.000E+00,1.214E-02,2.212E-02,2.977E-02,28.0,26.0,54.0,1.077,0.037
+target,singleR_A_ca48_mf,singleR_A_ca48_mf_stat_err,singleR_A_ca48_mf_norm_syst_err,singleR_A_ca48_mf_RC_syst_err,singleR_A_ca48_mf_cut_syst_err,singleR_A_ca48_mf_syst_err,singleR_A_ca48_mf_tot_err,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,N,Z,A,NoZ,NmZoA
+Ca40,1.078E+00,6.099E-03,1.381E-02,0.000E+00,1.078E-02,1.752E-02,1.855E-02,9.528E-01,1.416E-02,1.387E-02,0.000E+00,9.528E-03,1.683E-02,2.200E-02,8.838E-01,1.406E-02,1.714E-02,8.838E-03,8.838E-03,2.121E-02,2.545E-02,20.0,20.0,40.0,1.000,0.000
+Ca48,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,28.0,20.0,48.0,1.400,0.167
+Fe54,1.136E+00,6.424E-03,1.831E-02,0.000E+00,1.136E-02,2.155E-02,2.248E-02,1.214E+00,1.991E-02,1.849E-02,0.000E+00,1.214E-02,2.212E-02,2.977E-02,1.069E+00,1.855E-02,2.372E-02,1.069E-02,1.069E-02,2.813E-02,3.369E-02,28.0,26.0,54.0,1.077,0.037

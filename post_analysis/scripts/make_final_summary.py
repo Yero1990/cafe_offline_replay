@@ -634,11 +634,18 @@ def write_ratios(ifname='', ofname=''):
                 '# target       : target A used in single ratio \n'
                 '# singleR_A_ca48_mf   : single ratio of target A_MF / Ca48_MF (per proton) \n'
                 '# singleR_A_ca48_src  : single ratio of target A_SRC / Ca48_SRC (per proton) \n'
+                '# doubleR      : double ratio of target A(SRC/MF) relative to Ca48 (SRC/MF) \n'
+                '# _stat_err    : absolute statistical uncertainty \n'
+                '# _norm_syst_err : absolute systematic error due to normalization correction factors (a) hms/shms track efficiencies (b) live time (c) proton transmission (d) ca 40/48 cntm)\n'
+                '# _RC_syst_err   : absolute systematic error due to radiative corrections \n'
+                '# _cut_syst_err  : absolute systematic error due to cut sensitivity \n'
+                '# _syst_err      : absolute systematic errors added in quadrature\n'
+                '# _tot_err       : absolute total errors (statistical + systematics added in quadrature) \n'
                 '# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A \n'
                 '# NoZ          : N/Z \n'
                 '# NmZoA        : (N-Z)/A \n'                
                 )
-    ofile2.write('target,singleR_A_ca48_mf,singleR_A_ca48_mf_stat_err,singleR_A_ca48_mf_norm_syst_err,singleR_A_ca48_mf_RC_syst_err,singleR_A_ca48_mf_cut_syst_err,singleR_A_ca48_mf_syst_err,singleR_A_ca48_mf_tot_err,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,N,Z,A,NoZ,NmZoA\n') 
+    ofile2.write('target,singleR_A_ca48_mf,singleR_A_ca48_mf_stat_err,singleR_A_ca48_mf_norm_syst_err,singleR_A_ca48_mf_RC_syst_err,singleR_A_ca48_mf_cut_syst_err,singleR_A_ca48_mf_syst_err,singleR_A_ca48_mf_tot_err,singleR_A_ca48_src,singleR_A_ca48_src_stat_err,singleR_A_ca48_src_norm_syst_err,singleR_A_ca48_src_RC_syst_err,singleR_A_ca48_src_cut_syst_err,singleR_A_ca48_src_syst_err,singleR_A_ca48_src_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,N,Z,A,NoZ,NmZoA\n') 
 
     
     #--------------
@@ -1057,10 +1064,11 @@ def write_ratios(ifname='', ofname=''):
         if(targ[i]=="Ca48"):
             singleR_A_ca48_mf_stat_err[i]=singleR_A_ca48_mf_norm_syst_err[i]=singleR_A_ca48_mf_RC_syst_err[i]=singleR_A_ca48_mf_cut_syst_err[i]=singleR_A_ca48_mf_syst_err[i]=singleR_A_ca48_mf_tot_err[i]=0.0
             singleR_A_ca48_src_stat_err[i]=singleR_A_ca48_src_norm_syst_err[i]=singleR_A_ca48_src_RC_syst_err[i]=singleR_A_ca48_src_cut_syst_err[i]=singleR_A_ca48_src_syst_err[i]=singleR_A_ca48_src_tot_err[i]=0.0
-            
-        ofile2.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
+            doubleRt[i]=doubleRt_stat_err[i]=doubleRt_norm_syst_err[i]=doubleRt_RC_syst_err[i]=doubleRt_cut_syst_err[i]=doubleRt_syst_err[i]=doubleRt_tot_err[i]=0.0
+        ofile2.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
                                                        singleR_A_ca48_mf[i],singleR_A_ca48_mf_stat_err[i],singleR_A_ca48_mf_norm_syst_err[i],singleR_A_ca48_mf_RC_syst_err[i],singleR_A_ca48_mf_cut_syst_err[i],singleR_A_ca48_mf_syst_err[i],singleR_A_ca48_mf_tot_err[i],
                                                        singleR_A_ca48_src[i],singleR_A_ca48_src_stat_err[i],singleR_A_ca48_src_norm_syst_err[i],singleR_A_ca48_src_RC_syst_err[i],singleR_A_ca48_src_cut_syst_err[i],singleR_A_ca48_src_syst_err[i],singleR_A_ca48_src_tot_err[i],
+                                                       doubleRt[i],doubleRt_stat_err[i],doubleRt_norm_syst_err[i],doubleRt_RC_syst_err[i],doubleRt_cut_syst_err[i],doubleRt_syst_err[i],doubleRt_tot_err[i],                                                                        
                                                        Nt[i], Zt[i], At[i], NoZ_t[i], NmZoA_t[i]) ) 
         
        
