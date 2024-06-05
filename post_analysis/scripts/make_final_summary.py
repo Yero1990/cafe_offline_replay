@@ -698,7 +698,7 @@ def write_ratios(ifname='', ofname=''):
     norm_syst_rel_err_src_ca48 = float(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['norm_syst_rel_err'])
     norm_syst_rel_err_src_fe54 = float(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['norm_syst_rel_err'])
 
-    
+
     #--------------------------------------------------------------------------------
     # ----- Read charge-normalized corrected yields from the final summary file -----
     #--------------------------------------------------------------------------------
@@ -726,13 +726,14 @@ def write_ratios(ifname='', ofname=''):
     rad_corr_src                      = np.array(df[(df['kin']=='SRC')]['rad_corr'])  # src_rad/src_norad
     rad_corr_mf                       = np.array(df[(df['kin']=='MF')]['rad_corr'])   # mf_rad/mf_norad
 
-    rad_corr_src_c12                  = np.array(df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'])
-    rad_corr_mf_c12                   = np.array(df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr']) 
 
-    rad_corr_src_ca48                  = np.array(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['rad_corr'])
-    rad_corr_mf_ca48                   = np.array(df[(df['kin']=='MF')  & (df['target']=='Ca48')]['rad_corr']) 
+    # read radiative correction factors for specified targets to make it easier when taking ratios
 
-    # read radiative correction factors (for cafe triplet)
+    # for c12
+    rad_corr_src_c12                  = float(df[(df['kin']=='SRC') & (df['target']=='C12')]['rad_corr'])
+    rad_corr_mf_c12                   = float(df[(df['kin']=='MF')  & (df['target']=='C12')]['rad_corr']) 
+
+    # (for cafe triplet)
     rad_corr_mf_ca40                  = float(df[(df['kin']=='MF') & (df['target']=='Ca40')]['rad_corr'])
     rad_corr_mf_ca48                  = float(df[(df['kin']=='MF') & (df['target']=='Ca48')]['rad_corr'])
     rad_corr_mf_fe54                  = float(df[(df['kin']=='MF') & (df['target']=='Fe54')]['rad_corr'])
@@ -740,11 +741,7 @@ def write_ratios(ifname='', ofname=''):
     rad_corr_src_ca40                  = float(df[(df['kin']=='SRC') & (df['target']=='Ca40')]['rad_corr'])
     rad_corr_src_ca48                  = float(df[(df['kin']=='SRC') & (df['target']=='Ca48')]['rad_corr'])
     rad_corr_src_fe54                  = float(df[(df['kin']=='SRC') & (df['target']=='Fe54')]['rad_corr'])
-    
-
-    print('rad_corr_src = ',rad_corr_src)
-    print('rad_corr_mf  = ', rad_corr_mf )
-    
+  
     # calculate the absolute stats. and norm. syst error on the raw cross sections
     src_sigma_raw_per_proton_stat_err      = src_sigma_raw_per_proton * stat_rel_err_src
     src_sigma_raw_per_proton_norm_syst_err = src_sigma_raw_per_proton * norm_syst_rel_err_src 
@@ -764,42 +761,39 @@ def write_ratios(ifname='', ofname=''):
 
     #--- A_SRC / A_MF (per proton) ---
 
+
+    # standard error propagation on ratio
+    # for R = A/B,  dR = |R| sqrt( (dA/A)**2 + (dB/B)**2 ), assuming A,B are non-correlated
+
+        
     # rad correction factor for SRC/MF single ratio on same nucleus
     # default rad corr relative error (dR/R) on single ratio to 5%,
     # since rad corr between SRC/MF of same nucleus A is very similar
-
-    # for R = A/B,  dR = |R| sqrt( (dA/A)**2 + (dB/B)**2 ), assuming A,B are non-correlated
-    
-    
-    rad_corr_ratio = (rad_corr_mf/rad_corr_src)
-    rad_corr_ratio_c12 = (rad_corr_mf_c12/rad_corr_src_c12)
-
-    # required for the double ratio of the triple (Ca40, Ca48, Fe54 to Ca48)
-    rad_corr_ratio_ca48 = (rad_corr_mf_ca48/rad_corr_src_ca48)
-
-    
-    print('rad_corr_ratio = ',rad_corr_ratio)
-    print('rad_corr_ratio_c12 = ', rad_corr_ratio_c12)
-    
     rad_corr_ratio_rel_err = 0.05
 
+    rad_corr_ratio = (rad_corr_mf/rad_corr_src)
 
-    singleR_per_proton               = (src_sigma_raw_per_proton.values/mf_sigma_raw_per_proton.values) * rad_corr_ratio
-    singleR_per_proton_RC_syst_err   = singleR_per_proton * rad_corr_ratio_rel_err                                       # absolute syst. error due to rad corr ratio
+    # re-define rad corr ratios for C12 and Ca48 (to simplify double ratio calculations later on)
+    rad_corr_ratio_c12 = (rad_corr_mf_c12/rad_corr_src_c12)
+    rad_corr_ratio_ca48 = (rad_corr_mf_ca48/rad_corr_src_ca48)
+
+    # calculate abssolute errors on single SRC / MF ratios
+    singleR_per_proton               = (src_sigma_raw_per_proton.values/mf_sigma_raw_per_proton.values) * rad_corr_ratio               # apply radiative correction
+    singleR_per_proton_RC_syst_err   = singleR_per_proton * rad_corr_ratio_rel_err                                                     # absolute syst. error due to rad corr ratio
     singleR_per_proton_stat_err      = singleR_per_proton * np.sqrt(stat_rel_err_src.values**2 +  stat_rel_err_mf.values**2)           # absolute stat. error 
     singleR_per_proton_norm_syst_err = singleR_per_proton * np.sqrt(norm_syst_rel_err_src.values**2 +  norm_syst_rel_err_mf.values**2) # absolute norm syst. error 
 
-    # re-define the single ration for C12 (just to make it easier later on when dividing by C12)
-    singleR_per_proton_C12               = (src_sigma_raw_per_proton_C12.values/mf_sigma_raw_per_proton_C12.values) * rad_corr_ratio_c12
-    singleR_per_proton_C12_RC_syst_err   = singleR_per_proton_C12 * rad_corr_ratio_rel_err                                               # absolute syst. error due to rad corr ratio
+    # re-define the single ratio for C12 (just to make it easier later on when dividing by C12)
+    singleR_per_proton_C12               = (src_sigma_raw_per_proton_C12.values/mf_sigma_raw_per_proton_C12.values) * rad_corr_ratio_c12               # apply radiative correction
+    singleR_per_proton_C12_RC_syst_err   = singleR_per_proton_C12 * rad_corr_ratio_rel_err                                                             # absolute syst. error due to rad corr ratio
     singleR_per_proton_C12_stat_err      = singleR_per_proton_C12 * np.sqrt(stat_rel_err_src_c12.values**2 +  stat_rel_err_mf_c12.values**2)           # absolute stat. error 
     singleR_per_proton_C12_norm_syst_err = singleR_per_proton_C12 * np.sqrt(norm_syst_rel_err_src_c12.values**2 +  norm_syst_rel_err_mf_c12.values**2) # absolute norm syst. error 
 
-    # re-define the single ration for Ca48 (just to make it easier later on when dividing by Ca48 for the triple)
-    singleR_per_proton_Ca48               = (src_sigma_raw_per_proton_Ca48.values/mf_sigma_raw_per_proton_Ca48.values) * rad_corr_ratio_ca48
-    singleR_per_proton_Ca48_RC_syst_err   = singleR_per_proton_Ca48 * rad_corr_ratio_rel_err                                               # absolute syst. error due to rad corr ratio
-    singleR_per_proton_Ca48_stat_err      = singleR_per_proton_Ca48 * np.sqrt(stat_rel_err_src_ca48**2 +  stat_rel_err_mf_ca48**2)           # absolute stat. error 
-    singleR_per_proton_Ca48_norm_syst_err = singleR_per_proton_Ca48 * np.sqrt(norm_syst_rel_err_src_ca48**2 +  norm_syst_rel_err_mf_ca48**2) # absolute norm syst. error 
+    # re-define the single ratio for Ca48 (just to make it easier later on when dividing by Ca48 for the triplet)
+    singleR_per_proton_Ca48               = (src_sigma_raw_per_proton_Ca48.values/mf_sigma_raw_per_proton_Ca48.values) * rad_corr_ratio_ca48  # apply radiative correction
+    singleR_per_proton_Ca48_RC_syst_err   = singleR_per_proton_Ca48 * rad_corr_ratio_rel_err                                                  # absolute syst. error due to rad corr ratio
+    singleR_per_proton_Ca48_stat_err      = singleR_per_proton_Ca48 * np.sqrt(stat_rel_err_src_ca48**2 +  stat_rel_err_mf_ca48**2)            # absolute stat. error 
+    singleR_per_proton_Ca48_norm_syst_err = singleR_per_proton_Ca48 * np.sqrt(norm_syst_rel_err_src_ca48**2 +  norm_syst_rel_err_mf_ca48**2)  # absolute norm syst. error 
 
     
     #----- add errors in quadrature -----
@@ -887,8 +881,11 @@ def write_ratios(ifname='', ofname=''):
     #--- A_MF / Ca48_MF (per proton) ---
     #-------------------------------------------------
 
-    # cut sensitivity relative errors                ca40/ca48  ca48/ca48 fe54/ca48        (NOTE: need to be updates, as these are currently dummy placeholders)
-    singleR_mf_triplet_cut_syst_rel_err = np.array([0.01,        0.0,    0.01])          # fractional
+    # cut sensitivity relative errors               ca40/ca48    ca48/ca48   fe54/ca48        (NOTE: need to be updates, as these are currently dummy placeholders)
+    singleR_mf_triplet_cut_syst_rel_err = np.array([0.01,        0.0,        0.01])          # fractional
+
+    # transparency systematic error on triple ratios (As per Larry's suggeation)    
+    singleR_mf_triplet_T_syst_rel_err   = np.array([0.01,        0.0,        0.01])  # 1 % relative error on transparency for triplet
 
     
      # initialize zero arrays to be filled in depending on relative error value
@@ -916,7 +913,11 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_mf_RC_syst_err[1]       = 0
     singleR_A_ca48_mf_RC_syst_err[2]       = 0
 
-     
+
+    # calculate absolute error on triplet ratio due to transparency
+    singleR_A_ca48_mf_T_syst_err      = np.sqrt( (singleR_A_ca48_mf**2)  *  (singleR_mf_triplet_T_syst_rel_err**2) ) 
+
+    # calculate
     singleR_A_ca48_mf_stat_err[0]      = singleR_A_ca48_mf[0] * np.sqrt(stat_rel_err_mf_ca40**2 +  stat_rel_err_mf_ca48**2)
     singleR_A_ca48_mf_stat_err[1]      = singleR_A_ca48_mf[1] * np.sqrt(stat_rel_err_mf_ca48**2 +  stat_rel_err_mf_ca48**2)
     singleR_A_ca48_mf_stat_err[2]      = singleR_A_ca48_mf[2] * np.sqrt(stat_rel_err_mf_fe54**2 +  stat_rel_err_mf_ca48**2)
@@ -930,13 +931,13 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_mf_cut_syst_err[2]  = singleR_A_ca48_mf[2] * singleR_mf_triplet_cut_syst_rel_err[2]
 
     #------ add errors in quadrature ----
-    singleR_A_ca48_mf_syst_err[0] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[0]**2 + singleR_A_ca48_mf_RC_syst_err[0]**2 + singleR_A_ca48_mf_cut_syst_err[0]**2)
+    singleR_A_ca48_mf_syst_err[0] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[0]**2 + singleR_A_ca48_mf_RC_syst_err[0]**2 + singleR_A_ca48_mf_cut_syst_err[0]**2 + singleR_A_ca48_mf_T_syst_err[0]**2)
     singleR_A_ca48_mf_tot_err[0]  = np.sqrt(singleR_A_ca48_mf_stat_err[0]**2 + singleR_A_ca48_mf_syst_err[0]**2)
 
-    singleR_A_ca48_mf_syst_err[1] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[1]**2 + singleR_A_ca48_mf_RC_syst_err[1]**2 + singleR_A_ca48_mf_cut_syst_err[1]**2)
+    singleR_A_ca48_mf_syst_err[1] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[1]**2 + singleR_A_ca48_mf_RC_syst_err[1]**2 + singleR_A_ca48_mf_cut_syst_err[1]**2 + singleR_A_ca48_mf_T_syst_err[1]**2)
     singleR_A_ca48_mf_tot_err[1]  = np.sqrt(singleR_A_ca48_mf_stat_err[1]**2 + singleR_A_ca48_mf_syst_err[1]**2)
 
-    singleR_A_ca48_mf_syst_err[2] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[2]**2 + singleR_A_ca48_mf_RC_syst_err[2]**2 + singleR_A_ca48_mf_cut_syst_err[2]**2)
+    singleR_A_ca48_mf_syst_err[2] = np.sqrt(singleR_A_ca48_mf_norm_syst_err[2]**2 + singleR_A_ca48_mf_RC_syst_err[2]**2 + singleR_A_ca48_mf_cut_syst_err[2]**2 + singleR_A_ca48_mf_T_syst_err[2]**2)
     singleR_A_ca48_mf_tot_err[2]  = np.sqrt(singleR_A_ca48_mf_stat_err[2]**2 + singleR_A_ca48_mf_syst_err[2]**2)
 
     #----------------------------------
@@ -950,7 +951,9 @@ def write_ratios(ifname='', ofname=''):
     # cut sensitivity relative errors                ca40/ca48  ca48/ca48 fe54/ca48        (NOTE: need to be updates, as these are currently dummy placeholders)
     singleR_src_triplet_cut_syst_rel_err = np.array([0.01,        0.0,    0.01])          # fractional
 
-    
+    # transparency systematic error on triple ratios (As per Larry's suggeation)    
+    singleR_src_triplet_T_syst_rel_err   = np.array([0.01,        0.0,        0.01])  # 1 % relative error on transparency for triplet
+
      # initialize zero arrays to be filled in depending on relative error value
     singleR_A_ca48_src               = np.zeros([3])
     singleR_A_ca48_src_RC_syst_err   = np.zeros([3])
@@ -976,7 +979,10 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_RC_syst_err[1]       = 0
     singleR_A_ca48_src_RC_syst_err[2]       = 0
 
-     
+    # calculate absolute error on triplet ratio due to transparency
+    singleR_A_ca48_src_T_syst_err      = np.sqrt( (singleR_A_ca48_src**2)  *  (singleR_src_triplet_T_syst_rel_err**2) )
+
+    # calculate absolute errors on stats, norm_syst, cut_syst
     singleR_A_ca48_src_stat_err[0]      = singleR_A_ca48_src[0] * np.sqrt(stat_rel_err_src_ca40**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[1]      = singleR_A_ca48_src[1] * np.sqrt(stat_rel_err_src_ca48**2 +  stat_rel_err_src_ca48**2)
     singleR_A_ca48_src_stat_err[2]      = singleR_A_ca48_src[2] * np.sqrt(stat_rel_err_src_fe54**2 +  stat_rel_err_src_ca48**2)
@@ -990,13 +996,13 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_cut_syst_err[2]  = singleR_A_ca48_src[2] * singleR_src_triplet_cut_syst_rel_err[2]
 
     #------ add errors in quadrature ----
-    singleR_A_ca48_src_syst_err[0] = np.sqrt(singleR_A_ca48_src_norm_syst_err[0]**2 + singleR_A_ca48_src_RC_syst_err[0]**2 + singleR_A_ca48_src_cut_syst_err[0]**2)
+    singleR_A_ca48_src_syst_err[0] = np.sqrt(singleR_A_ca48_src_norm_syst_err[0]**2 + singleR_A_ca48_src_RC_syst_err[0]**2 + singleR_A_ca48_src_cut_syst_err[0]**2 + singleR_A_ca48_src_T_syst_err[0]**2 )
     singleR_A_ca48_src_tot_err[0]  = np.sqrt(singleR_A_ca48_src_stat_err[0]**2 + singleR_A_ca48_src_syst_err[0]**2)
 
-    singleR_A_ca48_src_syst_err[1] = np.sqrt(singleR_A_ca48_src_norm_syst_err[1]**2 + singleR_A_ca48_src_RC_syst_err[1]**2 + singleR_A_ca48_src_cut_syst_err[1]**2)
+    singleR_A_ca48_src_syst_err[1] = np.sqrt(singleR_A_ca48_src_norm_syst_err[1]**2 + singleR_A_ca48_src_RC_syst_err[1]**2 + singleR_A_ca48_src_cut_syst_err[1]**2 + singleR_A_ca48_src_T_syst_err[1]**2 )
     singleR_A_ca48_src_tot_err[1]  = np.sqrt(singleR_A_ca48_src_stat_err[1]**2 + singleR_A_ca48_src_syst_err[1]**2)
 
-    singleR_A_ca48_src_syst_err[2] = np.sqrt(singleR_A_ca48_src_norm_syst_err[2]**2 + singleR_A_ca48_src_RC_syst_err[2]**2 + singleR_A_ca48_src_cut_syst_err[2]**2)
+    singleR_A_ca48_src_syst_err[2] = np.sqrt(singleR_A_ca48_src_norm_syst_err[2]**2 + singleR_A_ca48_src_RC_syst_err[2]**2 + singleR_A_ca48_src_cut_syst_err[2]**2 + singleR_A_ca48_src_T_syst_err[2]**2 )
     singleR_A_ca48_src_tot_err[2]  = np.sqrt(singleR_A_ca48_src_stat_err[2]**2 + singleR_A_ca48_src_syst_err[2]**2)
 
     #----------------------------------
