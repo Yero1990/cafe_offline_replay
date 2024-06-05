@@ -1064,7 +1064,7 @@ def write_ratios(ifname='', ofname=''):
         if(targ[i]=="Ca48"):
             singleR_A_ca48_mf_stat_err[i]=singleR_A_ca48_mf_norm_syst_err[i]=singleR_A_ca48_mf_RC_syst_err[i]=singleR_A_ca48_mf_cut_syst_err[i]=singleR_A_ca48_mf_syst_err[i]=singleR_A_ca48_mf_tot_err[i]=0.0
             singleR_A_ca48_src_stat_err[i]=singleR_A_ca48_src_norm_syst_err[i]=singleR_A_ca48_src_RC_syst_err[i]=singleR_A_ca48_src_cut_syst_err[i]=singleR_A_ca48_src_syst_err[i]=singleR_A_ca48_src_tot_err[i]=0.0
-            doubleRt[i]=doubleRt_stat_err[i]=doubleRt_norm_syst_err[i]=doubleRt_RC_syst_err[i]=doubleRt_cut_syst_err[i]=doubleRt_syst_err[i]=doubleRt_tot_err[i]=0.0
+            doubleRt_stat_err[i]=doubleRt_norm_syst_err[i]=doubleRt_RC_syst_err[i]=doubleRt_cut_syst_err[i]=doubleRt_syst_err[i]=doubleRt_tot_err[i]=0.0
         ofile2.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
                                                        singleR_A_ca48_mf[i],singleR_A_ca48_mf_stat_err[i],singleR_A_ca48_mf_norm_syst_err[i],singleR_A_ca48_mf_RC_syst_err[i],singleR_A_ca48_mf_cut_syst_err[i],singleR_A_ca48_mf_syst_err[i],singleR_A_ca48_mf_tot_err[i],
                                                        singleR_A_ca48_src[i],singleR_A_ca48_src_stat_err[i],singleR_A_ca48_src_norm_syst_err[i],singleR_A_ca48_src_RC_syst_err[i],singleR_A_ca48_src_cut_syst_err[i],singleR_A_ca48_src_syst_err[i],singleR_A_ca48_src_tot_err[i],

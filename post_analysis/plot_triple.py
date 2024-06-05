@@ -86,7 +86,7 @@ plt.yticks(fontsize = 15)
 
 #----------
 
-'''
+
 fig2, (ax0, ax1, ax2) = plt.subplots(nrows=3, ncols=1, sharex=True, sharey=False)
 
 
@@ -120,7 +120,7 @@ plt.xticks(NoZ)
 plt.xticks(fontsize = 15)
 plt.yticks(fontsize = 15)
 
-'''
+
 
 
 
