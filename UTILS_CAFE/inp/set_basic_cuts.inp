@@ -89,16 +89,16 @@ c_pBetaNtrk_max = 1.5
 
 # electron-Proton main coincidence time cut [ns] 
 ePctime_cut_flag = 1
-ePctime_cut_min = -2.5
-ePctime_cut_max = 2.5
+ePctime_cut_min = -2.0
+ePctime_cut_max = 2.0
 
 # accidental window selection (right of main coin. peak) choose additional events to the right of accidentals for MF,SRC to lower random stats
-ePctime_cut_min_R = 2.6
-ePctime_cut_max_R = 15.3
+ePctime_cut_min_R = 2.001
+ePctime_cut_max_R = 22.
 
 # accidental window selection (left of main coin. peak)
-ePctime_cut_min_L = -2.6
-ePctime_cut_max_L = -5.1
+ePctime_cut_min_L = -2.0
+ePctime_cut_max_L = -2.0
 
 
 #------PID Cuts------
