@@ -305,6 +305,8 @@ def make_final_summary():
             # where fn = 1/corr_factor, and corr_factor = hms_trk_eff, shms_trk_eff, total_LT, multi_trk_eff, total_charge, proton_transmission
             # (dY_corr / Y_corr)_syst2 = (df1/f1)**2 + (df2/f2)**2 +  . . . (dfn/fn)**2 --> relative norm. syst is sum in quadrature of relative error in corr. factors
 
+
+            
             # *take the average of all runs rather than run-by-run
             # calculate relative systematic uncertainty on hms_trk_eff
             w_avg = -1
@@ -911,11 +913,11 @@ def write_ratios(ifname='', ofname=''):
     # need to figure this out (what is the relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca48 single ratio?
     singleR_A_ca48_mf_RC_syst_err[0]       = 0  # singleR_A_ca48_mf[0] * rad_corr_ratio_mf_rel_err ???
     singleR_A_ca48_mf_RC_syst_err[1]       = 0
-    singleR_A_ca48_mf_RC_syst_err[2]       = 0
+    singleR_A_ca48_mf_RC_syst_err[2]       = singleR_A_ca48_mf[2] * 0.025   # (Larry) suggests we add 2.5% systematic uncertainty to Fe for the rad corr. (Is it 2.5 % relative uncertainty on Fe/Ca48) ?
 
 
     # calculate absolute error on triplet ratio due to transparency
-    singleR_A_ca48_mf_T_syst_err      = np.sqrt( (singleR_A_ca48_mf**2)  *  (singleR_mf_triplet_T_syst_rel_err**2) ) 
+    singleR_A_ca48_mf_T_syst_err      = singleR_A_ca48_mf  *  singleR_mf_triplet_T_syst_rel_err 
 
     # calculate
     singleR_A_ca48_mf_stat_err[0]      = singleR_A_ca48_mf[0] * np.sqrt(stat_rel_err_mf_ca40**2 +  stat_rel_err_mf_ca48**2)
@@ -977,10 +979,10 @@ def write_ratios(ifname='', ofname=''):
     # need to figure this out (what is the relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca48 single ratio?
     singleR_A_ca48_src_RC_syst_err[0]       = 0  # singleR_A_ca48_src[0] * rad_corr_ratio_src_rel_err ???
     singleR_A_ca48_src_RC_syst_err[1]       = 0
-    singleR_A_ca48_src_RC_syst_err[2]       = 0
+    singleR_A_ca48_src_RC_syst_err[2]       = singleR_A_ca48_src[2] * 0.025   # (Larry) suggests we add 2.5% systematic uncertainty to Fe for the rad corr. (Is it 2.5 % relative uncertainty on Fe/Ca48) ?
 
     # calculate absolute error on triplet ratio due to transparency
-    singleR_A_ca48_src_T_syst_err      = np.sqrt( (singleR_A_ca48_src**2)  *  (singleR_src_triplet_T_syst_rel_err**2) )
+    singleR_A_ca48_src_T_syst_err      = singleR_A_ca48_src  *  singleR_src_triplet_T_syst_rel_err 
 
     # calculate absolute errors on stats, norm_syst, cut_syst
     singleR_A_ca48_src_stat_err[0]      = singleR_A_ca48_src[0] * np.sqrt(stat_rel_err_src_ca40**2 +  stat_rel_err_src_ca48**2)
@@ -1092,7 +1094,8 @@ def write_ratios(ifname='', ofname=''):
     # cut sensitivity relative errors    be9/c12  b10/c12 b11/c12 c12/c12 ca40/c12 ca48/c12 fe54/c12 au197/c12
     doubleR_cut_syst_rel_err = np.array([0.014,  0.014,  0.009,  0.0,    0.022,   0.031,   0.024,   0.049]) # fractional
 
-    # radiative correction factor for double ratio
+    # radiative correction factor for double ratio (this factor was already applied to the src/mf in the single ratios, but here is re-defined
+    # for purposes or alculating rad corr factor relative error on double ratio)
     doubleR_RC_corr_factor = rad_corr_ratio / rad_corr_ratio_c12
 
     # initialize zero arrays to be filled in depending on relative error value
