@@ -437,6 +437,7 @@ def make_final_summary():
             if(target[idx]=='Ca48'):
 
                 # --- Ca48 oil contamination correction ---
+                print('cntm_eff ---------> ', cntm_eff)
                 real_Yield_corr = real_Yield_corr * cntm_eff  # apply oil contamination run-by-run           
                 real_Yield_corr_total = real_Yield_corr.sum() # sum the oil-corrected runs 
                 
@@ -583,16 +584,21 @@ def make_final_summary():
                 real_Yield_corr_total_Ca40[kin[jdx]] = real_Yield_corr_total
                 ca40_density = tgt_thick
                 
-            #----------------------------------------
-            # WRITE CAFE NUMERICAL DATA
-            #----------------------------------------
+            #-------------------------------------------------
+            # WRITE CAFE NUMERICAL DATA (for cross-checking)
+            #-------------------------------------------------
 
             print('----------------')
-            print('target: %s' % target[idx].strip() )
+            print('target: %s %s' % (target[idx].strip(), kin[jdx].strip()) )
             print('----------------')
-            print('Y_per_run: %.1f', real_Yield)
+            print('')
+            print('---- raw yield (integrated over Pm) cuts: ALL, corrections: NONE ---')
+            print('Y_per_run: ', real_Yield)
             print('Y_sum = SUM_[Y_per_run]: %.1f' % real_Yield_total)
             print('')
+            print('---- efficiency corrections ---')
+            print('NOTE: the averaged efficiency over all runs is applied on a run-by-run basis')
+            print('** The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)')
             print('Y_eff_per_run = Y_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) ')
             print('Y_eff = SUM_[ Y_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) ] * (1 / pTransm) = SUM [Y_per_run / %.3f] * 1/%.3f' % ( ((1./f1) * (1./f2) * (1./f3) * (1./f4)), 1./f5 ) )
             print('Y_eff = %.1f' % (real_Yield_eff_total))
@@ -604,8 +610,10 @@ def make_final_summary():
             print('pTransm          : %.3f'%(1/f5))
             print('eff_total        : %.3f'%((1./f1) * (1./f2) * (1./f3) * (1./f4) * (1./f5)))
             print('')
+            print('--- additional corrections (if needed) for external/internal target impurities ---')
             if(target[idx]=='Ca40'):
-                print('')
+                print('Ca-40 Oil Contamination efficiency ')
+                print('ca40_cntm_eff_per_run = ', cntm_eff  )
                 print('Y_corr_per_run = Y_eff_per_run * ca40_cntm_eff_per_run  ')
                 print('Y_corr = SUM_[Y_corr_per_run] * 1/pTransm = %.3f * 1./%.3f' % (real_Yield_corr_total, (1/f5) )  )
                 print('Y_corr = %.3f' % (real_Yield_corr_total * f5))
@@ -855,8 +863,8 @@ def write_ratios(ifname='', ofname=''):
 
         else:
             rad_corr_ratio_mf_rel_err =  np.abs(1.-rad_corr_ratio_mf[i]) * 0.20
-            print('np.abs(1.-rad_corr_ratio_mf[i]) = ',np.abs(1.-rad_corr_ratio_mf[i]))
-            print('rad_corr_ratio_mf_rel_err = ',rad_corr_ratio_mf_rel_err )
+            #print('np.abs(1.-rad_corr_ratio_mf[i]) = ',np.abs(1.-rad_corr_ratio_mf[i]))
+            #print('rad_corr_ratio_mf_rel_err = ',rad_corr_ratio_mf_rel_err )
         singleR_A_c12_mf[i]               =  ( mf_sigma_raw_per_proton.values[i] / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf[i]
         singleR_A_c12_mf_RC_syst_err[i]       = singleR_A_c12_mf[i] * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
         singleR_A_c12_mf_stat_err[i]      = singleR_A_c12_mf[i] * np.sqrt(stat_rel_err_mf.values[i]**2 +  stat_rel_err_mf_c12**2) 
@@ -889,8 +897,8 @@ def write_ratios(ifname='', ofname=''):
 
         else:
             rad_corr_ratio_src_rel_err =  np.abs(1.-rad_corr_ratio_src[i]) * 0.20
-            print(' np.abs(1.-rad_corr_ratio_src[i]) = ', np.abs(1.-rad_corr_ratio_src[i]))
-            print('rad_corr_ratio_src_rel_err = ',rad_corr_ratio_src_rel_err)
+            #print(' np.abs(1.-rad_corr_ratio_src[i]) = ', np.abs(1.-rad_corr_ratio_src[i]))
+            #print('rad_corr_ratio_src_rel_err = ',rad_corr_ratio_src_rel_err)
         singleR_A_c12_src[i]               =  ( src_sigma_raw_per_proton.values[i] / src_sigma_raw_per_proton_C12 ) * rad_corr_ratio_src[i]
         singleR_A_c12_src_RC_syst_err[i]       = singleR_A_c12_src[i] * rad_corr_ratio_src_rel_err  # absolute syst. error due to rad corr ratio
         singleR_A_c12_src_stat_err[i]      = singleR_A_c12_src[i] * np.sqrt(stat_rel_err_src.values[i]**2 +  stat_rel_err_src_c12**2)
@@ -926,11 +934,12 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_mf_tot_err       = np.zeros([3])
 
     # apply radiative correction factor to single ratio A/Ca48
+    '''
     print('mf_sigma_raw_per_proton_Ca40 =', mf_sigma_raw_per_proton_Ca40 )
     print('mf_sigma_raw_per_proton_Ca48 =', mf_sigma_raw_per_proton_Ca48 )
     print('rad_corr_mf_ca48 = ', rad_corr_mf_ca48)
     print('rad_corr_mf_ca40 = ', rad_corr_mf_ca40)
-    
+    '''
     singleR_A_ca48_mf[0]               =  ( float(mf_sigma_raw_per_proton_Ca40) / float(mf_sigma_raw_per_proton_Ca48) ) * (rad_corr_mf_ca48 / rad_corr_mf_ca40)
     singleR_A_ca48_mf[1]               =  ( float(mf_sigma_raw_per_proton_Ca48) / float(mf_sigma_raw_per_proton_Ca48) ) * (rad_corr_mf_ca48 / rad_corr_mf_ca48)
     singleR_A_ca48_mf[2]               =  ( float(mf_sigma_raw_per_proton_Fe54) / float(mf_sigma_raw_per_proton_Ca48) ) * (rad_corr_mf_ca48 / rad_corr_mf_fe54)
@@ -991,11 +1000,14 @@ def write_ratios(ifname='', ofname=''):
     singleR_A_ca48_src_syst_err      = np.zeros([3])
     singleR_A_ca48_src_tot_err       = np.zeros([3])
 
+    
     # apply radiative correction factor to single ratio A/Ca48
+    '''
     print('src_sigma_raw_per_proton_Ca40 =', src_sigma_raw_per_proton_Ca40 )
     print('src_sigma_raw_per_proton_Ca48 =', src_sigma_raw_per_proton_Ca48 )
     print('rad_corr_src_ca48 = ', rad_corr_src_ca48)
     print('rad_corr_src_ca40 = ', rad_corr_src_ca40)
+    '''
     
     singleR_A_ca48_src[0]               =  ( float(src_sigma_raw_per_proton_Ca40) / float(src_sigma_raw_per_proton_Ca48) ) * (rad_corr_src_ca48 / rad_corr_src_ca40)
     singleR_A_ca48_src[1]               =  ( float(src_sigma_raw_per_proton_Ca48) / float(src_sigma_raw_per_proton_Ca48) ) * (rad_corr_src_ca48 / rad_corr_src_ca48)
@@ -1063,10 +1075,10 @@ def write_ratios(ifname='', ofname=''):
     for i in range(3):
         if doubleRt_RC_corr_factor[i] == 1:
             doubleRt_RC_corr_factor_rel_err[i] = 0.01  # default
-            print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err[i])
+            #print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err[i])
         else:
             doubleRt_RC_corr_factor_rel_err[i] =  np.abs(1.-doubleRt_RC_corr_factor[i]) * 0.20
-            print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err[i])
+            #print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err[i])
         
     doubleRt                = singleR_per_proton[4:7] / singleR_per_proton_Ca48
     doubleRt_stat_err       = doubleRt * np.sqrt( (singleR_per_proton_stat_err[4:7]/singleR_per_proton[4:7])**2 +  (singleR_per_proton_Ca48_stat_err/singleR_per_proton_Ca48)**2 )
@@ -1074,8 +1086,8 @@ def write_ratios(ifname='', ofname=''):
     doubleRt_norm_syst_err  = doubleRt * np.sqrt( (singleR_per_proton_norm_syst_err[4:7]/singleR_per_proton[4:7])**2 + (singleR_per_proton_Ca48_norm_syst_err/singleR_per_proton_Ca48)**2  )
     doubleRt_cut_syst_err   = doubleRt * doubleRt_cut_syst_rel_err
 
-    print('doubleR_RC_corr_factor = ',doubleRt_RC_corr_factor)
-    print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err)
+    #print('doubleR_RC_corr_factor = ',doubleRt_RC_corr_factor)
+    #print('doubleR_RC_corr_factor_rel_err = ',doubleRt_RC_corr_factor_rel_err)
 
     # -------- add errors in quadrature
     doubleRt_syst_err = np.sqrt(doubleRt_norm_syst_err**2 + doubleRt_RC_syst_err**2 + doubleRt_cut_syst_err**2)
@@ -1136,10 +1148,10 @@ def write_ratios(ifname='', ofname=''):
     for i in range(len(doubleR_RC_corr_factor)):
         if doubleR_RC_corr_factor[i] == 1:
             doubleR_RC_corr_factor_rel_err[i] = 0.01  # default
-            print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
+            #print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
         else:
             doubleR_RC_corr_factor_rel_err[i] =  np.abs(1.-doubleR_RC_corr_factor[i]) * 0.20
-            print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
+            #print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err[i])
         
     doubleR                = singleR_per_proton / singleR_per_proton_C12
     doubleR_stat_err       = doubleR * np.sqrt( (singleR_per_proton_stat_err/singleR_per_proton)**2 +  (singleR_per_proton_C12_stat_err/singleR_per_proton_C12)**2 )
@@ -1147,8 +1159,8 @@ def write_ratios(ifname='', ofname=''):
     doubleR_norm_syst_err  = doubleR * np.sqrt( (singleR_per_proton_norm_syst_err/singleR_per_proton)**2 + (singleR_per_proton_C12_norm_syst_err/singleR_per_proton_C12)**2  )
     doubleR_cut_syst_err   = doubleR * doubleR_cut_syst_rel_err
 
-    print('doubleR_RC_corr_factor = ',doubleR_RC_corr_factor)
-    print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err)
+    #print('doubleR_RC_corr_factor = ',doubleR_RC_corr_factor)
+    #print('doubleR_RC_corr_factor_rel_err = ',doubleR_RC_corr_factor_rel_err)
 
     # -------- add errors in quadrature
     doubleR_syst_err = np.sqrt(doubleR_norm_syst_err**2 + doubleR_RC_syst_err**2 + doubleR_cut_syst_err**2)
