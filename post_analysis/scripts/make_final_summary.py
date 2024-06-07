@@ -403,6 +403,7 @@ def make_final_summary():
             # apply efficiency corrections to real yield  (run-by-run) and then sum over all counts
             #real_Yield_eff       = real_Yield / (hms_trk_eff * shms_trk_eff * total_LT * mult_trk_eff)     # array of runs         
             real_Yield_eff       = real_Yield * f1 * f2 * f3 * f4
+            #print('f1: 1/ hms_trk_eff_avg : hms_htrk_eff_avg = %.3f' % (1./f1) )
             real_Yield_eff_total = real_Yield_eff.sum() * f5                                                # sum of array elements (and apply overall p-transmission factor)
 
             # re-define efficiency yield as corrected yield  to be used to  correct for any target impurities (either internal contamination, or external)
@@ -586,6 +587,30 @@ def make_final_summary():
             # WRITE CAFE NUMERICAL DATA
             #----------------------------------------
 
+            print('----------------')
+            print('target: %s' % target[idx].strip() )
+            print('----------------')
+            print('Y_per_run: %.1f', real_Yield)
+            print('Y_sum = SUM_[Y_per_run]: %.1f' % real_Yield_total)
+            print('')
+            print('Y_eff_per_run = Y_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) ')
+            print('Y_eff = SUM_[ Y_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) ] * (1 / pTransm) = SUM [Y_per_run / %.3f] * 1/%.3f' % ( ((1./f1) * (1./f2) * (1./f3) * (1./f4)), 1./f5 ) )
+            print('Y_eff = %.1f' % (real_Yield_eff_total))
+            print('')
+            print('htrk_eff_avg     : %.3f'%(1/f1))
+            print('etrk_eff_avg     : %.3f'%(1/f2))
+            print('tLT_avg          : %.3f'%(1/f3))
+            print('emult_trk_eff_avg: %.3f'%(1/f4))
+            print('pTransm          : %.3f'%(1/f5))
+            print('eff_total        : %.3f'%((1./f1) * (1./f2) * (1./f3) * (1./f4) * (1./f5)))
+            print('')
+            if(target[idx]=='Ca40'):
+                print('')
+                print('Y_corr_per_run = Y_eff_per_run * ca40_cntm_eff_per_run  ')
+                print('Y_corr = SUM_[Y_corr_per_run] * 1/pTransm = %.3f * 1./%.3f' % (real_Yield_corr_total, (1/f5) )  )
+                print('Y_corr = %.3f' % (real_Yield_corr_total * f5))
+            print('')
+            print('----------------')
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, rad_corr, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
