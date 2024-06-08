@@ -425,7 +425,7 @@ def make_final_summary():
 
                 # --- Ca40 oil contamination correction ---
                 real_Yield_corr = real_Yield_corr * cntm_eff  # apply oil contamination run-by-run           
-                real_Yield_corr_total = real_Yield_corr.sum() # sum the oil-corrected runs 
+                real_Yield_corr_total = real_Yield_corr.sum()  * f5  # sum the oil-corrected runs  (and apply proton transmission factor)
                 
                 # define raw cross section: corrected yield normalized by  total charge, transparency 
                 sigma_raw_per_nucleon_per_run = real_Yield_corr / (charge * T * tgt_thick)       # counts / (mC * g/cm^2)
@@ -439,7 +439,7 @@ def make_final_summary():
                 # --- Ca48 oil contamination correction ---
                 print('cntm_eff ---------> ', cntm_eff)
                 real_Yield_corr = real_Yield_corr * cntm_eff  # apply oil contamination run-by-run           
-                real_Yield_corr_total = real_Yield_corr.sum() # sum the oil-corrected runs 
+                real_Yield_corr_total = real_Yield_corr.sum() * f5  # sum the oil-corrected runs (and apply proton transmission factor)
                 
 
                 # --- Ca48 "Ca40 impurity" correction ---
@@ -451,8 +451,10 @@ def make_final_summary():
 
                 ca40_cntm         =  (1. - ca48_purity) * tgt_thick # calculate amount of ca40 in ca48 (g/cm2)
                 ca48_density_corr =  tgt_thick - ca40_cntm          # corrected ca48 target thickness (g/cm2)
-                real_Yield_corr_total = real_Yield_corr_total - real_Yield_corr_total_Ca40[kin[jdx]] * (ca40_cntm / ca40_density) * (total_charge/Q_Ca40[kin[jdx]])
 
+              
+                real_Yield_corr_total = real_Yield_corr_total - real_Yield_corr_total_Ca40[kin[jdx]] * (ca40_cntm / ca40_density) * (total_charge/Q_Ca40[kin[jdx]])
+  
                 # define raw cross section: corrected yield normalized by  total charge, transparency and "CORRECTED" target density (g/cm2),
                 sigma_raw_per_nucleon_per_run = real_Yield_corr / (charge * T * ca48_density_corr)       # counts / (mC * g/cm^2)
                 sigma_raw_per_nucleon =  real_Yield_corr_total / (total_charge * T * ca48_density_corr)  # counts / (mC * g/cm^2)
@@ -487,8 +489,8 @@ def make_final_summary():
                 mult_trk_eff_c12     = df_c12['multi_track_eff']
                 mult_trk_eff_c12_err = df_c12['multi_track_eff_err']
 
-                real_Yield_corr_c12 = real_Yield_c12 / (hms_trk_eff_c12*shms_trk_eff_c12*total_LT_c12*mult_trk_eff_c12*pTrms_eff) 
-                real_Yield_corr_total_c12 = real_Yield_corr_c12.sum()
+                real_Yield_corr_c12 = real_Yield_c12 / (hms_trk_eff_c12*shms_trk_eff_c12*total_LT_c12*mult_trk_eff_c12) 
+                real_Yield_corr_total_c12 = real_Yield_corr_c12.sum() / pTrms_eff  # apply overall transmission factor
                 
                 # calculate the c12 density contribution in b4c (subtracted the boron contribution from the b4c density)
                 boron_density_corr = ( 4.*A / (4.*A + 12) ) * tgt_thick   # boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)
@@ -578,7 +580,7 @@ def make_final_summary():
                 #ax3.set_xscale('log')
                 
                 
-            # SAVE SPECIFIC Ca40 TARGET INFO TO BE USED IN CORRECTIONS IN Ca48
+            # SAVE SPECIFIC Ca40 TARGET INFO TO BE USED IN CORRECTIONS IN Ca48 (assumed Ca40 is read in first to store this value)
             if(target[idx]=='Ca40'):
                 Q_Ca40[kin[jdx]] = total_charge
                 real_Yield_corr_total_Ca40[kin[jdx]] = real_Yield_corr_total
@@ -593,7 +595,7 @@ def make_final_summary():
             print('----------------')
             print('')
             print('---- raw yield (integrated over Pm) cuts: ALL, corrections: NONE ---')
-            print('Y_per_run: ', real_Yield)
+            print('Y_per_run: ', df['real_Yield'].to_numpy())
             print('Y_sum = SUM_[Y_per_run]: %.1f' % real_Yield_total)
             print('')
             print('---- efficiency corrections ---')
@@ -611,13 +613,48 @@ def make_final_summary():
             print('eff_total        : %.3f'%((1./f1) * (1./f2) * (1./f3) * (1./f4) * (1./f5)))
             print('')
             print('--- additional corrections (if needed) for external/internal target impurities ---')
+            print('')
+            if(target[idx]=='B10' or target[idx]=='B11'):
+                print(' --> apply carbon subtraction to boron carbide (B4C10 or B4C11)')
+                print('')
+                print('a. calculate the c12 density contribution in b4c (subtracted the boron contribution from the b4c density)')
+                print('')
+                print('# boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)')
+                print('boron_density_corr = ( 4.*A / (4.*A + 12) ) * B4%d_tgt_thick = ( 4.*%d / (4.*%d + 12) ) * %.5f = %.5f '% (A, A, A, tgt_thick,  boron_density_corr))
+                print('# c12 density contribution in B4C')
+                print('c12_density_b4c = B4%d_tgt_thick -  boron_density_corr = %.5f - %.5f = %.5f g/cm2 '%(A,  tgt_thick, boron_density_corr, c12_density_b4c))
+                print('')
+                print('b. subtract c12 contribution from b4c yield')
+                print('Y_corr = Y_eff - Y_eff_c12 * (c12_density_b4c/c12_density) * (Q_%s / Q_C12)' % (target[idx]))
+                print('       = %.3f - %.3f * (%.5f/%.5f) * (%.3f/%.3f) '% (real_Yield_eff_total, real_Yield_corr_total_c12, c12_density_b4c, c12_density, total_charge, c12_charge) )
+                print('Y_corr = %.3f'% real_Yield_corr_total )
+                
             if(target[idx]=='Ca40'):
-                print('Ca-40 Oil Contamination efficiency ')
+                print(' --> apply Ca-40 Oil Contamination correction (run-by-run) ')
                 print('ca40_cntm_eff_per_run = ', cntm_eff  )
                 print('Y_corr_per_run = Y_eff_per_run * ca40_cntm_eff_per_run  ')
                 print('Y_corr = SUM_[Y_corr_per_run] * 1/pTransm = %.3f * 1./%.3f' % (real_Yield_corr_total, (1/f5) )  )
-                print('Y_corr = %.3f' % (real_Yield_corr_total * f5))
+                print('Y_corr = %.3f' % (real_Yield_corr_total))
             print('')
+            if(target[idx]=='Ca48'):
+                print(' --> apply Ca-48 Oil Contamination correction (run-by-run) ')
+                print('ca48_cntm_eff_per_run = ', cntm_eff  )
+                print('Y_corr_per_run = Y_eff_per_run * ca48_cntm_eff_per_run  ')
+                print('Y_corr = SUM_[Y_corr_per_run] * 1/pTransm = %.3f * 1./%.3f (apply overall proton transmission factor to SUM)' % (real_Yield_corr_total, (1/f5) )  )
+                print('Y_corr = %.3f' % (real_Yield_corr.sum() * f5))
+                print('')
+                print(' --> apply Ca48 "Ca40 impurity" correction ')
+                print('  Ca48 is only ~90.5 % pure, the remaining is Ca40. The 48Ca target is 1051 mg/cm2.' )
+                print('ca48_purity: %.3f'% ca48_purity)
+                print('amount of ca40 in ca48       : ca40_cntm =  (1. - ca48_purity) * ca48_tgt_thick = %.5f  (g/cm2)'% ca40_cntm)
+                print('corrected ca48 tgt thickness : ca48_density_corr =  tgt_thick - ca40_cntm  = %.5f (g/cm2)'% ca48_density_corr)
+                print('Y_corr = Y_corr - Y_corr_ca40 * (ca40_cntm / ca40_density) * (Q_ca48 / Q_ca40) ')
+                print('       = %.3f - %.3f * (%.5f / %.5f) * (%.3f / %.3f)' % (real_Yield_corr.sum() * f5, real_Yield_corr_total_Ca40[kin[jdx]], ca40_cntm, ca40_density, total_charge, Q_Ca40[kin[jdx]]) )
+                print('Y_corr = %.3f' % real_Yield_corr_total)
+            print('')
+            
+
+            
             print('----------------')
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, rad_corr, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
