@@ -258,9 +258,14 @@ def make_final_summary():
             real_Yield   = df['real_Yield']  
             real_Yield_stat_err   = df['real_Yield_err']  # absolute statistical error on raw counts, calculated as sqrt(counts)   
 
+
+            hdid         = df['h_did']
+            hshould      = df['h_should']
             hms_trk_eff  = df['hTrkEff']           
             hms_trk_eff_err = df['hTrkEff_err']
 
+            pdid         = df['p_did']
+            pshould      = df['p_should']
             shms_trk_eff = df['pTrkEff']
             shms_trk_eff_err = df['pTrkEff_err']
 
