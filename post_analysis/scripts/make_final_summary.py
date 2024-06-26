@@ -544,9 +544,19 @@ def make_final_summary():
 
                 # define raw cross section: corrected yield normalized by  total charge, transparency and "CORRECTED" target density (g/cm2),
                 sigma_raw_per_nucleon      =  real_Yield_corr_total /  (total_charge * T * boron_density_corr)  # counts / (mC * g/cm^2)
+                print('')
+                print('==============> ', target[idx], '', kin[jdx],'<=================')
+                print('real_Yield_corr_total: %.4f'%(real_Yield_corr_total))
+                print('total_charge: %.4f'%(total_charge))
+                print('T: %.4f'%T)
+                print('boron_density_corr: %.5f'%(boron_density_corr))
+                print('sigma_raw_per_nucleon: %.4f'% (sigma_raw_per_nucleon))
+
+                print('')
+                
                 sigma_raw_per_nucleus      =  sigma_raw_per_nucleon * A
                 sigma_raw_per_proton       =  sigma_raw_per_nucleon * A / Z
-                tgt_thick_corr             = boron_density_corr               # re-define corrected target thickness (to be written to file)            
+                tgt_thick_corr             =  boron_density_corr               # re-define corrected target thickness (to be written to file)            
 
 
             show_plots=False
@@ -727,24 +737,76 @@ def make_final_summary():
                 print('yield_corr = %.3f --> yield_eff corrected for external/internal impurities (if any)' % real_Yield_corr_total)
             print('')
             print('')
-            print('///////////////////////////')
-            print('// raw cross-sections    //')
-            print('///////////////////////////')
-            print('')
-            print('total_charge Q (mC): %.3f '%(total_charge))
-            print('nuclear transparency T: %.4f' % T)
-            print('A: %d, Z: %d'%(A, Z))
-            print('target thickness (g/cm2): %.5f '%(tgt_thick))
-            print('')
-            print('sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)')
-            print('sigma_raw_per_nucleon =  %.3f / (%.3f * %.4f * %.5f)'%(real_Yield_corr_total, total_charge, T, tgt_thick ))
-            print('sigma_raw_per_nucleon = %.3f'% (sigma_raw_per_nucleon))
-            print('')
-            print('sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z')
-            print('sigma_raw_per_proton =  %.3f * %d / %d' %(sigma_raw_per_nucleon, A, Z))
-            print('sigma_raw_per_proton =  %.3f'%(sigma_raw_per_proton))
-            print('')
 
+
+
+            # C.Y. FIXME
+            # need to add calculations for corrected target thickness for B10, B11 (add a condition for only B10, 11 to use the boron density correction)
+            # print('corrected target thickness (g/cm2): %.5f '%(boron_density_corr))
+
+            # same thing for Ca48
+
+            if(target[idx]=='B10' or target[idx]=='B11'):
+                print('///////////////////////////')
+                print('// raw cross-sections    //')
+                print('///////////////////////////')
+                print('')
+                print('total_charge Q (mC): %.3f '%(total_charge))
+                print('nuclear transparency T: %.4f' % T)
+                print('A: %d, Z: %d'%(A, Z))
+                print('target thickness (g/cm2): %.5f '%(tgt_thick))
+                print('corrected target thickness (g/cm2): %.5f '%(boron_density_corr))
+                print('')
+                print('sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)')
+                print('sigma_raw_per_nucleon =  %.3f / (%.3f * %.4f * %.5f)'%(real_Yield_corr_total, total_charge, T, boron_density_corr ))
+                print('sigma_raw_per_nucleon = %.3f'% (sigma_raw_per_nucleon))
+                print('')
+                print('sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z')
+                print('sigma_raw_per_proton =  %.3f * %d / %d' %(sigma_raw_per_nucleon, A, Z))
+                print('sigma_raw_per_proton =  %.3f'%(sigma_raw_per_proton))
+                print('')
+
+            elif(target[idx]=='Ca48'):
+                print('///////////////////////////')
+                print('// raw cross-sections    //')
+                print('///////////////////////////')
+                print('')
+                print('total_charge Q (mC): %.3f '%(total_charge))
+                print('nuclear transparency T: %.4f' % T)
+                print('A: %d, Z: %d'%(A, Z))
+                print('target thickness (g/cm2): %.5f '%(tgt_thick))
+                print('corrected target thickness (g/cm2): %.5f '%(tgt_thick))
+                print('')
+                print('sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)')
+                print('sigma_raw_per_nucleon =  %.3f / (%.3f * %.4f * %.5f)'%(real_Yield_corr_total, total_charge, T, ca48_density_corr ))
+                print('sigma_raw_per_nucleon = %.3f'% (sigma_raw_per_nucleon))
+                print('')
+                print('sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z')
+                print('sigma_raw_per_proton =  %.3f * %d / %d' %(sigma_raw_per_nucleon, A, Z))
+                print('sigma_raw_per_proton =  %.3f'%(sigma_raw_per_proton))
+                print('')
+
+            else:
+                print('///////////////////////////')
+                print('// raw cross-sections    //')
+                print('///////////////////////////')
+                print('')
+                print('total_charge Q (mC): %.3f '%(total_charge))
+                print('nuclear transparency T: %.4f' % T)
+                print('A: %d, Z: %d'%(A, Z))
+                print('target thickness (g/cm2): %.5f '%(tgt_thick))
+                print('')
+                print('sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)')
+                print('sigma_raw_per_nucleon =  %.3f / (%.3f * %.4f * %.5f)'%(real_Yield_corr_total, total_charge, T, tgt_thick ))
+                print('sigma_raw_per_nucleon = %.3f'% (sigma_raw_per_nucleon))
+                print('')
+                print('sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z')
+                print('sigma_raw_per_proton =  %.3f * %d / %d' %(sigma_raw_per_nucleon, A, Z))
+                print('sigma_raw_per_proton =  %.3f'%(sigma_raw_per_proton))
+                print('')
+
+            
+            
             # Write numerical data to final summary file
             ofile.write("%s,%s,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.4f,%.4f,%.3f,%.1f,%.1f,%.1f\n" % (target[idx].strip(), kin[jdx].strip(), total_beam_time, total_avg_current, total_charge, real_Yield_total, real_Yield_eff_total, real_Yield_corr_total, rad_corr, sigma_raw_per_nucleon, sigma_raw_per_proton, sigma_raw_per_nucleus, stat_rel_err, norm_syst_rel_err, tgt_thick, tgt_thick_corr, T, N, Z, A) )
 
