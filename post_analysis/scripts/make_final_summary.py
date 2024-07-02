@@ -775,7 +775,7 @@ def make_final_summary():
                 print('nuclear transparency T: %.4f' % T)
                 print('A: %d, Z: %d'%(A, Z))
                 print('target thickness (g/cm2): %.5f '%(tgt_thick))
-                print('corrected target thickness (g/cm2): %.5f '%(tgt_thick))
+                print('corrected target thickness (g/cm2): %.5f '%(ca48_density_corr))
                 print('')
                 print('sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)')
                 print('sigma_raw_per_nucleon =  %.3f / (%.3f * %.4f * %.5f)'%(real_Yield_corr_total, total_charge, T, ca48_density_corr ))
@@ -1066,7 +1066,7 @@ def write_ratios(ifname='', ofname=''):
     #--- A_SRC / C12_SRC (per proton) ---
 
     # cut sensitivity relative errors       be9/c12  b10/c12 b11/c12 c12/c12 ca40/c12 ca48/c12 fe54/c12 au197/c12
-    singleR_src_cut_syst_rel_err = np.array([0.013,  0.016,  0.009,  0.0,    0.022,   0.031,   0.024,   0.049]) # fractional
+    singleR_src_cut_syst_rel_err = np.array([0.013,  0.010,  0.009,  0.0,    0.022,   0.031,   0.024,   0.049]) # fractional
     
     # similar treatment of radiative corrections as for the A_MF / C12_MF case above
     rad_corr_ratio_src = ( rad_corr_src_c12 / rad_corr_src )
@@ -1104,10 +1104,10 @@ def write_ratios(ifname='', ofname=''):
     #--- A_MF / Ca48_MF (per proton) ---
     #-------------------------------------------------
 
-    # cut sensitivity relative errors               ca40/ca48    ca48/ca48   fe54/ca48        (NOTE: need to be updates, as these are currently dummy placeholders)
-    singleR_mf_triplet_cut_syst_rel_err = np.array([0.01,        0.0,        0.01])          # fractional
+    # cut sensitivity relative errors               ca40/ca48    ca48/ca48   fe54/ca48        (NOTE: updated from Noah's values)
+    singleR_mf_triplet_cut_syst_rel_err = np.array([0.003,        0.0,        0.004])          # fractional
 
-    # transparency systematic error on triple ratios (As per Larry's suggeation)    
+    # transparency systematic error on triple ratios (As per Larry's suggestion)    
     singleR_mf_triplet_T_syst_rel_err   = np.array([0.01,        0.0,        0.01])  # 1 % relative error on transparency for triplet
 
     
@@ -1172,7 +1172,7 @@ def write_ratios(ifname='', ofname=''):
     #--- A_SRC / Ca48_SRC (per proton) ---
     #-------------------------------------------------
 
-    # cut sensitivity relative errors                ca40/ca48  ca48/ca48 fe54/ca48        (NOTE: need to be updates, as these are currently dummy placeholders)
+    # cut sensitivity relative errors                ca40/ca48  ca48/ca48 fe54/ca48        (NOTE: updated from Noah's values)
     singleR_src_triplet_cut_syst_rel_err = np.array([0.01,        0.0,    0.01])          # fractional
 
     # transparency systematic error on triple ratios (As per Larry's suggeation)    
@@ -1244,8 +1244,8 @@ def write_ratios(ifname='', ofname=''):
     #                           --------------------
     
 
-    # cut sensitivity relative errors    ca40/ca48   ca48/ca48   fe54/ca48  (Noah needs to give updated numbers on this uncertainty)
-    doubleRt_cut_syst_rel_err = np.array([0.01,       0.0,        0.01]) # fractional 
+    # cut sensitivity relative errors    ca40/ca48   ca48/ca48   fe54/ca48  (updated from Noah's values)
+    doubleRt_cut_syst_rel_err = np.array([0.01,       0.0,        0.011]) # fractional 
 
     # radiative correction factor for double ratio
     doubleRt_RC_corr_factor = rad_corr_ratio[4:7] / rad_corr_ratio_ca48
