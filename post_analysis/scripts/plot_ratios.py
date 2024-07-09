@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import sys
 
 
+# brief: script to make plots of CaFe single and double ratios to C12
+
 if(len(sys.argv)!=2):
     print('''\n
     -----------------------------------------
@@ -80,12 +82,14 @@ singleR_A_c12_src_osu        = np.array(df['singleR_A_c12_src_osu'],  dtype=floa
 doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=float)
 
     
-# Ryckabush model: Colle15 double ratios (A_SRC/A_MF) / (C12_SRC/C12_MF)
+# Ryckabush model: Colle15 double ratios (A_SRC/A_MF) / (C12_SRC/C12_MF) 
 #A_colle       = np.array([3, 4, 9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
 #Z_colle       = np.array([2, 2, 4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
 #N_colle       = A_colle - Z_colle
 #NoZ_colle     = N_colle / Z_colle
 #doubleR_colle = np.array([0.3417, 0.6835, 0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+
+# same as above (colle), but ommitting some nuclei not relevant for CaFe comparison
 A_colle       = np.array([9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
 Z_colle       = np.array([4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
 N_colle       = A_colle - Z_colle
@@ -122,7 +126,7 @@ NmZoA = df['NmZoA']
 y_rel = np.zeros([len(doubleR_Jmodel)])  # y-axis (at zero) for plotting relative errors
 
 compare_flag = False  # compare to previous pass ?
-compare_simc_flag = True  #compare to simc ?
+compare_simc_flag = False  #compare to simc ?
 error_breakdown = False     # flag to display breakdown of absolute uncertainties in the ratios
 rel_err_breakdown = False   # flag to display breakdown of relative uncertainties in the ratios
 
@@ -159,8 +163,9 @@ if(compare_simc_flag):
 
 
 
+# for comparing data to previous passes
 if(compare_flag):
-    fname= 'cafe_ratios_pass2.csv' 
+    fname= 'cafe_ratios_pass??.csv' 
 
     # read input file
     df = pd.read_csv(fname, comment='#')
@@ -181,10 +186,11 @@ if(compare_flag):
     NoZ_2 = df['NoZ'] 
     NmZoA_2 = df['NmZoA'] 
 
-'''
+
 #--------------------------
 # PLOT Double Ratio vs. A
 #--------------------------
+'''
 print(' 100*doubleR_stat_err/doubleR ======> ',  100*doubleR_stat_err/doubleR)
 fig1= plt.figure()
 
@@ -254,7 +260,8 @@ else:
         elif tgt=="Ca40":
             x = A[i] - 12
         elif tgt=="Au197":
-            x = A[i] +15
+            x = A[i] - 12
+            y = doubleR[i] + 0.15
         elif tgt=="B11":
             x = A[i] - 2
             y = doubleR[i] + 0.05
@@ -266,14 +273,14 @@ else:
         plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_doubleR_vs_A.pdf')
+#plt.savefig('cafe_doubleR_vs_A.pdf')
 '''
 
-'''
+
 #--------------------------
 # PLOT Single Ratio vs. A
 #--------------------------
-
+'''
 #--------------------------
 # Single Ratio A_SRC / A_MF 
 #--------------------------
@@ -341,7 +348,7 @@ else:
         plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_singleR_vs_A.pdf')
+#plt.savefig('cafe_singleR_vs_A.pdf')
 
 # --------------------------------------------
 '''
@@ -350,6 +357,7 @@ plt.savefig('cafe_singleR_vs_A.pdf')
 #-----------------------------
 # Single Ratio A_MF / C12_MF 
 #-----------------------------
+
 fig1_a2c_mf= plt.figure()
 
 if(error_breakdown):
@@ -368,12 +376,12 @@ elif(rel_err_breakdown):
     plt.plot(A, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
     
 else:
-    #plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
     plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
 
     # PLOT MODELS
-    #plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
-    #plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+    plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
+    plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
 
 
 if(compare_flag ):
@@ -385,6 +393,7 @@ plt.xscale('log')
 
 plt.xticks(fontsize = 15)
 plt.yticks(fontsize = 15)
+plt.ylim(0.7, 2.)
 
 if(rel_err_breakdown):
     plt.title('CaFe MF Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
@@ -395,6 +404,7 @@ else:
     plt.xlabel('A', fontsize=16)
     plt.ylabel('A / C12', fontsize=16) 
 
+    
     # add target names to plot
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
@@ -422,15 +432,16 @@ else:
             y = y + 0.07
         plt.text(x, y, tgt)
     
-plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_MFsingleR_vs_A.pdf')
+plt.legend(frameon=False, fontsize=16, loc='upper left')
+#plt.savefig('cafe_MFsingleR_vs_A.pdf')
 # --------------------------------------------
 
 
-'''
+
 #-----------------------------
 # Single Ratio A_SRC / C12_SRC 
 #-----------------------------
+'''
 fig1_a2c= plt.figure()
 
 if(error_breakdown):
@@ -474,6 +485,7 @@ else:
     plt.xlabel('A', fontsize=16)
     plt.ylabel('A / C12', fontsize=16)
 
+    
     # add target names to plot
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
@@ -511,15 +523,15 @@ else:
         plt.text(x, y, tgt)
     
 plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_SRCsingleR_vs_A.pdf')
+#plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
 '''
 
-'''
+
 #--------------------------
 # PLOT Single Ratio vs. N/Z
 #--------------------------
-
+'''
 # A_SRC / A_MF
 fig2_s = plt.figure()
 
@@ -571,8 +583,9 @@ else:
 
 plt.legend(frameon=False, fontsize=16)
 plt.savefig('cafe_singleR_vs_NoZ.pdf')
+'''
 
-
+'''
 # A_SRC / C12_SRC
 fig2_s_src = plt.figure()
 if(error_breakdown):
@@ -605,6 +618,7 @@ if(compare_flag ):
 
 plt.xticks(fontsize = 15)
 plt.yticks(fontsize = 15)
+plt.ylim(0.7,2.5)
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC Single Ratio (per proton) Rel. Error vs. N/Z', fontsize=18)
@@ -622,8 +636,8 @@ else:
  
         plt.text(x, y, tgt)
 
-plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_SRCsingleR_vs_NoZ.pdf')
+plt.legend(frameon=False, fontsize=16, loc='upper left')
+#plt.savefig('cafe_SRCsingleR_vs_NoZ.pdf')
 
 
 #-----------------------------
@@ -664,6 +678,7 @@ if(compare_simc_flag ):
 
 plt.xticks(fontsize = 15)
 plt.yticks(fontsize = 15)
+plt.ylim(0.87,1.4)
 
 if(rel_err_breakdown):
     plt.title('CaFe MF Single Ratio (per proton) Rel. Error vs. N/Z', fontsize=18)
@@ -681,16 +696,16 @@ else:
  
         plt.text(x, y, tgt)
     
-plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_MFsingleR_vs_NoZ.pdf')
+plt.legend(frameon=False, fontsize=16, loc='upper left')
+#plt.savefig('cafe_MFsingleR_vs_NoZ.pdf')
 # --------------------------------------------
 '''
 
 
-'''
 #--------------------------
 # PLOT Double Ratio vs. N/Z
 #--------------------------
+'''
 fig2 = plt.figure()
 if(error_breakdown):
     # break-down of syst. contributions
@@ -752,13 +767,15 @@ else:
         plt.text(x, y, tgt)
 
 plt.legend(frameon=False, fontsize=16)
-plt.savefig('cafe_doubleR_vs_NoZ.pdf')
-'''
+#plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
 '''
+
+
 #-------------------------------
 # PLOT Double Ratio vs. (N-Z)/A
 #-------------------------------
+'''
 fig3 = plt.figure()
 
 if(error_breakdown):

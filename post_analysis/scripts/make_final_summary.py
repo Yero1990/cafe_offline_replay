@@ -1026,7 +1026,7 @@ def write_ratios(ifname='', ofname=''):
     #--- A_MF / C12_MF (per proton) -should be flat ---
 
     # cut sensitivity relative errors       be9/c12 b10/c12 b11/c12 c12/c12 ca40/c12 ca48/c12 fe54/c12 au197/c12 
-    singleR_mf_cut_syst_rel_err = np.array([0.004,  0.002,  0.001,  0.0,    0.003,   0.005,   0.003,   0.007])  # fractional
+    singleR_mf_cut_syst_rel_err = np.array([0.004,  0.002,  0.001,  0.0,    0.003,   0.005,   0.003,   0.007])  # fractional (updated from Noah)
 
     # rad correction factor for MF/C12_MF single ratio
     # has a ratio = 1 for light nuclei --> assign a 5% relative error on the ratio
@@ -1066,7 +1066,7 @@ def write_ratios(ifname='', ofname=''):
     #--- A_SRC / C12_SRC (per proton) ---
 
     # cut sensitivity relative errors       be9/c12  b10/c12 b11/c12 c12/c12 ca40/c12 ca48/c12 fe54/c12 au197/c12
-    singleR_src_cut_syst_rel_err = np.array([0.013,  0.010,  0.009,  0.0,    0.022,   0.031,   0.024,   0.049]) # fractional
+    singleR_src_cut_syst_rel_err = np.array([0.013,  0.010,  0.009,  0.0,    0.022,   0.031,   0.024,   0.049]) # fractional err (updated from Noah) 
     
     # similar treatment of radiative corrections as for the A_MF / C12_MF case above
     rad_corr_ratio_src = ( rad_corr_src_c12 / rad_corr_src )
@@ -1107,8 +1107,15 @@ def write_ratios(ifname='', ofname=''):
     # cut sensitivity relative errors               ca40/ca48    ca48/ca48   fe54/ca48        (NOTE: updated from Noah's values)
     singleR_mf_triplet_cut_syst_rel_err = np.array([0.003,        0.0,        0.004])          # fractional
 
-    # transparency systematic error on triple ratios (As per Larry's suggestion)    
-    singleR_mf_triplet_T_syst_rel_err   = np.array([0.01,        0.0,        0.01])  # 1 % relative error on transparency for triplet
+    # transparency systematic error on triple ratios (As per Larry's suggestion) 
+    # FOR single ratios relative of R = A / Ca48, set the relative error dR/R as follows: 
+    # (for A = 40, 48, 54)  
+    # - For R = 40/48,   T = 40**-1/3 / 48**-1/3 ~ 1.06265 (6 % difference) 
+    # dR / R ~ 15 % of 6 % —>  0.15 * 0.06 = 0.009 (or ~ 0.9 %)  
+    # - For R = 54/48,   T = 54**-1/3 / 48**-1/3 ~ 0.961499 (4 % difference) 
+    # dR / R ~ 15 % of 4 % —>  0.15 * 0.04 = 0.006 (or ~ 0.6 %)
+    #                                              ca40/ca48    ca48/ca48   fe54/ca48   
+    singleR_mf_triplet_T_syst_rel_err   = np.array([0.009,        0.0,        0.006])  # (updated values from comments above)
 
     
      # initialize zero arrays to be filled in depending on relative error value
@@ -1176,7 +1183,7 @@ def write_ratios(ifname='', ofname=''):
     singleR_src_triplet_cut_syst_rel_err = np.array([0.01,        0.0,    0.01])          # fractional
 
     # transparency systematic error on triple ratios (As per Larry's suggeation)    
-    singleR_src_triplet_T_syst_rel_err   = np.array([0.01,        0.0,        0.01])  # 1 % relative error on transparency for triplet
+    singleR_src_triplet_T_syst_rel_err   = np.array([0.009,        0.0,        0.006]) # (updated values from comments under the A / Ca48 MF part, above)
 
      # initialize zero arrays to be filled in depending on relative error value
     singleR_A_ca48_src               = np.zeros([3])
@@ -1204,7 +1211,7 @@ def write_ratios(ifname='', ofname=''):
     # need to figure this out (what is the relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca48 single ratio?
     singleR_A_ca48_src_RC_syst_err[0]       = 0  # singleR_A_ca48_src[0] * rad_corr_ratio_src_rel_err ???
     singleR_A_ca48_src_RC_syst_err[1]       = 0
-    singleR_A_ca48_src_RC_syst_err[2]       = singleR_A_ca48_src[2] * 0.025   # (Larry) suggests we add 2.5% systematic uncertainty to Fe for the rad corr. (Is it 2.5 % relative uncertainty on Fe/Ca48) ?
+    singleR_A_ca48_src_RC_syst_err[2]       = singleR_A_ca48_src[2] * 0.025   # (Larry) suggests we add 2.5% systematic uncertainty to Fe for the rad corr. 
 
     # calculate absolute error on triplet ratio due to transparency
     singleR_A_ca48_src_T_syst_err      = singleR_A_ca48_src  *  singleR_src_triplet_T_syst_rel_err 
