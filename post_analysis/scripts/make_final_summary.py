@@ -177,22 +177,22 @@ def make_final_summary():
 
             rad_corr = -1000  # initiate default radiative correction factor  Y_rad / Y_norad (usually < 1)
             
-            # set radiative correction factors (based on studies by N. Swan)
+            # set radiative correction factors (based on studies by N. Swan, Jul 9, 2024)
             if(kin[jdx]=='MF'):
                 if(target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12'):
-                    rad_corr = 0.6
+                    rad_corr = 0.618
                 if(target[idx]=='Ca40' or target[idx]=='Ca48' or target[idx]=='Fe54'):
-                    rad_corr = 0.51
+                    rad_corr = 0.577
                 if(target[idx]=='Au197'):
-                    rad_corr = 0.38
+                    rad_corr = 0.451
             
             if(kin[jdx]=='SRC'):
                 if(target[idx]=='Be9' or target[idx]=='B10' or target[idx]=='B11' or target[idx]=='C12'):
-                    rad_corr = 0.63
+                    rad_corr = 0.742
                 if(target[idx]=='Ca40' or target[idx]=='Ca48' or target[idx]=='Fe54'):
-                    rad_corr = 0.52
+                    rad_corr = 0.734
                 if(target[idx]=='Au197'):
-                    rad_corr = 0.40
+                    rad_corr = 0.604
 
             # set generic summary file name
             summary_file_path = 'summary_files/%s/cafe_prod_%s_%s_report_summary.csv' % (npass,target[idx], kin[jdx])
@@ -1054,6 +1054,13 @@ def write_ratios(ifname='', ofname=''):
             #print('np.abs(1.-rad_corr_ratio_mf[i]) = ',np.abs(1.-rad_corr_ratio_mf[i]))
             #print('rad_corr_ratio_mf_rel_err = ',rad_corr_ratio_mf_rel_err )
         singleR_A_c12_mf[i]               =  ( mf_sigma_raw_per_proton.values[i] / mf_sigma_raw_per_proton_C12 ) * rad_corr_ratio_mf[i]
+        print('------>')
+        print('singleR_A_c12_mf = %.4f'%( singleR_A_c12_mf[i]))
+        print('mf_sigma_raw_per_proton.values[i]: %.4f'%mf_sigma_raw_per_proton.values[i])
+        print('mf_sigma_raw_per_proton_C12: %.4f'% mf_sigma_raw_per_proton_C12)
+        print('rad_corr_ratio_mf[i]: %.4f'%rad_corr_ratio_mf[i])
+        print('')
+        
         singleR_A_c12_mf_RC_syst_err[i]       = singleR_A_c12_mf[i] * rad_corr_ratio_mf_rel_err  # absolute syst. error due to rad corr ratio
         singleR_A_c12_mf_stat_err[i]      = singleR_A_c12_mf[i] * np.sqrt(stat_rel_err_mf.values[i]**2 +  stat_rel_err_mf_c12**2) 
         singleR_A_c12_mf_norm_syst_err[i] = singleR_A_c12_mf[i] * np.sqrt(norm_syst_rel_err_mf.values[i]**2 +  norm_syst_rel_err_mf_c12**2)

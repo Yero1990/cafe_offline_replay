@@ -90,11 +90,18 @@ doubleR_osu                  = np.array(df['doubleR_osu'],            dtype=floa
 #doubleR_colle = np.array([0.3417, 0.6835, 0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
 
 # same as above (colle), but ommitting some nuclei not relevant for CaFe comparison
-A_colle       = np.array([9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
-Z_colle       = np.array([4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
+#A_colle       = np.array([9, 12, 16, 27, 40, 48, 56, 63, 108, 197])
+#Z_colle       = np.array([4, 6,  8,  13, 20, 20, 26, 29, 47,  79])
+#N_colle       = A_colle - Z_colle
+#NoZ_colle     = N_colle / Z_colle
+#doubleR_colle = np.array([0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+
+# only include Colle relevant to CaFe data
+A_colle       = np.array([9, 12, 40, 48, 56, 197])
+Z_colle       = np.array([4, 6,  20, 20, 26, 79])
 N_colle       = A_colle - Z_colle
 NoZ_colle     = N_colle / Z_colle
-doubleR_colle = np.array([0.9469, 1, 1.196, 1.38, 1.58, 1.896, 1.782, 1.856, 2.224, 2.688])
+doubleR_colle = np.array([0.9469, 1, 1.58, 1.896, 1.782, 2.688])
 
 
 
@@ -190,9 +197,9 @@ if(compare_flag):
 #--------------------------
 # PLOT Double Ratio vs. A
 #--------------------------
-'''
+
 print(' 100*doubleR_stat_err/doubleR ======> ',  100*doubleR_stat_err/doubleR)
-fig1= plt.figure()
+fig1= plt.figure(figsize=(8,7))
 
 if(error_breakdown):
     # break-down of syst. contributions
@@ -211,19 +218,23 @@ elif(rel_err_breakdown):
    
 
 else:
-    # plot CaFe Hall C Data
-    plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
-    plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
-
+    
     # plot Meytal's Hall B Data
-    plt.errorbar(A_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+    plt.errorbar(A_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+
+    # plot CaFe Hall C Data
+    #plt.errorbar(A, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
+    #plt.errorbar(A, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
+
+    plt.errorbar(A, doubleR, doubleR_stat_err, marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=4)
+    plt.errorbar(A, doubleR, doubleR_tot_err, marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=4, label='This Data')
 
     
     # PLOT MODELS
-    plt.plot(A, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    plt.plot(A, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
-    plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    plt.plot(A, doubleR_Jmodel, marker='o', markersize=10, alpha=.7, mfc='m', mec='None', linestyle='None', label='Spatial', zorder=3)
+    plt.plot(A, doubleR_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='None', linestyle='None', label='AV18', zorder=3)
+    plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='None', linestyle='None', label='OSU', zorder=3)
+    plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='None', linestyle='None', label='Colle15', zorder=3)
     
 
     
@@ -231,18 +242,20 @@ if(compare_flag ):
     plt.errorbar(A_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
     
 plt.xscale('log')
-plt.xticks(fontsize = 15)
-plt.yticks(fontsize = 15)
+plt.xticks(fontsize = 15, weight='bold')
+plt.yticks(fontsize = 15, weight='bold')
+plt.ylim(0.7, 2.75)
 
 if(rel_err_breakdown):
     plt.title('CaFe Double Ratio Relative Error vs. A', fontsize=18)
     plt.xlabel('A', fontsize=16)
     plt.ylabel(r'Relative Error ($\%$)', fontsize=16)
 else:
-    plt.title('CaFe Double Ratio vs. A', fontsize=18)
-    plt.xlabel('A', fontsize=16)
-    plt.ylabel('A / C12', fontsize=16)
+    plt.title('', fontsize=18)
+    plt.xlabel('A', fontsize=16, weight='bold')
+    plt.ylabel(r'Double Ratio (SRC/MF)$_A$ / (SRC/MF)$_C$', fontsize=16, weight='bold')
 
+    '''
     # add target names to plot
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
@@ -271,10 +284,11 @@ else:
             x = A[i] + 2
 
         plt.text(x, y, tgt)
+    '''
     
 plt.legend(frameon=False, fontsize=16)
 #plt.savefig('cafe_doubleR_vs_A.pdf')
-'''
+
 
 
 #--------------------------
@@ -376,12 +390,14 @@ elif(rel_err_breakdown):
     plt.plot(A, 100*singleR_A_c12_mf_tot_err/singleR_A_c12_mf,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None', label='total error')
     
 else:
-    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
-    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
+    #plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='o', markersize=7, alpha=.9, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=1)
+    #plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='o', markersize=7, alpha=.9, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error', zorder=1)
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_stat_err,      marker='s', markersize=10, mfc='k', ecolor='k', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1)
+    plt.errorbar(A, singleR_A_c12_mf, singleR_A_c12_mf_tot_err,       marker='s', markersize=10, mfc='k', ecolor='k', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1, label='This Data')
 
     # PLOT MODELS
-    plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
-    plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+    plt.plot(A, singleR_A_c12_mf_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=1)
+    plt.plot(A, singleR_A_c12_mf_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=1)
 
 
 if(compare_flag ):
@@ -391,20 +407,21 @@ if(compare_simc_flag ):
         
 plt.xscale('log')
 
-plt.xticks(fontsize = 15)
-plt.yticks(fontsize = 15)
-plt.ylim(0.7, 2.)
+plt.xticks(fontsize = 15, weight='bold')
+plt.yticks(fontsize = 15, weight='bold')
+plt.ylim(0.7, 1.6)
 
 if(rel_err_breakdown):
     plt.title('CaFe MF Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
     plt.xlabel('A', fontsize=16)
     plt.ylabel(r'A / C12  Relative Error ($\%$)', fontsize=16)
 else:
-    plt.title('CaFe MF Single Ratio (per proton) vs. A', fontsize=18)
-    plt.xlabel('A', fontsize=16)
-    plt.ylabel('A / C12', fontsize=16) 
+    plt.title('', fontsize=18)
+    plt.xlabel('A', fontsize=16, weight='bold')
+    plt.ylabel(r'Single Ratio MF$_A$ / MF$_C$', fontsize=16, weight='bold') 
 
-    
+
+    '''
     # add target names to plot
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
@@ -431,7 +448,7 @@ else:
         elif tgt=="Fe54" :
             y = y + 0.07
         plt.text(x, y, tgt)
-    
+    '''
 plt.legend(frameon=False, fontsize=16, loc='upper left')
 #plt.savefig('cafe_MFsingleR_vs_A.pdf')
 # --------------------------------------------
@@ -441,7 +458,7 @@ plt.legend(frameon=False, fontsize=16, loc='upper left')
 #-----------------------------
 # Single Ratio A_SRC / C12_SRC 
 #-----------------------------
-'''
+
 fig1_a2c= plt.figure()
 
 if(error_breakdown):
@@ -460,12 +477,16 @@ elif(rel_err_breakdown):
     plt.plot(A, 100*singleR_A_c12_src_tot_err/singleR_A_c12_src,       marker='_', markersize=10, mfc='k', mec='k', markeredgewidth=2, linestyle='None',  label='total error')
 
 else:
-    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical', zorder=1)
-    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error', zorder=1)
+    # Plot Hall C CaFe data
+    #plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None',  label='statistical', zorder=1)
+    #plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='o', markersize=7, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None',  label='total error', zorder=1)
+
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_stat_err,      marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1)
+    plt.errorbar(A, singleR_A_c12_src, singleR_A_c12_src_tot_err,       marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1, label='This Data')
 
     # PLOT MODELS
-    plt.plot(A, singleR_A_c12_src_av18,   marker='*', markersize=15, alpha=.5, mfc='g', mec='g', linestyle='None', label='AV18', zorder=2)
-    plt.plot(A, singleR_A_c12_src_osu,    marker='P', markersize=15, alpha=.5, mfc='b', mec='b', linestyle='None', label='OSU', zorder=2)
+    plt.plot(A, singleR_A_c12_src_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=1)
+    plt.plot(A, singleR_A_c12_src_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=1)
 
     
 if(compare_flag ):
@@ -473,19 +494,21 @@ if(compare_flag ):
     
 plt.xscale('log')
 
-plt.xticks(fontsize = 15)
-plt.yticks(fontsize = 15)
+plt.xticks(fontsize = 15, weight='bold')
+plt.yticks(fontsize = 15, weight='bold')
+plt.ylim(0.7, 1.6)
+
 
 if(rel_err_breakdown):
     plt.title('CaFe SRC Single Ratio (per proton) Rel. Error vs. A', fontsize=18)
     plt.xlabel('A', fontsize=16)
     plt.ylabel(r'A / C12 Relative Error ($\%$)', fontsize=16)
 else:
-    plt.title('CaFe SRC Single Ratio (per proton) vs. A', fontsize=18)
-    plt.xlabel('A', fontsize=16)
-    plt.ylabel('A / C12', fontsize=16)
+    plt.title('', fontsize=18)
+    plt.xlabel('A', fontsize=16, weight='bold')
+    plt.ylabel(r'Single Ratio SRC$_A$ / SRC$_C$', fontsize=16, weight='bold')
 
-    
+    '''
     # add target names to plot
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
@@ -521,11 +544,11 @@ else:
             x = A[i] + 2
 
         plt.text(x, y, tgt)
-    
+    '''
 plt.legend(frameon=False, fontsize=16)
 #plt.savefig('cafe_SRCsingleR_vs_A.pdf')
 # --------------------------------------------
-'''
+
 
 
 #--------------------------
@@ -705,8 +728,8 @@ plt.legend(frameon=False, fontsize=16, loc='upper left')
 #--------------------------
 # PLOT Double Ratio vs. N/Z
 #--------------------------
-'''
-fig2 = plt.figure()
+
+fig2 = plt.figure(figsize=(8,7))
 if(error_breakdown):
     # break-down of syst. contributions
     plt.errorbar(NoZ, doubleR, doubleR_stat_err,      marker='o', markersize=7, mfc='r', ecolor='r', mec='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
@@ -724,36 +747,43 @@ elif(rel_err_breakdown):
    
 
 else:
-    # plot CaFe Hall C Data
-    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
-    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
-
     # plot Meytal's Hall B Data
-    plt.errorbar(NoZ_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+    plt.errorbar(NoZ_MT, doubleR_MT, doubleR_MT_err, marker='o', markersize=8, alpha=.9, mfc='c', ecolor='c', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='Meytal18', zorder=4)
+
+    # plot CaFe Hall C Data
+    #plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='o', markersize=8, mfc='r', ecolor='r', mec='r', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical', zorder=4)
+    #plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='o', markersize=8, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', label='total', zorder=4)
+
+    plt.errorbar(NoZ, doubleR, doubleR_stat_err, marker='s', markersize=10, mfc='k', ecolor='k', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=4)
+    plt.errorbar(NoZ, doubleR, doubleR_tot_err, marker='s', markersize=10, mfc='k', ecolor='k', mec='None', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=4, label='This Data')
+
+    
 
     
     # PLOT MODELS
-    plt.plot(NoZ, doubleR_Jmodel, marker='s', markersize=10, alpha=.7, mfc='m', mec='k', linestyle='None', label='JAM', zorder=3)
-    plt.plot(NoZ, doubleR_av18,   marker='*', markersize=15, alpha=.7, mfc='g', mec='g', linestyle='None', label='AV18', zorder=3)
-    plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='b', linestyle='None', label='OSU', zorder=3)
-    plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='k', linestyle='None', label='Colle15', zorder=3)
+    plt.plot(NoZ, doubleR_Jmodel, marker='o', markersize=10, alpha=.7, mfc='m', mec='None', linestyle='None', label='Spatial', zorder=3)
+    plt.plot(NoZ, doubleR_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='None', linestyle='None', label='AV18', zorder=3)
+    plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='None', linestyle='None', label='OSU', zorder=3)
+    plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='None', linestyle='None', label='Colle15', zorder=3)
     
 
 if(compare_flag ):
     plt.errorbar(NoZ_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
 
-plt.xticks(fontsize = 15)
-plt.yticks(fontsize = 15)
+plt.xticks(fontsize = 15, weight='bold')
+plt.yticks(fontsize = 15, weight='bold')
+plt.ylim(0.7, 2.75)
 
 if(rel_err_breakdown):
     plt.title('CaFe Double Ratio Relative Error vs. N/Z', fontsize=18)
     plt.xlabel('N/Z', fontsize=16)
     plt.ylabel(r'Relative Error ($\%$)', fontsize=16)
 else:
-    plt.title('CaFe Double Ratio vs. N/Z', fontsize=18)
-    plt.xlabel('N/Z', fontsize=16)
-    plt.ylabel('A / C12', fontsize=16)
-    
+    plt.title('', fontsize=18)
+    plt.xlabel('N/Z', fontsize=16, weight='bold')
+    plt.ylabel(r'Double Ratio (SRC/MF)$_A$ / (SRC/MF)$_C$', fontsize=16, weight='bold')
+
+    '''
     for i, tgt in enumerate(targ):
         print('i, tgt -> ',i, tgt)
         print('(x,y) ->  ',NoZ[i], doubleR[i] )
@@ -765,11 +795,11 @@ else:
             x = NoZ[i] + 0.02
  
         plt.text(x, y, tgt)
-
+    '''
 plt.legend(frameon=False, fontsize=16)
 #plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
-'''
+
 
 
 #-------------------------------
