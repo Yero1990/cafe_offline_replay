@@ -231,11 +231,12 @@ else:
 
     
     # PLOT MODELS
+    '''
     plt.plot(A, doubleR_Jmodel, marker='o', markersize=10, alpha=.7, mfc='m', mec='None', linestyle='None', label='Spatial', zorder=3)
     plt.plot(A, doubleR_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='None', linestyle='None', label='AV18', zorder=3)
     plt.plot(A, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='None', linestyle='None', label='OSU', zorder=3)
     plt.plot(A_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='None', linestyle='None', label='Colle15', zorder=3)
-    
+    '''
 
     
 if(compare_flag ):
@@ -286,7 +287,7 @@ else:
         plt.text(x, y, tgt)
     '''
     
-plt.legend(frameon=False, fontsize=16)
+plt.legend(frameon=False, fontsize=16, loc='upper left')
 #plt.savefig('cafe_doubleR_vs_A.pdf')
 
 
@@ -554,6 +555,7 @@ plt.legend(frameon=False, fontsize=16)
 #--------------------------
 # PLOT Single Ratio vs. N/Z
 #--------------------------
+
 '''
 # A_SRC / A_MF
 fig2_s = plt.figure()
@@ -761,11 +763,12 @@ else:
 
     
     # PLOT MODELS
+    '''
     plt.plot(NoZ, doubleR_Jmodel, marker='o', markersize=10, alpha=.7, mfc='m', mec='None', linestyle='None', label='Spatial', zorder=3)
     plt.plot(NoZ, doubleR_av18,   marker='*', markersize=19, alpha=.7, mfc='g', mec='None', linestyle='None', label='AV18', zorder=3)
     plt.plot(NoZ, doubleR_osu,    marker='P', markersize=15, alpha=.7, mfc='b', mec='None', linestyle='None', label='OSU', zorder=3)
     plt.plot(NoZ_colle, doubleR_colle,   marker='^', markersize=13, alpha=.8, mfc='gold', mec='None', linestyle='None', label='Colle15', zorder=3)
-    
+    '''
 
 if(compare_flag ):
     plt.errorbar(NoZ_2, doubleR_2, doubleR_err_2, marker='o', markersize=7, mfc='r', ecolor='r', mec='r', linestyle='None', label='pass2')
@@ -796,7 +799,7 @@ else:
  
         plt.text(x, y, tgt)
     '''
-plt.legend(frameon=False, fontsize=16)
+plt.legend(frameon=False, fontsize=16, loc='upper left')
 #plt.savefig('cafe_doubleR_vs_NoZ.pdf')
 
 

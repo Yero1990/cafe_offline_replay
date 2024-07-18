@@ -62,7 +62,7 @@ plt.subplots_adjust(left=0.2, bottom=0.1, right=None, top=0.9, wspace=None, hspa
 ax0.errorbar(A, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
 ax0.errorbar(A, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
 
-ax0.set_title('CaFe Triplet: A / Ca48')
+#ax0.set_title('CaFe Triplet: A / Ca48')
 #ax0.set_xlabel('A', fontsize=15)
 ax0.set_ylabel(r'MF$_A$ / MF$_{\rm Ca48}$', fontsize=12, weight='bold')
 #ax0.set_xscale('log')
@@ -100,18 +100,22 @@ plt.yticks(fontsize = 15)
 
 #----------
 
-'''
+
 fig2, (ax0, ax1, ax2) = plt.subplots(nrows=3, ncols=1, sharex=True, sharey=False)
+fig2.set_size_inches(5, 8, forward=True)
+
+plt.subplots_adjust(left=0.2, bottom=0.1, right=None, top=0.9, wspace=None, hspace=None)
 
 
 # A / Ca48 vs. N/Z (MF)
 #ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
 #ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
-ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_stat_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
-ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_tot_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax0.errorbar(NoZ, singleR_A_ca48_mf, yerr=singleR_A_ca48_mf_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
 
-ax0.set_title('CaFe Triplet: A / Ca48')
+#ax0.set_title('CaFe Triplet: A / Ca48')
 #ax0.set_xlabel('A', fontsize=15)
+ax0.set_ylabel(r'MF$_A$ / MF$_{\rm Ca48}$', fontsize=12, weight='bold')
 #ax0.set_xscale('log')
 ax0.tick_params(axis='both', which='major', labelsize=15)
 
@@ -119,10 +123,11 @@ ax0.tick_params(axis='both', which='major', labelsize=15)
 # A / Ca48 vs. N/Z (SRC)
 #ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
 #ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
-ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_stat_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
-ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_tot_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax1.errorbar(NoZ, singleR_A_ca48_src, yerr=singleR_A_ca48_src_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
 
 #ax1.set_xlabel('A', fontsize=15)
+ax1.set_ylabel(r'SRC$_A$ / SRC$_{\rm Ca48}$', fontsize=12, weight='bold')
 #ax1.set_xscale('log')
 ax1.tick_params(axis='both', which='major', labelsize=15)
 
@@ -130,10 +135,12 @@ ax1.tick_params(axis='both', which='major', labelsize=15)
 # A / Ca48 vs. N/Z (double)
 #ax2.errorbar(NoZ, doubleR, yerr=doubleR_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
 #ax2.errorbar(NoZ, doubleR, yerr=doubleR_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
-ax2.errorbar(NoZ, doubleR, yerr=doubleR_stat_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
-ax2.errorbar(NoZ, doubleR, yerr=doubleR_tot_err, marker='o', markersize=5, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax2.errorbar(NoZ, doubleR, yerr=doubleR_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax2.errorbar(NoZ, doubleR, yerr=doubleR_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
 
-ax2.set_xlabel('N/Z', fontsize=15)
+ax2.set_xlabel('N/Z', fontsize=15, weight='bold')
+ax2.set_ylabel(r'(SRC/MF)$_A$ / (SRC/MF)$_{\rm Ca48}$', fontsize=12, weight='bold')
+
 #ax1.set_xscale('log')
 ax2.tick_params(axis='both', which='major', labelsize=15)
 
@@ -142,7 +149,7 @@ plt.xticks(NoZ)
 
 plt.xticks(fontsize = 15)
 plt.yticks(fontsize = 15)
-'''
+
 
 
 
