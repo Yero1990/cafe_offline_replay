@@ -850,7 +850,7 @@ def write_ratios(ifname='', ofname=''):
     ofile.write('target,singleR_A_c12_mf,singleR_A_c12_mf_stat_err,singleR_A_c12_mf_norm_syst_err,singleR_A_c12_mf_RC_syst_err,singleR_A_c12_mf_cut_syst_err,singleR_A_c12_mf_syst_err,singleR_A_c12_mf_tot_err,singleR_A_c12_src,singleR_A_c12_src_stat_err,singleR_A_c12_src_norm_syst_err,singleR_A_c12_src_RC_syst_err,singleR_A_c12_src_cut_syst_err,singleR_A_c12_src_syst_err,singleR_A_c12_src_tot_err,singleR_per_proton,singleR_per_proton_stat_err,singleR_per_proton_norm_syst_err,singleR_per_proton_RC_syst_err,singleR_per_proton_syst_err,singleR_per_proton_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,doubleR_Jmodel,singleR_A_c12_mf_av18,singleR_A_c12_src_av18,doubleR_av18,singleR_A_c12_mf_osu,singleR_A_c12_src_osu,doubleR_osu,N,Z,A,NoZ,NmZoA\n') 
 
     # set output file to write CaFe triple [Ca40 Ca48 Fe54] / Ca48 single SRC ratios
-    ofile2 = open('cafe_triplet.csv', 'w+')
+    ofile2 = open('cafe_triplet_to48.csv', 'w+')
     ofile2.write('# CaFe Triplet Numerical Ratios (%s) \n'%(npass))
     ofile2.write('# \n'
                 '# Header Definitions: \n'
@@ -1145,7 +1145,7 @@ def write_ratios(ifname='', ofname=''):
     singleR_mf_triplet_cut_syst_rel_err = np.array([0.003,        0.0,        0.004])          # fractional
 
      # cut sensitivity relative errors (ratio to 40)   ca40/ca40  ca48/ca40   fe54/ca40      (NOTE: needs update !) Sep 20
-    singleR_mf_triplet_cut_syst_rel_err_40 = np.array([0.,        0.0,        0.0])          # fractional
+    singleR_mf_triplet_cut_syst_rel_err_40 = np.array([0.,        0.003,        0.004])          # fractional
 
     # transparency systematic error on triple ratios (As per Larry's suggestion) 
     # FOR single ratios relative of R = A / Ca48, set the relative error dR/R as follows: 
@@ -1158,7 +1158,7 @@ def write_ratios(ifname='', ofname=''):
     singleR_mf_triplet_T_syst_rel_err   = np.array([0.009,        0.0,        0.006])  # (updated values from comments above)
 
     #                                              ca40/ca40    ca48/ca40   fe54/ca40   (NOTE: needs update !) Sep 20
-    singleR_mf_triplet_T_syst_rel_err_40   = np.array([0.0,        0.0,        0.00])  # 
+    singleR_mf_triplet_T_syst_rel_err_40   = np.array([0.0,       0.009,       0.006])  # 
     
      # initialize zero arrays to be filled in depending on relative error value (to Ca48)
     singleR_A_ca48_mf               = np.zeros([3])
@@ -1206,7 +1206,7 @@ def write_ratios(ifname='', ofname=''):
     # RC systematic error (to Ca40) : C. Yero -Sep 20 (needs to be updated )
     singleR_A_ca40_mf_RC_syst_err[0]       = 0 
     singleR_A_ca40_mf_RC_syst_err[1]       = 0
-    singleR_A_ca40_mf_RC_syst_err[2]       = 0
+    singleR_A_ca40_mf_RC_syst_err[2]       = singleR_A_ca40_mf[2] * 0.025 
 
 
     # calculate absolute error on triplet ratio due to transparency (to Ca48)
@@ -1340,10 +1340,10 @@ def write_ratios(ifname='', ofname=''):
     #-------------------------------------------------
 
     # cut sensitivity relative errors                ca40/ca40  ca48/ca40 fe54/ca40        (NOTE: needs to be updated, C. Yero Sep 20)
-    singleR_src_triplet_cut_syst_rel_err_40 = np.array([0.0,        0.0,    0.0])          # fractional
+    singleR_src_triplet_cut_syst_rel_err_40 = np.array([0.0,        0.01,    0.01])          # fractional
 
     # transparency systematic error on triple ratios ca40/ca40  ca48/ca40 fe54/ca40       (NOTE: needs to be updated, C. Yero Sep 20)    
-    singleR_src_triplet_T_syst_rel_err_40   = np.array([0.0,        0.0,        0.0]) 
+    singleR_src_triplet_T_syst_rel_err_40   = np.array([0.0,        0.009,        0.006]) 
 
      # initialize zero arrays to be filled in depending on relative error value (C. Yero, added on Sep 20)
     singleR_A_ca40_src               = np.zeros([3])
@@ -1365,7 +1365,7 @@ def write_ratios(ifname='', ofname=''):
     # relative error on the radiative correction factor for (Ca40 Ca48 Fe54) / Ca40 single ratio (C. Yero, Sep 20, need to be updated)
     singleR_A_ca40_src_RC_syst_err[0]       = 0   
     singleR_A_ca40_src_RC_syst_err[1]       = 0
-    singleR_A_ca40_src_RC_syst_err[2]       = 0  
+    singleR_A_ca40_src_RC_syst_err[2]       =  singleR_A_ca40_src[2] * 0.025  # just copied ove value from ratio to 48 (but needs to be updated)
 
     # calculate absolute error on triplet ratio due to transparency
     singleR_A_ca40_src_T_syst_err      = singleR_A_ca40_src  *  singleR_src_triplet_T_syst_rel_err_40 
@@ -1456,7 +1456,7 @@ def write_ratios(ifname='', ofname=''):
     
 
     # cut sensitivity relative errors    ca40/ca40   ca48/ca40   fe54/ca40  (C. Yero, Sep 20 needs to be updated !)
-    doubleRt_cut_syst_rel_err_40 = np.array([0.0,       0.0,        0.0]) # fractional 
+    doubleRt_cut_syst_rel_err_40 = np.array([0.0,       0.01,        0.011]) # fractional 
 
     # radiative correction factor for double ratio
     doubleRt_RC_corr_factor_40 = rad_corr_ratio[4:7] / rad_corr_ratio_ca40
@@ -1534,7 +1534,7 @@ def write_ratios(ifname='', ofname=''):
         if(targ[i]=="Ca40"):
             singleR_A_ca40_mf_stat_err[i]=singleR_A_ca40_mf_norm_syst_err[i]=singleR_A_ca40_mf_RC_syst_err[i]=singleR_A_ca40_mf_cut_syst_err[i]=singleR_A_ca40_mf_syst_err[i]=singleR_A_ca40_mf_tot_err[i]=0.0
             singleR_A_ca40_src_stat_err[i]=singleR_A_ca40_src_norm_syst_err[i]=singleR_A_ca40_src_RC_syst_err[i]=singleR_A_ca40_src_cut_syst_err[i]=singleR_A_ca40_src_syst_err[i]=singleR_A_ca40_src_tot_err[i]=0.0
-            doubleRt_stat_err[i]=doubleRt_norm_syst_err[i]=doubleRt_RC_syst_err[i]=doubleRt_cut_syst_err[i]=doubleRt_syst_err[i]=doubleRt_tot_err[i]=0.0
+            doubleRt_stat_err_40[i]=doubleRt_norm_syst_err_40[i]=doubleRt_RC_syst_err_40[i]=doubleRt_cut_syst_err_40[i]=doubleRt_syst_err_40[i]=doubleRt_tot_err_40[i]=0.0
         ofile3.write('%s,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.3E,%.1f,%.1f,%.1f,%.3f,%.3f\n' % (targ[i],
                                                        singleR_A_ca40_mf[i],singleR_A_ca40_mf_stat_err[i],singleR_A_ca40_mf_norm_syst_err[i],singleR_A_ca40_mf_RC_syst_err[i],singleR_A_ca40_mf_cut_syst_err[i],singleR_A_ca40_mf_syst_err[i],singleR_A_ca40_mf_tot_err[i],
                                                        singleR_A_ca40_src[i],singleR_A_ca40_src_stat_err[i],singleR_A_ca40_src_norm_syst_err[i],singleR_A_ca40_src_RC_syst_err[i],singleR_A_ca40_src_cut_syst_err[i],singleR_A_ca40_src_syst_err[i],singleR_A_ca40_src_tot_err[i],

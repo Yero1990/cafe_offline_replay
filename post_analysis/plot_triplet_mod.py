@@ -1,0 +1,195 @@
+import numpy as np
+import numpy.ma as ma
+import pandas as pd
+import matplotlib.pyplot as plt
+import sys
+
+
+ratio_flag = "Ca40"  # ratio to Ca40 or Ca48
+
+
+if(ratio_flag=="Ca40"):
+    
+    ifname= 'cafe_triplet_to40.csv' 
+
+    df = pd.read_csv(ifname, comment='#')
+
+    # A_SRC / Ca40_SRC
+    singleR_A_ca_src                = np.array(df['singleR_A_ca40_src'])
+    singleR_A_ca_src_stat_err       = np.array(df['singleR_A_ca40_src_stat_err'])
+    singleR_A_ca_src_norm_syst_err  = np.array(df['singleR_A_ca40_src_norm_syst_err'])
+    singleR_A_ca_src_RC_syst_err    = np.array(df['singleR_A_ca40_src_RC_syst_err'])
+    singleR_A_ca_src_cut_syst_err   = np.array(df['singleR_A_ca40_src_cut_syst_err'])
+    singleR_A_ca_src_syst_err       = np.array(df['singleR_A_ca40_src_syst_err'])
+    singleR_A_ca_src_tot_err        = np.array(df['singleR_A_ca40_src_tot_err'])
+    
+    # A_MF / Ca40_MF
+    singleR_A_ca_mf                = np.array(df['singleR_A_ca40_mf'])
+    singleR_A_ca_mf_stat_err       = np.array(df['singleR_A_ca40_mf_stat_err'])
+    singleR_A_ca_mf_norm_syst_err  = np.array(df['singleR_A_ca40_mf_norm_syst_err'])
+    singleR_A_ca_mf_RC_syst_err    = np.array(df['singleR_A_ca40_mf_RC_syst_err'])
+    singleR_A_ca_mf_cut_syst_err   = np.array(df['singleR_A_ca40_mf_cut_syst_err'])
+    singleR_A_ca_mf_syst_err       = np.array(df['singleR_A_ca40_mf_syst_err'])
+    singleR_A_ca_mf_tot_err        = np.array(df['singleR_A_ca40_mf_tot_err'])
+    
+    
+    # double ratio
+    doubleR                = np.array(df['doubleR'])
+    doubleR_stat_err       = np.array(df['doubleR_stat_err'])
+    doubleR_norm_syst_err  = np.array(df['doubleR_norm_syst_err'])
+    doubleR_RC_syst_err    = np.array(df['doubleR_RC_syst_err'])
+    doubleR_cut_syst_err   = np.array(df['doubleR_cut_syst_err'])
+    doubleR_syst_err       = np.array(df['doubleR_syst_err'])
+    doubleR_tot_err        = np.array(df['doubleR_tot_err'])
+
+    
+if(ratio_flag=="Ca48"):
+    
+    ifname= 'cafe_triplet_to48.csv' 
+
+    df = pd.read_csv(ifname, comment='#')
+
+    # A_SRC / Ca48_SRC
+    singleR_A_ca_src                = np.array(df['singleR_A_ca48_src'])
+    singleR_A_ca_src_stat_err       = np.array(df['singleR_A_ca48_src_stat_err'])
+    singleR_A_ca_src_norm_syst_err  = np.array(df['singleR_A_ca48_src_norm_syst_err'])
+    singleR_A_ca_src_RC_syst_err    = np.array(df['singleR_A_ca48_src_RC_syst_err'])
+    singleR_A_ca_src_cut_syst_err   = np.array(df['singleR_A_ca48_src_cut_syst_err'])
+    singleR_A_ca_src_syst_err       = np.array(df['singleR_A_ca48_src_syst_err'])
+    singleR_A_ca_src_tot_err        = np.array(df['singleR_A_ca48_src_tot_err'])
+    
+    # A_MF / Ca48_MF
+    singleR_A_ca_mf                = np.array(df['singleR_A_ca48_mf'])
+    singleR_A_ca_mf_stat_err       = np.array(df['singleR_A_ca48_mf_stat_err'])
+    singleR_A_ca_mf_norm_syst_err  = np.array(df['singleR_A_ca48_mf_norm_syst_err'])
+    singleR_A_ca_mf_RC_syst_err    = np.array(df['singleR_A_ca48_mf_RC_syst_err'])
+    singleR_A_ca_mf_cut_syst_err   = np.array(df['singleR_A_ca48_mf_cut_syst_err'])
+    singleR_A_ca_mf_syst_err       = np.array(df['singleR_A_ca48_mf_syst_err'])
+    singleR_A_ca_mf_tot_err        = np.array(df['singleR_A_ca48_mf_tot_err'])
+    
+    
+    # double ratio
+    doubleR                = np.array(df['doubleR'])
+    doubleR_stat_err       = np.array(df['doubleR_stat_err'])
+    doubleR_norm_syst_err  = np.array(df['doubleR_norm_syst_err'])
+    doubleR_RC_syst_err    = np.array(df['doubleR_RC_syst_err'])
+    doubleR_cut_syst_err   = np.array(df['doubleR_cut_syst_err'])
+    doubleR_syst_err       = np.array(df['doubleR_syst_err'])
+    doubleR_tot_err        = np.array(df['doubleR_tot_err'])
+
+
+    
+
+
+
+
+
+
+A = df['A'] 
+NoZ = np.round(df['NoZ'], 1) 
+NmZoA = df['NmZoA']
+
+fig, (ax0, ax1, ax2) = plt.subplots(nrows=3, ncols=1, sharex=True, sharey=False)
+fig.set_size_inches(5, 8, forward=True)
+
+plt.subplots_adjust(left=0.2, bottom=0.1, right=None, top=0.9, wspace=None, hspace=None)
+
+# A / Ca vs. A (MF)
+#ax0.errorbar(A, singleR_A_ca_mf, yerr=singleR_A_ca_mf_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax0.errorbar(A, singleR_A_ca_mf, yerr=singleR_A_ca_mf_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax0.errorbar(A, singleR_A_ca_mf, yerr=singleR_A_ca_mf_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax0.errorbar(A, singleR_A_ca_mf, yerr=singleR_A_ca_mf_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+#ax0.set_title('CaFe Triplet: A / Ca')
+#ax0.set_xlabel('A', fontsize=15)
+ax0.set_ylabel(r'MF$_A$ / MF$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+#ax0.set_xscale('log')
+ax0.tick_params(axis='both', which='major', labelsize=15)
+
+
+# A / Ca vs. A (SRC)
+#ax1.errorbar(A, singleR_A_ca_src, yerr=singleR_A_ca_src_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax1.errorbar(A, singleR_A_ca_src, yerr=singleR_A_ca_src_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax1.errorbar(A, singleR_A_ca_src, yerr=singleR_A_ca_src_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax1.errorbar(A, singleR_A_ca_src, yerr=singleR_A_ca_src_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+#ax1.set_xlabel('A', fontsize=15)
+ax1.set_ylabel(r'SRC$_A$ / SRC$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+#ax1.set_xscale('log')
+ax1.tick_params(axis='both', which='major', labelsize=15)
+
+
+# A / Ca vs. A (double)
+#ax2.errorbar(A, doubleR, yerr=doubleR_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax2.errorbar(A, doubleR, yerr=doubleR_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax2.errorbar(A, doubleR, yerr=doubleR_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax2.errorbar(A, doubleR, yerr=doubleR_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+ax2.set_xlabel('A', fontsize=15, weight='bold')
+ax2.set_ylabel(r'(SRC/MF)$_A$ / (SRC/MF)$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+#ax1.set_xscale('log')
+ax2.tick_params(axis='both', which='major', labelsize=15)
+
+plt.xticks([40,48,54])
+
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
+
+#----------
+
+
+fig2, (ax0, ax1, ax2) = plt.subplots(nrows=3, ncols=1, sharex=True, sharey=False)
+fig2.set_size_inches(5, 8, forward=True)
+
+plt.subplots_adjust(left=0.2, bottom=0.1, right=None, top=0.9, wspace=None, hspace=None)
+
+
+# A / Ca vs. N/Z (MF)
+#ax0.errorbar(NoZ, singleR_A_ca_mf, yerr=singleR_A_ca_mf_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax0.errorbar(NoZ, singleR_A_ca_mf, yerr=singleR_A_ca_mf_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax0.errorbar(NoZ, singleR_A_ca_mf, yerr=singleR_A_ca_mf_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax0.errorbar(NoZ, singleR_A_ca_mf, yerr=singleR_A_ca_mf_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+#ax0.set_title('CaFe Triplet: A / Ca')
+#ax0.set_xlabel('A', fontsize=15)
+ax0.set_ylabel(r'MF$_A$ / MF$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+#ax0.set_xscale('log')
+ax0.tick_params(axis='both', which='major', labelsize=15)
+
+
+# A / Ca vs. N/Z (SRC)
+#ax1.errorbar(NoZ, singleR_A_ca_src, yerr=singleR_A_ca_src_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax1.errorbar(NoZ, singleR_A_ca_src, yerr=singleR_A_ca_src_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax1.errorbar(NoZ, singleR_A_ca_src, yerr=singleR_A_ca_src_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax1.errorbar(NoZ, singleR_A_ca_src, yerr=singleR_A_ca_src_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+#ax1.set_xlabel('A', fontsize=15)
+ax1.set_ylabel(r'SRC$_A$ / SRC$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+#ax1.set_xscale('log')
+ax1.tick_params(axis='both', which='major', labelsize=15)
+
+
+# A / Ca vs. N/Z (double)
+#ax2.errorbar(NoZ, doubleR, yerr=doubleR_stat_err, marker='o', markersize=7, mfc='r', mec='r', ecolor='r', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='statistical')
+#ax2.errorbar(NoZ, doubleR, yerr=doubleR_tot_err, marker='o', markersize=7, mfc='k', mec='k', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None', label='total error')
+ax2.errorbar(NoZ, doubleR, yerr=doubleR_stat_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+ax2.errorbar(NoZ, doubleR, yerr=doubleR_tot_err, marker='s', markersize=10, mfc='k', mec='None', ecolor='k', elinewidth=1.2, capsize=4, markeredgewidth=1.2, linestyle='None')
+
+ax2.set_xlabel('N/Z', fontsize=15, weight='bold')
+ax2.set_ylabel(r'(SRC/MF)$_A$ / (SRC/MF)$_{\rm %s}$'%(ratio_flag), fontsize=12, weight='bold')
+
+#ax1.set_xscale('log')
+ax2.tick_params(axis='both', which='major', labelsize=15)
+
+plt.xticks(NoZ)
+
+
+plt.xticks(fontsize = 15)
+plt.yticks(fontsize = 15)
+
+
+
+
+
+plt.show()
