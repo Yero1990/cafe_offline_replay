@@ -1,0 +1,20 @@
+# CaFe Triplet Numerical Ratios (pass4) 
+# 
+# Header Definitions: 
+# target       : target A used in single ratio 
+# singleR_A_ca40_mf   : single ratio of target A_MF / Ca40_MF (per proton) 
+# singleR_A_ca40_src  : single ratio of target A_SRC / Ca40_SRC (per proton) 
+# doubleR      : double ratio of target A(SRC/MF) relative to Ca40 (SRC/MF) 
+# _stat_err    : absolute statistical uncertainty 
+# _norm_syst_err : absolute systematic error due to normalization correction factors (a) hms/shms track efficiencies (b) live time (c) proton transmission (d) ca 40/48 cntm)
+# _RC_syst_err   : absolute systematic error due to radiative corrections 
+# _cut_syst_err  : absolute systematic error due to cut sensitivity 
+# _syst_err      : absolute systematic errors added in quadrature
+# _tot_err       : absolute total errors (statistical + systematics added in quadrature) 
+# N: Z: A      : # of neutrons (N): protons(Z): nucleons (A): for target A 
+# NoZ          : N/Z 
+# NmZoA        : (N-Z)/A 
+target,singleR_A_ca40_mf,singleR_A_ca40_mf_stat_err,singleR_A_ca40_mf_norm_syst_err,singleR_A_ca40_mf_RC_syst_err,singleR_A_ca40_mf_cut_syst_err,singleR_A_ca40_mf_syst_err,singleR_A_ca40_mf_tot_err,singleR_A_ca40_src,singleR_A_ca40_src_stat_err,singleR_A_ca40_src_norm_syst_err,singleR_A_ca40_src_RC_syst_err,singleR_A_ca40_src_cut_syst_err,singleR_A_ca40_src_syst_err,singleR_A_ca40_src_tot_err,doubleR,doubleR_stat_err,doubleR_norm_syst_err,doubleR_RC_syst_err,doubleR_cut_syst_err,doubleR_syst_err,doubleR_tot_err,N,Z,A,NoZ,NmZoA
+Ca40,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,1.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,0.000E+00,1.000E+00,1.655E-02,1.523E-02,1.000E-02,0.000E+00,1.822E-02,2.462E-02,20.0,20.0,40.0,1.000,0.000
+Ca48,9.290E-01,5.255E-03,1.190E-02,0.000E+00,0.000E+00,1.190E-02,1.301E-02,1.049E+00,1.560E-02,1.527E-02,0.000E+00,0.000E+00,1.527E-02,2.183E-02,1.129E+00,1.796E-02,2.190E-02,1.129E-02,0.000E+00,2.464E-02,3.049E-02,28.0,20.0,48.0,1.400,0.167
+Fe54,1.002E+00,5.668E-03,1.724E-02,0.000E+00,4.008E-03,1.770E-02,1.858E-02,1.213E+00,2.066E-02,8.747E-03,0.000E+00,0.000E+00,8.747E-03,2.243E-02,1.211E+00,2.173E-02,2.259E-02,1.211E-02,0.000E+00,2.563E-02,3.360E-02,28.0,26.0,54.0,1.077,0.037

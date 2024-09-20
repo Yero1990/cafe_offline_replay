@@ -1,0 +1,1104 @@
+
+
+
+************************
+*                      
+* target: Be9 MF        
+*                      
+************************
+
+yield_per_run:  [99297.199 13392.6   28625.6  ]
+yield = SUM[yield_per_run]: 141315.4  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 7.866E-05
+(hdid: 613818.0, hshould: 616167.0)
+etrk_eff_avg     : 0.980 +/- 1.776E-04
+(edid: 628544.0, eshould: 641530.0)
+tLT_avg          : 0.936
+emult_trk_eff_avg: 0.971
+pTransm          : 0.952
+eff_total        : 0.845
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.888] * 1/0.952
+yield_eff = 167205.3 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 128.669 
+nuclear transparency T: 0.4807
+A: 9, Z: 4
+target thickness (g/cm2): 0.98590 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  167205.266 / (128.669 * 0.4807 * 0.98590)
+sigma_raw_per_nucleon = 2741.726
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2741.726 * 9 / 4
+sigma_raw_per_proton =  6168.883
+
+
+
+
+************************
+*                      
+* target: Be9 SRC        
+*                      
+************************
+
+yield_per_run:  [713.999 151.4   324.4    31.8   495.2    27.6   760.199 954.999 643.8
+ 941.799]
+yield = SUM[yield_per_run]: 5045.2  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.998 +/- 3.572E-05
+(hdid: 1429394.0, hshould: 1432011.0)
+etrk_eff_avg     : 0.958 +/- 2.392E-04
+(edid: 708050.0, eshould: 739320.0)
+tLT_avg          : 0.934
+emult_trk_eff_avg: 0.951
+pTransm          : 0.952
+eff_total        : 0.808
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.849] * 1/0.952
+yield_eff = 6241.4 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 982.403 
+nuclear transparency T: 0.4807
+A: 9, Z: 4
+target thickness (g/cm2): 0.98590 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  6241.364 / (982.403 * 0.4807 * 0.98590)
+sigma_raw_per_nucleon = 13.404
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  13.404 * 9 / 4
+sigma_raw_per_proton =  30.159
+
+
+==============>  B10  MF <=================
+real_Yield_corr_total: 73980.8514
+total_charge: 120.0590
+T: 0.4642
+boron_density_corr: 0.44323
+sigma_raw_per_nucleon: 2995.2152
+
+
+
+
+************************
+*                      
+* target: B10 MF        
+*                      
+************************
+
+yield_per_run:  [51381.199 28417.6  ]
+yield = SUM[yield_per_run]: 79798.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 9.966E-05
+(hdid: 358667.0, hshould: 359954.0)
+etrk_eff_avg     : 0.982 +/- 2.186E-04
+(edid: 363944.0, eshould: 370506.0)
+tLT_avg          : 0.939
+emult_trk_eff_avg: 0.980
+pTransm          : 0.952
+eff_total        : 0.858
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.901] * 1/0.952
+yield_eff = 93005.8 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+------------------------------------------------------------
+ apply carbon subtraction to boron carbide (B4C10 or B4C11) 
+------------------------------------------------------------
+
+a. calculate the c12 density contribution in boron carbide (B4C) 
+(subtracted the boron contribution from the b4c density)
+
+# boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)
+boron_density_corr = ( 4.*A / (4.*A + 12) ) * B410_tgt_thick = ( 4.*10 / (4.*10 + 12) ) * 0.57620 = 0.44323 
+
+# c12 density contribution in B4C
+c12_density_b4c = B410_tgt_thick -  boron_density_corr = 0.57620 - 0.44323 = 0.13297 g/cm2 
+
+b. subtract c12 contribution from b4c yield
+yield_corr = yield_eff - yield_eff_c12 * (c12_density_b4c/c12_density) * (Q_B10 / Q_C12)
+           = 93005.846 - 83528.117 * (0.13297/0.57380) * (120.059/122.150) 
+yield_corr = 73980.851 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 120.059 
+nuclear transparency T: 0.4642
+A: 10, Z: 5
+target thickness (g/cm2): 0.57620 
+corrected target thickness (g/cm2): 0.44323 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  73980.851 / (120.059 * 0.4642 * 0.44323)
+sigma_raw_per_nucleon = 2995.215
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2995.215 * 10 / 5
+sigma_raw_per_proton =  5990.430
+
+
+==============>  B10  SRC <=================
+real_Yield_corr_total: 3759.9637
+total_charge: 1099.0070
+T: 0.4642
+boron_density_corr: 0.44323
+sigma_raw_per_nucleon: 16.6298
+
+
+
+
+************************
+*                      
+* target: B10 SRC        
+*                      
+************************
+
+yield_per_run:  [349.2 442.6 553.6 320.  659.2 560.2 709.  521.4]
+yield = SUM[yield_per_run]: 4115.2  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.998 +/- 3.167E-05
+(hdid: 1743304.0, hshould: 1746362.0)
+etrk_eff_avg     : 0.972 +/- 1.963E-04
+(edid: 715910.0, eshould: 736831.0)
+tLT_avg          : 0.936
+emult_trk_eff_avg: 0.974
+pTransm          : 0.952
+eff_total        : 0.842
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.884] * 1/0.952
+yield_eff = 4887.5 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+------------------------------------------------------------
+ apply carbon subtraction to boron carbide (B4C10 or B4C11) 
+------------------------------------------------------------
+
+a. calculate the c12 density contribution in boron carbide (B4C) 
+(subtracted the boron contribution from the b4c density)
+
+# boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)
+boron_density_corr = ( 4.*A / (4.*A + 12) ) * B410_tgt_thick = ( 4.*10 / (4.*10 + 12) ) * 0.57620 = 0.44323 
+
+# c12 density contribution in B4C
+c12_density_b4c = B410_tgt_thick -  boron_density_corr = 0.57620 - 0.44323 = 0.13297 g/cm2 
+
+b. subtract c12 contribution from b4c yield
+yield_corr = yield_eff - yield_eff_c12 * (c12_density_b4c/c12_density) * (Q_B10 / Q_C12)
+           = 4887.471 - 5062.890 * (0.13297/0.57380) * (1099.007/1143.590) 
+yield_corr = 3759.964 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 1099.007 
+nuclear transparency T: 0.4642
+A: 10, Z: 5
+target thickness (g/cm2): 0.57620 
+corrected target thickness (g/cm2): 0.44323 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  3759.964 / (1099.007 * 0.4642 * 0.44323)
+sigma_raw_per_nucleon = 16.630
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  16.630 * 10 / 5
+sigma_raw_per_proton =  33.260
+
+
+==============>  B11  MF <=================
+real_Yield_corr_total: 147683.5576
+total_charge: 262.5470
+T: 0.4496
+boron_density_corr: 0.49720
+sigma_raw_per_nucleon: 2516.0824
+
+
+
+
+************************
+*                      
+* target: B11 MF        
+*                      
+************************
+
+yield_per_run:  [ 11315.2   133131.996  17831.599]
+yield = SUM[yield_per_run]: 162278.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.997 +/- 6.199E-05
+(hdid: 715297.0, hshould: 717274.0)
+etrk_eff_avg     : 0.981 +/- 1.547E-04
+(edid: 778696.0, eshould: 793773.0)
+tLT_avg          : 0.936
+emult_trk_eff_avg: 0.979
+pTransm          : 0.952
+eff_total        : 0.854
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.897] * 1/0.952
+yield_eff = 190110.9 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+------------------------------------------------------------
+ apply carbon subtraction to boron carbide (B4C10 or B4C11) 
+------------------------------------------------------------
+
+a. calculate the c12 density contribution in boron carbide (B4C) 
+(subtracted the boron contribution from the b4c density)
+
+# boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)
+boron_density_corr = ( 4.*A / (4.*A + 12) ) * B411_tgt_thick = ( 4.*11 / (4.*11 + 12) ) * 0.63280 = 0.49720 
+
+# c12 density contribution in B4C
+c12_density_b4c = B411_tgt_thick -  boron_density_corr = 0.63280 - 0.49720 = 0.13560 g/cm2 
+
+b. subtract c12 contribution from b4c yield
+yield_corr = yield_eff - yield_eff_c12 * (c12_density_b4c/c12_density) * (Q_B11 / Q_C12)
+           = 190110.861 - 83528.117 * (0.13560/0.57380) * (262.547/122.150) 
+yield_corr = 147683.558 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 262.547 
+nuclear transparency T: 0.4496
+A: 11, Z: 5
+target thickness (g/cm2): 0.63280 
+corrected target thickness (g/cm2): 0.49720 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  147683.558 / (262.547 * 0.4496 * 0.49720)
+sigma_raw_per_nucleon = 2516.082
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2516.082 * 11 / 5
+sigma_raw_per_proton =  5535.381
+
+
+==============>  B11  SRC <=================
+real_Yield_corr_total: 4034.9354
+total_charge: 1108.1090
+T: 0.4496
+boron_density_corr: 0.49720
+sigma_raw_per_nucleon: 16.2875
+
+
+
+
+************************
+*                      
+* target: B11 SRC        
+*                      
+************************
+
+yield_per_run:  [680.6    85.2   713.8   722.399 941.799 595.    387.4   212.   ]
+yield = SUM[yield_per_run]: 4338.2  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.998 +/- 3.805E-05
+(hdid: 1321861.0, hshould: 1324400.0)
+etrk_eff_avg     : 0.969 +/- 2.315E-04
+(edid: 552985.0, eshould: 570415.0)
+tLT_avg          : 0.936
+emult_trk_eff_avg: 0.969
+pTransm          : 0.952
+eff_total        : 0.835
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.877] * 1/0.952
+yield_eff = 5194.3 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+------------------------------------------------------------
+ apply carbon subtraction to boron carbide (B4C10 or B4C11) 
+------------------------------------------------------------
+
+a. calculate the c12 density contribution in boron carbide (B4C) 
+(subtracted the boron contribution from the b4c density)
+
+# boron density corrected = b4c density scaled by (nucleons in b4)/ (nucleons in b4c)
+boron_density_corr = ( 4.*A / (4.*A + 12) ) * B411_tgt_thick = ( 4.*11 / (4.*11 + 12) ) * 0.63280 = 0.49720 
+
+# c12 density contribution in B4C
+c12_density_b4c = B411_tgt_thick -  boron_density_corr = 0.63280 - 0.49720 = 0.13560 g/cm2 
+
+b. subtract c12 contribution from b4c yield
+yield_corr = yield_eff - yield_eff_c12 * (c12_density_b4c/c12_density) * (Q_B11 / Q_C12)
+           = 5194.273 - 5062.890 * (0.13560/0.57380) * (1108.109/1143.590) 
+yield_corr = 4034.935 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 1108.109 
+nuclear transparency T: 0.4496
+A: 11, Z: 5
+target thickness (g/cm2): 0.63280 
+corrected target thickness (g/cm2): 0.49720 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  4034.935 / (1108.109 * 0.4496 * 0.49720)
+sigma_raw_per_nucleon = 16.287
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  16.287 * 11 / 5
+sigma_raw_per_proton =  35.832
+
+
+
+
+************************
+*                      
+* target: C12 MF        
+*                      
+************************
+
+yield_per_run:  [52886.8   19001.799]
+yield = SUM[yield_per_run]: 71888.6  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 9.931E-05
+(hdid: 368490.0, hshould: 369839.0)
+etrk_eff_avg     : 0.983 +/- 2.108E-04
+(edid: 383832.0, eshould: 390610.0)
+tLT_avg          : 0.940
+emult_trk_eff_avg: 0.982
+pTransm          : 0.952
+eff_total        : 0.860
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.903] * 1/0.952
+yield_eff = 83599.8 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 122.150 
+nuclear transparency T: 0.4368
+A: 12, Z: 6
+target thickness (g/cm2): 0.57380 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  83599.827 / (122.150 * 0.4368 * 0.57380)
+sigma_raw_per_nucleon = 2730.728
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2730.728 * 12 / 6
+sigma_raw_per_proton =  5461.456
+
+
+
+
+************************
+*                      
+* target: C12 SRC        
+*                      
+************************
+
+yield_per_run:  [232.2  29.8  90.2 365.6 392.  126.4 456.6 330.4 551.6 533.  472.4 480.6
+ 241.6]
+yield = SUM[yield_per_run]: 4302.4  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.999 +/- 2.426E-05
+(hdid: 1247091.0, hshould: 1248008.0)
+etrk_eff_avg     : 0.976 +/- 1.723E-04
+(edid: 778990.0, eshould: 797883.0)
+tLT_avg          : 0.936
+emult_trk_eff_avg: 0.977
+pTransm          : 0.952
+eff_total        : 0.849
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.892] * 1/0.952
+yield_eff = 5065.0 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 1143.590 
+nuclear transparency T: 0.4368
+A: 12, Z: 6
+target thickness (g/cm2): 0.57380 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  5064.967 / (1143.590 * 0.4368 * 0.57380)
+sigma_raw_per_nucleon = 17.671
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  17.671 * 12 / 6
+sigma_raw_per_proton =  35.343
+
+
+
+
+************************
+*                      
+* target: Ca40 MF        
+*                      
+************************
+
+yield_per_run:  [43968.199 23651.598]
+yield = SUM[yield_per_run]: 67619.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 9.012E-05
+(hdid: 463875.0, hshould: 465636.0)
+etrk_eff_avg     : 0.975 +/- 2.439E-04
+(edid: 403371.0, eshould: 413544.0)
+tLT_avg          : 0.934
+emult_trk_eff_avg: 0.975
+pTransm          : 0.952
+eff_total        : 0.843
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.885] * 1/0.952
+yield_eff = 80253.7 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+-------------------------------------------------------
+ apply Ca-40 Oil Contamination correction (run-by-run) 
+-------------------------------------------------------
+
+ca40_cntm_eff_per_run =  [0.99484 0.99484]
+
+yield_corr_per_run = yield_eff_per_run * ca40_cntm_eff_per_run  
+yield_corr = SUM_[yield_corr_per_run] * 1/pTransm = 79839.562 * 1./0.952
+yield_corr = 79839.562 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 148.587 
+nuclear transparency T: 0.2924
+A: 40, Z: 20
+target thickness (g/cm2): 0.78510 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  79839.562 / (148.587 * 0.2924 * 0.78510)
+sigma_raw_per_nucleon = 2340.628
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2340.628 * 40 / 20
+sigma_raw_per_proton =  4681.256
+
+
+
+
+************************
+*                      
+* target: Ca40 SRC        
+*                      
+************************
+
+yield_per_run:  [ 72.6    47.4   421.199 284.599 377.599 430.199 406.799 343.599 385.599
+ 492.998  61.4   320.799 368.399 354.599 262.799 471.599 405.199 211.999
+ 210.399 370.199 452.199 600.398 308.199 504.999 108.   ]
+yield = SUM[yield_per_run]: 8273.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.999 +/- 1.322E-05
+(hdid: 4626663.0, hshould: 4630410.0)
+etrk_eff_avg     : 0.964 +/- 1.319E-04
+(edid: 1987335.0, eshould: 2061295.0)
+tLT_avg          : 0.941
+emult_trk_eff_avg: 0.967
+pTransm          : 0.952
+eff_total        : 0.834
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.876] * 1/0.952
+yield_eff = 9923.0 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+-------------------------------------------------------
+ apply Ca-40 Oil Contamination correction (run-by-run) 
+-------------------------------------------------------
+
+ca40_cntm_eff_per_run =  [0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484
+ 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484
+ 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484 0.99484]
+
+yield_corr_per_run = yield_eff_per_run * ca40_cntm_eff_per_run  
+yield_corr = SUM_[yield_corr_per_run] * 1/pTransm = 9871.791 * 1./0.952
+yield_corr = 9871.791 --> yield_eff corrected for external/internal impurities (if any) 
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 2354.885 
+nuclear transparency T: 0.2924
+A: 40, Z: 20
+target thickness (g/cm2): 0.78510 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  9871.791 / (2354.885 * 0.2924 * 0.78510)
+sigma_raw_per_nucleon = 18.261
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  18.261 * 40 / 20
+sigma_raw_per_proton =  36.522
+
+
+
+
+************************
+*                      
+* target: Ca48 MF        
+*                      
+************************
+
+yield_per_run:  [23369.199  5809.6   42834.796]
+yield = SUM[yield_per_run]: 72013.6  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 7.435E-05
+(hdid: 721015.0, hshould: 723912.0)
+etrk_eff_avg     : 0.966 +/- 2.626E-04
+(edid: 470314.0, eshould: 486650.0)
+tLT_avg          : 0.935
+emult_trk_eff_avg: 0.960
+pTransm          : 0.952
+eff_total        : 0.823
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.864] * 1/0.952
+yield_eff = 87538.2 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+-------------------------------------------------------
+ apply Ca-48 Oil Contamination correction (run-by-run) 
+-------------------------------------------------------
+
+ca48_cntm_eff_per_run =  [0.995 0.995 0.995]
+
+yield_corr_per_run = yield_eff_per_run * ca48_cntm_eff_per_run  
+yield_corr = SUM_[yield_corr_per_run] * 1/pTransm = 77250.218 * 1./0.952 (apply overall proton transmission factor to SUM)
+yield_corr = 87100.535 --> yield_eff corrected for external/internal impurities (if any)
+
+---------------------------------------
+ apply Ca48 "Ca40 impurity" correction 
+---------------------------------------
+
+ NOTE: Ca48 is only ~90.5 % pure, the remaining is Ca40. The 48Ca target is 1051 mg/cm2.
+
+ca48_purity: 0.915
+amount of ca40 in ca48       : ca40_cntm =  (1. - ca48_purity) * ca48_tgt_thick = 0.08933  (g/cm2)
+corrected ca48 tgt thickness : ca48_density_corr =  tgt_thick - ca40_cntm  = 0.96157 (g/cm2)
+
+yield_corr = yield_corr - yield_corr_ca40 * (ca40_cntm / ca40_density) * (Q_ca48 / Q_ca40) 
+yield_corr = 87100.535 - 79839.562 * (0.08933 / 0.78510) * (161.123 / 148.587)
+yield_corr = 77250.218 --> yield_eff corrected for external/internal impurities (if any)
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 161.123 
+nuclear transparency T: 0.2752
+A: 48, Z: 20
+target thickness (g/cm2): 1.05090 
+corrected target thickness (g/cm2): 0.96157 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  77250.218 / (161.123 * 0.2752 * 0.96157)
+sigma_raw_per_nucleon = 1812.064
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  1812.064 * 48 / 20
+sigma_raw_per_proton =  4348.953
+
+
+
+
+************************
+*                      
+* target: Ca48 SRC        
+*                      
+************************
+
+yield_per_run:  [471.998 438.198 452.798 510.998 384.798 372.398 168.    535.799 496.198
+  82.6   499.798 505.398 282.999 300.999 910.197 531.398 736.397 629.398
+ 714.597 748.397 716.797]
+yield = SUM[yield_per_run]: 10490.2  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.999 +/- 9.607E-06
+(hdid: 8170412.0, hshould: 8176583.0)
+etrk_eff_avg     : 0.956 +/- 1.140E-04
+(edid: 3207089.0, eshould: 3353095.0)
+tLT_avg          : 0.937
+emult_trk_eff_avg: 0.957
+pTransm          : 0.952
+eff_total        : 0.816
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.857] * 1/0.952
+yield_eff = 12861.8 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// additional corrections (if needed) for external/internal target impurities //
+////////////////////////////////////////////////////////////////////////////////
+
+-------------------------------------------------------
+ apply Ca-48 Oil Contamination correction (run-by-run) 
+-------------------------------------------------------
+
+ca48_cntm_eff_per_run =  [0.975  0.9789 0.9822 0.985  0.9869 0.9883 0.9888 0.9902 0.9912 0.9914
+ 0.9922 0.9929 0.9932 0.9934 0.994  0.9943 0.9945 0.9947 0.9948 0.9949
+ 0.995 ]
+
+yield_corr_per_run = yield_eff_per_run * ca48_cntm_eff_per_run  
+yield_corr = SUM_[yield_corr_per_run] * 1/pTransm = 11450.169 * 1./0.952 (apply overall proton transmission factor to SUM)
+yield_corr = 12743.144 --> yield_eff corrected for external/internal impurities (if any)
+
+---------------------------------------
+ apply Ca48 "Ca40 impurity" correction 
+---------------------------------------
+
+ NOTE: Ca48 is only ~90.5 % pure, the remaining is Ca40. The 48Ca target is 1051 mg/cm2.
+
+ca48_purity: 0.915
+amount of ca40 in ca48       : ca40_cntm =  (1. - ca48_purity) * ca48_tgt_thick = 0.08933  (g/cm2)
+corrected ca48 tgt thickness : ca48_density_corr =  tgt_thick - ca40_cntm  = 0.96157 (g/cm2)
+
+yield_corr = yield_corr - yield_corr_ca40 * (ca40_cntm / ca40_density) * (Q_ca48 / Q_ca40) 
+yield_corr = 12743.144 - 9871.791 * (0.08933 / 0.78510) * (2710.868 / 2354.885)
+yield_corr = 11450.169 --> yield_eff corrected for external/internal impurities (if any)
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 2710.868 
+nuclear transparency T: 0.2752
+A: 48, Z: 20
+target thickness (g/cm2): 1.05090 
+corrected target thickness (g/cm2): 0.96157 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick_corr)
+sigma_raw_per_nucleon =  11450.169 / (2710.868 * 0.2752 * 0.96157)
+sigma_raw_per_nucleon = 15.964
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  15.964 * 48 / 20
+sigma_raw_per_proton =  38.313
+
+
+
+
+************************
+*                      
+* target: Fe54 MF        
+*                      
+************************
+
+yield_per_run:  [34705.799 20154.8  ]
+yield = SUM[yield_per_run]: 54860.6  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.996 +/- 7.462E-05
+(hdid: 627534.0, hshould: 629742.0)
+etrk_eff_avg     : 0.985 +/- 1.696E-04
+(edid: 520270.0, eshould: 528298.0)
+tLT_avg          : 0.945
+emult_trk_eff_avg: 0.992
+pTransm          : 0.952
+eff_total        : 0.877
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.921] * 1/0.952
+yield_eff = 62583.0 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 285.417 
+nuclear transparency T: 0.2646
+A: 54, Z: 26
+target thickness (g/cm2): 0.36700 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  62582.985 / (285.417 * 0.2646 * 0.36700)
+sigma_raw_per_nucleon = 2258.265
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  2258.265 * 54 / 26
+sigma_raw_per_proton =  4690.243
+
+
+
+
+************************
+*                      
+* target: Fe54 SRC        
+*                      
+************************
+
+yield_per_run:  [ 79.6   283.4   314.4   300.2   252.    234.    291.2   308.4   231.4
+  32.4   164.     29.8    64.2    81.8    24.8   210.6   267.8   319.
+ 334.2   252.4   283.6   339.4   385.2   441.799]
+yield = SUM[yield_per_run]: 5525.6  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.998 +/- 2.314E-05
+(hdid: 2823522.0, hshould: 2827803.0)
+etrk_eff_avg     : 0.976 +/- 1.126E-04
+(edid: 1816527.0, eshould: 1860404.0)
+tLT_avg          : 0.939
+emult_trk_eff_avg: 0.984
+pTransm          : 0.952
+eff_total        : 0.857
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.900] * 1/0.952
+yield_eff = 6447.0 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 3112.736 
+nuclear transparency T: 0.2646
+A: 54, Z: 26
+target thickness (g/cm2): 0.36700 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  6447.029 / (3112.736 * 0.2646 * 0.36700)
+sigma_raw_per_nucleon = 21.331
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  21.331 * 54 / 26
+sigma_raw_per_proton =  44.303
+
+
+
+
+************************
+*                      
+* target: Au197 MF        
+*                      
+************************
+
+yield_per_run:  [6448.  6971.4 6713.4 5015. ]
+yield = SUM[yield_per_run]: 25147.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.995 +/- 4.768E-05
+(hdid: 2034958.0, hshould: 2044459.0)
+etrk_eff_avg     : 0.980 +/- 1.761E-04
+(edid: 643344.0, eshould: 656724.0)
+tLT_avg          : 0.899
+emult_trk_eff_avg: 0.990
+pTransm          : 0.952
+eff_total        : 0.826
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.868] * 1/0.952
+yield_eff = 30433.5 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 305.285 
+nuclear transparency T: 0.1719
+A: 197, Z: 79
+target thickness (g/cm2): 0.40470 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  30433.501 / (305.285 * 0.1719 * 0.40470)
+sigma_raw_per_nucleon = 1433.294
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  1433.294 * 197 / 79
+sigma_raw_per_proton =  3574.164
+
+
+
+
+************************
+*                      
+* target: Au197 SRC        
+*                      
+************************
+
+yield_per_run:  [ 68.    6.6  35.4  78.8  77.2  39.   17.  101.2 103.4  85.4  78.6 100.8
+  59.6   8.2  57.2  95.6 106.  114.6  88.6 102.4  96.2 105.2 104.6  61.
+  79.4 117.2  83.6  44.   43.8  97.6  66.   23.6]
+yield = SUM[yield_per_run]: 2345.8  --> (raw counts integrated over Pm) with all data-analysis cuts applied
+
+////////////////////////////
+// efficiency corrections //
+////////////////////////////
+
+NOTE: The HMS/SHMS tracking efficiencies are averaged over all runs and then applied on a run-by-run basis
+      The proton transmission factor gets applied as an overall correction factor (after summation of Y_per_run)
+
+htrk_eff_avg     : 0.999 +/- 1.313E-05
+(hdid: 7029880.0, hshould: 7038415.0)
+etrk_eff_avg     : 0.978 +/- 7.136E-05
+(edid: 4177742.0, eshould: 4270613.0)
+tLT_avg          : 0.898
+emult_trk_eff_avg: 0.990
+pTransm          : 0.952
+eff_total        : 0.827
+
+yield_eff_per_run = yield_per_run / (htrk_eff_avg * etrk_eff_avg * tLT_avg * emult_trk_eff_avg) 
+yield_eff = SUM[ yield_eff_per_run ] * (1 / pTransm) = SUM [yield_eff_per_run / 0.868] * 1/0.952
+yield_eff = 2837.4 -->  yield corrected for inefficiencies (hms/shms tracking + live_time + proton absorption) 
+
+
+
+
+
+///////////////////////////
+// raw cross-sections    //
+///////////////////////////
+
+total_charge Q (mC): 2408.938 
+nuclear transparency T: 0.1719
+A: 197, Z: 79
+target thickness (g/cm2): 0.40470 
+
+sigma_raw_per_nucleon =  yield_corr / (Q * T * tgt_thick)
+sigma_raw_per_nucleon =  2837.432 / (2408.938 * 0.1719 * 0.40470)
+sigma_raw_per_nucleon = 16.935
+
+sigma_raw_per_proton =  sigma_raw_per_nucleon * A / Z
+sigma_raw_per_proton =  16.935 * 197 / 79
+sigma_raw_per_proton =  42.231
+
+------>
+singleR_A_c12_mf = 1.1295
+mf_sigma_raw_per_proton.values[i]: 6168.8830
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0000
+
+------>
+singleR_A_c12_mf = 1.0969
+mf_sigma_raw_per_proton.values[i]: 5990.4300
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0000
+
+------>
+singleR_A_c12_mf = 1.0135
+mf_sigma_raw_per_proton.values[i]: 5535.3810
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0000
+
+------>
+singleR_A_c12_mf = 1.0000
+mf_sigma_raw_per_proton.values[i]: 5461.4560
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0000
+
+------>
+singleR_A_c12_mf = 0.9181
+mf_sigma_raw_per_proton.values[i]: 4681.2560
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0711
+
+------>
+singleR_A_c12_mf = 0.8529
+mf_sigma_raw_per_proton.values[i]: 4348.9530
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0711
+
+------>
+singleR_A_c12_mf = 0.9198
+mf_sigma_raw_per_proton.values[i]: 4690.2430
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.0711
+
+------>
+singleR_A_c12_mf = 0.8968
+mf_sigma_raw_per_proton.values[i]: 3574.1640
+mf_sigma_raw_per_proton_C12: 5461.4560
+rad_corr_ratio_mf[i]: 1.3703
+
