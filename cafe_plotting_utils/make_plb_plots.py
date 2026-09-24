@@ -207,17 +207,17 @@ plt.plot([9+eps, 10+eps, 11+eps], [0.599, 0.747, 0.825], marker='^', markersize=
 
 plt.plot([9+eps, 10+eps, 11+eps], [0.667, 0.667, 0.833], marker='v', markersize=12, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, L=0 pairs', zorder=3)
 
+
+#Wiringa pairing
+plt.plot([9+eps, 10+eps, 11+eps], [0.56, 0.71, 0.81], marker='>', markersize=12, alpha=0.5, mfc='green', mec='black', linestyle='None', label='Wiringa Pairing', zorder=3)
+
 #Spatial Overlap Models
 
 #--Spatial
 #plt.plot([9+eps, 11+eps], [0.607, 0.850], marker='o', markersize=12, alpha=0.5, mfc='red', mec='black', linestyle='None', label='Spatial', zorder=3)
 
 #--WS+CK
-plt.plot([9+eps, 10+eps, 11+eps], [0.557, 0.725, 0.796], marker='o', markersize=12, alpha=0.5, mfc='red', mec='black', linestyle='None', label='WS+CK', zorder=3)
-
-#Wiringa
-plt.plot([9+eps, 10+eps, 11+eps], [0.56, 0.63, 0.81], marker='>', markersize=12, alpha=0.5, mfc='orange', mec='black', linestyle='None', label='Wiringa', zorder=3)
-
+plt.plot([9+eps, 10+eps, 11+eps], [0.557, 0.725, 0.796], marker='o', markersize=12, alpha=0.5, mfc='red', mec='black', linestyle='None', label='Spatial Overlap', zorder=3)
 
 #-----------------------------------------------
 
