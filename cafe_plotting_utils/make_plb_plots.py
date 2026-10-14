@@ -151,7 +151,8 @@ plt.close()
 
 
 
-
+'''
+#---------PLB FIG 2, SRC Per nucleus to C vs A--------------
 
 #  Fig 2 PRL (bottom) Single Ratios
 fig, axes = plt.subplots(figsize=(10, 7))
@@ -183,17 +184,17 @@ marker='s', markersize=15, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize
 eps = 0.2  # offset to shift theory slightly from data for better visual
 
 
-'''
+
 # ----- PLOT MODELS (per  proton to C vs A) ----
-plt.plot([9+eps, 10+eps, 11+eps], [0.935, 0.896, 1.012], marker='s', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (AV18)', zorder=1)#Av18
-plt.plot([9+eps, 10+eps, 11+eps], [1.025, 0.973, 1.0392], marker='D', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (SRG)', zorder=1)
-plt.plot([9+eps, 10+eps, 11+eps], [1.011, 0.956, 1.039], marker='P', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (LCA)', zorder=3)
+#plt.plot([9+eps, 10+eps, 11+eps], [0.935, 0.896, 1.012], marker='s', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (AV18)', zorder=1)#Av18
+#plt.plot([9+eps, 10+eps, 11+eps], [1.025, 0.973, 1.0392], marker='D', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (SRG)', zorder=1)
+#plt.plot([9+eps, 10+eps, 11+eps], [1.011, 0.956, 1.039], marker='P', markersize=15, alpha=0.5, mfc='blue', mec='black', linestyle='None', label='Momentum (LCA)', zorder=3)
 #updated from Larry's spreadsheet 
-plt.plot([9+eps, 10+eps, 11+eps], [0.899, 0.896, 0.9899], marker='^', markersize=15, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, n=0 pairs', zorder=3)
-plt.plot([9+eps, 10+eps, 11+eps], [1.0, 0.8, 0.9995], marker='v', markersize=15, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, L=0 pairs', zorder=3)
-plt.plot([9+eps, 11+eps], [0.9105, 1.02], marker='o', markersize=15, alpha=0.5, mfc='red', mec='black', linestyle='None', label='Spatial', zorder=3)
+#plt.plot([9+eps, 10+eps, 11+eps], [0.899, 0.896, 0.9899], marker='^', markersize=15, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, n=0 pairs', zorder=3)
+#plt.plot([9+eps, 10+eps, 11+eps], [1.0, 0.8, 0.9995], marker='v', markersize=15, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, L=0 pairs', zorder=3)
+#plt.plot([9+eps, 11+eps], [0.9105, 1.02], marker='o', markersize=15, alpha=0.5, mfc='red', mec='black', linestyle='None', label='Spatial', zorder=3)
 #------------------------------------------------
-'''
+
 
 
 
@@ -204,7 +205,6 @@ plt.plot([9+eps, 10+eps, 11+eps], [0.674, 0.797, 0.866], marker='P', markersize=
 
 #updated from Larry's spreadsheet 
 plt.plot([9+eps, 10+eps, 11+eps], [0.599, 0.747, 0.825], marker='^', markersize=12, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, n=0 pairs', zorder=3)
-
 plt.plot([9+eps, 10+eps, 11+eps], [0.667, 0.667, 0.833], marker='v', markersize=12, alpha=0.5, mfc='green', mec='black', linestyle='None', label='l=0, L=0 pairs', zorder=3)
 
 
@@ -244,36 +244,77 @@ plt.close()
 #-------------------------
 
 
+
+# ----- per proton --------
+#plt.xticks(fontsize = 22)
+#plt.yticks(fontsize = 22)
+#plt.xlim(8.5, 12.5)
+#plt.ylim(0.4, 1.1)  
+
+
+#plt.title('', fontsize=25)
+#plt.xlabel('A', fontsize=25)
+
+#plt.yticks([0.5, 0.7, 0.9, 1.1])  
+
+#plt.xticks([9, 10, 11, 12])  
+
+#plt.tight_layout()
+#plt.legend(labelspacing=2.0, loc='lower right')
+#plt.savefig('prl_fig2_pp.pdf')
+#plt.close()
+
+
+#---------END: PLB FIG 2, SRC Per nucleus to C vs A--------------
+
 '''
+
+
+
+
+
+#---------PLB FIG 3, SRC Per proton to C vs A--------------
+
+#  Fig 3 PRL  Single Ratios
+fig, axes = plt.subplots(figsize=(10, 7))
+
+plt.title('', fontsize=18)
+plt.ylabel(r'SRC Per Proton Ratio to C', fontsize=25)#, weight='bold')
+
+# per proton to C
+plt.errorbar([9,    10,   11,   12,   40,   48,   54,   197], 
+             [0.80, 0.92, 1.00, 1.00, 0.93, 1.02, 1.17, 1.26],
+             [0.04, 0.04, 0.04, 0.00, 0.05, 0.06, 0.06, 0.10],
+marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1, label='')
+
+
+
+eps = 0.2  # offset to shift theory slightly from data for better visual
+
+
+
+
 # ----- per proton --------
 plt.xticks(fontsize = 22)
 plt.yticks(fontsize = 22)
-plt.xlim(8.5, 12.5)
-plt.ylim(0.4, 1.1)  
+plt.xlim(8, 250)
+plt.ylim(0.7, 1.4)  
 
 
 plt.title('', fontsize=25)
 plt.xlabel('A', fontsize=25)
 
-plt.yticks([0.5, 0.7, 0.9, 1.1])  
-
-plt.xticks([9, 10, 11, 12])  
+plt.yticks([0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])  
+#plt.xticks([9, 10, 11, 12])  
+plt.xscale('log')
 
 plt.tight_layout()
-plt.legend(labelspacing=2.0, loc='lower right')
-plt.savefig('prl_fig2_pp.pdf')
+#plt.legend(labelspacing=2.0, loc='lower right')
+plt.savefig('plb_fig3.pdf')
 plt.close()
-'''
 
 
-
-#--------------------------
-
-
-
-
-
-
+#---------END: PLB FIG 2, SRC Per nucleus to C vs A--------------
 
 
 
