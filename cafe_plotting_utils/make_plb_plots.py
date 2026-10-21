@@ -285,8 +285,13 @@ plt.ylabel(r'SRC Per Proton Ratio to C', fontsize=25)#, weight='bold')
 plt.errorbar([9,    10,   11,   12,   40,   48,   54,   197], 
              [0.80, 0.92, 1.00, 1.00, 0.93, 1.02, 1.17, 1.26],
              [0.04, 0.04, 0.04, 0.00, 0.05, 0.06, 0.06, 0.10],
-marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1, label='')
+marker='s', markersize=10, mfc='k', ecolor='k', mec='k', elinewidth=1.5, capsize=4, markeredgewidth=1.2, linestyle='None', zorder=1, label='This Experiment')
 
+# Eli's per proton A to C
+plt.errorbar([9+0.45,    10+0.45,   11+0.45], 
+             [0.76, 0.887, 0.977],
+             [0.1, 0.109, 0.109],
+             marker='s', markersize=10, mfc='white', ecolor='b', mec='b', elinewidth=1.5, capsize=4, markeredgewidth=1.8, linestyle='None', zorder=1, label='EMC slope A/C')
 
 
 eps = 0.2  # offset to shift theory slightly from data for better visual
@@ -298,19 +303,19 @@ eps = 0.2  # offset to shift theory slightly from data for better visual
 plt.xticks(fontsize = 22)
 plt.yticks(fontsize = 22)
 plt.xlim(8, 250)
-plt.ylim(0.7, 1.4)  
+plt.ylim(0.6, 1.4)  
 
 
 plt.title('', fontsize=25)
 plt.xlabel('A', fontsize=25)
 
-plt.yticks([0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])  
+plt.yticks([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])  
 #plt.xticks([9, 10, 11, 12])  
 plt.xscale('log')
 
 plt.tight_layout()
-#plt.legend(labelspacing=2.0, loc='lower right')
-plt.savefig('plb_fig3.pdf')
+plt.legend(labelspacing=2.0, loc='lower right')
+plt.savefig('plb_fig3_internal_withErr.pdf')
 plt.close()
 
 
